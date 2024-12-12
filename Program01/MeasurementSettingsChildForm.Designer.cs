@@ -501,7 +501,7 @@
             this.IconbuttonApplyandEditSettings.Text = "Apply";
             this.IconbuttonApplyandEditSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.IconbuttonApplyandEditSettings.UseVisualStyleBackColor = false;
-            this.IconbuttonApplyandEditSettings.Click += new System.EventHandler(this.IconbuttonApplyandEditSettings_Click);
+            //this.IconbuttonApplyandEditSettings.Click += new System.EventHandler(this.IconbuttonApplyandEditSettings_Click);
             // 
             // MeasurementSettingsChildForm
             // 

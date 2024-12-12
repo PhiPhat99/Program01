@@ -16,8 +16,8 @@ namespace Program01
     public partial class MeasurementSettingsChildForm : Form
     {
         //Fields
-        Ivi.Visa.Interop.FormattedIO488 SMU;
-        private string SMU2450Address = $"GPIB1::18::INSTR";
+        private Ivi.Visa.Interop.FormattedIO488 SMU;
+        private string SMU2450Address = $"GPIB3::18::INSTR";
         private ResourceManager resourcemanager;
         private string SourceLimitValue;
         private string StartValue;
@@ -44,8 +44,7 @@ namespace Program01
         public MeasurementSettingsChildForm()
         {
             InitializeComponent();
-            InitializeGPIB();
-            bindingSource = new BindingSource();
+            InitializeGPIB(); 
         }
 
         private void InitializeGPIB()
@@ -82,13 +81,13 @@ namespace Program01
                     SMU.IO = (Ivi.Visa.Interop.IMessage)resourcemanager.Open(SMU2450Address);
                     SMU.IO.Timeout = 10000;
                     SendCommandToSMU("*IDN?");
-                    string response = SMU.ReadString();
+                    SendCommandToSMU("SYSTem:BEEPer 888, 0.5");
 
                     isSMUConnected = true;
                     IconbuttonSMUConnection.BackColor = Color.AliceBlue;
                     IconbuttonSMUConnection.IconColor = Color.GreenYellow;
 
-                    MessageBox.Show($"Connected to: {response}", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Connected to SMU", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -387,12 +386,10 @@ namespace Program01
         {
             try
             {
-                if (!isSMUConnected)
+                if (SMU != null && !isSMUConnected)
                 {
-                    throw new InvalidOperationException("SMU is not connected. Please connect to the SMU before sending commands.");
+                    SMU.WriteString(command); 
                 }
-
-                SMU.WriteString(command);
             }
             catch (Exception ex)
             {

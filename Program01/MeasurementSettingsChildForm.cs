@@ -4,9 +4,11 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Markup;
 using System.Windows.Media.Converters;
 using FontAwesome.Sharp;
 using Ivi.Visa.Interop;
@@ -80,8 +82,8 @@ namespace Program01
                 {
                     SMU.IO = (Ivi.Visa.Interop.IMessage)resourcemanager.Open(SMU2450Address);
                     SMU.IO.Timeout = 10000;
-                    SendCommandToSMU("*IDN?");
-                    SendCommandToSMU("SYSTem:BEEPer 888, 0.5");
+                    SMU.WriteString("*IDN?");
+                    SMU.WriteString("SYSTem:BEEPer 888, 0.5");
 
                     isSMUConnected = true;
                     IconbuttonSMUConnection.BackColor = Color.AliceBlue;
@@ -91,10 +93,14 @@ namespace Program01
                 }
                 else
                 {
-                    SMU.IO.Close();
-                    SendCommandToSMU("*RST");
-                    isSMUConnected = false;
+                    if (SMU.IO != null)
+                    {
+                        SMU.WriteString("*RST"); 
+                        SMU.IO.Close();          
+                        SMU.IO = null; 
+                    }
 
+                    isSMUConnected = false;
                     IconbuttonSMUConnection.BackColor = Color.Gray;
                     IconbuttonSMUConnection.IconColor = Color.Black;
 
@@ -106,6 +112,7 @@ namespace Program01
                 MessageBox.Show($"Error: {ex.Message}", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
         private void MeasurementSettingsChildForm_Load(object sender, EventArgs e)
         {
@@ -142,10 +149,10 @@ namespace Program01
                 switch (RsenseMode)
                 {
                     case "2-Wires":
-                        SendCommandToSMU("SENSe:RSENse OFF");
+                        SMU.WriteString("SENSe:RSENse OFF");
                         break;
                     case "4-Wires":
-                        SendCommandToSMU("SENSe:RSENse ON");
+                        SMU.WriteString("SENSe:RSENse ON");
                         break;
                     case "":
                         MessageBox.Show("Please select the sense wires mode", "ERROR");
@@ -153,7 +160,7 @@ namespace Program01
                     default:
                         ComboboxRsense.SelectedItem = "2-Wires";
                         RsenseMode = "2-Wires";
-                        SendCommandToSMU("SENSe:RSENse OFF");
+                        SMU.WriteString("SENSe:RSENse OFF");
                         break;
                 }
             }
@@ -172,12 +179,12 @@ namespace Program01
                 switch (MeasureMode)
                 {
                     case "Voltage":
-                        SendCommandToSMU("MEASure:VOLTage?");
-                        SendCommandToSMU("SENSe:VOLTage:RANGe AUTO ON");
+                        SMU.WriteString("SENSe:FUNCtion 'VOLTage'");
+                        SMU.WriteString("SENSe:VOLTage:RANGe:AUTO ON");
                         break;
                     case "Current":
-                        SendCommandToSMU("MEASure:CURRent?");
-                        SendCommandToSMU("SENSe:CURRent:RANGe AUTO ON");
+                        SMU.WriteString("SENSe:FUNCtion 'CURRent'");
+                        SMU.WriteString("SENSe:CURRent:RANGe:AUTO ON");
                         break;
                     case "":
                         MessageBox.Show("Please select the measurement mode", "ERROR");
@@ -185,8 +192,8 @@ namespace Program01
                     default:
                         ComboboxMeasure.SelectedItem = "Voltage";
                         MeasureMode = "Voltage";
-                        SendCommandToSMU("MEASure:VOLTage?");
-                        SendCommandToSMU("SENSe:VOLTage:RANGe AUTO ON");
+                        SMU.WriteString("SENSe:FUNCtion 'VOLTage'");
+                        SMU.WriteString("SENSe:VOLTage:RANGe:AUTO ON");
                         break;
                 }
             }
@@ -205,13 +212,13 @@ namespace Program01
                 switch (SourceMode)
                 {
                     case "Voltage":
-                        SendCommandToSMU("SOURce:VOLTage");
-                        SendCommandToSMU("SOURce:VOLTage:RANGe AUTO ON");
+                        SMU.WriteString("SOURce:VOLTage");
+                        SMU.WriteString("SOURce:VOLTage:RANGe:AUTO 1");
                         UpdateMeasurementSettingsUnits();
                         break;
                     case "Current":
-                        SendCommandToSMU("SOURce:CURRent");
-                        SendCommandToSMU("SOURce:CURRent:RANGe AUTO ON");
+                        SMU.WriteString("SOURce:CURRent");
+                        SMU.WriteString("SOURce:CURRent:RANGe:AUTO 1");
                         UpdateMeasurementSettingsUnits();
                         break;
                     case "":
@@ -220,8 +227,8 @@ namespace Program01
                     default:
                         ComboboxSource.SelectedItem = "Current";
                         SourceMode = "Current";
-                        SendCommandToSMU("SOURce:CURRent");
-                        SendCommandToSMU("SOURce:CURRent:RANGe AUTO ON");
+                        SMU.WriteString("SOURce:CURRent");
+                        SMU.WriteString("SOURce:CURRent:RANG:AUTO ON");
                         UpdateMeasurementSettingsUnits();
                         break;
                 }
@@ -290,7 +297,7 @@ namespace Program01
 
         private void IconbuttonClearSettings_Click(object sender, EventArgs e)
         {
-            SendCommandToSMU("*RST");
+            SMU.WriteString("*RST");
             ClearSettings();
         }
 
@@ -382,7 +389,21 @@ namespace Program01
             GlobalSettings.MagneticFieldsValue = TextboxMagneticFields.Text;
         }
 
-        private void SendCommandToSMU(string command)
+        private void IconbuttonSweep_Click(object sender, EventArgs e)
+        {
+            SMU.WriteString("*RST");
+            SMU.WriteString("SOUR:FUNC CURR");
+            SMU.WriteString("SOUR:CURR:RANG 1");
+            SMU.WriteString("SENS:FUNC 'VOLT'");
+            SMU.WriteString("SOUR:SWE:CURR:LIN:STEP 0, 10.5e-3, 5e-4, 10e-3, 3, BEST");
+            SMU.WriteString("SENS:VOLT:RANG 20");
+            SMU.WriteString("INIT");
+            SMU.WriteString("*WAI");
+            SMU.WriteString("TRAC:DATA? 1, 22, 'defbuffer1', SOUR, READ");
+            SMU.WriteString("OUTP OFF");
+        }
+
+        /*private void SendCommandToSMU(string command)
         {
             try
             {
@@ -414,6 +435,6 @@ namespace Program01
             {
                 MessageBox.Show($"Failed to apply settings to SMU: {ex.Message}", "Apply Settings Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
+        }*/
     }
 }

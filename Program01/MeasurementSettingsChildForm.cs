@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography;
@@ -13,6 +14,7 @@ using System.Windows.Markup;
 using System.Windows.Media.Converters;
 using FontAwesome.Sharp;
 using Ivi.Visa.Interop;
+using OfficeOpenXml.Drawing.Slicer.Style;
 
 namespace Program01
 {
@@ -21,7 +23,10 @@ namespace Program01
         //Fields
         private Ivi.Visa.Interop.FormattedIO488 SMU;
         private string SMU2450Address = $"GPIB3::18::INSTR";
-        private ResourceManager resourcemanager;
+        private Ivi.Visa.Interop.FormattedIO488 SMS;
+        private string SMS7001Address = $"GPIB3::7::INSTR";
+        private ResourceManager resourcemanagerSMU;
+        private ResourceManager resourcemanagerSMS;
         private string SourceLimitValue;
         private string StartValue;
         private string StepValue;
@@ -40,12 +45,8 @@ namespace Program01
         private string savedMagneticFieldsValue;
         private bool isSMUConnected = false;
         private bool isMeasured = false;
-        private bool isApplySettings = false;
-        private string RsenseModeSCPICommand = "";
-        private string MeasureModeSCPICommand = "";
-        private string MeasureRangeSCPICommand = "";
-
-        private BindingSource bindingSource;
+        private bool isSMSConnected = false;
+        private Form CurrentTunerandDataChildForm;
 
         public MeasurementSettingsChildForm()
         {
@@ -55,8 +56,10 @@ namespace Program01
 
         private void InitializeGPIB()
         {
-            resourcemanager = new Ivi.Visa.Interop.ResourceManager();
+            resourcemanagerSMU = new Ivi.Visa.Interop.ResourceManager();
+            resourcemanagerSMS = new Ivi.Visa.Interop.ResourceManager();
             SMU = new Ivi.Visa.Interop.FormattedIO488();
+            SMS = new Ivi.Visa.Interop.FormattedIO488();
         }
 
         private readonly struct RGBColors
@@ -90,6 +93,12 @@ namespace Program01
             GlobalSettings.MeasureMode = ComboboxMeasure.SelectedItem?.ToString() ?? "";
             GlobalSettings.SourceMode = ComboboxSource.SelectedItem?.ToString() ?? "";
             GlobalSettings.SourceLimitType = ComboboxSourceLimitMode.SelectedItem?.ToString() ?? "";
+            GlobalSettings.StartValue = TextboxStart.Text;
+            GlobalSettings.StopValue = TextboxStop.Text;
+            GlobalSettings.StepValue = TextboxStep.Text;
+            GlobalSettings.SourceLimitValue = TextboxSourceLimitLevel.Text;
+            GlobalSettings.ThicknessValue = TextboxThickness.Text;
+            GlobalSettings.RepetitionValue = TextboxRepetition.Text;
             GlobalSettings.MagneticFieldsValue = TextboxMagneticFields.Text;
         }
 
@@ -99,17 +108,15 @@ namespace Program01
             {
                 if (!isSMUConnected)
                 {
-                    SMU.IO = (Ivi.Visa.Interop.IMessage)resourcemanager.Open(SMU2450Address);
+                    SMU.IO = (Ivi.Visa.Interop.IMessage)resourcemanagerSMU.Open(SMU2450Address);
                     SMU.IO.Timeout = 10000;
                     SMU.WriteString("*IDN?");
                     SMU.WriteString("SYSTem:BEEPer 888, 1");
-                    string response = SMU.ReadString();
 
                     isSMUConnected = true;
                     IconbuttonSMUConnection.BackColor = Color.Snow;
                     IconbuttonSMUConnection.IconColor = Color.GreenYellow;
 
-                    MessageBox.Show($"Instrument Response: {response}");
                     MessageBox.Show("Connected to SMU", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
@@ -134,6 +141,43 @@ namespace Program01
             }
         }
 
+        private void IconbuttonSMSConnection_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMSConnected)
+                {
+                    SMS.IO = (Ivi.Visa.Interop.IMessage)resourcemanagerSMS.Open(SMS7001Address);
+                    SMS.IO.Timeout = 5000;
+                    SMS.WriteString("*IDN?");
+
+                    isSMSConnected = true;
+                    IconbuttonSMSConnection.BackColor = Color.Snow;
+                    IconbuttonSMSConnection.IconColor = Color.GreenYellow;
+
+                    MessageBox.Show("Connected to SMS", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    if (SMS.IO != null)
+                    {
+                        SMS.WriteString("*RST");
+                        SMS.IO.Close();
+                        SMS.IO = null;
+                    }
+
+                    isSMSConnected = false;
+                    IconbuttonSMSConnection.BackColor = Color.Snow;
+                    IconbuttonSMSConnection.IconColor = Color.Gray;
+
+                    MessageBox.Show("Disconnected from the SMS.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         private void MeasurementSettingsChildForm_Load(object sender, EventArgs e)
         {
@@ -153,6 +197,12 @@ namespace Program01
             ComboboxMeasure.SelectedItem = GlobalSettings.MeasureMode;
             ComboboxSource.SelectedItem = GlobalSettings.SourceMode;
             ComboboxSourceLimitMode.SelectedItem = GlobalSettings.SourceLimitType;
+            TextboxStart.Text = GlobalSettings.StartValue;
+            TextboxStop.Text = GlobalSettings.StopValue;
+            TextboxStep.Text = GlobalSettings.StepValue;
+            TextboxSourceLimitLevel.Text = GlobalSettings.SourceLimitValue;
+            TextboxThickness.Text = GlobalSettings.ThicknessValue;
+            TextboxRepetition.Text = GlobalSettings.RepetitionValue;
             TextboxMagneticFields.Text = GlobalSettings.MagneticFieldsValue;
         }
 
@@ -167,37 +217,33 @@ namespace Program01
             {
                 RsenseMode = ComboboxRsense.SelectedItem?.ToString();
                 savedRsenseMode = RsenseMode;
+
                 if (MeasureMode == "Voltage")
                 {
                     switch (RsenseMode)
                     {
                         case "2-Wires":
-                            //SMU.WriteString("SENSe:VOLTage:RSENse OFF");
                             break;
                         case "4-Wires":
-                            //SMU.WriteString("SENSe:VOLTage:RSENse ON");
                             break;
                         default:
-                            ComboboxRsense.SelectedItem = "2-Wires";
-                            RsenseMode = "2-Wires";
-                            //SMU.WriteString("SENSe:VOLTage:RSENse OFF");
+                            ComboboxRsense.SelectedIndex = -1;
+                            RsenseMode = "";
                             break;
                     }
                 }
-               else if (MeasureMode == "Current")
+
+                else if (MeasureMode == "Current")
                 {
                     switch (RsenseMode)
                     {
                         case "2-Wires":
-                            //SMU.WriteString("SENSe:CURRent:RSENse OFF");
                             break;
                         case "4-Wires":
-                            //SMU.WriteString("SENSe:CURRent:RSENse ON");
                             break;
                         default:
-                            ComboboxRsense.SelectedItem = "2-Wires";
-                            RsenseMode = "2-Wires";
-                            //SMU.WriteString("SENSe:CURRent:RSENse OFF");
+                            ComboboxRsense.SelectedIndex = -1;
+                            RsenseMode = "";
                             break;
                     }
                 }
@@ -214,26 +260,16 @@ namespace Program01
             {
                 MeasureMode = ComboboxMeasure.SelectedItem?.ToString();
                 savedMeasureMode = MeasureMode;
-                if (ComboboxMeasure.SelectedItem == null)
-                {
-                    MessageBox.Show("Please select a valid measure mode.");
-                    return;
-                }
+
                 switch (MeasureMode)
                 {
                     case "Voltage":
-                        //SMU.WriteString("SENSe:FUNCtion 'VOLTage'");
-                        //SMU.WriteString("SENSe:VOLTage:RANGe:AUTO ON");
                         break;
                     case "Current":
-                        //SMU.WriteString("SENSe:FUNCtion 'CURRent'");
-                        //SMU.WriteString("SENSe:CURRent:RANGe:AUTO ON");
                         break;
                     default:
-                        ComboboxMeasure.SelectedItem = "Voltage";
-                        MeasureMode = "Voltage";
-                        //SMU.WriteString("SENSe:FUNCtion 'VOLTage'");
-                        //SMU.WriteString("SENSe:VOLTage:RANGe:AUTO ON");
+                        ComboboxMeasure.SelectedIndex = -1;
+                        MeasureMode = "";
                         break;
                 }
             }
@@ -249,24 +285,18 @@ namespace Program01
             {
                 SourceMode = ComboboxSource.SelectedItem?.ToString();
                 savedSourceMode = SourceMode;
+
                 switch (SourceMode)
                 {
                     case "Voltage":
-                        //SMU.WriteString("SOURce:FUNCtion VOLTage");
-                        //SMU.WriteString("SOURce:VOLTage:RANGe:AUTO ON");
                         UpdateMeasurementSettingsUnits();
                         break;
                     case "Current":
-                        //SMU.WriteString("SOURce:FUNCtion CURRent");
-                        //SMU.WriteString("SOURce:CURRent:RANGe:AUTO ON");
                         UpdateMeasurementSettingsUnits();
                         break;
                     default:
-                        ComboboxSource.SelectedItem = "Current";
-                        SourceMode = "Current";
-                        //SMU.WriteString("SOURce:FUNCtion CURRent");
-                        //SMU.WriteString("SOURce:CURRent:RANGe:AUTO ON");
-                        UpdateMeasurementSettingsUnits();
+                        ComboboxSource.SelectedIndex = -1;
+                        SourceMode = "";
                         break;
                 }
             }
@@ -280,23 +310,21 @@ namespace Program01
         {
             try
             {
+
                 SourceLimit = ComboboxSourceLimitMode.SelectedItem?.ToString();
                 savedSourceLimitMode = SourceLimit;
+
                 switch (SourceLimit)
                 {
                     case "Voltage":
-                        LabelSourceLimitLevelUnit.Text = "V";
+                        UpdateMeasurementSettingsUnits();
                         break;
                     case "Current":
-                        LabelSourceLimitLevelUnit.Text = "A";
-                        break;
-                    case "":
-                        MessageBox.Show("Please select the source limit mode", "ERROR");
+                        UpdateMeasurementSettingsUnits();
                         break;
                     default:
-                        ComboboxSourceLimitMode.SelectedItem = "Voltage";
-                        SourceLimit = "Voltage";
-                        LabelSourceLimitLevelUnit.Text = "V";
+                        ComboboxSourceLimitMode.SelectedIndex = -1;
+                        SourceLimit = "";
                         break;
                 }
             }
@@ -315,12 +343,21 @@ namespace Program01
                     LabelStartUnit.Text = "V";
                     LabelStepUnit.Text = "V";
                     LabelStopUnit.Text = "V";
+
+                    ComboboxSourceLimitMode.SelectedItem = "Current";
+                    SourceLimit = "Current";
+                    LabelSourceLimitLevelUnit.Text = "A";
                 }
+
                 else if (SourceMode == "Current")
                 {
-                    LabelStartUnit.Text = "mA";
-                    LabelStepUnit.Text = "mA";
-                    LabelStopUnit.Text = "mA";
+                    LabelStartUnit.Text = "A";
+                    LabelStepUnit.Text = "A";
+                    LabelStopUnit.Text = "A";
+
+                    ComboboxSourceLimitMode.SelectedItem = "Voltage";
+                    SourceLimit = "Voltage";
+                    LabelSourceLimitLevelUnit.Text = "V";
                 }
             }
             catch (Exception ex)
@@ -337,17 +374,20 @@ namespace Program01
 
         private void ClearSettings()
         {
-            ComboboxRsense.SelectedIndex = 0;
-            ComboboxMeasure.SelectedIndex = 1;
-            ComboboxSource.SelectedIndex = 0;
-            ComboboxSourceLimitMode.SelectedIndex = 1;
+            ComboboxRsense.SelectedIndex = -1;
+            ComboboxMeasure.SelectedIndex = -1;
+            ComboboxSource.SelectedIndex = -1;
+            ComboboxSourceLimitMode.SelectedIndex = -1;
             TextboxMagneticFields.Text = "";
             savedRsenseMode = "";
             savedMeasureMode = "";
             savedSourceMode = "";
             savedSourceLimitMode = "";
             savedMagneticFieldsValue = "";
-            isApplySettings = false;
+            LabelStartUnit.Text = "";
+            LabelStepUnit.Text = "";
+            LabelStopUnit.Text = "";
+            LabelSourceLimitLevelUnit.Text = "";
         }
 
         private void IconbuttonMeasurement_Click(object sender, EventArgs e)
@@ -389,97 +429,171 @@ namespace Program01
         {
             try
             {
-                SaveSettings();
-                if (!isSMUConnected) return;
-
-                if (!ValidateInputs(out double start, out double stop, out double step, out double sourceLimit, out int repetition, out double thickness)) return;
-
-                if (start > stop)
+                if (!isSMUConnected)
                 {
-                    MessageBox.Show("Start Value must be less than Stop Value.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
+                
+                SMU.WriteString("OUTPut OFF");
 
-                if (!ValidateSourceLimit(sourceLimit)) return;
+                if (savedSourceMode == "Voltage" && savedMeasureMode == "Voltage")
+                {
+                    SMU.WriteString($"SOURce:FUNCtion VOLTage");
+                    SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
+                    SMU.WriteString($"SOURce:VOLTage:ILIM {SourceLimitValue}");
+                    SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
+                    SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
 
-                ConfigureSMU(savedSourceMode, savedMeasureMode, savedRsenseMode, savedSourceLimitMode, start, stop, step, sourceLimit, repetition);
+                    if (savedRsenseMode == "4-Wires")
+                    {
+                        SMU.WriteString("SENSe:VOLTage:RSENse ON");
+                    }
+                    else
+                    {
+                        SMU.WriteString("SENSe:VOLTage:RSENse OFF");
+                    }
+
+                    SMU.WriteString($"SOURce:SWEep:VOLTage:LINear:STEP {StartValue}, {StopValue}, {StepValue}, 100e-3, {RepetitionValue}");
+                    SMU.WriteString("OUTPut ON");
+                    SMU.WriteString("INIT");
+                    SMU.WriteString("*WAI");
+                    SMU.WriteString("OUTPut OFF");
+                }
+
+                else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current")
+                {
+                    SMU.WriteString($"SOURce:FUNCtion VOLTage");
+                    SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
+                    SMU.WriteString($"SOURce:VOLTage:ILIM {SourceLimitValue}");
+                    SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
+                    SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
+
+                    if (savedRsenseMode == "4-Wires")
+                    {
+                        SMU.WriteString("SENSe:CURRent:RSENse ON");
+                    }
+                    else
+                    {
+                        SMU.WriteString("SENSe:CURRent:RSENse OFF");
+                    }
+
+                    SMU.WriteString($"SOURce:SWEep:VOLTage:LINear:STEP {StartValue}, {StopValue}, {StepValue}, 100e-3, {RepetitionValue}");
+                    SMU.WriteString("OUTPut ON");
+                    SMU.WriteString("INIT");
+                    SMU.WriteString("*WAI");
+                    SMU.WriteString("OUTPut OFF");
+                }
+
+                else if (savedSourceMode == "Current" && savedMeasureMode == "Voltage")
+                {
+                    SMU.WriteString($"SOURce:FUNCtion CURRent");
+                    SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
+                    SMU.WriteString($"SOURce:CURRent:VLIM {SourceLimitValue}");
+                    SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
+                    SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
+
+                    if (savedRsenseMode == "4-Wires")
+                    {
+                        SMU.WriteString("SENSe:VOLTage:RSENse ON");
+                    }
+                    else
+                    {
+                        SMU.WriteString("SENSe:VOLTage:RSENse OFF");
+                    }
+
+                    SMU.WriteString($"SOURce:SWEep:CURRent:LINear:STEP {StartValue}, {StopValue}, {StepValue}, 100e-3, {RepetitionValue}");
+                    SMU.WriteString("OUTPut ON");
+                    SMU.WriteString("INIT");
+                    SMU.WriteString("*WAI");
+                    SMU.WriteString("OUTPut OFF");
+                }
+
+                else if (savedSourceMode == "Current" && savedMeasureMode == "Current")
+                {
+                    SMU.WriteString($"SOURce:FUNCtion CURRent");
+                    SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
+                    SMU.WriteString($"SOURce:CURRent:VLIM {SourceLimitValue}");
+                    SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
+                    SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
+
+                    if (savedRsenseMode == "4-Wires")
+                    {
+                        SMU.WriteString("SENSe:CURRent:RSENse ON");
+                    }
+                    else
+                    {
+                        SMU.WriteString("SENSe:CURRent:RSENse OFF");
+                    }
+
+                    SMU.WriteString($"SOURce:SWEep:CURRent:LINear:STEP {StartValue}, {StopValue}, {StepValue}, 100e-3, {RepetitionValue}");
+                    SMU.WriteString("OUTPut ON");
+                    SMU.WriteString("INIT");
+                    SMU.WriteString("*WAI");
+                    SMU.WriteString("OUTPut OFF");
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
-        private bool ValidateInputs(out double start, out double stop, out double step, out double sourceLimit, out int repetition, out double thickness)
+        private void ButtonData_Click(object sender, EventArgs e)
         {
-            start = stop = step = sourceLimit = thickness = 0;
-            repetition = 0;
-
-            if (!string.IsNullOrEmpty(StartValue) || !string.IsNullOrEmpty(StopValue) ||
-                !string.IsNullOrEmpty(StepValue) || !string.IsNullOrEmpty(SourceLimitValue) ||
-                !string.IsNullOrEmpty(RepetitionValue) || !string.IsNullOrEmpty(ThicknessValue))
+            try
             {
-                MessageBox.Show("Please fill in all values completely", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
+                OpenChildForm(new MeasurementSettingsDataChildForm());
             }
-
-            if (double.TryParse(StartValue, out start) || double.TryParse(StopValue, out stop) ||
-                double.TryParse(StepValue, out step) || double.TryParse(SourceLimitValue, out sourceLimit) ||
-                int.TryParse(RepetitionValue, out repetition) || double.TryParse(ThicknessValue, out thickness))
+            catch (Exception ex)
             {
-                MessageBox.Show("Invalid input values. Check formats.", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
+                MessageBox.Show($"Error: {ex.Message}");
             }
-
-            return true;
         }
 
-        private bool ValidateSourceLimit(double sourceLimit)
+        private void OpenChildForm(Form childForm)
         {
-            if ((savedSourceMode == "Voltage" && savedSourceLimitMode == "Current" && sourceLimit > 1.05) ||
-                (savedSourceMode == "Current" && savedSourceLimitMode == "Voltage" && sourceLimit > 21))
+            try
             {
-                MessageBox.Show($"Source Limit exceeds allowable limits.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return false;
+                if (!isSMUConnected)
+                {
+                    MessageBox.Show("Please connect the instruments before proceeding", "WANRING", MessageBoxButtons.OK);
+                }
+                else
+                {
+                    CurrentTunerandDataChildForm?.Close();
+                    CurrentTunerandDataChildForm = childForm;
+                    childForm.TopLevel = false;
+                    childForm.FormBorderStyle = FormBorderStyle.None;
+                    childForm.Dock = DockStyle.Fill;
+                    PanelTunerandData.Controls.Add(childForm);
+                    PanelTunerandData.Tag = childForm;
+                    childForm.BringToFront();
+                    childForm.Show();
+                }
             }
-            return true;
+            catch (Exception ex)
+            {
+                MessageBox.Show($"ERROR: {ex.Message}");
+            }
         }
 
-        private void ConfigureSMU(string sourceMode, string measureMode, string rsenseMode, string sourceLimitMode,
-                                  double start, double stop, double step, double sourceLimit, int repetition)
+        private void ButtonTuner_Click(object sender, EventArgs e)
         {
-            SMU.WriteString("*RST");
-            SMU.WriteString($"SOURce:FUNCtion {sourceMode}");
-            SMU.WriteString($"SOURce:{sourceMode}:RANG:AUTO ON");
-            SMU.WriteString($"SENSe:FUNCtion '{measureMode}'");
-            SMU.WriteString($"SENSe:{measureMode}:RANGe:AUTO ON");
-
-            if (rsenseMode == "4-Wires")
-                SMU.WriteString("SENSe:CURRent:RSENse ON");
-            else
-                SMU.WriteString("SENSe:CURRent:RSENse OFF");
-
-            SMU.WriteString($"SOURce:SWEep:VOLTage:LINear:STEP {start}, {stop}, {step}, {sourceLimit}, {repetition}, BEST");
-            SMU.WriteString("OUTPut ON");
-            SMU.WriteString("INIT");
-            SMU.WriteString("*WAI");
-            SMU.WriteString("TRACe:DATA? 1, 11, 'defbuffer1', SOURce, READ");
-            SMU.WriteString("OUTPut OFF");
+            try
+            {
+                if (!isSMUConnected)
+                {
+                    MessageBox.Show("Please connect the instruments before proceeding", "WANRING", MessageBoxButtons.OK);
+                }
+                else
+                {
+                    CurrentTunerandDataChildForm.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"ERROR: {ex.Message}");
+            }
         }
-
-        /*private void IconbuttonSweep_Click(object sender, EventArgs e)
-        {
-            SMU.WriteString("*RST");
-            SMU.WriteString("SOUR:FUNC CURR");
-            SMU.WriteString("SOUR:CURR:RANG:AUTO ON");
-            SMU.WriteString("SENS:FUNC 'VOLT'");
-            SMU.WriteString("SENS:VOLT:RSEN ON");
-            SMU.WriteString("SOUR:SWE:CURR:LIN:STEP 0, 10.5e-3, 5e-4, 10e-3, 3, BEST");
-            SMU.WriteString("SENS:VOLT:RANG:AUTO ON");
-            SMU.WriteString("INIT");
-            SMU.WriteString("*WAI");
-            SMU.WriteString("TRAC:DATA? 1, 22, 'defbuffer1', SOUR, READ");
-            SMU.WriteString("OUTP OFF");
-        }*/
     }
 }

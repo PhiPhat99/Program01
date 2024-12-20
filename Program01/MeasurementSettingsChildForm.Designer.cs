@@ -67,7 +67,6 @@
             this.IconbuttonClearSettings = new FontAwesome.Sharp.IconButton();
             this.IconbuttonRunMeasurement = new FontAwesome.Sharp.IconButton();
             this.IconbuttonMeasurement = new FontAwesome.Sharp.IconButton();
-            this.IconbuttonSweep = new FontAwesome.Sharp.IconButton();
             this.PanelTunerandData.SuspendLayout();
             this.PanelButtonTabBar.SuspendLayout();
             this.SuspendLayout();
@@ -91,6 +90,7 @@
             // LabelSMUConnection
             // 
             this.LabelSMUConnection.AutoSize = true;
+            this.LabelSMUConnection.BackColor = System.Drawing.Color.Transparent;
             this.LabelSMUConnection.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LabelSMUConnection.Location = new System.Drawing.Point(22, 16);
             this.LabelSMUConnection.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -102,6 +102,7 @@
             // LabelSMSConnection
             // 
             this.LabelSMSConnection.AutoSize = true;
+            this.LabelSMSConnection.BackColor = System.Drawing.Color.Transparent;
             this.LabelSMSConnection.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LabelSMSConnection.Location = new System.Drawing.Point(390, 16);
             this.LabelSMSConnection.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -124,6 +125,7 @@
             this.IconbuttonSMSConnection.Size = new System.Drawing.Size(45, 32);
             this.IconbuttonSMSConnection.TabIndex = 2;
             this.IconbuttonSMSConnection.UseVisualStyleBackColor = false;
+            this.IconbuttonSMSConnection.Click += new System.EventHandler(this.IconbuttonSMSConnection_Click);
             // 
             // LabelRsense
             // 
@@ -355,9 +357,9 @@
             this.LabelThicknessUnit.Location = new System.Drawing.Point(195, 455);
             this.LabelThicknessUnit.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.LabelThicknessUnit.Name = "LabelThicknessUnit";
-            this.LabelThicknessUnit.Size = new System.Drawing.Size(38, 21);
+            this.LabelThicknessUnit.Size = new System.Drawing.Size(24, 21);
             this.LabelThicknessUnit.TabIndex = 22;
-            this.LabelThicknessUnit.Text = "mm";
+            this.LabelThicknessUnit.Text = "m";
             // 
             // TextboxThickness
             // 
@@ -424,7 +426,7 @@
             this.PanelTunerandData.BackColor = System.Drawing.Color.LightGray;
             this.PanelTunerandData.Controls.Add(this.PanelButtonTabBar);
             this.PanelTunerandData.Location = new System.Drawing.Point(308, 81);
-            this.PanelTunerandData.Margin = new System.Windows.Forms.Padding(2);
+            this.PanelTunerandData.Margin = new System.Windows.Forms.Padding(1);
             this.PanelTunerandData.Name = "PanelTunerandData";
             this.PanelTunerandData.Size = new System.Drawing.Size(600, 488);
             this.PanelTunerandData.TabIndex = 28;
@@ -432,6 +434,7 @@
             // PanelButtonTabBar
             // 
             this.PanelButtonTabBar.BackColor = System.Drawing.Color.Gray;
+            this.PanelButtonTabBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PanelButtonTabBar.Controls.Add(this.ButtonData);
             this.PanelButtonTabBar.Controls.Add(this.ButtonTuner);
             this.PanelButtonTabBar.Dock = System.Windows.Forms.DockStyle.Top;
@@ -449,12 +452,13 @@
             this.ButtonData.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.ButtonData.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
             this.ButtonData.Location = new System.Drawing.Point(56, 0);
-            this.ButtonData.Margin = new System.Windows.Forms.Padding(2);
+            this.ButtonData.Margin = new System.Windows.Forms.Padding(1);
             this.ButtonData.Name = "ButtonData";
-            this.ButtonData.Size = new System.Drawing.Size(56, 32);
+            this.ButtonData.Size = new System.Drawing.Size(56, 30);
             this.ButtonData.TabIndex = 1;
             this.ButtonData.Text = "Data";
             this.ButtonData.UseVisualStyleBackColor = false;
+            this.ButtonData.Click += new System.EventHandler(this.ButtonData_Click);
             // 
             // ButtonTuner
             // 
@@ -464,12 +468,13 @@
             this.ButtonTuner.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.ButtonTuner.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
             this.ButtonTuner.Location = new System.Drawing.Point(0, 0);
-            this.ButtonTuner.Margin = new System.Windows.Forms.Padding(2);
+            this.ButtonTuner.Margin = new System.Windows.Forms.Padding(1);
             this.ButtonTuner.Name = "ButtonTuner";
-            this.ButtonTuner.Size = new System.Drawing.Size(56, 32);
+            this.ButtonTuner.Size = new System.Drawing.Size(56, 30);
             this.ButtonTuner.TabIndex = 0;
             this.ButtonTuner.Text = "Tuner";
             this.ButtonTuner.UseVisualStyleBackColor = false;
+            this.ButtonTuner.Click += new System.EventHandler(this.ButtonTuner_Click);
             // 
             // IconbuttonClearSettings
             // 
@@ -525,25 +530,12 @@
             this.IconbuttonMeasurement.UseVisualStyleBackColor = false;
             this.IconbuttonMeasurement.Click += new System.EventHandler(this.IconbuttonMeasurement_Click);
             // 
-            // IconbuttonSweep
-            // 
-            this.IconbuttonSweep.IconChar = FontAwesome.Sharp.IconChar.None;
-            this.IconbuttonSweep.IconColor = System.Drawing.Color.Black;
-            this.IconbuttonSweep.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonSweep.Location = new System.Drawing.Point(524, 619);
-            this.IconbuttonSweep.Name = "IconbuttonSweep";
-            this.IconbuttonSweep.Size = new System.Drawing.Size(75, 23);
-            this.IconbuttonSweep.TabIndex = 33;
-            this.IconbuttonSweep.Text = "SWEEP";
-            this.IconbuttonSweep.UseVisualStyleBackColor = true;
-            // 
             // MeasurementSettingsChildForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(219)))), ((int)(((byte)(118)))), ((int)(((byte)(176)))));
             this.ClientSize = new System.Drawing.Size(945, 666);
-            this.Controls.Add(this.IconbuttonSweep);
             this.Controls.Add(this.IconbuttonMeasurement);
             this.Controls.Add(this.IconbuttonRunMeasurement);
             this.Controls.Add(this.IconbuttonClearSettings);
@@ -633,6 +625,5 @@
         private System.Windows.Forms.Button ButtonTuner;
         private System.Windows.Forms.Button ButtonData;
         private FontAwesome.Sharp.IconButton IconbuttonMeasurement;
-        private FontAwesome.Sharp.IconButton IconbuttonSweep;
     }
 }

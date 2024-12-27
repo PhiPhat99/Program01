@@ -27,13 +27,6 @@ namespace Program01
         private string SMS7001Address = $"GPIB3::7::INSTR";
         private ResourceManager resourcemanagerSMU;
         private ResourceManager resourcemanagerSMS;
-        private string SourceLimitValue;
-        private string StartValue;
-        private string StepValue;
-        private string StopValue;
-        private string ThicknessValue;
-        private string RepetitionValue;
-        private string MagneticFieldsValue;
         private string RsenseMode;
         private string MeasureMode;
         private string SourceMode;
@@ -46,6 +39,7 @@ namespace Program01
         private bool isSMUConnected = false;
         private bool isMeasured = false;
         private bool isSMSConnected = false;
+        private bool isFinished;
         private Form CurrentTunerandDataChildForm;
 
         public MeasurementSettingsChildForm()
@@ -149,6 +143,7 @@ namespace Program01
                 {
                     SMS.IO = (Ivi.Visa.Interop.IMessage)resourcemanagerSMS.Open(SMS7001Address);
                     SMS.IO.Timeout = 5000;
+                    SMS.WriteString("*CLS");
                     SMS.WriteString("*IDN?");
 
                     isSMSConnected = true;
@@ -159,18 +154,27 @@ namespace Program01
                 }
                 else
                 {
-                    if (SMS.IO != null)
+                    try
                     {
-                        SMS.WriteString("*RST");
-                        SMS.IO.Close();
-                        SMS.IO = null;
+                        if (SMS.IO != null)
+                        {
+                            SMS.WriteString("*CLS");
+                            SMS.WriteString("*RST");
+                            SMS.WriteString("*GTL");
+                            SMS.IO.Close();
+                            SMS.IO = null;
+                        }
+
+                        isSMSConnected = false;
+                        IconbuttonSMSConnection.BackColor = Color.Snow;
+                        IconbuttonSMSConnection.IconColor = Color.Gray;
+
+                        MessageBox.Show("Disconnected from the SMS.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-
-                    isSMSConnected = false;
-                    IconbuttonSMSConnection.BackColor = Color.Snow;
-                    IconbuttonSMSConnection.IconColor = Color.Gray;
-
-                    MessageBox.Show("Disconnected from the SMS.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    catch (Exception disconnectEx)
+                    {
+                        MessageBox.Show($"Error during disconnection: {disconnectEx.Message}", "Disconnection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
             catch (Exception ex)
@@ -398,6 +402,9 @@ namespace Program01
                 {
                     isMeasured = true;
                     TextboxMagneticFields.Enabled = false;
+                    TextboxMagneticFields.Visible = false;
+                    LabelMagneticFields.Visible = false;
+                    LabelMagneticFieldsUnit.Visible = false;
                     IconbuttonMeasurement.Text = "Van der Pauw";
                     IconbuttonMeasurement.IconChar = IconChar.Diamond;
                     IconbuttonMeasurement.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -410,6 +417,9 @@ namespace Program01
                 {
                     isMeasured = false;
                     TextboxMagneticFields.Enabled = true;
+                    TextboxMagneticFields.Visible = true;
+                    LabelMagneticFields.Visible = true;
+                    LabelMagneticFieldsUnit.Visible = true;
                     IconbuttonMeasurement.Text = "Hall Measurement";
                     IconbuttonMeasurement.IconChar = IconChar.Magnet;
                     IconbuttonMeasurement.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -431,16 +441,25 @@ namespace Program01
             {
                 if (!isSMUConnected)
                 {
+                    Debug.WriteLine("SMU is not connected. Exiting function.");
                     return;
                 }
-                
+
                 SMU.WriteString("OUTPut OFF");
 
-                if (savedSourceMode == "Voltage" && savedMeasureMode == "Voltage")
+                if (!double.TryParse(TextboxStart.Text, out double startValue) || !double.TryParse(TextboxStop.Text, out double stopValue) || !double.TryParse(TextboxStep.Text, out double stepValue) || !int.TryParse(TextboxRepetition.Text, out int repetitionValue) || !double.TryParse(TextboxSourceLimitLevel.Text, out double sourceLimitValue))
                 {
+                    Debug.WriteLine($"Invalid inputs: StartValue = {TextboxStart.Text}, StopValue = {TextboxStop.Text}, StepValue = {TextboxStep.Text}, Repetition = {TextboxRepetition.Text}, SourceLimit = {TextboxSourceLimitLevel.Text}");
+                    MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (savedSourceMode == "Voltage" && savedMeasureMode == "Voltage" && isFinished)
+                {
+                    isFinished = false;
                     SMU.WriteString($"SOURce:FUNCtion VOLTage");
                     SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:VOLTage:ILIM {SourceLimitValue}");
+                    SMU.WriteString($"SOURce:VOLTage:ILIM {sourceLimitValue}");
                     SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
                     SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
 
@@ -453,18 +472,21 @@ namespace Program01
                         SMU.WriteString("SENSe:VOLTage:RSENse OFF");
                     }
 
-                    SMU.WriteString($"SOURce:SWEep:VOLTage:LINear:STEP {StartValue}, {StopValue}, {StepValue}, 100e-3, {RepetitionValue}");
+                    string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                    Debug.WriteLine($"Sending command: {sweepCommand}");
+                    SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
-                    SMU.WriteString("OUTPut OFF");
+                    SMU.WriteString("OUTPut OFF");                    
                 }
 
-                else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current")
+                else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current" && isFinished)
                 {
+                    isFinished = false;
                     SMU.WriteString($"SOURce:FUNCtion VOLTage");
                     SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:VOLTage:ILIM {SourceLimitValue}");
+                    SMU.WriteString($"SOURce:VOLTage:ILIM {sourceLimitValue}");
                     SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
                     SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
 
@@ -477,18 +499,21 @@ namespace Program01
                         SMU.WriteString("SENSe:CURRent:RSENse OFF");
                     }
 
-                    SMU.WriteString($"SOURce:SWEep:VOLTage:LINear:STEP {StartValue}, {StopValue}, {StepValue}, 100e-3, {RepetitionValue}");
+                    string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                    Debug.WriteLine($"Sending command: {sweepCommand}");
+                    SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
                 }
 
-                else if (savedSourceMode == "Current" && savedMeasureMode == "Voltage")
+                else if (savedSourceMode == "Current" && savedMeasureMode == "Voltage" && !isFinished)
                 {
+                    isFinished = false;
                     SMU.WriteString($"SOURce:FUNCtion CURRent");
                     SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:CURRent:VLIM {SourceLimitValue}");
+                    SMU.WriteString($"SOURce:CURRent:VLIM {sourceLimitValue}");
                     SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
                     SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
 
@@ -501,18 +526,21 @@ namespace Program01
                         SMU.WriteString("SENSe:VOLTage:RSENse OFF");
                     }
 
-                    SMU.WriteString($"SOURce:SWEep:CURRent:LINear:STEP {StartValue}, {StopValue}, {StepValue}, 100e-3, {RepetitionValue}");
+                    string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                    Debug.WriteLine($"Sending command: {sweepCommand}");
+                    SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
                 }
 
-                else if (savedSourceMode == "Current" && savedMeasureMode == "Current")
+                else if (savedSourceMode == "Current" && savedMeasureMode == "Current" && isFinished)
                 {
+                    isFinished = false;
                     SMU.WriteString($"SOURce:FUNCtion CURRent");
                     SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:CURRent:VLIM {SourceLimitValue}");
+                    SMU.WriteString($"SOURce:CURRent:VLIM {sourceLimitValue}");
                     SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
                     SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
 
@@ -525,12 +553,24 @@ namespace Program01
                         SMU.WriteString("SENSe:CURRent:RSENse OFF");
                     }
 
-                    SMU.WriteString($"SOURce:SWEep:CURRent:LINear:STEP {StartValue}, {StopValue}, {StepValue}, 100e-3, {RepetitionValue}");
+                    string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                    Debug.WriteLine($"Sending command: {sweepCommand}");
+                    SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
                 }
+
+                //isFinished = true;
+                /*if (isFinished == false)
+                {
+                    MessageBox.Show("The measurement is started, do not disturbed", "MEASURE", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("The measurement is finished", "FINISH", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }*/
             }
             catch (Exception ex)
             {
@@ -554,22 +594,15 @@ namespace Program01
         {
             try
             {
-                if (!isSMUConnected)
-                {
-                    MessageBox.Show("Please connect the instruments before proceeding", "WANRING", MessageBoxButtons.OK);
-                }
-                else
-                {
-                    CurrentTunerandDataChildForm?.Close();
-                    CurrentTunerandDataChildForm = childForm;
-                    childForm.TopLevel = false;
-                    childForm.FormBorderStyle = FormBorderStyle.None;
-                    childForm.Dock = DockStyle.Fill;
-                    PanelTunerandData.Controls.Add(childForm);
-                    PanelTunerandData.Tag = childForm;
-                    childForm.BringToFront();
-                    childForm.Show();
-                }
+                CurrentTunerandDataChildForm?.Close();
+                CurrentTunerandDataChildForm = childForm;
+                childForm.TopLevel = false;
+                childForm.FormBorderStyle = FormBorderStyle.None;
+                childForm.Dock = DockStyle.Fill;
+                PanelTunerandData.Controls.Add(childForm);
+                PanelTunerandData.Tag = childForm;
+                childForm.BringToFront();
+                childForm.Show();
             }
             catch (Exception ex)
             {
@@ -581,14 +614,7 @@ namespace Program01
         {
             try
             {
-                if (!isSMUConnected)
-                {
-                    MessageBox.Show("Please connect the instruments before proceeding", "WANRING", MessageBoxButtons.OK);
-                }
-                else
-                {
-                    CurrentTunerandDataChildForm.Close();
-                }
+                CurrentTunerandDataChildForm.Close();
             }
             catch (Exception ex)
             {

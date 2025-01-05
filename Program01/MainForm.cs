@@ -21,8 +21,6 @@ namespace Program01
     {
         private IconButton CurrentButton;
         private Form CurrentChildForm;
-        private string PrimaryPath = "";
-        private string SubPath = "";
         private bool isLoggedIn = false;
 
         public Program01Form()
@@ -79,7 +77,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -99,7 +97,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -119,7 +117,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -136,7 +134,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -144,8 +142,8 @@ namespace Program01
         {
             try
             {
-                PrimaryPath = primary;
-                SubPath = sub;
+                string PrimaryPath = primary;
+                string SubPath = sub;
 
                 LabelTitleCurrentForm.Text = string.IsNullOrEmpty(sub)
                     ? primary
@@ -153,7 +151,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -202,12 +200,12 @@ namespace Program01
                         IconbuttonUserLogin.IconColor = Color.Black;
                         IconbuttonUserLogin.TextImageRelation = TextImageRelation.TextBeforeImage;
                         IconbuttonUserLogin.Text = "Logout";
-                        MessageBox.Show("You have been logged in successfully", "INFORMATION", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("You have been logged in successfully", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     }
                     else
                     {
-                        MessageBox.Show("Please fill in both the Firstname - Lastname before proceeding", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Please fill in both the Firstname - Lastname before proceeding", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
                 else
@@ -219,13 +217,13 @@ namespace Program01
                     IconbuttonUserLogin.IconColor = RGBColors.Color6;
                     IconbuttonUserLogin.TextImageRelation = TextImageRelation.ImageBeforeText;
                     IconbuttonUserLogin.Text = "Login";
-                    MessageBox.Show("You have been logged out successfully", "INFORMATION", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("You have been logged out successfully", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -239,7 +237,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
@@ -251,7 +249,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -261,7 +259,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
@@ -273,7 +271,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -283,7 +281,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
@@ -302,7 +300,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -324,7 +322,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
@@ -343,7 +341,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -376,7 +374,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -395,7 +393,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -405,7 +403,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
@@ -428,7 +426,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -438,7 +436,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
@@ -446,14 +444,14 @@ namespace Program01
                     string VdPFilePath = TextboxFileVdPDataPath.Text;
                     if (string.IsNullOrWhiteSpace(VdPFilePath))
                     {
-                        MessageBox.Show("Please enter the file path first!", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Please enter the file path first!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
                     string directory = VdPFilePath;
                     if (!Directory.Exists(directory))
                     {
                         Directory.CreateDirectory(directory);
-                        MessageBox.Show($"Directory created: {directory}", "INFO");
+                        MessageBox.Show($"Directory created: {directory}", "Info");
                     }
                     string newFileName = "VanderPauwResultsData.xlsx";
                     string newFilePath = Path.Combine(directory, newFileName);
@@ -481,12 +479,12 @@ namespace Program01
                         worksheet.Cells[2, 6].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                         package.SaveAs(new FileInfo(newFilePath));
                     }
-                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "SUCCESS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -496,7 +494,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else 
                 {
@@ -519,7 +517,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -529,7 +527,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
@@ -537,14 +535,14 @@ namespace Program01
                     string HallFilePath = TextboxFileHallMeasurementDataPath.Text;
                     if (string.IsNullOrWhiteSpace(HallFilePath))
                     {
-                        MessageBox.Show("Please enter the file path first!", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Please enter the file path first!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
                     string directory = HallFilePath;
                     if (!Directory.Exists(directory))
                     {
                         Directory.CreateDirectory(directory);
-                        MessageBox.Show($"Directory created: {directory}", "INFO");
+                        MessageBox.Show($"Directory created: {directory}", "Info");
                     }
                     string newFileName = "HallMeasurementResultsData.xlsx";
                     string newFilePath = Path.Combine(directory, newFileName);
@@ -572,12 +570,12 @@ namespace Program01
                         worksheet.Cells[2, 6].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                         package.SaveAs(new FileInfo(newFilePath));
                     }
-                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "SUCCESS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -587,7 +585,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
@@ -610,7 +608,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -620,7 +618,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 else
                 {
@@ -628,14 +626,14 @@ namespace Program01
                     string VdPandHallFilePath = TextboxFileVdPandHallMeasurementDataPath.Text;
                     if (string.IsNullOrWhiteSpace(VdPandHallFilePath))
                     {
-                        MessageBox.Show("Please enter the file path first!", "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Please enter the file path first!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         return;
                     }
                     string directory = VdPandHallFilePath;
                     if (!Directory.Exists(directory))
                     {
                         Directory.CreateDirectory(directory);
-                        MessageBox.Show($"Directory created: {directory}", "INFO");
+                        MessageBox.Show($"Directory created: {directory}", "Info");
                     }
                     string newFileName = "VanderPauwandHallMeasurementResultsData.xlsx";
                     string newFilePath = Path.Combine(directory, newFileName);
@@ -663,12 +661,12 @@ namespace Program01
                         worksheet.Cells[2, 6].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                         package.SaveAs(new FileInfo(newFilePath));
                     }
-                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "SUCCESS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
     }

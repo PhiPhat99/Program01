@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Markup;
-using System.Windows.Media.Converters;
 using FontAwesome.Sharp;
 using Ivi.Visa.Interop;
 using OfficeOpenXml.Drawing.Slicer.Style;
@@ -22,11 +12,11 @@ namespace Program01
     {
         //Fields
         private Ivi.Visa.Interop.FormattedIO488 SMU;
-        private string SMU2450Address = $"GPIB3::18::INSTR";
-        private Ivi.Visa.Interop.FormattedIO488 SMS;
-        private string SMS7001Address = $"GPIB3::7::INSTR";
+        //private string SMU2450Address = $"GPIB3::18::INSTR";
+        private Ivi.Visa.Interop.FormattedIO488 SS;
+        //private string SS7001Address = $"GPIB3::7::INSTR";
         private ResourceManager resourcemanagerSMU;
-        private ResourceManager resourcemanagerSMS;
+        private ResourceManager resourcemanagerSS;
         private string RsenseMode;
         private string MeasureMode;
         private string SourceMode;
@@ -35,25 +25,74 @@ namespace Program01
         private string savedMeasureMode;
         private string savedSourceMode;
         private string savedSourceLimitMode;
+        private string savedStartValue;
+        private string savedStopValue;
+        private string savedStepValue;
+        private string savedSourceLimitValue;
+        private string savedThicknessValue;
+        private string savedRepetitionValue;
         private string savedMagneticFieldsValue;
         private bool isSMUConnected = false;
         private bool isMeasured = false;
-        private bool isSMSConnected = false;
-        private bool isFinished;
+        private bool isSSConnected = false;
         private Form CurrentTunerandDataChildForm;
 
         public MeasurementSettingsChildForm()
         {
             InitializeComponent();
-            InitializeGPIB(); 
+            InitializeGPIB();
         }
 
         private void InitializeGPIB()
         {
-            resourcemanagerSMU = new Ivi.Visa.Interop.ResourceManager();
-            resourcemanagerSMS = new Ivi.Visa.Interop.ResourceManager();
-            SMU = new Ivi.Visa.Interop.FormattedIO488();
-            SMS = new Ivi.Visa.Interop.FormattedIO488();
+            try
+            {
+                resourcemanagerSMU = new Ivi.Visa.Interop.ResourceManager();
+                resourcemanagerSS = new Ivi.Visa.Interop.ResourceManager();
+
+                SMU = new Ivi.Visa.Interop.FormattedIO488();
+                SS = new Ivi.Visa.Interop.FormattedIO488();
+
+                string[] SMUgpibAddress = resourcemanagerSMU.FindRsrc("GPIB?*::?*::INSTR");
+                string[] SSgpibAddress = resourcemanagerSS.FindRsrc("GPIB?*::?*::INSTR");
+
+                ComboboxVISASMUIOPort.Items.Clear();
+                ComboboxVISASSIOPort.Items.Clear();
+
+                foreach (string SMUaddress in SMUgpibAddress)
+                {
+                    ComboboxVISASMUIOPort.Items.Add(SMUaddress);
+                }
+
+                if (ComboboxVISASMUIOPort.Items.Count > 0)
+                {
+                    ComboboxVISASMUIOPort.SelectedIndex = 0;
+                }
+
+                if (ComboboxVISASMUIOPort.Items.Count > 0)
+                {
+                    ComboboxVISASMUIOPort.SelectedIndex = 0;
+                }
+
+                foreach (string SSaddress in SSgpibAddress)
+                {
+                    ComboboxVISASSIOPort.Items.Add(SSaddress);
+                }
+
+                if (ComboboxVISASSIOPort.Items.Count > 0)
+                {
+                    ComboboxVISASSIOPort.SelectedIndex = 0;
+                }
+
+                if (ComboboxVISASSIOPort.Items.Count > 0)
+                {
+                    ComboboxVISASSIOPort.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error initializing GPIB: {ex.Message}", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private readonly struct RGBColors
@@ -100,34 +139,53 @@ namespace Program01
         {
             try
             {
+                if (ComboboxVISASMUIOPort.SelectedItem == null)
+                {
+                    MessageBox.Show("Please select a GPIB Address for SMU.", "Address Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                string selectedSMUAddress = ComboboxVISASMUIOPort.SelectedItem.ToString();
+
                 if (!isSMUConnected)
                 {
-                    SMU.IO = (Ivi.Visa.Interop.IMessage)resourcemanagerSMU.Open(SMU2450Address);
-                    SMU.IO.Timeout = 10000;
+                    SMU.IO = (Ivi.Visa.Interop.IMessage)resourcemanagerSMU.Open(selectedSMUAddress);
+                    SMU.IO.Timeout = 5000;
                     SMU.WriteString("*IDN?");
                     SMU.WriteString("SYSTem:BEEPer 888, 1");
-
+                    
                     isSMUConnected = true;
+
                     IconbuttonSMUConnection.BackColor = Color.Snow;
                     IconbuttonSMUConnection.IconColor = Color.GreenYellow;
-
                     MessageBox.Show("Connected to SMU", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    if (SMU.IO != null)
+                    try
                     {
-                        SMU.WriteString("*RST"); 
-                        SMU.IO.Close();          
-                        SMU.IO = null; 
+                        if (SMU.IO != null)
+                        {
+                            SMU.WriteString("*CLS");
+                            SMU.WriteString("*RST");
+
+                            SMU.IO.Close();
+                            SMU.IO = null;
+                        }
+
+                        isSMUConnected = false;
+
+                        IconbuttonSMUConnection.BackColor = Color.Snow;
+                        IconbuttonSMUConnection.IconColor = Color.Gray;
+
+                        MessageBox.Show("Disconnected from the SMU.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-
-                    isSMUConnected = false;
-                    IconbuttonSMUConnection.BackColor = Color.Snow;
-                    IconbuttonSMUConnection.IconColor = Color.Gray;
-
-                    MessageBox.Show("Disconnected from the SMU.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    catch (Exception disconnectEx)
+                    {
+                        MessageBox.Show($"Error during disconnection: {disconnectEx.Message}", "Disconnection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
+                    
             }
             catch (Exception ex)
             {
@@ -135,41 +193,51 @@ namespace Program01
             }
         }
 
-        private void IconbuttonSMSConnection_Click(object sender, EventArgs e)
+        private void IconbuttonSSConnection_Click(object sender, EventArgs e)
         {
             try
             {
-                if (!isSMSConnected)
+                if (ComboboxVISASSIOPort.SelectedItem == null)
                 {
-                    SMS.IO = (Ivi.Visa.Interop.IMessage)resourcemanagerSMS.Open(SMS7001Address);
-                    SMS.IO.Timeout = 5000;
-                    SMS.WriteString("*CLS");
-                    SMS.WriteString("*IDN?");
+                    MessageBox.Show("Please select a GPIB Address for SS.", "Address Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
-                    isSMSConnected = true;
-                    IconbuttonSMSConnection.BackColor = Color.Snow;
-                    IconbuttonSMSConnection.IconColor = Color.GreenYellow;
+                string selectedSSAddress = ComboboxVISASSIOPort.SelectedItem.ToString();
 
-                    MessageBox.Show("Connected to SMS", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (!isSSConnected)
+                {
+                    SS.IO = (Ivi.Visa.Interop.IMessage)resourcemanagerSS.Open(selectedSSAddress);
+                    SS.IO.Timeout = 5000;
+
+                    SS.WriteString("*CLS");  
+                    SS.WriteString("*IDN?");
+                    
+                    isSSConnected = true;
+
+                    IconbuttonSSConnection.BackColor = Color.Snow;
+                    IconbuttonSSConnection.IconColor = Color.GreenYellow;
+                    MessageBox.Show("Connected to SS", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
                     try
                     {
-                        if (SMS.IO != null)
+                        if (SS.IO != null)
                         {
-                            SMS.WriteString("*CLS");
-                            SMS.WriteString("*RST");
-                            SMS.WriteString("*GTL");
-                            SMS.IO.Close();
-                            SMS.IO = null;
+                            SS.WriteString("*CLS");
+                            SS.WriteString("*RST");
+
+                            SS.IO.Close();
+                            SS.IO = null;
                         }
 
-                        isSMSConnected = false;
-                        IconbuttonSMSConnection.BackColor = Color.Snow;
-                        IconbuttonSMSConnection.IconColor = Color.Gray;
+                        isSSConnected = false;
 
-                        MessageBox.Show("Disconnected from the SMS.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        IconbuttonSSConnection.BackColor = Color.Snow;
+                        IconbuttonSSConnection.IconColor = Color.Gray;
+
+                        MessageBox.Show("Disconnected from the SS.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception disconnectEx)
                     {
@@ -180,6 +248,26 @@ namespace Program01
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void IconbuttonRefreshGPIBAddress_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (SMU.IO == null && SS.IO == null)
+                {
+                    InitializeGPIB();
+                    MessageBox.Show("GPIB addresses refreshed.", "Refresh Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Can not be refresh the GPIB addressed. Please power off the instruments before refresh", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -254,7 +342,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -279,7 +367,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -306,7 +394,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -334,7 +422,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -366,13 +454,12 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
         private void IconbuttonClearSettings_Click(object sender, EventArgs e)
         {
-            SMU.WriteString("*RST");
             ClearSettings();
         }
 
@@ -382,11 +469,23 @@ namespace Program01
             ComboboxMeasure.SelectedIndex = -1;
             ComboboxSource.SelectedIndex = -1;
             ComboboxSourceLimitMode.SelectedIndex = -1;
+            TextboxStart.Text = "";
+            TextboxStep.Text = "";
+            TextboxStop.Text = "";
+            TextboxSourceLimitLevel.Text = "";
+            TextboxThickness.Text = "";
+            TextboxRepetition.Text = "";
             TextboxMagneticFields.Text = "";
             savedRsenseMode = "";
             savedMeasureMode = "";
             savedSourceMode = "";
             savedSourceLimitMode = "";
+            savedStartValue = "";
+            savedStopValue = "";
+            savedStepValue = "";
+            savedSourceLimitValue = "";
+            savedThicknessValue = "";
+            savedRepetitionValue = "";
             savedMagneticFieldsValue = "";
             LabelStartUnit.Text = "";
             LabelStepUnit.Text = "";
@@ -431,7 +530,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -447,16 +546,14 @@ namespace Program01
 
                 SMU.WriteString("OUTPut OFF");
 
-                if (!double.TryParse(TextboxStart.Text, out double startValue) || !double.TryParse(TextboxStop.Text, out double stopValue) || !double.TryParse(TextboxStep.Text, out double stepValue) || !int.TryParse(TextboxRepetition.Text, out int repetitionValue) || !double.TryParse(TextboxSourceLimitLevel.Text, out double sourceLimitValue))
+                if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourceLimitValue))
                 {
-                    Debug.WriteLine($"Invalid inputs: StartValue = {TextboxStart.Text}, StopValue = {TextboxStop.Text}, StepValue = {TextboxStep.Text}, Repetition = {TextboxRepetition.Text}, SourceLimit = {TextboxSourceLimitLevel.Text}");
                     MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                if (savedSourceMode == "Voltage" && savedMeasureMode == "Voltage" && isFinished)
+                if (savedSourceMode == "Voltage" && savedMeasureMode == "Voltage")
                 {
-                    isFinished = false;
                     SMU.WriteString($"SOURce:FUNCtion VOLTage");
                     SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
                     SMU.WriteString($"SOURce:VOLTage:ILIM {sourceLimitValue}");
@@ -481,9 +578,8 @@ namespace Program01
                     SMU.WriteString("OUTPut OFF");                    
                 }
 
-                else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current" && isFinished)
+                else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current")
                 {
-                    isFinished = false;
                     SMU.WriteString($"SOURce:FUNCtion VOLTage");
                     SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
                     SMU.WriteString($"SOURce:VOLTage:ILIM {sourceLimitValue}");
@@ -508,9 +604,8 @@ namespace Program01
                     SMU.WriteString("OUTPut OFF");
                 }
 
-                else if (savedSourceMode == "Current" && savedMeasureMode == "Voltage" && !isFinished)
+                else if (savedSourceMode == "Current" && savedMeasureMode == "Voltage")
                 {
-                    isFinished = false;
                     SMU.WriteString($"SOURce:FUNCtion CURRent");
                     SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
                     SMU.WriteString($"SOURce:CURRent:VLIM {sourceLimitValue}");
@@ -535,9 +630,8 @@ namespace Program01
                     SMU.WriteString("OUTPut OFF");
                 }
 
-                else if (savedSourceMode == "Current" && savedMeasureMode == "Current" && isFinished)
+                else if (savedSourceMode == "Current" && savedMeasureMode == "Current")
                 {
-                    isFinished = false;
                     SMU.WriteString($"SOURce:FUNCtion CURRent");
                     SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
                     SMU.WriteString($"SOURce:CURRent:VLIM {sourceLimitValue}");
@@ -561,16 +655,6 @@ namespace Program01
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
                 }
-
-                //isFinished = true;
-                /*if (isFinished == false)
-                {
-                    MessageBox.Show("The measurement is started, do not disturbed", "MEASURE", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    MessageBox.Show("The measurement is finished", "FINISH", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }*/
             }
             catch (Exception ex)
             {
@@ -606,7 +690,7 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -618,8 +702,26 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"ERROR: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
+        }
+
+        private bool ValidateInputs(out double start, out double stop, out double step, out int repetitions, out double sourceLimit)
+        {
+            start = stop = step = sourceLimit = 0;
+            repetitions = 0;
+
+            if (!double.TryParse(TextboxStart.Text, out start) ||
+                !double.TryParse(TextboxStop.Text, out stop) ||
+                !double.TryParse(TextboxStep.Text, out step) ||
+                !int.TryParse(TextboxRepetition.Text, out repetitions) ||
+                !double.TryParse(TextboxSourceLimitLevel.Text, out sourceLimit) ||
+                start >= stop || step <= 0 || repetitions < 1)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

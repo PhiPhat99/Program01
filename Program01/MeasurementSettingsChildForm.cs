@@ -12,9 +12,7 @@ namespace Program01
     {
         //Fields
         private Ivi.Visa.Interop.FormattedIO488 SMU;
-        //private string SMU2450Address = $"GPIB3::18::INSTR";
         private Ivi.Visa.Interop.FormattedIO488 SS;
-        //private string SS7001Address = $"GPIB3::7::INSTR";
         private ResourceManager resourcemanagerSMU;
         private ResourceManager resourcemanagerSS;
         private string RsenseMode;
@@ -31,7 +29,7 @@ namespace Program01
         private string savedSourceLimitValue;
         private string savedThicknessValue;
         private string savedRepetitionValue;
-        private string savedMagneticFieldsValue;
+        private string MagneticFieldsValue;
         private bool isSMUConnected = false;
         private bool isMeasured = false;
         private bool isSSConnected = false;
@@ -116,7 +114,7 @@ namespace Program01
             public static string StepValue { get; set; }
             public static string ThicknessValue { get; set; }
             public static string RepetitionValue { get; set; }
-            public static string SourceLimitValue { get; set; }
+            public static string SourceLimitLevelValue { get; set; }
             public static string MagneticFieldsValue { get; set; }
         }
 
@@ -129,7 +127,7 @@ namespace Program01
             GlobalSettings.StartValue = TextboxStart.Text;
             GlobalSettings.StopValue = TextboxStop.Text;
             GlobalSettings.StepValue = TextboxStep.Text;
-            GlobalSettings.SourceLimitValue = TextboxSourceLimitLevel.Text;
+            GlobalSettings.SourceLimitLevelValue = TextboxSourceLimitLevel.Text;
             GlobalSettings.ThicknessValue = TextboxThickness.Text;
             GlobalSettings.RepetitionValue = TextboxRepetition.Text;
             GlobalSettings.MagneticFieldsValue = TextboxMagneticFields.Text;
@@ -153,7 +151,9 @@ namespace Program01
                     SMU.IO.Timeout = 5000;
                     SMU.WriteString("*IDN?");
                     SMU.WriteString("SYSTem:BEEPer 888, 1");
-                    
+                    string response = SMU.ReadString();
+                    Debug.WriteLine($"{response}");
+
                     isSMUConnected = true;
 
                     IconbuttonSMUConnection.BackColor = Color.Snow;
@@ -212,7 +212,9 @@ namespace Program01
 
                     SS.WriteString("*CLS");  
                     SS.WriteString("*IDN?");
-                    
+                    string response = SS.ReadString();
+                    Debug.WriteLine($"{response}");
+
                     isSSConnected = true;
 
                     IconbuttonSSConnection.BackColor = Color.Snow;
@@ -251,26 +253,6 @@ namespace Program01
             }
         }
 
-        private void IconbuttonRefreshGPIBAddress_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (SMU.IO == null && SS.IO == null)
-                {
-                    InitializeGPIB();
-                    MessageBox.Show("GPIB addresses refreshed.", "Refresh Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Can not be refresh the GPIB addressed. Please power off the instruments before refresh", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch (Exception ex)
-            {
-                 MessageBox.Show($"Error: {ex.Message}");
-            }
-        }
-
         private void MeasurementSettingsChildForm_Load(object sender, EventArgs e)
         {
             ComboboxRsense.Items.Add("2-Wires");
@@ -282,9 +264,6 @@ namespace Program01
             ComboboxSource.Items.Add("Voltage");
             ComboboxSource.Items.Add("Current");
 
-            ComboboxSourceLimitMode.Items.Add("Voltage");
-            ComboboxSourceLimitMode.Items.Add("Current");
-
             ComboboxRsense.SelectedItem = GlobalSettings.RsenseMode;
             ComboboxMeasure.SelectedItem = GlobalSettings.MeasureMode;
             ComboboxSource.SelectedItem = GlobalSettings.SourceMode;
@@ -292,7 +271,7 @@ namespace Program01
             TextboxStart.Text = GlobalSettings.StartValue;
             TextboxStop.Text = GlobalSettings.StopValue;
             TextboxStep.Text = GlobalSettings.StepValue;
-            TextboxSourceLimitLevel.Text = GlobalSettings.SourceLimitValue;
+            TextboxSourceLimitLevel.Text = GlobalSettings.SourceLimitLevelValue;
             TextboxThickness.Text = GlobalSettings.ThicknessValue;
             TextboxRepetition.Text = GlobalSettings.RepetitionValue;
             TextboxMagneticFields.Text = GlobalSettings.MagneticFieldsValue;
@@ -381,10 +360,10 @@ namespace Program01
                 switch (SourceMode)
                 {
                     case "Voltage":
-                        UpdateMeasurementSettingsUnits();
+                        UpdateMeasurementSettingsUnits("Voltage");
                         break;
                     case "Current":
-                        UpdateMeasurementSettingsUnits();
+                        UpdateMeasurementSettingsUnits("Current");
                         break;
                     default:
                         ComboboxSource.SelectedIndex = -1;
@@ -402,23 +381,8 @@ namespace Program01
         {
             try
             {
-
                 SourceLimit = ComboboxSourceLimitMode.SelectedItem?.ToString();
                 savedSourceLimitMode = SourceLimit;
-
-                switch (SourceLimit)
-                {
-                    case "Voltage":
-                        UpdateMeasurementSettingsUnits();
-                        break;
-                    case "Current":
-                        UpdateMeasurementSettingsUnits();
-                        break;
-                    default:
-                        ComboboxSourceLimitMode.SelectedIndex = -1;
-                        SourceLimit = "";
-                        break;
-                }
             }
             catch (Exception ex)
             {
@@ -426,31 +390,62 @@ namespace Program01
             }
         }
 
-        private void UpdateMeasurementSettingsUnits()
+        private void UpdateMeasurementSettingsUnits(string SourceMode)
         {
             try
             {
                 if (SourceMode == "Voltage")
                 {
-                    LabelStartUnit.Text = "V";
-                    LabelStepUnit.Text = "V";
-                    LabelStopUnit.Text = "V";
+                    ComboboxStartUnit.Items.Clear();
+                    ComboboxStartUnit.Items.AddRange(new string[] { "mV", "V"});
+                    ComboboxStartUnit.SelectedIndex = 0;
 
-                    ComboboxSourceLimitMode.SelectedItem = "Current";
-                    SourceLimit = "Current";
-                    LabelSourceLimitLevelUnit.Text = "A";
+                    ComboboxStopUnit.Items.Clear();
+                    ComboboxStopUnit.Items.AddRange(new string[] { "mV", "V"});
+                    ComboboxStopUnit.SelectedIndex = 0;
+
+                    ComboboxStepUnit.Items.Clear();
+                    ComboboxStepUnit.Items.AddRange(new string[] { "mV", "V"});
+                    ComboboxStepUnit.SelectedIndex = 0;
+
+                    ComboboxSourceLimitMode.Items.Clear();
+                    ComboboxSourceLimitMode.Items.AddRange(new string[] { "Current" });
+                    ComboboxSourceLimitMode.SelectedIndex = 0;
+
+                    ComboboxSourceLimitLevelUnit.Items.Clear();
+                    ComboboxSourceLimitLevelUnit.Items.AddRange(new string[] { "nA", "µA", "mA", "A" });
+                    ComboboxSourceLimitLevelUnit.SelectedIndex = 0;
                 }
-
                 else if (SourceMode == "Current")
                 {
-                    LabelStartUnit.Text = "A";
-                    LabelStepUnit.Text = "A";
-                    LabelStopUnit.Text = "A";
+                    ComboboxStartUnit.Items.Clear();
+                    ComboboxStartUnit.Items.AddRange(new string[] { "nA", "µA", "mA", "A" });
+                    ComboboxStartUnit.SelectedIndex = 0;
 
-                    ComboboxSourceLimitMode.SelectedItem = "Voltage";
-                    SourceLimit = "Voltage";
-                    LabelSourceLimitLevelUnit.Text = "V";
+                    ComboboxStopUnit.Items.Clear();
+                    ComboboxStopUnit.Items.AddRange(new string[] { "nA", "µA", "mA", "A" });
+                    ComboboxStopUnit.SelectedIndex = 0;
+
+                    ComboboxStepUnit.Items.Clear();
+                    ComboboxStepUnit.Items.AddRange(new string[] { "nA", "µA", "mA", "A" });
+                    ComboboxStepUnit.SelectedIndex = 0;
+
+                    ComboboxSourceLimitMode.Items.Clear();
+                    ComboboxSourceLimitMode.Items.AddRange(new string[] { "Voltage" });
+                    ComboboxSourceLimitMode.SelectedIndex = 0;
+
+                    ComboboxSourceLimitLevelUnit.Items.Clear();
+                    ComboboxSourceLimitLevelUnit.Items.AddRange(new string[] { "mV", "V" });
+                    ComboboxSourceLimitLevelUnit.SelectedIndex = 0;
                 }
+
+                ComboboxThicknessUnit.Items.Clear();
+                ComboboxThicknessUnit.Items.AddRange(new string[] { "nm", "µm", "mm", "m" });
+                ComboboxThicknessUnit.SelectedIndex = 0;
+
+                ComboboxMagneticFieldsUnit.Items.Clear();
+                ComboboxMagneticFieldsUnit.Items.AddRange(new string[] { "G", "T"});
+                ComboboxMagneticFieldsUnit.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -469,6 +464,12 @@ namespace Program01
             ComboboxMeasure.SelectedIndex = -1;
             ComboboxSource.SelectedIndex = -1;
             ComboboxSourceLimitMode.SelectedIndex = -1;
+            ComboboxStartUnit.SelectedIndex = -1;
+            ComboboxStopUnit.SelectedIndex = -1;
+            ComboboxStepUnit.SelectedIndex = -1;
+            ComboboxSourceLimitLevelUnit.SelectedIndex = -1;
+            ComboboxThicknessUnit.SelectedIndex = -1;
+            ComboboxMagneticFieldsUnit.SelectedIndex = -1;
             TextboxStart.Text = "";
             TextboxStep.Text = "";
             TextboxStop.Text = "";
@@ -486,11 +487,7 @@ namespace Program01
             savedSourceLimitValue = "";
             savedThicknessValue = "";
             savedRepetitionValue = "";
-            savedMagneticFieldsValue = "";
-            LabelStartUnit.Text = "";
-            LabelStepUnit.Text = "";
-            LabelStopUnit.Text = "";
-            LabelSourceLimitLevelUnit.Text = "";
+            MagneticFieldsValue = "";
         }
 
         private void IconbuttonMeasurement_Click(object sender, EventArgs e)
@@ -504,6 +501,7 @@ namespace Program01
                     TextboxMagneticFields.Visible = false;
                     LabelMagneticFields.Visible = false;
                     LabelMagneticFieldsUnit.Visible = false;
+                    ComboboxMagneticFieldsUnit.Visible = false;
                     IconbuttonMeasurement.Text = "Van der Pauw";
                     IconbuttonMeasurement.IconChar = IconChar.Diamond;
                     IconbuttonMeasurement.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -519,6 +517,7 @@ namespace Program01
                     TextboxMagneticFields.Visible = true;
                     LabelMagneticFields.Visible = true;
                     LabelMagneticFieldsUnit.Visible = true;
+                    ComboboxMagneticFieldsUnit.Visible = true;
                     IconbuttonMeasurement.Text = "Hall Measurement";
                     IconbuttonMeasurement.IconChar = IconChar.Magnet;
                     IconbuttonMeasurement.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -546,17 +545,33 @@ namespace Program01
 
                 SMU.WriteString("OUTPut OFF");
 
-                if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourceLimitValue))
+                if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue))
                 {
                     MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
+                string startUnit = ComboboxStartUnit.SelectedItem.ToString();
+                string stopUnit = ComboboxStopUnit.SelectedItem.ToString();
+                string stepUnit = ComboboxStepUnit.SelectedItem.ToString();
+                startValue = ConvertValueBasedOnUnit(startUnit, startValue);
+                stopValue = ConvertValueBasedOnUnit(stopUnit, stopValue);
+                stepValue = ConvertValueBasedOnUnit(stepUnit, stepValue);
+
+                string sourcelimitUnit = ComboboxSourceLimitLevelUnit.SelectedItem.ToString();
+                sourcelimitValue = ConvertValueBasedOnUnit(sourcelimitUnit, sourcelimitValue);
+
+                string thicknessUnit = ComboboxThicknessUnit.SelectedItem.ToString();
+                thicknessValue = ConvertValueBasedOnUnit(thicknessUnit, thicknessValue);
+
+                string magneticfieldsUnit = ComboboxMagneticFieldsUnit.SelectedItem.ToString();
+                magneticfieldsValue = ConvertValueBasedOnUnit(magneticfieldsUnit, magneticfieldsValue);
+
                 if (savedSourceMode == "Voltage" && savedMeasureMode == "Voltage")
                 {
                     SMU.WriteString($"SOURce:FUNCtion VOLTage");
                     SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:VOLTage:ILIM {sourceLimitValue}");
+                    SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
                     SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
                     SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
 
@@ -570,19 +585,21 @@ namespace Program01
                     }
 
                     string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                    string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
+                    Debug.WriteLine($"{allValues}");
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
-                    SMU.WriteString("OUTPut OFF");                    
+                    SMU.WriteString("OUTPut OFF");            
                 }
 
                 else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current")
                 {
                     SMU.WriteString($"SOURce:FUNCtion VOLTage");
                     SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:VOLTage:ILIM {sourceLimitValue}");
+                    SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
                     SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
                     SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
 
@@ -596,7 +613,9 @@ namespace Program01
                     }
 
                     string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                    string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
+                    Debug.WriteLine($"{allValues}");
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INIT");
@@ -608,7 +627,7 @@ namespace Program01
                 {
                     SMU.WriteString($"SOURce:FUNCtion CURRent");
                     SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:CURRent:VLIM {sourceLimitValue}");
+                    SMU.WriteString($"SOURce:CURRent:VLIM {sourcelimitValue}");
                     SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
                     SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
 
@@ -622,7 +641,9 @@ namespace Program01
                     }
 
                     string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                    string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
+                    Debug.WriteLine($"{allValues}");
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INIT");
@@ -634,7 +655,7 @@ namespace Program01
                 {
                     SMU.WriteString($"SOURce:FUNCtion CURRent");
                     SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:CURRent:VLIM {sourceLimitValue}");
+                    SMU.WriteString($"SOURce:CURRent:VLIM {sourcelimitValue}");
                     SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
                     SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
 
@@ -648,7 +669,9 @@ namespace Program01
                     }
 
                     string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                    string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
+                    Debug.WriteLine($"{allValues}.");
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INIT");
@@ -659,6 +682,61 @@ namespace Program01
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private bool ValidateInputs(out double start, out double stop, out double step, out int repetitions, out double sourcelimit, out double thickness, out double magneticfields)
+        {
+            start = stop = step = sourcelimit = 0;
+            repetitions = 1;
+            thickness = 0;
+            magneticfields = 0;
+
+            if (!double.TryParse(TextboxStart.Text, out start) ||
+                !double.TryParse(TextboxStop.Text, out stop) ||
+                !double.TryParse(TextboxStep.Text, out step) ||
+                !int.TryParse(TextboxRepetition.Text, out repetitions) ||
+                !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) ||
+                !double.TryParse(TextboxThickness.Text, out thickness) ||
+                !double.TryParse(TextboxMagneticFields.Text, out magneticfields) ||
+                start >= stop || step <= 0 || repetitions < 1 || magneticfields < 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private double ConvertValueBasedOnUnit(string unit, double value)  //Method สำหรับการแปลงค่า
+        {
+            switch (unit)
+            {
+                case "mV":
+                    return value * 1E-3;  // แปลงเป็นหน่วย milliVolt
+                case "V":
+                    return value;  // แปลงเป็นหน่วย Volt
+                case "nA":
+                    return value * 1E-9;  // แปลงเป็นหน่วย nanoAmpere
+                case "µA":
+                    return value * 1E-6;  // แปลงเป็นหน่วย microAmpere
+                case "mA":
+                    return value * 1E-3;  // แปลงเป็นหน่วย milliAmpere
+                case "A":
+                    return value;  // แปลงเป็นหน่วย Ampere
+                case "nm":
+                    return value * 1E-9; //แปลงเป็นหน่วย nanoMeter
+                case "µm":
+                    return value * 1E-6;  //แปลงเป็นหน่วย microMeter
+                case "mm":
+                    return value * 1E-3;  //แปลงเป็นหน่วย milliMeter
+                case "m":
+                    return value;  //แปลงเป็นหน่วย Meter
+                case "G":
+                    return value * 1E+4;  //แปลงเป็นหน่วย Gauss
+                case "T":
+                    return value;  //แปลงเป็นหน่วย Tesla
+                default:
+                    throw new Exception("Unknown unit");  //ไม่รู้จักหน่วย (Error)
             }
         }
 
@@ -704,24 +782,6 @@ namespace Program01
             {
                 MessageBox.Show($"Error: {ex.Message}");
             }
-        }
-
-        private bool ValidateInputs(out double start, out double stop, out double step, out int repetitions, out double sourceLimit)
-        {
-            start = stop = step = sourceLimit = 0;
-            repetitions = 0;
-
-            if (!double.TryParse(TextboxStart.Text, out start) ||
-                !double.TryParse(TextboxStop.Text, out stop) ||
-                !double.TryParse(TextboxStep.Text, out step) ||
-                !int.TryParse(TextboxRepetition.Text, out repetitions) ||
-                !double.TryParse(TextboxSourceLimitLevel.Text, out sourceLimit) ||
-                start >= stop || step <= 0 || repetitions < 1)
-            {
-                return false;
-            }
-
-            return true;
         }
     }
 }

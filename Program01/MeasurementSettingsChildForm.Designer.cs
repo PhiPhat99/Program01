@@ -28,10 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.IconbuttonSMUConnection = new FontAwesome.Sharp.IconButton();
             this.LabelSMUVISA = new System.Windows.Forms.Label();
             this.LabelSSVISA = new System.Windows.Forms.Label();
-            this.IconbuttonSSConnection = new FontAwesome.Sharp.IconButton();
             this.LabelRsense = new System.Windows.Forms.Label();
             this.ComboboxRsense = new System.Windows.Forms.ComboBox();
             this.ComboboxSource = new System.Windows.Forms.ComboBox();
@@ -61,20 +59,9 @@
             this.TextboxMagneticFields = new System.Windows.Forms.TextBox();
             this.LabelMagneticFieldsUnit = new System.Windows.Forms.Label();
             this.PanelTunerandData = new System.Windows.Forms.Panel();
-            this.pictureBox6 = new System.Windows.Forms.PictureBox();
-            this.pictureBox7 = new System.Windows.Forms.PictureBox();
-            this.pictureBox8 = new System.Windows.Forms.PictureBox();
-            this.pictureBox5 = new System.Windows.Forms.PictureBox();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.PanelButtonTabBar = new System.Windows.Forms.Panel();
             this.ButtonData = new System.Windows.Forms.Button();
             this.ButtonTuner = new System.Windows.Forms.Button();
-            this.IconbuttonClearSettings = new FontAwesome.Sharp.IconButton();
-            this.IconbuttonRunMeasurement = new FontAwesome.Sharp.IconButton();
-            this.IconbuttonMeasurement = new FontAwesome.Sharp.IconButton();
             this.ComboboxVISASMUIOPort = new System.Windows.Forms.ComboBox();
             this.ComboboxVISASSIOPort = new System.Windows.Forms.ComboBox();
             this.ComboboxStartUnit = new System.Windows.Forms.ComboBox();
@@ -83,33 +70,31 @@
             this.ComboboxSourceLimitLevelUnit = new System.Windows.Forms.ComboBox();
             this.ComboboxThicknessUnit = new System.Windows.Forms.ComboBox();
             this.ComboboxMagneticFieldsUnit = new System.Windows.Forms.ComboBox();
+            this.IconbuttonMeasurement = new FontAwesome.Sharp.IconButton();
+            this.IconbuttonRunMeasurement = new FontAwesome.Sharp.IconButton();
+            this.IconbuttonClearSettings = new FontAwesome.Sharp.IconButton();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.pictureBox6 = new System.Windows.Forms.PictureBox();
+            this.pictureBox7 = new System.Windows.Forms.PictureBox();
+            this.pictureBox8 = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.pictureBox4 = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.IconbuttonSSConnection = new FontAwesome.Sharp.IconButton();
+            this.IconbuttonSMUConnection = new FontAwesome.Sharp.IconButton();
+            this.IconbuttonTunerTest = new FontAwesome.Sharp.IconButton();
             this.PanelTunerandData.SuspendLayout();
+            this.PanelButtonTabBar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.PanelButtonTabBar.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // IconbuttonSMUConnection
-            // 
-            this.IconbuttonSMUConnection.BackColor = System.Drawing.Color.White;
-            this.IconbuttonSMUConnection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonSMUConnection.IconChar = FontAwesome.Sharp.IconChar.PowerOff;
-            this.IconbuttonSMUConnection.IconColor = System.Drawing.Color.Black;
-            this.IconbuttonSMUConnection.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonSMUConnection.IconSize = 30;
-            this.IconbuttonSMUConnection.Location = new System.Drawing.Point(325, 21);
-            this.IconbuttonSMUConnection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.IconbuttonSMUConnection.Name = "IconbuttonSMUConnection";
-            this.IconbuttonSMUConnection.Size = new System.Drawing.Size(60, 36);
-            this.IconbuttonSMUConnection.TabIndex = 0;
-            this.IconbuttonSMUConnection.UseVisualStyleBackColor = false;
-            this.IconbuttonSMUConnection.Click += new System.EventHandler(this.IconbuttonSMUConnection_Click);
             // 
             // LabelSMUVISA
             // 
@@ -132,22 +117,6 @@
             this.LabelSSVISA.Size = new System.Drawing.Size(83, 28);
             this.LabelSSVISA.TabIndex = 3;
             this.LabelSSVISA.Text = "VISA SS";
-            // 
-            // IconbuttonSSConnection
-            // 
-            this.IconbuttonSSConnection.BackColor = System.Drawing.Color.White;
-            this.IconbuttonSSConnection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonSSConnection.IconChar = FontAwesome.Sharp.IconChar.PowerOff;
-            this.IconbuttonSSConnection.IconColor = System.Drawing.Color.Black;
-            this.IconbuttonSSConnection.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonSSConnection.IconSize = 30;
-            this.IconbuttonSSConnection.Location = new System.Drawing.Point(689, 21);
-            this.IconbuttonSSConnection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.IconbuttonSSConnection.Name = "IconbuttonSSConnection";
-            this.IconbuttonSSConnection.Size = new System.Drawing.Size(60, 36);
-            this.IconbuttonSSConnection.TabIndex = 2;
-            this.IconbuttonSSConnection.UseVisualStyleBackColor = false;
-            this.IconbuttonSSConnection.Click += new System.EventHandler(this.IconbuttonSSConnection_Click);
             // 
             // LabelRsense
             // 
@@ -429,92 +398,21 @@
             // PanelTunerandData
             // 
             this.PanelTunerandData.BackColor = System.Drawing.Color.Silver;
+            this.PanelTunerandData.Controls.Add(this.IconbuttonTunerTest);
+            this.PanelTunerandData.Controls.Add(this.pictureBox5);
             this.PanelTunerandData.Controls.Add(this.pictureBox6);
             this.PanelTunerandData.Controls.Add(this.pictureBox7);
             this.PanelTunerandData.Controls.Add(this.pictureBox8);
-            this.PanelTunerandData.Controls.Add(this.pictureBox5);
-            this.PanelTunerandData.Controls.Add(this.pictureBox4);
             this.PanelTunerandData.Controls.Add(this.pictureBox3);
+            this.PanelTunerandData.Controls.Add(this.pictureBox4);
             this.PanelTunerandData.Controls.Add(this.pictureBox2);
             this.PanelTunerandData.Controls.Add(this.pictureBox1);
             this.PanelTunerandData.Controls.Add(this.PanelButtonTabBar);
-            this.PanelTunerandData.Location = new System.Drawing.Point(440, 140);
+            this.PanelTunerandData.Location = new System.Drawing.Point(440, 90);
             this.PanelTunerandData.Margin = new System.Windows.Forms.Padding(1);
             this.PanelTunerandData.Name = "PanelTunerandData";
-            this.PanelTunerandData.Size = new System.Drawing.Size(790, 480);
+            this.PanelTunerandData.Size = new System.Drawing.Size(790, 570);
             this.PanelTunerandData.TabIndex = 28;
-            // 
-            // pictureBox6
-            // 
-            this.pictureBox6.BackColor = System.Drawing.Color.Black;
-            this.pictureBox6.Location = new System.Drawing.Point(600, 270);
-            this.pictureBox6.Name = "pictureBox6";
-            this.pictureBox6.Size = new System.Drawing.Size(160, 160);
-            this.pictureBox6.TabIndex = 15;
-            this.pictureBox6.TabStop = false;
-            // 
-            // pictureBox7
-            // 
-            this.pictureBox7.BackColor = System.Drawing.Color.Black;
-            this.pictureBox7.Location = new System.Drawing.Point(410, 270);
-            this.pictureBox7.Name = "pictureBox7";
-            this.pictureBox7.Size = new System.Drawing.Size(160, 160);
-            this.pictureBox7.TabIndex = 14;
-            this.pictureBox7.TabStop = false;
-            // 
-            // pictureBox8
-            // 
-            this.pictureBox8.BackColor = System.Drawing.Color.Black;
-            this.pictureBox8.Location = new System.Drawing.Point(220, 270);
-            this.pictureBox8.Name = "pictureBox8";
-            this.pictureBox8.Size = new System.Drawing.Size(160, 160);
-            this.pictureBox8.TabIndex = 13;
-            this.pictureBox8.TabStop = false;
-            // 
-            // pictureBox5
-            // 
-            this.pictureBox5.BackColor = System.Drawing.Color.Black;
-            this.pictureBox5.Location = new System.Drawing.Point(30, 270);
-            this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(160, 160);
-            this.pictureBox5.TabIndex = 12;
-            this.pictureBox5.TabStop = false;
-            // 
-            // pictureBox4
-            // 
-            this.pictureBox4.BackColor = System.Drawing.Color.Black;
-            this.pictureBox4.Location = new System.Drawing.Point(600, 60);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(160, 160);
-            this.pictureBox4.TabIndex = 11;
-            this.pictureBox4.TabStop = false;
-            // 
-            // pictureBox3
-            // 
-            this.pictureBox3.BackColor = System.Drawing.Color.Black;
-            this.pictureBox3.Location = new System.Drawing.Point(410, 60);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(160, 160);
-            this.pictureBox3.TabIndex = 10;
-            this.pictureBox3.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.BackColor = System.Drawing.Color.Black;
-            this.pictureBox2.Location = new System.Drawing.Point(220, 60);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(160, 160);
-            this.pictureBox2.TabIndex = 9;
-            this.pictureBox2.TabStop = false;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Black;
-            this.pictureBox1.Location = new System.Drawing.Point(30, 60);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(160, 160);
-            this.pictureBox1.TabIndex = 8;
-            this.pictureBox1.TabStop = false;
             // 
             // PanelButtonTabBar
             // 
@@ -560,60 +458,6 @@
             this.ButtonTuner.Text = "Tuner";
             this.ButtonTuner.UseVisualStyleBackColor = false;
             this.ButtonTuner.Click += new System.EventHandler(this.ButtonTuner_Click);
-            // 
-            // IconbuttonClearSettings
-            // 
-            this.IconbuttonClearSettings.BackColor = System.Drawing.Color.White;
-            this.IconbuttonClearSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonClearSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IconbuttonClearSettings.IconChar = FontAwesome.Sharp.IconChar.None;
-            this.IconbuttonClearSettings.IconColor = System.Drawing.Color.Black;
-            this.IconbuttonClearSettings.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonClearSettings.Location = new System.Drawing.Point(880, 750);
-            this.IconbuttonClearSettings.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.IconbuttonClearSettings.Name = "IconbuttonClearSettings";
-            this.IconbuttonClearSettings.Size = new System.Drawing.Size(149, 46);
-            this.IconbuttonClearSettings.TabIndex = 29;
-            this.IconbuttonClearSettings.Text = "Clear";
-            this.IconbuttonClearSettings.UseVisualStyleBackColor = false;
-            this.IconbuttonClearSettings.Click += new System.EventHandler(this.IconbuttonClearSettings_Click);
-            // 
-            // IconbuttonRunMeasurement
-            // 
-            this.IconbuttonRunMeasurement.BackColor = System.Drawing.Color.White;
-            this.IconbuttonRunMeasurement.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.IconbuttonRunMeasurement.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IconbuttonRunMeasurement.IconChar = FontAwesome.Sharp.IconChar.Running;
-            this.IconbuttonRunMeasurement.IconColor = System.Drawing.Color.Black;
-            this.IconbuttonRunMeasurement.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonRunMeasurement.IconSize = 36;
-            this.IconbuttonRunMeasurement.Location = new System.Drawing.Point(1051, 750);
-            this.IconbuttonRunMeasurement.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.IconbuttonRunMeasurement.Name = "IconbuttonRunMeasurement";
-            this.IconbuttonRunMeasurement.Size = new System.Drawing.Size(120, 46);
-            this.IconbuttonRunMeasurement.TabIndex = 30;
-            this.IconbuttonRunMeasurement.Text = "Run";
-            this.IconbuttonRunMeasurement.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonRunMeasurement.UseVisualStyleBackColor = false;
-            this.IconbuttonRunMeasurement.Click += new System.EventHandler(this.IconbuttonRunMeasurement_Click);
-            // 
-            // IconbuttonMeasurement
-            // 
-            this.IconbuttonMeasurement.BackColor = System.Drawing.Color.White;
-            this.IconbuttonMeasurement.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.IconbuttonMeasurement.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.IconbuttonMeasurement.IconChar = FontAwesome.Sharp.IconChar.None;
-            this.IconbuttonMeasurement.IconColor = System.Drawing.Color.Black;
-            this.IconbuttonMeasurement.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonMeasurement.IconSize = 30;
-            this.IconbuttonMeasurement.Location = new System.Drawing.Point(1000, 20);
-            this.IconbuttonMeasurement.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.IconbuttonMeasurement.Name = "IconbuttonMeasurement";
-            this.IconbuttonMeasurement.Size = new System.Drawing.Size(240, 39);
-            this.IconbuttonMeasurement.TabIndex = 31;
-            this.IconbuttonMeasurement.Text = "Measurement Mode";
-            this.IconbuttonMeasurement.UseVisualStyleBackColor = false;
-            this.IconbuttonMeasurement.Click += new System.EventHandler(this.IconbuttonMeasurement_Click);
             // 
             // ComboboxVISASMUIOPort
             // 
@@ -695,6 +539,196 @@
             this.ComboboxMagneticFieldsUnit.Size = new System.Drawing.Size(50, 31);
             this.ComboboxMagneticFieldsUnit.TabIndex = 40;
             // 
+            // IconbuttonMeasurement
+            // 
+            this.IconbuttonMeasurement.BackColor = System.Drawing.Color.White;
+            this.IconbuttonMeasurement.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.IconbuttonMeasurement.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
+            this.IconbuttonMeasurement.IconChar = FontAwesome.Sharp.IconChar.None;
+            this.IconbuttonMeasurement.IconColor = System.Drawing.Color.Black;
+            this.IconbuttonMeasurement.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.IconbuttonMeasurement.IconSize = 30;
+            this.IconbuttonMeasurement.Location = new System.Drawing.Point(1000, 20);
+            this.IconbuttonMeasurement.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.IconbuttonMeasurement.Name = "IconbuttonMeasurement";
+            this.IconbuttonMeasurement.Size = new System.Drawing.Size(240, 39);
+            this.IconbuttonMeasurement.TabIndex = 31;
+            this.IconbuttonMeasurement.Text = "Measurement Mode";
+            this.IconbuttonMeasurement.UseVisualStyleBackColor = false;
+            this.IconbuttonMeasurement.Click += new System.EventHandler(this.IconbuttonMeasurement_Click);
+            // 
+            // IconbuttonRunMeasurement
+            // 
+            this.IconbuttonRunMeasurement.BackColor = System.Drawing.Color.White;
+            this.IconbuttonRunMeasurement.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.IconbuttonRunMeasurement.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IconbuttonRunMeasurement.IconChar = FontAwesome.Sharp.IconChar.Running;
+            this.IconbuttonRunMeasurement.IconColor = System.Drawing.Color.Black;
+            this.IconbuttonRunMeasurement.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.IconbuttonRunMeasurement.IconSize = 36;
+            this.IconbuttonRunMeasurement.Location = new System.Drawing.Point(1051, 750);
+            this.IconbuttonRunMeasurement.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.IconbuttonRunMeasurement.Name = "IconbuttonRunMeasurement";
+            this.IconbuttonRunMeasurement.Size = new System.Drawing.Size(120, 46);
+            this.IconbuttonRunMeasurement.TabIndex = 30;
+            this.IconbuttonRunMeasurement.Text = "Run";
+            this.IconbuttonRunMeasurement.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.IconbuttonRunMeasurement.UseVisualStyleBackColor = false;
+            this.IconbuttonRunMeasurement.Click += new System.EventHandler(this.IconbuttonRunMeasurement_Click);
+            // 
+            // IconbuttonClearSettings
+            // 
+            this.IconbuttonClearSettings.BackColor = System.Drawing.Color.White;
+            this.IconbuttonClearSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.IconbuttonClearSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IconbuttonClearSettings.IconChar = FontAwesome.Sharp.IconChar.None;
+            this.IconbuttonClearSettings.IconColor = System.Drawing.Color.Black;
+            this.IconbuttonClearSettings.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.IconbuttonClearSettings.Location = new System.Drawing.Point(880, 750);
+            this.IconbuttonClearSettings.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.IconbuttonClearSettings.Name = "IconbuttonClearSettings";
+            this.IconbuttonClearSettings.Size = new System.Drawing.Size(149, 46);
+            this.IconbuttonClearSettings.TabIndex = 29;
+            this.IconbuttonClearSettings.Text = "Clear";
+            this.IconbuttonClearSettings.UseVisualStyleBackColor = false;
+            this.IconbuttonClearSettings.Click += new System.EventHandler(this.IconbuttonClearSettings_Click);
+            // 
+            // pictureBox5
+            // 
+            this.pictureBox5.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox5.Image = global::Program01.Properties.Resources.R8_VdP;
+            this.pictureBox5.Location = new System.Drawing.Point(590, 260);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(180, 180);
+            this.pictureBox5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox5.TabIndex = 8;
+            this.pictureBox5.TabStop = false;
+            // 
+            // pictureBox6
+            // 
+            this.pictureBox6.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox6.Image = global::Program01.Properties.Resources.R7_VdP;
+            this.pictureBox6.Location = new System.Drawing.Point(400, 260);
+            this.pictureBox6.Name = "pictureBox6";
+            this.pictureBox6.Size = new System.Drawing.Size(180, 180);
+            this.pictureBox6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox6.TabIndex = 7;
+            this.pictureBox6.TabStop = false;
+            // 
+            // pictureBox7
+            // 
+            this.pictureBox7.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox7.Image = global::Program01.Properties.Resources.R6_VdP;
+            this.pictureBox7.Location = new System.Drawing.Point(210, 260);
+            this.pictureBox7.Name = "pictureBox7";
+            this.pictureBox7.Size = new System.Drawing.Size(180, 180);
+            this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox7.TabIndex = 6;
+            this.pictureBox7.TabStop = false;
+            // 
+            // pictureBox8
+            // 
+            this.pictureBox8.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox8.Image = global::Program01.Properties.Resources.R5_VdP;
+            this.pictureBox8.Location = new System.Drawing.Point(20, 260);
+            this.pictureBox8.Name = "pictureBox8";
+            this.pictureBox8.Size = new System.Drawing.Size(180, 180);
+            this.pictureBox8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox8.TabIndex = 5;
+            this.pictureBox8.TabStop = false;
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox3.Image = global::Program01.Properties.Resources.R4_VdP;
+            this.pictureBox3.Location = new System.Drawing.Point(590, 60);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(180, 180);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox3.TabIndex = 4;
+            this.pictureBox3.TabStop = false;
+            // 
+            // pictureBox4
+            // 
+            this.pictureBox4.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox4.Image = global::Program01.Properties.Resources.R3_VdP;
+            this.pictureBox4.Location = new System.Drawing.Point(400, 60);
+            this.pictureBox4.Name = "pictureBox4";
+            this.pictureBox4.Size = new System.Drawing.Size(180, 180);
+            this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox4.TabIndex = 3;
+            this.pictureBox4.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox2.Image = global::Program01.Properties.Resources.R2_VdP;
+            this.pictureBox2.Location = new System.Drawing.Point(210, 60);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(180, 180);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 2;
+            this.pictureBox2.TabStop = false;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.Image = global::Program01.Properties.Resources.R1_VdP;
+            this.pictureBox1.Location = new System.Drawing.Point(20, 60);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(180, 180);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 1;
+            this.pictureBox1.TabStop = false;
+            // 
+            // IconbuttonSSConnection
+            // 
+            this.IconbuttonSSConnection.BackColor = System.Drawing.Color.White;
+            this.IconbuttonSSConnection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.IconbuttonSSConnection.IconChar = FontAwesome.Sharp.IconChar.PowerOff;
+            this.IconbuttonSSConnection.IconColor = System.Drawing.Color.Black;
+            this.IconbuttonSSConnection.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.IconbuttonSSConnection.IconSize = 30;
+            this.IconbuttonSSConnection.Location = new System.Drawing.Point(689, 21);
+            this.IconbuttonSSConnection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.IconbuttonSSConnection.Name = "IconbuttonSSConnection";
+            this.IconbuttonSSConnection.Size = new System.Drawing.Size(60, 36);
+            this.IconbuttonSSConnection.TabIndex = 2;
+            this.IconbuttonSSConnection.UseVisualStyleBackColor = false;
+            this.IconbuttonSSConnection.Click += new System.EventHandler(this.IconbuttonSSConnection_Click);
+            // 
+            // IconbuttonSMUConnection
+            // 
+            this.IconbuttonSMUConnection.BackColor = System.Drawing.Color.White;
+            this.IconbuttonSMUConnection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.IconbuttonSMUConnection.IconChar = FontAwesome.Sharp.IconChar.PowerOff;
+            this.IconbuttonSMUConnection.IconColor = System.Drawing.Color.Black;
+            this.IconbuttonSMUConnection.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.IconbuttonSMUConnection.IconSize = 30;
+            this.IconbuttonSMUConnection.Location = new System.Drawing.Point(325, 21);
+            this.IconbuttonSMUConnection.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.IconbuttonSMUConnection.Name = "IconbuttonSMUConnection";
+            this.IconbuttonSMUConnection.Size = new System.Drawing.Size(60, 36);
+            this.IconbuttonSMUConnection.TabIndex = 0;
+            this.IconbuttonSMUConnection.UseVisualStyleBackColor = false;
+            this.IconbuttonSMUConnection.Click += new System.EventHandler(this.IconbuttonSMUConnection_Click);
+            // 
+            // IconbuttonTunerTest
+            // 
+            this.IconbuttonTunerTest.BackColor = System.Drawing.Color.White;
+            this.IconbuttonTunerTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.IconbuttonTunerTest.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IconbuttonTunerTest.IconChar = FontAwesome.Sharp.IconChar.None;
+            this.IconbuttonTunerTest.IconColor = System.Drawing.Color.Black;
+            this.IconbuttonTunerTest.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.IconbuttonTunerTest.Location = new System.Drawing.Point(630, 470);
+            this.IconbuttonTunerTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.IconbuttonTunerTest.Name = "IconbuttonTunerTest";
+            this.IconbuttonTunerTest.Size = new System.Drawing.Size(140, 40);
+            this.IconbuttonTunerTest.TabIndex = 41;
+            this.IconbuttonTunerTest.Text = "Tuner Test";
+            this.IconbuttonTunerTest.UseVisualStyleBackColor = false;
+            // 
             // MeasurementSettingsChildForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -751,15 +785,15 @@
             this.Text = "2";
             this.Load += new System.EventHandler(this.MeasurementSettingsChildForm_Load);
             this.PanelTunerandData.ResumeLayout(false);
+            this.PanelButtonTabBar.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox6)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox8)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.PanelButtonTabBar.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -806,14 +840,6 @@
         private System.Windows.Forms.Button ButtonTuner;
         private System.Windows.Forms.Button ButtonData;
         private FontAwesome.Sharp.IconButton IconbuttonMeasurement;
-        private System.Windows.Forms.PictureBox pictureBox6;
-        private System.Windows.Forms.PictureBox pictureBox7;
-        private System.Windows.Forms.PictureBox pictureBox8;
-        private System.Windows.Forms.PictureBox pictureBox5;
-        private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.PictureBox pictureBox3;
-        private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.ComboBox ComboboxVISASMUIOPort;
         private System.Windows.Forms.ComboBox ComboboxVISASSIOPort;
         private System.Windows.Forms.ComboBox ComboboxStartUnit;
@@ -822,5 +848,14 @@
         private System.Windows.Forms.ComboBox ComboboxSourceLimitLevelUnit;
         private System.Windows.Forms.ComboBox ComboboxThicknessUnit;
         private System.Windows.Forms.ComboBox ComboboxMagneticFieldsUnit;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.PictureBox pictureBox5;
+        private System.Windows.Forms.PictureBox pictureBox6;
+        private System.Windows.Forms.PictureBox pictureBox7;
+        private System.Windows.Forms.PictureBox pictureBox8;
+        private FontAwesome.Sharp.IconButton IconbuttonTunerTest;
     }
 }

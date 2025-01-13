@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using FontAwesome.Sharp;
 using Ivi.Visa.Interop;
-using OfficeOpenXml.Drawing.Slicer.Style;
 
 namespace Program01
 {
@@ -30,15 +31,32 @@ namespace Program01
         private string savedThicknessValue;
         private string savedRepetitionValue;
         private string MagneticFieldsValue;
+        private int targetPosition;
         private bool isSMUConnected = false;
-        private bool isMeasured = false;
         private bool isSSConnected = false;
+        private bool isModes = false;
         private Form CurrentTunerandDataChildForm;
+        public event EventHandler ToggleChanged;
+        public bool IsOn
+        {
+            get => isModes;
+            set
+            {
+                isModes = value;
+                UpdateToggleState();
+            }
+        }
 
         public MeasurementSettingsChildForm()
         {
             InitializeComponent();
             InitializeGPIB();
+
+            TimerToggleSwitchAnimation = new Timer
+            {
+                Interval = 1
+            };
+            TimerToggleSwitchAnimation.Tick += TimerToggleSwitchAnimation_Tick;
         }
 
         private void InitializeGPIB()
@@ -150,12 +168,14 @@ namespace Program01
                     SMU.IO = (Ivi.Visa.Interop.IMessage)resourcemanagerSMU.Open(selectedSMUAddress);
                     SMU.IO.Timeout = 5000;
                     SMU.WriteString("*IDN?");
-                    SMU.WriteString("SYSTem:BEEPer 888, 1");
+                    //SMU.WriteString("SYSTem:BEEPer 888, 1");
                     string response = SMU.ReadString();
                     Debug.WriteLine($"{response}");
 
                     isSMUConnected = true;
+                    PlaySMUConnectionMelody();
 
+                    System.Threading.Thread.Sleep(2000);
                     IconbuttonSMUConnection.BackColor = Color.Snow;
                     IconbuttonSMUConnection.IconColor = Color.GreenYellow;
                     MessageBox.Show("Connected to SMU", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -216,6 +236,7 @@ namespace Program01
                     Debug.WriteLine($"{response}");
 
                     isSSConnected = true;
+                    //PlaySSConnectionMelody();
 
                     IconbuttonSSConnection.BackColor = Color.Snow;
                     IconbuttonSSConnection.IconColor = Color.GreenYellow;
@@ -490,46 +511,101 @@ namespace Program01
             MagneticFieldsValue = "";
         }
 
-        private void IconbuttonMeasurement_Click(object sender, EventArgs e)
+        private void PanelToggleSwitchBase_MouseClick(object sender, MouseEventArgs e)
         {
             try
             {
-                if (!isMeasured)
+                isModes = !isModes;
+                targetPosition = isModes ? PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width - 1 : 1;
+
+                if (PanelToggleSwitchButton.Location.X != targetPosition)
                 {
-                    isMeasured = true;
+                    TimerToggleSwitchAnimation.Start();
+                }
+
+                if (isModes == false)
+                {
+                    string Modes = "Van der Pauw";
                     TextboxMagneticFields.Enabled = false;
                     TextboxMagneticFields.Visible = false;
                     LabelMagneticFields.Visible = false;
                     LabelMagneticFieldsUnit.Visible = false;
                     ComboboxMagneticFieldsUnit.Visible = false;
-                    IconbuttonMeasurement.Text = "Van der Pauw";
-                    IconbuttonMeasurement.IconChar = IconChar.Diamond;
-                    IconbuttonMeasurement.TextImageRelation = TextImageRelation.ImageBeforeText;
-                    IconbuttonMeasurement.TextAlign = ContentAlignment.MiddleCenter;
-                    IconbuttonMeasurement.ImageAlign = ContentAlignment.MiddleCenter;
-                    IconbuttonMeasurement.IconColor = RGBColors.Color3;
-                    IconbuttonMeasurement.BackColor = Color.LightGreen;
+                    Debug.WriteLine($"You select: {Modes} measurement");
+
+                    PictureboxTuner1.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R1_VdP.png");
+                    PictureboxTuner2.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R2_VdP.png");
+                    PictureboxTuner3.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R3_VdP.png");
+                    PictureboxTuner4.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R4_VdP.png");
+                    PictureboxTuner5.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R5_VdP.png");
+                    PictureboxTuner6.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R6_VdP.png");
+                    PictureboxTuner7.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R7_VdP.png");
+                    PictureboxTuner8.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R8_VdP.png");
                 }
-                else
+
+                else if (isModes == true)
                 {
-                    isMeasured = false;
+                    string Modes = "Hall effect";
                     TextboxMagneticFields.Enabled = true;
                     TextboxMagneticFields.Visible = true;
                     LabelMagneticFields.Visible = true;
                     LabelMagneticFieldsUnit.Visible = true;
                     ComboboxMagneticFieldsUnit.Visible = true;
-                    IconbuttonMeasurement.Text = "Hall Measurement";
-                    IconbuttonMeasurement.IconChar = IconChar.Magnet;
-                    IconbuttonMeasurement.TextImageRelation = TextImageRelation.ImageBeforeText;
-                    IconbuttonMeasurement.TextAlign = ContentAlignment.MiddleCenter;
-                    IconbuttonMeasurement.ImageAlign = ContentAlignment.MiddleCenter;
-                    IconbuttonMeasurement.IconColor = RGBColors.Color4;
-                    IconbuttonMeasurement.BackColor = Color.LightGreen;
+                    Debug.WriteLine($"You select: {Modes} measurement");
+
+                    PictureboxTuner1.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V1_Hall.png");
+                    PictureboxTuner2.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V2_Hall.png");
+                    PictureboxTuner3.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V3_Hall.png");
+                    PictureboxTuner4.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V4_Hall.png");
+                    PictureboxTuner5.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V5_Hall.png");
+                    PictureboxTuner6.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V6_Hall.png");
+                    PictureboxTuner7.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V7_Hall.png");
+                    PictureboxTuner8.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V8_Hall.png");
                 }
+
+                OnToggleChanged();
             }
+
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void TimerToggleSwitchAnimation_Tick(object sender, EventArgs e)
+        {
+            int currentX = PanelToggleSwitchButton.Location.X;
+
+            if (currentX < targetPosition)
+            {
+                PanelToggleSwitchButton.Location = new Point(Math.Min(currentX + 2, targetPosition), PanelToggleSwitchButton.Location.Y);
+            }
+
+            else if (currentX > targetPosition)
+            {
+                PanelToggleSwitchButton.Location = new Point(Math.Max(currentX - 2, targetPosition), PanelToggleSwitchButton.Location.Y);
+            }
+
+            else
+            {
+                TimerToggleSwitchAnimation.Stop();
+                PanelToggleSwitchBase.BackColor = isModes ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
+            }
+        }
+
+        protected virtual void OnToggleChanged()
+        {
+            ToggleChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void UpdateToggleState()
+        {
+            targetPosition = isModes ? PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width - 1 : 1;
+            PanelToggleSwitchButton.Location = new Point(targetPosition, 1);
+
+            if (PanelToggleSwitchButton.Location.X < 0 || PanelToggleSwitchButton.Location.X > PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width)
+            {
+                PanelToggleSwitchButton.Location = new Point(1, 1);
             }
         }
 
@@ -691,17 +767,20 @@ namespace Program01
             repetitions = 1;
             thickness = 0;
             magneticfields = 0;
-
-            if (!double.TryParse(TextboxStart.Text, out start) ||
-                !double.TryParse(TextboxStop.Text, out stop) ||
-                !double.TryParse(TextboxStep.Text, out step) ||
-                !int.TryParse(TextboxRepetition.Text, out repetitions) ||
-                !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) ||
-                !double.TryParse(TextboxThickness.Text, out thickness) ||
-                !double.TryParse(TextboxMagneticFields.Text, out magneticfields) ||
-                start >= stop || step <= 0 || repetitions < 1 || magneticfields < 0)
+            
+            if (isModes == false)
             {
-                return false;
+                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetitions) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || start >= stop || step <= 0 || repetitions < 1)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetitions) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || !double.TryParse(TextboxMagneticFields.Text, out magneticfields) || start >= stop || step <= 0 || repetitions < 1 || magneticfields < 0)
+                {
+                    return false;
+                }
             }
 
             return true;
@@ -777,6 +856,81 @@ namespace Program01
             try
             {
                 CurrentTunerandDataChildForm.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void PlaySMUConnectionMelody()
+        {
+            var melody = new List<(int frequency, double duration)>
+            {
+                (293, 0.125), // D4
+                (20, 0.050),
+                (293, 0.125), // D4
+                (20, 0.050),
+                (293, 0.125), // D4
+                (20, 0.050),
+                (293, 0.125), // D4
+                (20, 0.050),
+                (246, 0.150), // B3
+                (20, 0.050),
+                (261, 0.150), // C4
+                (20, 0.050),
+                (293, 0.500) // D4
+            };
+
+            foreach (var (frequency, duration) in melody)
+            {
+                string scpiCommand = $"SYSTem:BEEPer {frequency}, {duration}";
+                SMU.WriteString(scpiCommand);
+                //Console.Beep(frequency, (int)duration);
+                System.Threading.Thread.Sleep((int)(duration * 1));
+            }
+        }
+
+        /*private void PlaySSConnectionMelody()
+        {
+            var melody = new List<(int frequency, double duration)>
+            {
+                (372, 125), // F#4+3 Hz
+                (372, 125), // F#4+3 Hz
+                (372, 125), // F#4+3 Hz
+                (372, 125), // F#4+3 Hz
+                (314, 150), // D#4+3 Hz
+                (332, 150), // E4+3 Hz
+                (372, 1000), // F#4+3 Hz
+            };
+
+            foreach (var (frequency, duration) in melody)
+            {
+                //string scpiCommand = $"SYSTem:BEEPer {frequency}, {duration}";
+                //SMU.WriteString(scpiCommand);
+                Console.Beep(frequency, (int)duration);
+                System.Threading.Thread.Sleep((int)(duration * 0.2));
+            }
+        }*/
+
+        private void PictureboxTuner1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMUConnected && !isSSConnected)
+                {
+                    Debug.WriteLine("SMU or SS is not connected. Exiting function.");
+                    return;
+                }
+
+                if (isModes == false)
+                {
+
+                }
+                else
+                {
+
+                }
             }
             catch (Exception ex)
             {

@@ -235,39 +235,10 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\R1_VdP.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\R2_VdP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\R3_VdP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\R4_VdP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\R5_VdP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\R6_VdP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\R7_VdP.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\R8_VdP.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Tuner_Description.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Tuner_Description1.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Tuner_Description2.png" />
+    <None Include="Resources\Sample.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

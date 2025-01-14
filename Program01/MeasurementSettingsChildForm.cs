@@ -168,14 +168,13 @@ namespace Program01
                     SMU.IO = (Ivi.Visa.Interop.IMessage)resourcemanagerSMU.Open(selectedSMUAddress);
                     SMU.IO.Timeout = 5000;
                     SMU.WriteString("*IDN?");
-                    //SMU.WriteString("SYSTem:BEEPer 888, 1");
                     string response = SMU.ReadString();
                     Debug.WriteLine($"{response}");
 
                     isSMUConnected = true;
                     PlaySMUConnectionMelody();
 
-                    System.Threading.Thread.Sleep(2000);
+                    System.Threading.Thread.Sleep(4000);
                     IconbuttonSMUConnection.BackColor = Color.Snow;
                     IconbuttonSMUConnection.IconColor = Color.GreenYellow;
                     MessageBox.Show("Connected to SMU", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -867,19 +866,31 @@ namespace Program01
         {
             var melody = new List<(int frequency, double duration)>
             {
-                (293, 0.125), // D4
-                (20, 0.050),
-                (293, 0.125), // D4
-                (20, 0.050),
-                (293, 0.125), // D4
-                (20, 0.050),
-                (293, 0.125), // D4
-                (20, 0.050),
-                (246, 0.150), // B3
-                (20, 0.050),
-                (261, 0.150), // C4
-                (20, 0.050),
-                (293, 0.500) // D4
+                (784, 0.150), // G5
+                //(20, 0.100),
+                (699, 0.150), // F5
+                //(20, 0.100),
+                (440, 0.250), // A4
+                //(20, 0.100),
+                (494, 0.250), // B4
+                //(20, 0.100),
+                (659, 0.150), // E5
+                //(20, 0.100),
+                (587, 0.150), // D5
+                //(20, 0.100),
+                (349, 0.250), // F4
+                //(20, 0.100),
+                (392, 0.250), // G4
+                //(20, 0.100),
+                (587, 0.150), // D5
+                //(20, 0.400),
+                (523, 0.150), // C5
+                //(20, 0.400),
+                (330, 0.300), // E4
+                //(20, 0.800),
+                (392, 0.400), // G4
+                //(20, 1.000),
+                (523, 1.000) // C4
             };
 
             foreach (var (frequency, duration) in melody)
@@ -925,7 +936,7 @@ namespace Program01
 
                 if (isModes == false)
                 {
-
+                    SS.WriteString("");
                 }
                 else
                 {

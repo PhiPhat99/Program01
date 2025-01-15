@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MeasurementSettingsChildForm));
             this.LabelSMUVISA = new System.Windows.Forms.Label();
             this.LabelSSVISA = new System.Windows.Forms.Label();
@@ -61,6 +60,17 @@
             this.TextboxMagneticFields = new System.Windows.Forms.TextBox();
             this.LabelMagneticFieldsUnit = new System.Windows.Forms.Label();
             this.PanelTunerandData = new System.Windows.Forms.Panel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.PictureboxTunerDescription = new System.Windows.Forms.PictureBox();
+            this.IconbuttonTunerTest = new FontAwesome.Sharp.IconButton();
+            this.PictureboxTuner8 = new System.Windows.Forms.PictureBox();
+            this.PictureboxTuner7 = new System.Windows.Forms.PictureBox();
+            this.PictureboxTuner6 = new System.Windows.Forms.PictureBox();
+            this.PictureboxTuner5 = new System.Windows.Forms.PictureBox();
+            this.PictureboxTuner4 = new System.Windows.Forms.PictureBox();
+            this.PictureboxTuner3 = new System.Windows.Forms.PictureBox();
+            this.PictureboxTuner2 = new System.Windows.Forms.PictureBox();
+            this.PictureboxTuner1 = new System.Windows.Forms.PictureBox();
             this.PanelButtonTabBar = new System.Windows.Forms.Panel();
             this.ButtonData = new System.Windows.Forms.Button();
             this.ButtonTuner = new System.Windows.Forms.Button();
@@ -74,28 +84,14 @@
             this.ComboboxMagneticFieldsUnit = new System.Windows.Forms.ComboBox();
             this.PanelToggleSwitchBase = new System.Windows.Forms.Panel();
             this.PanelToggleSwitchButton = new System.Windows.Forms.Panel();
-            this.TimerToggleSwitchAnimation = new System.Windows.Forms.Timer(this.components);
             this.LabelToggleSwitchVdP = new System.Windows.Forms.Label();
             this.LabelToggleSwitchHall = new System.Windows.Forms.Label();
             this.LabelToggleSwitchMeasurementMode = new System.Windows.Forms.Label();
             this.IconbuttonRunMeasurement = new FontAwesome.Sharp.IconButton();
             this.IconbuttonClearSettings = new FontAwesome.Sharp.IconButton();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTunerDescription = new System.Windows.Forms.PictureBox();
-            this.IconbuttonTunerTest = new FontAwesome.Sharp.IconButton();
-            this.PictureboxTuner8 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner7 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner6 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner5 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner4 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner3 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner2 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner1 = new System.Windows.Forms.PictureBox();
             this.IconbuttonSSConnection = new FontAwesome.Sharp.IconButton();
             this.IconbuttonSMUConnection = new FontAwesome.Sharp.IconButton();
             this.PanelTunerandData.SuspendLayout();
-            this.PanelButtonTabBar.SuspendLayout();
-            this.PanelToggleSwitchBase.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTunerDescription)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner8)).BeginInit();
@@ -106,6 +102,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner1)).BeginInit();
+            this.PanelButtonTabBar.SuspendLayout();
+            this.PanelToggleSwitchBase.SuspendLayout();
             this.SuspendLayout();
             // 
             // LabelSMUVISA
@@ -113,7 +111,7 @@
             this.LabelSMUVISA.AutoSize = true;
             this.LabelSMUVISA.BackColor = System.Drawing.Color.Transparent;
             this.LabelSMUVISA.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSMUVISA.Location = new System.Drawing.Point(30, 7);
+            this.LabelSMUVISA.Location = new System.Drawing.Point(25, 7);
             this.LabelSMUVISA.Name = "LabelSMUVISA";
             this.LabelSMUVISA.Size = new System.Drawing.Size(314, 23);
             this.LabelSMUVISA.TabIndex = 1;
@@ -124,7 +122,7 @@
             this.LabelSSVISA.AutoSize = true;
             this.LabelSSVISA.BackColor = System.Drawing.Color.Transparent;
             this.LabelSSVISA.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSSVISA.Location = new System.Drawing.Point(430, 7);
+            this.LabelSSVISA.Location = new System.Drawing.Point(428, 7);
             this.LabelSSVISA.Name = "LabelSSVISA";
             this.LabelSSVISA.Size = new System.Drawing.Size(263, 23);
             this.LabelSSVISA.TabIndex = 3;
@@ -133,18 +131,18 @@
             // LabelRsense
             // 
             this.LabelRsense.AutoSize = true;
-            this.LabelRsense.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelRsense.Location = new System.Drawing.Point(29, 100);
+            this.LabelRsense.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelRsense.Location = new System.Drawing.Point(25, 100);
             this.LabelRsense.Name = "LabelRsense";
-            this.LabelRsense.Size = new System.Drawing.Size(77, 32);
+            this.LabelRsense.Size = new System.Drawing.Size(80, 28);
             this.LabelRsense.TabIndex = 4;
-            this.LabelRsense.Text = "Sense";
+            this.LabelRsense.Text = "SENSE :";
             // 
             // ComboboxRsense
             // 
             this.ComboboxRsense.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ComboboxRsense.FormattingEnabled = true;
-            this.ComboboxRsense.Location = new System.Drawing.Point(115, 100);
+            this.ComboboxRsense.Location = new System.Drawing.Point(120, 100);
             this.ComboboxRsense.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ComboboxRsense.Name = "ComboboxRsense";
             this.ComboboxRsense.Size = new System.Drawing.Size(135, 31);
@@ -155,7 +153,7 @@
             // 
             this.ComboboxSource.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ComboboxSource.FormattingEnabled = true;
-            this.ComboboxSource.Location = new System.Drawing.Point(125, 219);
+            this.ComboboxSource.Location = new System.Drawing.Point(137, 219);
             this.ComboboxSource.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ComboboxSource.Name = "ComboboxSource";
             this.ComboboxSource.Size = new System.Drawing.Size(135, 31);
@@ -165,18 +163,18 @@
             // LabelSource
             // 
             this.LabelSource.AutoSize = true;
-            this.LabelSource.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSource.Location = new System.Drawing.Point(29, 219);
+            this.LabelSource.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelSource.Location = new System.Drawing.Point(25, 220);
             this.LabelSource.Name = "LabelSource";
-            this.LabelSource.Size = new System.Drawing.Size(88, 32);
+            this.LabelSource.Size = new System.Drawing.Size(97, 28);
             this.LabelSource.TabIndex = 6;
-            this.LabelSource.Text = "Source";
+            this.LabelSource.Text = "SOURCE :";
             // 
             // ComboboxMeasure
             // 
             this.ComboboxMeasure.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ComboboxMeasure.FormattingEnabled = true;
-            this.ComboboxMeasure.Location = new System.Drawing.Point(145, 160);
+            this.ComboboxMeasure.Location = new System.Drawing.Point(151, 160);
             this.ComboboxMeasure.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ComboboxMeasure.Name = "ComboboxMeasure";
             this.ComboboxMeasure.Size = new System.Drawing.Size(135, 31);
@@ -186,22 +184,22 @@
             // LabelMeasure
             // 
             this.LabelMeasure.AutoSize = true;
-            this.LabelMeasure.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelMeasure.Location = new System.Drawing.Point(29, 160);
+            this.LabelMeasure.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelMeasure.Location = new System.Drawing.Point(25, 160);
             this.LabelMeasure.Name = "LabelMeasure";
-            this.LabelMeasure.Size = new System.Drawing.Size(108, 32);
+            this.LabelMeasure.Size = new System.Drawing.Size(111, 28);
             this.LabelMeasure.TabIndex = 8;
-            this.LabelMeasure.Text = "Measure";
+            this.LabelMeasure.Text = "MEASURE :";
             // 
             // LabelStartUnit
             // 
             this.LabelStartUnit.AutoSize = true;
-            this.LabelStartUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelStartUnit.Location = new System.Drawing.Point(270, 280);
+            this.LabelStartUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelStartUnit.Location = new System.Drawing.Point(265, 283);
             this.LabelStartUnit.Name = "LabelStartUnit";
-            this.LabelStartUnit.Size = new System.Drawing.Size(50, 28);
+            this.LabelStartUnit.Size = new System.Drawing.Size(63, 25);
             this.LabelStartUnit.TabIndex = 17;
-            this.LabelStartUnit.Text = "Unit";
+            this.LabelStartUnit.Text = "UNIT :";
             // 
             // TextboxStart
             // 
@@ -215,32 +213,32 @@
             // LabelStart
             // 
             this.LabelStart.AutoSize = true;
-            this.LabelStart.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelStart.Location = new System.Drawing.Point(79, 280);
+            this.LabelStart.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelStart.Location = new System.Drawing.Point(70, 283);
             this.LabelStart.Name = "LabelStart";
-            this.LabelStart.Size = new System.Drawing.Size(54, 28);
+            this.LabelStart.Size = new System.Drawing.Size(73, 25);
             this.LabelStart.TabIndex = 11;
-            this.LabelStart.Text = "Start";
+            this.LabelStart.Text = "START :";
             // 
             // LabelStopUnit
             // 
             this.LabelStopUnit.AutoSize = true;
-            this.LabelStopUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelStopUnit.Location = new System.Drawing.Point(270, 340);
+            this.LabelStopUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelStopUnit.Location = new System.Drawing.Point(265, 340);
             this.LabelStopUnit.Name = "LabelStopUnit";
-            this.LabelStopUnit.Size = new System.Drawing.Size(50, 28);
+            this.LabelStopUnit.Size = new System.Drawing.Size(63, 25);
             this.LabelStopUnit.TabIndex = 16;
-            this.LabelStopUnit.Text = "Unit";
+            this.LabelStopUnit.Text = "UNIT :";
             // 
             // LabelStepUnit
             // 
             this.LabelStepUnit.AutoSize = true;
-            this.LabelStepUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelStepUnit.Location = new System.Drawing.Point(270, 400);
+            this.LabelStepUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelStepUnit.Location = new System.Drawing.Point(265, 405);
             this.LabelStepUnit.Name = "LabelStepUnit";
-            this.LabelStepUnit.Size = new System.Drawing.Size(50, 28);
+            this.LabelStepUnit.Size = new System.Drawing.Size(63, 25);
             this.LabelStepUnit.TabIndex = 15;
-            this.LabelStepUnit.Text = "Unit";
+            this.LabelStepUnit.Text = "UNIT :";
             // 
             // TextboxStop
             // 
@@ -254,12 +252,12 @@
             // LabelStop
             // 
             this.LabelStop.AutoSize = true;
-            this.LabelStop.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelStop.Location = new System.Drawing.Point(79, 340);
+            this.LabelStop.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelStop.Location = new System.Drawing.Point(76, 340);
             this.LabelStop.Name = "LabelStop";
-            this.LabelStop.Size = new System.Drawing.Size(53, 28);
+            this.LabelStop.Size = new System.Drawing.Size(65, 25);
             this.LabelStop.TabIndex = 13;
-            this.LabelStop.Text = "Stop";
+            this.LabelStop.Text = "STOP :";
             // 
             // TextboxStep
             // 
@@ -273,18 +271,18 @@
             // LabelStep
             // 
             this.LabelStep.AutoSize = true;
-            this.LabelStep.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelStep.Location = new System.Drawing.Point(79, 400);
+            this.LabelStep.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelStep.Location = new System.Drawing.Point(77, 405);
             this.LabelStep.Name = "LabelStep";
-            this.LabelStep.Size = new System.Drawing.Size(52, 28);
+            this.LabelStep.Size = new System.Drawing.Size(61, 25);
             this.LabelStep.TabIndex = 13;
-            this.LabelStep.Text = "Step";
+            this.LabelStep.Text = "STEP :";
             // 
             // ComboboxSourceLimitMode
             // 
             this.ComboboxSourceLimitMode.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ComboboxSourceLimitMode.FormattingEnabled = true;
-            this.ComboboxSourceLimitMode.Location = new System.Drawing.Point(105, 461);
+            this.ComboboxSourceLimitMode.Location = new System.Drawing.Point(114, 461);
             this.ComboboxSourceLimitMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ComboboxSourceLimitMode.Name = "ComboboxSourceLimitMode";
             this.ComboboxSourceLimitMode.Size = new System.Drawing.Size(135, 31);
@@ -294,22 +292,22 @@
             // LabelSourceLimitType
             // 
             this.LabelSourceLimitType.AutoSize = true;
-            this.LabelSourceLimitType.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSourceLimitType.Location = new System.Drawing.Point(29, 461);
+            this.LabelSourceLimitType.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelSourceLimitType.Location = new System.Drawing.Point(25, 461);
             this.LabelSourceLimitType.Name = "LabelSourceLimitType";
-            this.LabelSourceLimitType.Size = new System.Drawing.Size(68, 32);
+            this.LabelSourceLimitType.Size = new System.Drawing.Size(74, 28);
             this.LabelSourceLimitType.TabIndex = 11;
-            this.LabelSourceLimitType.Text = "Limit";
+            this.LabelSourceLimitType.Text = "LIMIT :";
             // 
             // LabelSourceLimitLevelUnit
             // 
             this.LabelSourceLimitLevelUnit.AutoSize = true;
-            this.LabelSourceLimitLevelUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSourceLimitLevelUnit.Location = new System.Drawing.Point(270, 520);
+            this.LabelSourceLimitLevelUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelSourceLimitLevelUnit.Location = new System.Drawing.Point(265, 523);
             this.LabelSourceLimitLevelUnit.Name = "LabelSourceLimitLevelUnit";
-            this.LabelSourceLimitLevelUnit.Size = new System.Drawing.Size(50, 28);
+            this.LabelSourceLimitLevelUnit.Size = new System.Drawing.Size(63, 25);
             this.LabelSourceLimitLevelUnit.TabIndex = 20;
-            this.LabelSourceLimitLevelUnit.Text = "Unit";
+            this.LabelSourceLimitLevelUnit.Text = "UNIT :";
             // 
             // TextboxSourceLimitLevel
             // 
@@ -323,93 +321,93 @@
             // LabelSourceLimitLevel
             // 
             this.LabelSourceLimitLevel.AutoSize = true;
-            this.LabelSourceLimitLevel.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSourceLimitLevel.Location = new System.Drawing.Point(79, 520);
+            this.LabelSourceLimitLevel.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelSourceLimitLevel.Location = new System.Drawing.Point(67, 523);
             this.LabelSourceLimitLevel.Name = "LabelSourceLimitLevel";
-            this.LabelSourceLimitLevel.Size = new System.Drawing.Size(59, 28);
+            this.LabelSourceLimitLevel.Size = new System.Drawing.Size(69, 25);
             this.LabelSourceLimitLevel.TabIndex = 18;
-            this.LabelSourceLimitLevel.Text = "Level";
+            this.LabelSourceLimitLevel.Text = "LEVEL :";
             // 
             // LabelThickness
             // 
             this.LabelThickness.AutoSize = true;
-            this.LabelThickness.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelThickness.Location = new System.Drawing.Point(29, 580);
+            this.LabelThickness.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelThickness.Location = new System.Drawing.Point(25, 580);
             this.LabelThickness.Name = "LabelThickness";
-            this.LabelThickness.Size = new System.Drawing.Size(118, 32);
+            this.LabelThickness.Size = new System.Drawing.Size(126, 28);
             this.LabelThickness.TabIndex = 13;
-            this.LabelThickness.Text = "Thickness";
+            this.LabelThickness.Text = "THICKNESS :";
             // 
             // LabelThicknessUnit
             // 
             this.LabelThicknessUnit.AutoSize = true;
-            this.LabelThicknessUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelThicknessUnit.Location = new System.Drawing.Point(270, 580);
+            this.LabelThicknessUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelThicknessUnit.Location = new System.Drawing.Point(265, 585);
             this.LabelThicknessUnit.Name = "LabelThicknessUnit";
-            this.LabelThicknessUnit.Size = new System.Drawing.Size(50, 28);
+            this.LabelThicknessUnit.Size = new System.Drawing.Size(63, 25);
             this.LabelThicknessUnit.TabIndex = 22;
-            this.LabelThicknessUnit.Text = "Unit";
+            this.LabelThicknessUnit.Text = "UNIT :";
             // 
             // TextboxThickness
             // 
             this.TextboxThickness.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxThickness.Location = new System.Drawing.Point(155, 580);
+            this.TextboxThickness.Location = new System.Drawing.Point(166, 582);
             this.TextboxThickness.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TextboxThickness.Name = "TextboxThickness";
-            this.TextboxThickness.Size = new System.Drawing.Size(100, 30);
+            this.TextboxThickness.Size = new System.Drawing.Size(84, 30);
             this.TextboxThickness.TabIndex = 21;
             // 
             // LabelRepetition
             // 
             this.LabelRepetition.AutoSize = true;
-            this.LabelRepetition.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelRepetition.Location = new System.Drawing.Point(29, 640);
+            this.LabelRepetition.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelRepetition.Location = new System.Drawing.Point(25, 640);
             this.LabelRepetition.Name = "LabelRepetition";
-            this.LabelRepetition.Size = new System.Drawing.Size(126, 32);
+            this.LabelRepetition.Size = new System.Drawing.Size(131, 28);
             this.LabelRepetition.TabIndex = 23;
-            this.LabelRepetition.Text = "Repetition";
+            this.LabelRepetition.Text = "REPETITION :";
             // 
             // TextboxRepetition
             // 
             this.TextboxRepetition.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxRepetition.Location = new System.Drawing.Point(165, 640);
+            this.TextboxRepetition.Location = new System.Drawing.Point(171, 642);
             this.TextboxRepetition.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TextboxRepetition.Name = "TextboxRepetition";
-            this.TextboxRepetition.Size = new System.Drawing.Size(100, 30);
+            this.TextboxRepetition.Size = new System.Drawing.Size(79, 30);
             this.TextboxRepetition.TabIndex = 24;
             // 
             // LabelMagneticFields
             // 
             this.LabelMagneticFields.AutoSize = true;
-            this.LabelMagneticFields.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelMagneticFields.Location = new System.Drawing.Point(29, 700);
+            this.LabelMagneticFields.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelMagneticFields.Location = new System.Drawing.Point(25, 700);
             this.LabelMagneticFields.Name = "LabelMagneticFields";
-            this.LabelMagneticFields.Size = new System.Drawing.Size(184, 32);
+            this.LabelMagneticFields.Size = new System.Drawing.Size(189, 28);
             this.LabelMagneticFields.TabIndex = 25;
-            this.LabelMagneticFields.Text = "Magnetic Fields";
+            this.LabelMagneticFields.Text = "MAGNETIC FIELDS :";
             // 
             // TextboxMagneticFields
             // 
             this.TextboxMagneticFields.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxMagneticFields.Location = new System.Drawing.Point(222, 700);
+            this.TextboxMagneticFields.Location = new System.Drawing.Point(229, 700);
             this.TextboxMagneticFields.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TextboxMagneticFields.Name = "TextboxMagneticFields";
-            this.TextboxMagneticFields.Size = new System.Drawing.Size(100, 30);
+            this.TextboxMagneticFields.Size = new System.Drawing.Size(80, 30);
             this.TextboxMagneticFields.TabIndex = 26;
             // 
             // LabelMagneticFieldsUnit
             // 
             this.LabelMagneticFieldsUnit.AutoSize = true;
-            this.LabelMagneticFieldsUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelMagneticFieldsUnit.Location = new System.Drawing.Point(340, 700);
+            this.LabelMagneticFieldsUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelMagneticFieldsUnit.Location = new System.Drawing.Point(325, 705);
             this.LabelMagneticFieldsUnit.Name = "LabelMagneticFieldsUnit";
-            this.LabelMagneticFieldsUnit.Size = new System.Drawing.Size(50, 28);
+            this.LabelMagneticFieldsUnit.Size = new System.Drawing.Size(63, 25);
             this.LabelMagneticFieldsUnit.TabIndex = 27;
-            this.LabelMagneticFieldsUnit.Text = "Unit";
+            this.LabelMagneticFieldsUnit.Text = "UNIT :";
             // 
             // PanelTunerandData
             // 
-            this.PanelTunerandData.BackColor = System.Drawing.Color.LightGray;
+            this.PanelTunerandData.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(248)))), ((int)(((byte)(231)))));
             this.PanelTunerandData.Controls.Add(this.pictureBox1);
             this.PanelTunerandData.Controls.Add(this.PictureboxTunerDescription);
             this.PanelTunerandData.Controls.Add(this.IconbuttonTunerTest);
@@ -428,9 +426,129 @@
             this.PanelTunerandData.Size = new System.Drawing.Size(790, 640);
             this.PanelTunerandData.TabIndex = 28;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.Image = global::Program01.Properties.Resources.Sample;
+            this.pictureBox1.Location = new System.Drawing.Point(280, 450);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(320, 180);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 43;
+            this.pictureBox1.TabStop = false;
+            // 
+            // PictureboxTunerDescription
+            // 
+            this.PictureboxTunerDescription.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxTunerDescription.Image = ((System.Drawing.Image)(resources.GetObject("PictureboxTunerDescription.Image")));
+            this.PictureboxTunerDescription.Location = new System.Drawing.Point(20, 485);
+            this.PictureboxTunerDescription.Name = "PictureboxTunerDescription";
+            this.PictureboxTunerDescription.Size = new System.Drawing.Size(240, 100);
+            this.PictureboxTunerDescription.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxTunerDescription.TabIndex = 42;
+            this.PictureboxTunerDescription.TabStop = false;
+            // 
+            // IconbuttonTunerTest
+            // 
+            this.IconbuttonTunerTest.BackColor = System.Drawing.Color.Snow;
+            this.IconbuttonTunerTest.FlatAppearance.BorderSize = 0;
+            this.IconbuttonTunerTest.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.IconbuttonTunerTest.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IconbuttonTunerTest.IconChar = FontAwesome.Sharp.IconChar.None;
+            this.IconbuttonTunerTest.IconColor = System.Drawing.Color.Black;
+            this.IconbuttonTunerTest.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.IconbuttonTunerTest.Location = new System.Drawing.Point(630, 530);
+            this.IconbuttonTunerTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.IconbuttonTunerTest.Name = "IconbuttonTunerTest";
+            this.IconbuttonTunerTest.Size = new System.Drawing.Size(120, 30);
+            this.IconbuttonTunerTest.TabIndex = 41;
+            this.IconbuttonTunerTest.Text = "TUNER TEST";
+            this.IconbuttonTunerTest.UseVisualStyleBackColor = false;
+            // 
+            // PictureboxTuner8
+            // 
+            this.PictureboxTuner8.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxTuner8.Location = new System.Drawing.Point(590, 260);
+            this.PictureboxTuner8.Name = "PictureboxTuner8";
+            this.PictureboxTuner8.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxTuner8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxTuner8.TabIndex = 8;
+            this.PictureboxTuner8.TabStop = false;
+            // 
+            // PictureboxTuner7
+            // 
+            this.PictureboxTuner7.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxTuner7.Location = new System.Drawing.Point(400, 260);
+            this.PictureboxTuner7.Name = "PictureboxTuner7";
+            this.PictureboxTuner7.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxTuner7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxTuner7.TabIndex = 7;
+            this.PictureboxTuner7.TabStop = false;
+            // 
+            // PictureboxTuner6
+            // 
+            this.PictureboxTuner6.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxTuner6.Location = new System.Drawing.Point(210, 260);
+            this.PictureboxTuner6.Name = "PictureboxTuner6";
+            this.PictureboxTuner6.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxTuner6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxTuner6.TabIndex = 6;
+            this.PictureboxTuner6.TabStop = false;
+            // 
+            // PictureboxTuner5
+            // 
+            this.PictureboxTuner5.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxTuner5.Location = new System.Drawing.Point(20, 260);
+            this.PictureboxTuner5.Name = "PictureboxTuner5";
+            this.PictureboxTuner5.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxTuner5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxTuner5.TabIndex = 5;
+            this.PictureboxTuner5.TabStop = false;
+            // 
+            // PictureboxTuner4
+            // 
+            this.PictureboxTuner4.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxTuner4.Location = new System.Drawing.Point(590, 60);
+            this.PictureboxTuner4.Name = "PictureboxTuner4";
+            this.PictureboxTuner4.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxTuner4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxTuner4.TabIndex = 4;
+            this.PictureboxTuner4.TabStop = false;
+            // 
+            // PictureboxTuner3
+            // 
+            this.PictureboxTuner3.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxTuner3.Location = new System.Drawing.Point(400, 60);
+            this.PictureboxTuner3.Name = "PictureboxTuner3";
+            this.PictureboxTuner3.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxTuner3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxTuner3.TabIndex = 3;
+            this.PictureboxTuner3.TabStop = false;
+            // 
+            // PictureboxTuner2
+            // 
+            this.PictureboxTuner2.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxTuner2.Location = new System.Drawing.Point(210, 60);
+            this.PictureboxTuner2.Name = "PictureboxTuner2";
+            this.PictureboxTuner2.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxTuner2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxTuner2.TabIndex = 2;
+            this.PictureboxTuner2.TabStop = false;
+            // 
+            // PictureboxTuner1
+            // 
+            this.PictureboxTuner1.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxTuner1.Location = new System.Drawing.Point(20, 60);
+            this.PictureboxTuner1.Name = "PictureboxTuner1";
+            this.PictureboxTuner1.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxTuner1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxTuner1.TabIndex = 1;
+            this.PictureboxTuner1.TabStop = false;
+            this.PictureboxTuner1.Click += new System.EventHandler(this.PictureboxTuner1_Click);
+            // 
             // PanelButtonTabBar
             // 
-            this.PanelButtonTabBar.BackColor = System.Drawing.Color.Gray;
+            this.PanelButtonTabBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(248)))), ((int)(((byte)(231)))));
             this.PanelButtonTabBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PanelButtonTabBar.Controls.Add(this.ButtonData);
             this.PanelButtonTabBar.Controls.Add(this.ButtonTuner);
@@ -443,33 +561,35 @@
             // 
             // ButtonData
             // 
-            this.ButtonData.BackColor = System.Drawing.Color.White;
+            this.ButtonData.BackColor = System.Drawing.Color.Transparent;
             this.ButtonData.Dock = System.Windows.Forms.DockStyle.Left;
+            this.ButtonData.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
             this.ButtonData.FlatAppearance.BorderSize = 0;
-            this.ButtonData.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.ButtonData.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
+            this.ButtonData.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonData.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ButtonData.Location = new System.Drawing.Point(75, 0);
-            this.ButtonData.Margin = new System.Windows.Forms.Padding(1);
+            this.ButtonData.Margin = new System.Windows.Forms.Padding(0);
             this.ButtonData.Name = "ButtonData";
             this.ButtonData.Size = new System.Drawing.Size(75, 28);
             this.ButtonData.TabIndex = 1;
-            this.ButtonData.Text = "Data";
+            this.ButtonData.Text = "DATA";
             this.ButtonData.UseVisualStyleBackColor = false;
             this.ButtonData.Click += new System.EventHandler(this.ButtonData_Click);
             // 
             // ButtonTuner
             // 
-            this.ButtonTuner.BackColor = System.Drawing.Color.White;
+            this.ButtonTuner.BackColor = System.Drawing.Color.Transparent;
             this.ButtonTuner.Dock = System.Windows.Forms.DockStyle.Left;
+            this.ButtonTuner.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
             this.ButtonTuner.FlatAppearance.BorderSize = 0;
-            this.ButtonTuner.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.ButtonTuner.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
+            this.ButtonTuner.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonTuner.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ButtonTuner.Location = new System.Drawing.Point(0, 0);
-            this.ButtonTuner.Margin = new System.Windows.Forms.Padding(1);
+            this.ButtonTuner.Margin = new System.Windows.Forms.Padding(0);
             this.ButtonTuner.Name = "ButtonTuner";
             this.ButtonTuner.Size = new System.Drawing.Size(75, 28);
             this.ButtonTuner.TabIndex = 0;
-            this.ButtonTuner.Text = "Tuner";
+            this.ButtonTuner.Text = "TUNER";
             this.ButtonTuner.UseVisualStyleBackColor = false;
             this.ButtonTuner.Click += new System.EventHandler(this.ButtonTuner_Click);
             // 
@@ -507,7 +627,7 @@
             // 
             this.ComboboxStopUnit.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ComboboxStopUnit.FormattingEnabled = true;
-            this.ComboboxStopUnit.Location = new System.Drawing.Point(330, 339);
+            this.ComboboxStopUnit.Location = new System.Drawing.Point(330, 337);
             this.ComboboxStopUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ComboboxStopUnit.Name = "ComboboxStopUnit";
             this.ComboboxStopUnit.Size = new System.Drawing.Size(60, 31);
@@ -517,7 +637,7 @@
             // 
             this.ComboboxStepUnit.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ComboboxStepUnit.FormattingEnabled = true;
-            this.ComboboxStepUnit.Location = new System.Drawing.Point(330, 397);
+            this.ComboboxStepUnit.Location = new System.Drawing.Point(330, 402);
             this.ComboboxStepUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ComboboxStepUnit.Name = "ComboboxStepUnit";
             this.ComboboxStepUnit.Size = new System.Drawing.Size(60, 31);
@@ -537,7 +657,7 @@
             // 
             this.ComboboxThicknessUnit.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ComboboxThicknessUnit.FormattingEnabled = true;
-            this.ComboboxThicknessUnit.Location = new System.Drawing.Point(330, 580);
+            this.ComboboxThicknessUnit.Location = new System.Drawing.Point(330, 582);
             this.ComboboxThicknessUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ComboboxThicknessUnit.Name = "ComboboxThicknessUnit";
             this.ComboboxThicknessUnit.Size = new System.Drawing.Size(60, 31);
@@ -547,7 +667,7 @@
             // 
             this.ComboboxMagneticFieldsUnit.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ComboboxMagneticFieldsUnit.FormattingEnabled = true;
-            this.ComboboxMagneticFieldsUnit.Location = new System.Drawing.Point(400, 700);
+            this.ComboboxMagneticFieldsUnit.Location = new System.Drawing.Point(390, 702);
             this.ComboboxMagneticFieldsUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.ComboboxMagneticFieldsUnit.Name = "ComboboxMagneticFieldsUnit";
             this.ComboboxMagneticFieldsUnit.Size = new System.Drawing.Size(50, 31);
@@ -556,7 +676,7 @@
             // PanelToggleSwitchBase
             // 
             this.PanelToggleSwitchBase.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.PanelToggleSwitchBase.BackColor = System.Drawing.Color.LightGray;
+            this.PanelToggleSwitchBase.BackColor = System.Drawing.Color.Transparent;
             this.PanelToggleSwitchBase.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PanelToggleSwitchBase.Controls.Add(this.PanelToggleSwitchButton);
             this.PanelToggleSwitchBase.ForeColor = System.Drawing.Color.Transparent;
@@ -571,6 +691,7 @@
             this.PanelToggleSwitchButton.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.PanelToggleSwitchButton.BackColor = System.Drawing.Color.Snow;
             this.PanelToggleSwitchButton.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.PanelToggleSwitchButton.ForeColor = System.Drawing.Color.Black;
             this.PanelToggleSwitchButton.Location = new System.Drawing.Point(29, 0);
             this.PanelToggleSwitchButton.Name = "PanelToggleSwitchButton";
             this.PanelToggleSwitchButton.Size = new System.Drawing.Size(28, 28);
@@ -582,6 +703,7 @@
             this.LabelToggleSwitchVdP.AutoSize = true;
             this.LabelToggleSwitchVdP.BackColor = System.Drawing.Color.Transparent;
             this.LabelToggleSwitchVdP.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelToggleSwitchVdP.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.LabelToggleSwitchVdP.Location = new System.Drawing.Point(810, 40);
             this.LabelToggleSwitchVdP.Name = "LabelToggleSwitchVdP";
             this.LabelToggleSwitchVdP.Size = new System.Drawing.Size(119, 23);
@@ -593,6 +715,7 @@
             this.LabelToggleSwitchHall.AutoSize = true;
             this.LabelToggleSwitchHall.BackColor = System.Drawing.Color.Transparent;
             this.LabelToggleSwitchHall.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelToggleSwitchHall.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.LabelToggleSwitchHall.Location = new System.Drawing.Point(1070, 40);
             this.LabelToggleSwitchHall.Name = "LabelToggleSwitchHall";
             this.LabelToggleSwitchHall.Size = new System.Drawing.Size(94, 23);
@@ -612,165 +735,47 @@
             // 
             // IconbuttonRunMeasurement
             // 
-            this.IconbuttonRunMeasurement.BackColor = System.Drawing.Color.White;
+            this.IconbuttonRunMeasurement.BackColor = System.Drawing.Color.Snow;
+            this.IconbuttonRunMeasurement.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
             this.IconbuttonRunMeasurement.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.IconbuttonRunMeasurement.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IconbuttonRunMeasurement.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.IconbuttonRunMeasurement.IconChar = FontAwesome.Sharp.IconChar.Running;
             this.IconbuttonRunMeasurement.IconColor = System.Drawing.Color.Black;
             this.IconbuttonRunMeasurement.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.IconbuttonRunMeasurement.IconSize = 36;
-            this.IconbuttonRunMeasurement.Location = new System.Drawing.Point(1051, 750);
+            this.IconbuttonRunMeasurement.Location = new System.Drawing.Point(1060, 750);
             this.IconbuttonRunMeasurement.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.IconbuttonRunMeasurement.Name = "IconbuttonRunMeasurement";
-            this.IconbuttonRunMeasurement.Size = new System.Drawing.Size(120, 46);
+            this.IconbuttonRunMeasurement.Size = new System.Drawing.Size(120, 40);
             this.IconbuttonRunMeasurement.TabIndex = 30;
-            this.IconbuttonRunMeasurement.Text = "Run";
+            this.IconbuttonRunMeasurement.Text = "RUN";
             this.IconbuttonRunMeasurement.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.IconbuttonRunMeasurement.UseVisualStyleBackColor = false;
             this.IconbuttonRunMeasurement.Click += new System.EventHandler(this.IconbuttonRunMeasurement_Click);
             // 
             // IconbuttonClearSettings
             // 
-            this.IconbuttonClearSettings.BackColor = System.Drawing.Color.White;
+            this.IconbuttonClearSettings.BackColor = System.Drawing.Color.Snow;
+            this.IconbuttonClearSettings.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
             this.IconbuttonClearSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonClearSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IconbuttonClearSettings.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.IconbuttonClearSettings.IconChar = FontAwesome.Sharp.IconChar.None;
             this.IconbuttonClearSettings.IconColor = System.Drawing.Color.Black;
             this.IconbuttonClearSettings.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonClearSettings.Location = new System.Drawing.Point(880, 750);
+            this.IconbuttonClearSettings.Location = new System.Drawing.Point(920, 750);
             this.IconbuttonClearSettings.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.IconbuttonClearSettings.Name = "IconbuttonClearSettings";
-            this.IconbuttonClearSettings.Size = new System.Drawing.Size(149, 46);
+            this.IconbuttonClearSettings.Size = new System.Drawing.Size(120, 40);
             this.IconbuttonClearSettings.TabIndex = 29;
-            this.IconbuttonClearSettings.Text = "Clear";
+            this.IconbuttonClearSettings.Text = "CLEAR";
             this.IconbuttonClearSettings.UseVisualStyleBackColor = false;
             this.IconbuttonClearSettings.Click += new System.EventHandler(this.IconbuttonClearSettings_Click);
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.Image = global::Program01.Properties.Resources.Sample;
-            this.pictureBox1.Location = new System.Drawing.Point(280, 450);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(320, 180);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 43;
-            this.pictureBox1.TabStop = false;
-            // 
-            // PictureboxTunerDescription
-            // 
-            this.PictureboxTunerDescription.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxTunerDescription.Image = ((System.Drawing.Image)(resources.GetObject("PictureboxTunerDescription.Image")));
-            this.PictureboxTunerDescription.Location = new System.Drawing.Point(20, 485);
-            this.PictureboxTunerDescription.Name = "PictureboxTunerDescription";
-            this.PictureboxTunerDescription.Size = new System.Drawing.Size(240, 100);
-            this.PictureboxTunerDescription.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTunerDescription.TabIndex = 42;
-            this.PictureboxTunerDescription.TabStop = false;
-            // 
-            // IconbuttonTunerTest
-            // 
-            this.IconbuttonTunerTest.BackColor = System.Drawing.Color.White;
-            this.IconbuttonTunerTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonTunerTest.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IconbuttonTunerTest.IconChar = FontAwesome.Sharp.IconChar.None;
-            this.IconbuttonTunerTest.IconColor = System.Drawing.Color.Black;
-            this.IconbuttonTunerTest.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonTunerTest.Location = new System.Drawing.Point(620, 580);
-            this.IconbuttonTunerTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.IconbuttonTunerTest.Name = "IconbuttonTunerTest";
-            this.IconbuttonTunerTest.Size = new System.Drawing.Size(140, 40);
-            this.IconbuttonTunerTest.TabIndex = 41;
-            this.IconbuttonTunerTest.Text = "Tuner Test";
-            this.IconbuttonTunerTest.UseVisualStyleBackColor = false;
-            // 
-            // PictureboxTuner8
-            // 
-            this.PictureboxTuner8.BackColor = System.Drawing.Color.Black;
-            this.PictureboxTuner8.Location = new System.Drawing.Point(590, 260);
-            this.PictureboxTuner8.Name = "PictureboxTuner8";
-            this.PictureboxTuner8.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner8.TabIndex = 8;
-            this.PictureboxTuner8.TabStop = false;
-            // 
-            // PictureboxTuner7
-            // 
-            this.PictureboxTuner7.BackColor = System.Drawing.Color.Black;
-            this.PictureboxTuner7.Location = new System.Drawing.Point(400, 260);
-            this.PictureboxTuner7.Name = "PictureboxTuner7";
-            this.PictureboxTuner7.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner7.TabIndex = 7;
-            this.PictureboxTuner7.TabStop = false;
-            // 
-            // PictureboxTuner6
-            // 
-            this.PictureboxTuner6.BackColor = System.Drawing.Color.Black;
-            this.PictureboxTuner6.Location = new System.Drawing.Point(210, 260);
-            this.PictureboxTuner6.Name = "PictureboxTuner6";
-            this.PictureboxTuner6.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner6.TabIndex = 6;
-            this.PictureboxTuner6.TabStop = false;
-            // 
-            // PictureboxTuner5
-            // 
-            this.PictureboxTuner5.BackColor = System.Drawing.Color.Black;
-            this.PictureboxTuner5.Location = new System.Drawing.Point(20, 260);
-            this.PictureboxTuner5.Name = "PictureboxTuner5";
-            this.PictureboxTuner5.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner5.TabIndex = 5;
-            this.PictureboxTuner5.TabStop = false;
-            // 
-            // PictureboxTuner4
-            // 
-            this.PictureboxTuner4.BackColor = System.Drawing.Color.Black;
-            this.PictureboxTuner4.Location = new System.Drawing.Point(590, 60);
-            this.PictureboxTuner4.Name = "PictureboxTuner4";
-            this.PictureboxTuner4.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner4.TabIndex = 4;
-            this.PictureboxTuner4.TabStop = false;
-            // 
-            // PictureboxTuner3
-            // 
-            this.PictureboxTuner3.BackColor = System.Drawing.Color.Black;
-            this.PictureboxTuner3.Location = new System.Drawing.Point(400, 60);
-            this.PictureboxTuner3.Name = "PictureboxTuner3";
-            this.PictureboxTuner3.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner3.TabIndex = 3;
-            this.PictureboxTuner3.TabStop = false;
-            // 
-            // PictureboxTuner2
-            // 
-            this.PictureboxTuner2.BackColor = System.Drawing.Color.Black;
-            this.PictureboxTuner2.Location = new System.Drawing.Point(210, 60);
-            this.PictureboxTuner2.Name = "PictureboxTuner2";
-            this.PictureboxTuner2.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner2.TabIndex = 2;
-            this.PictureboxTuner2.TabStop = false;
-            // 
-            // PictureboxTuner1
-            // 
-            this.PictureboxTuner1.BackColor = System.Drawing.Color.Black;
-            this.PictureboxTuner1.Location = new System.Drawing.Point(20, 60);
-            this.PictureboxTuner1.Name = "PictureboxTuner1";
-            this.PictureboxTuner1.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner1.TabIndex = 1;
-            this.PictureboxTuner1.TabStop = false;
-            this.PictureboxTuner1.Click += new System.EventHandler(this.PictureboxTuner1_Click);
             // 
             // IconbuttonSSConnection
             // 
             this.IconbuttonSSConnection.BackColor = System.Drawing.Color.White;
-            this.IconbuttonSSConnection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.IconbuttonSSConnection.IconChar = FontAwesome.Sharp.IconChar.PowerOff;
-            this.IconbuttonSSConnection.IconColor = System.Drawing.Color.Black;
+            this.IconbuttonSSConnection.IconColor = System.Drawing.Color.Gainsboro;
             this.IconbuttonSSConnection.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.IconbuttonSSConnection.IconSize = 30;
             this.IconbuttonSSConnection.Location = new System.Drawing.Point(640, 37);
@@ -783,10 +788,9 @@
             // 
             // IconbuttonSMUConnection
             // 
-            this.IconbuttonSMUConnection.BackColor = System.Drawing.Color.White;
-            this.IconbuttonSMUConnection.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.IconbuttonSMUConnection.BackColor = System.Drawing.Color.Snow;
             this.IconbuttonSMUConnection.IconChar = FontAwesome.Sharp.IconChar.PowerOff;
-            this.IconbuttonSMUConnection.IconColor = System.Drawing.Color.Black;
+            this.IconbuttonSMUConnection.IconColor = System.Drawing.Color.Gainsboro;
             this.IconbuttonSMUConnection.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.IconbuttonSMUConnection.IconSize = 30;
             this.IconbuttonSMUConnection.Location = new System.Drawing.Point(260, 37);
@@ -801,7 +805,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Silver;
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(234)))), ((int)(((byte)(213)))));
             this.ClientSize = new System.Drawing.Size(1260, 820);
             this.Controls.Add(this.LabelToggleSwitchMeasurementMode);
             this.Controls.Add(this.LabelToggleSwitchHall);
@@ -856,8 +860,6 @@
             this.Text = "2";
             this.Load += new System.EventHandler(this.MeasurementSettingsChildForm_Load);
             this.PanelTunerandData.ResumeLayout(false);
-            this.PanelButtonTabBar.ResumeLayout(false);
-            this.PanelToggleSwitchBase.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTunerDescription)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner8)).EndInit();
@@ -868,6 +870,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner1)).EndInit();
+            this.PanelButtonTabBar.ResumeLayout(false);
+            this.PanelToggleSwitchBase.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -933,7 +937,6 @@
         private System.Windows.Forms.PictureBox PictureboxTunerDescription;
         private System.Windows.Forms.Panel PanelToggleSwitchBase;
         private System.Windows.Forms.Panel PanelToggleSwitchButton;
-        private System.Windows.Forms.Timer TimerToggleSwitchAnimation;
         private System.Windows.Forms.Label LabelToggleSwitchVdP;
         private System.Windows.Forms.Label LabelToggleSwitchHall;
         private System.Windows.Forms.Label LabelToggleSwitchMeasurementMode;

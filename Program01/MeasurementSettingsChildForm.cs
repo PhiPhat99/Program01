@@ -51,12 +51,6 @@ namespace Program01
         {
             InitializeComponent();
             InitializeGPIB();
-
-            TimerToggleSwitchAnimation = new Timer
-            {
-                Interval = 1
-            };
-            TimerToggleSwitchAnimation.Tick += TimerToggleSwitchAnimation_Tick;
         }
 
         private void InitializeGPIB()
@@ -195,7 +189,7 @@ namespace Program01
                         isSMUConnected = false;
 
                         IconbuttonSMUConnection.BackColor = Color.Snow;
-                        IconbuttonSMUConnection.IconColor = Color.Gray;
+                        IconbuttonSMUConnection.IconColor = Color.Gainsboro;
 
                         MessageBox.Show("Disconnected from the SMU.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -257,7 +251,7 @@ namespace Program01
                         isSSConnected = false;
 
                         IconbuttonSSConnection.BackColor = Color.Snow;
-                        IconbuttonSSConnection.IconColor = Color.Gray;
+                        IconbuttonSSConnection.IconColor = Color.Gainsboro;
 
                         MessageBox.Show("Disconnected from the SS.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -515,12 +509,8 @@ namespace Program01
             try
             {
                 isModes = !isModes;
-                targetPosition = isModes ? PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width - 1 : 1;
 
-                if (PanelToggleSwitchButton.Location.X != targetPosition)
-                {
-                    TimerToggleSwitchAnimation.Start();
-                }
+                UpdateToggleState();
 
                 if (isModes == false)
                 {
@@ -529,6 +519,9 @@ namespace Program01
                     TextboxMagneticFields.Visible = false;
                     LabelMagneticFields.Visible = false;
                     LabelMagneticFieldsUnit.Visible = false;
+                    LabelToggleSwitchVdP.ForeColor = Color.FromArgb(144, 198, 101);
+                    LabelToggleSwitchHall.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+                    PanelToggleSwitchButton.BackColor = Color.FromArgb(253, 138, 114);
                     ComboboxMagneticFieldsUnit.Visible = false;
                     Debug.WriteLine($"You select: {Modes} measurement");
 
@@ -549,6 +542,9 @@ namespace Program01
                     TextboxMagneticFields.Visible = true;
                     LabelMagneticFields.Visible = true;
                     LabelMagneticFieldsUnit.Visible = true;
+                    LabelToggleSwitchVdP.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+                    LabelToggleSwitchHall.ForeColor = Color.FromArgb(144, 198, 101);
+                    PanelToggleSwitchButton.BackColor = Color.FromArgb(95, 77, 221);
                     ComboboxMagneticFieldsUnit.Visible = true;
                     Debug.WriteLine($"You select: {Modes} measurement");
 
@@ -571,40 +567,20 @@ namespace Program01
             }
         }
 
-        private void TimerToggleSwitchAnimation_Tick(object sender, EventArgs e)
-        {
-            int currentX = PanelToggleSwitchButton.Location.X;
-
-            if (currentX < targetPosition)
-            {
-                PanelToggleSwitchButton.Location = new Point(Math.Min(currentX + 2, targetPosition), PanelToggleSwitchButton.Location.Y);
-            }
-
-            else if (currentX > targetPosition)
-            {
-                PanelToggleSwitchButton.Location = new Point(Math.Max(currentX - 2, targetPosition), PanelToggleSwitchButton.Location.Y);
-            }
-
-            else
-            {
-                TimerToggleSwitchAnimation.Stop();
-                PanelToggleSwitchBase.BackColor = isModes ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
-            }
-        }
-
         protected virtual void OnToggleChanged()
         {
             ToggleChanged?.Invoke(this, EventArgs.Empty);
+            PanelToggleSwitchBase.BackColor = isModes ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
         }
 
         private void UpdateToggleState()
         {
             targetPosition = isModes ? PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width - 1 : 1;
-            PanelToggleSwitchButton.Location = new Point(targetPosition, 1);
+            PanelToggleSwitchButton.Location = new Point(targetPosition, PanelToggleSwitchButton.Location.Y);
 
             if (PanelToggleSwitchButton.Location.X < 0 || PanelToggleSwitchButton.Location.X > PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width)
             {
-                PanelToggleSwitchButton.Location = new Point(1, 1);
+                PanelToggleSwitchButton.Location = new Point(1, PanelToggleSwitchButton.Location.Y);
             }
         }
 

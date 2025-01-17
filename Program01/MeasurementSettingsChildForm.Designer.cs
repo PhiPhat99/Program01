@@ -91,6 +91,7 @@
             this.IconbuttonClearSettings = new FontAwesome.Sharp.IconButton();
             this.IconbuttonSSConnection = new FontAwesome.Sharp.IconButton();
             this.IconbuttonSMUConnection = new FontAwesome.Sharp.IconButton();
+            this.IconbuttonErrorCheck = new FontAwesome.Sharp.IconButton();
             this.PanelTunerandData.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTunerDescription)).BeginInit();
@@ -464,6 +465,7 @@
             this.IconbuttonTunerTest.TabIndex = 41;
             this.IconbuttonTunerTest.Text = "TUNER TEST";
             this.IconbuttonTunerTest.UseVisualStyleBackColor = false;
+            this.IconbuttonTunerTest.Click += new System.EventHandler(this.IconbuttonTunerTest_Click);
             // 
             // PictureboxTuner8
             // 
@@ -474,6 +476,7 @@
             this.PictureboxTuner8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureboxTuner8.TabIndex = 8;
             this.PictureboxTuner8.TabStop = false;
+            this.PictureboxTuner8.Click += new System.EventHandler(this.PictureboxTuner8_Click);
             // 
             // PictureboxTuner7
             // 
@@ -484,6 +487,7 @@
             this.PictureboxTuner7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureboxTuner7.TabIndex = 7;
             this.PictureboxTuner7.TabStop = false;
+            this.PictureboxTuner7.Click += new System.EventHandler(this.PictureboxTuner7_Click);
             // 
             // PictureboxTuner6
             // 
@@ -494,6 +498,7 @@
             this.PictureboxTuner6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureboxTuner6.TabIndex = 6;
             this.PictureboxTuner6.TabStop = false;
+            this.PictureboxTuner6.Click += new System.EventHandler(this.PictureboxTuner6_Click);
             // 
             // PictureboxTuner5
             // 
@@ -504,6 +509,7 @@
             this.PictureboxTuner5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureboxTuner5.TabIndex = 5;
             this.PictureboxTuner5.TabStop = false;
+            this.PictureboxTuner5.Click += new System.EventHandler(this.PictureboxTuner5_Click);
             // 
             // PictureboxTuner4
             // 
@@ -514,6 +520,7 @@
             this.PictureboxTuner4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureboxTuner4.TabIndex = 4;
             this.PictureboxTuner4.TabStop = false;
+            this.PictureboxTuner4.Click += new System.EventHandler(this.PictureboxTuner4_Click);
             // 
             // PictureboxTuner3
             // 
@@ -524,6 +531,7 @@
             this.PictureboxTuner3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureboxTuner3.TabIndex = 3;
             this.PictureboxTuner3.TabStop = false;
+            this.PictureboxTuner3.Click += new System.EventHandler(this.PictureboxTuner3_Click);
             // 
             // PictureboxTuner2
             // 
@@ -534,6 +542,7 @@
             this.PictureboxTuner2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureboxTuner2.TabIndex = 2;
             this.PictureboxTuner2.TabStop = false;
+            this.PictureboxTuner2.Click += new System.EventHandler(this.PictureboxTuner2_Click);
             // 
             // PictureboxTuner1
             // 
@@ -680,7 +689,7 @@
             this.PanelToggleSwitchBase.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PanelToggleSwitchBase.Controls.Add(this.PanelToggleSwitchButton);
             this.PanelToggleSwitchBase.ForeColor = System.Drawing.Color.Transparent;
-            this.PanelToggleSwitchBase.Location = new System.Drawing.Point(950, 35);
+            this.PanelToggleSwitchBase.Location = new System.Drawing.Point(950, 33);
             this.PanelToggleSwitchBase.Name = "PanelToggleSwitchBase";
             this.PanelToggleSwitchBase.Size = new System.Drawing.Size(90, 30);
             this.PanelToggleSwitchBase.TabIndex = 43;
@@ -736,7 +745,7 @@
             // IconbuttonRunMeasurement
             // 
             this.IconbuttonRunMeasurement.BackColor = System.Drawing.Color.Snow;
-            this.IconbuttonRunMeasurement.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
+            this.IconbuttonRunMeasurement.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.IconbuttonRunMeasurement.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.IconbuttonRunMeasurement.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.IconbuttonRunMeasurement.IconChar = FontAwesome.Sharp.IconChar.Running;
@@ -756,8 +765,8 @@
             // IconbuttonClearSettings
             // 
             this.IconbuttonClearSettings.BackColor = System.Drawing.Color.Snow;
-            this.IconbuttonClearSettings.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.IconbuttonClearSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.IconbuttonClearSettings.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.IconbuttonClearSettings.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.IconbuttonClearSettings.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.IconbuttonClearSettings.IconChar = FontAwesome.Sharp.IconChar.None;
             this.IconbuttonClearSettings.IconColor = System.Drawing.Color.Black;
@@ -801,12 +810,31 @@
             this.IconbuttonSMUConnection.UseVisualStyleBackColor = false;
             this.IconbuttonSMUConnection.Click += new System.EventHandler(this.IconbuttonSMUConnection_Click);
             // 
+            // IconbuttonErrorCheck
+            // 
+            this.IconbuttonErrorCheck.BackColor = System.Drawing.Color.Snow;
+            this.IconbuttonErrorCheck.FlatAppearance.BorderColor = System.Drawing.Color.White;
+            this.IconbuttonErrorCheck.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.IconbuttonErrorCheck.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IconbuttonErrorCheck.IconChar = FontAwesome.Sharp.IconChar.None;
+            this.IconbuttonErrorCheck.IconColor = System.Drawing.Color.Black;
+            this.IconbuttonErrorCheck.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.IconbuttonErrorCheck.Location = new System.Drawing.Point(780, 750);
+            this.IconbuttonErrorCheck.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.IconbuttonErrorCheck.Name = "IconbuttonErrorCheck";
+            this.IconbuttonErrorCheck.Size = new System.Drawing.Size(120, 40);
+            this.IconbuttonErrorCheck.TabIndex = 47;
+            this.IconbuttonErrorCheck.Text = "ERROR ?";
+            this.IconbuttonErrorCheck.UseVisualStyleBackColor = false;
+            this.IconbuttonErrorCheck.Click += new System.EventHandler(this.IconbuttonErrorCheck_Click);
+            // 
             // MeasurementSettingsChildForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(234)))), ((int)(((byte)(213)))));
             this.ClientSize = new System.Drawing.Size(1260, 820);
+            this.Controls.Add(this.IconbuttonErrorCheck);
             this.Controls.Add(this.LabelToggleSwitchMeasurementMode);
             this.Controls.Add(this.LabelToggleSwitchHall);
             this.Controls.Add(this.LabelToggleSwitchVdP);
@@ -941,5 +969,6 @@
         private System.Windows.Forms.Label LabelToggleSwitchHall;
         private System.Windows.Forms.Label LabelToggleSwitchMeasurementMode;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private FontAwesome.Sharp.IconButton IconbuttonErrorCheck;
     }
 }

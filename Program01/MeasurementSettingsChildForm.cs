@@ -108,7 +108,7 @@ namespace Program01
         private readonly struct RGBColors
         {
             public static readonly Color Color1 = Color.FromArgb(172, 126, 241);
-            public static readonly Color Color2 = Color.FromArgb(219, 118, 176);
+            public static readonly Color Color2 = Color.FromArgb(242, 234, 213);
             public static readonly Color Color3 = Color.FromArgb(253, 138, 114);
             public static readonly Color Color4 = Color.FromArgb(95, 77, 221);
             public static readonly Color Color5 = Color.FromArgb(249, 88, 155);
@@ -130,7 +130,7 @@ namespace Program01
             public static string MagneticFieldsValue { get; set; }
         }
 
-        private void SaveSettings()
+        /*private void SaveSettings()
         {
             GlobalSettings.RsenseMode = ComboboxRsense.SelectedItem?.ToString() ?? "";
             GlobalSettings.MeasureMode = ComboboxMeasure.SelectedItem?.ToString() ?? "";
@@ -143,7 +143,7 @@ namespace Program01
             GlobalSettings.ThicknessValue = TextboxThickness.Text;
             GlobalSettings.RepetitionValue = TextboxRepetition.Text;
             GlobalSettings.MagneticFieldsValue = TextboxMagneticFields.Text;
-        }
+        }*/
 
         private void IconbuttonSMUConnection_Click(object sender, EventArgs e)
         {
@@ -151,7 +151,7 @@ namespace Program01
             {
                 if (ComboboxVISASMUIOPort.SelectedItem == null)
                 {
-                    MessageBox.Show("Please select a GPIB Address for SMU.", "Address Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please select a GPIB Address for Source Measure Unit.", "Address Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -171,7 +171,7 @@ namespace Program01
                     System.Threading.Thread.Sleep(4000);
                     IconbuttonSMUConnection.BackColor = Color.Snow;
                     IconbuttonSMUConnection.IconColor = Color.GreenYellow;
-                    MessageBox.Show("Connected to SMU", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Connected to Source Measure Unit", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -191,7 +191,7 @@ namespace Program01
                         IconbuttonSMUConnection.BackColor = Color.Snow;
                         IconbuttonSMUConnection.IconColor = Color.Gainsboro;
 
-                        MessageBox.Show("Disconnected from the SMU.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Disconnected from the Source Measure Unit.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception disconnectEx)
                     {
@@ -212,7 +212,7 @@ namespace Program01
             {
                 if (ComboboxVISASSIOPort.SelectedItem == null)
                 {
-                    MessageBox.Show("Please select a GPIB Address for SS.", "Address Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please select a GPIB Address for Switch System.", "Address Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -229,11 +229,10 @@ namespace Program01
                     Debug.WriteLine($"{response}");
 
                     isSSConnected = true;
-                    //PlaySSConnectionMelody();
 
                     IconbuttonSSConnection.BackColor = Color.Snow;
                     IconbuttonSSConnection.IconColor = Color.GreenYellow;
-                    MessageBox.Show("Connected to SS", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("Connected to Switch System", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
@@ -253,7 +252,7 @@ namespace Program01
                         IconbuttonSSConnection.BackColor = Color.Snow;
                         IconbuttonSSConnection.IconColor = Color.Gainsboro;
 
-                        MessageBox.Show("Disconnected from the SS.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Disconnected from the Switch System.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     catch (Exception disconnectEx)
                     {
@@ -291,10 +290,10 @@ namespace Program01
             TextboxMagneticFields.Text = GlobalSettings.MagneticFieldsValue;
         }
 
-        private void MeasurementSettingsChildForm_FormClosing(object sender, FormClosingEventArgs e)
+        /*private void MeasurementSettingsChildForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveSettings();
-        }
+        }*/
 
         private void ComboboxRsense_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -454,11 +453,11 @@ namespace Program01
                 }
 
                 ComboboxThicknessUnit.Items.Clear();
-                ComboboxThicknessUnit.Items.AddRange(new string[] { "nm", "µm", "mm", "m" });
+                ComboboxThicknessUnit.Items.AddRange(new string[] { "nm", "µm", "mm", "cm", "m" });
                 ComboboxThicknessUnit.SelectedIndex = 0;
 
                 ComboboxMagneticFieldsUnit.Items.Clear();
-                ComboboxMagneticFieldsUnit.Items.AddRange(new string[] { "G", "T"});
+                ComboboxMagneticFieldsUnit.Items.AddRange(new string[] { "T", "G"});
                 ComboboxMagneticFieldsUnit.SelectedIndex = 0;
             }
             catch (Exception ex)
@@ -502,6 +501,8 @@ namespace Program01
             savedThicknessValue = "";
             savedRepetitionValue = "";
             MagneticFieldsValue = "";
+            
+            SS.WriteString("ROUTe:OPEN ALL");
         }
 
         private void PanelToggleSwitchBase_MouseClick(object sender, MouseEventArgs e)
@@ -584,13 +585,447 @@ namespace Program01
             }
         }
 
-        private void IconbuttonRunMeasurement_Click(object sender, EventArgs e)
+        private bool ValidateInputs(out double start, out double stop, out double step, out int repetitions, out double sourcelimit, out double thickness, out double magneticfields)
+        {
+            start = stop = step = sourcelimit = 0;
+            repetitions = 1;
+            thickness = 0;
+            magneticfields = 0;
+            
+            if (isModes == false)
+            {
+                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetitions) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || start >= stop || step <= 0 || repetitions < 1)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetitions) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || !double.TryParse(TextboxMagneticFields.Text, out magneticfields) || start >= stop || step <= 0 || repetitions < 1 || magneticfields < 0)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private double ConvertValueBasedOnUnit(string unit, double value)  //  Method สำหรับการแปลงหน่วยของค่าที่ผู้ใช้ป้อนเข้ามา
+        {
+            switch (unit)
+            {
+                case "mV":
+                    return value * 1E-3;  // แปลงเป็นหน่วย milliVolt
+                case "V":
+                    return value;  // แปลงเป็นหน่วย Volt
+                case "nA":
+                    return value * 1E-9;  // แปลงเป็นหน่วย nanoAmpere
+                case "µA":
+                    return value * 1E-6;  // แปลงเป็นหน่วย microAmpere
+                case "mA":
+                    return value * 1E-3;  // แปลงเป็นหน่วย milliAmpere
+                case "A":
+                    return value;  // แปลงเป็นหน่วย Ampere
+                case "nm":
+                    return value * 1E-9; //แปลงเป็นหน่วย nanoMeter
+                case "µm":
+                    return value * 1E-6;  //แปลงเป็นหน่วย microMeter
+                case "mm":
+                    return value * 1E-3;  //แปลงเป็นหน่วย milliMeter
+                case "cm":
+                    return value * 1E-2;  //แปลงเป็นหน่วย centiMeter
+                case "m":
+                    return value;  //แปลงเป็นหน่วย Meter
+                case "G":
+                    return value * 1E+4;  //แปลงเป็นหน่วย Gauss
+                case "T":
+                    return value;  //แปลงเป็นหน่วย Tesla
+                default:
+                    throw new Exception("Unknown unit");  //ไม่รู้จักหน่วย (Unit Error)
+            }
+        }
+
+        private void ButtonData_Click(object sender, EventArgs e)
         {
             try
             {
-                if (!isSMUConnected)
+                OpenChildForm(new MeasurementSettingsDataChildForm());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void OpenChildForm(Form childForm)
+        {
+            try
+            {
+                CurrentTunerandDataChildForm?.Close();
+                CurrentTunerandDataChildForm = childForm;
+                childForm.TopLevel = false;
+                childForm.FormBorderStyle = FormBorderStyle.None;
+                childForm.Dock = DockStyle.Fill;
+                PanelTunerandData.Controls.Add(childForm);
+                PanelTunerandData.Tag = childForm;
+                childForm.BringToFront();
+                childForm.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void ButtonTuner_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CurrentTunerandDataChildForm.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void PlaySMUConnectionMelody()
+        {
+            var melody = new List<(int frequency, double duration)>
+            {
+                (784, 0.150), // G5
+                (699, 0.150), // F5
+                (440, 0.250), // A4
+                (494, 0.250), // B4
+                (659, 0.150), // E5
+                (587, 0.150), // D5
+                (349, 0.250), // F4
+                (392, 0.250), // G4
+                (587, 0.150), // D5
+                (523, 0.150), // C5
+                (330, 0.300), // E4
+                (392, 0.400), // G4
+                (523, 1.000) // C4
+            };
+
+            foreach (var (frequency, duration) in melody)
+            {
+                string scpiCommand = $"SYSTem:BEEPer {frequency}, {duration}";
+                SMU.WriteString(scpiCommand);
+                System.Threading.Thread.Sleep((int)(duration * 1));
+            }
+        }
+
+        private void PictureboxTuner1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMUConnected && !isSSConnected)
                 {
-                    Debug.WriteLine("SMU is not connected. Exiting function.");
+                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    return;
+                }
+
+                if (isModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                }
+                else if (isModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!8)");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void IconbuttonErrorCheck_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMUConnected &&  isSSConnected)
+                {
+                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    return;
+                }
+
+                SMU.WriteString("SYSTem:ERRor?");
+                string SMUrespones = SMU.ReadString();
+                SS.WriteString("SYSTem:ERRor?");
+                string SSresponse = SS.ReadString();
+                Debug.WriteLine($"There is SMU error : {SMUrespones}");
+                Debug.WriteLine($"There is SS error : {SSresponse}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void PictureboxTuner2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMUConnected && !isSSConnected)
+                {
+                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    return;
+                }
+
+                if (isModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                }
+                else if (isModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!8)");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void PictureboxTuner3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMUConnected && !isSSConnected)
+                {
+                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    return;
+                }
+
+                if (isModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
+                }
+                else if (isModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void PictureboxTuner4_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMUConnected && !isSSConnected)
+                {
+                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    return;
+                }
+
+                if (isModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
+                }
+                else if (isModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void PictureboxTuner5_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMUConnected && !isSSConnected)
+                {
+                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    return;
+                }
+
+                if (isModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                }
+                else if (isModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void PictureboxTuner6_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMUConnected && !isSSConnected)
+                {
+                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    return;
+                }
+
+                if (isModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                }
+                else if (isModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void PictureboxTuner7_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMUConnected && !isSSConnected)
+                {
+                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    return;
+                }
+
+                if (isModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
+                }
+                else if (isModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void PictureboxTuner8_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMUConnected && !isSSConnected)
+                {
+                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    return;
+                }
+
+                if (isModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
+                }
+                else if (isModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void IconbuttonTunerTest_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMUConnected && !isSSConnected)
+                {
+                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
                     return;
                 }
 
@@ -643,7 +1078,7 @@ namespace Program01
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
-                    SMU.WriteString("OUTPut OFF");            
+                    SMU.WriteString("OUTPut OFF");
                 }
 
                 else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current")
@@ -736,193 +1171,164 @@ namespace Program01
             }
         }
 
-        private bool ValidateInputs(out double start, out double stop, out double step, out int repetitions, out double sourcelimit, out double thickness, out double magneticfields)
-        {
-            start = stop = step = sourcelimit = 0;
-            repetitions = 1;
-            thickness = 0;
-            magneticfields = 0;
-            
-            if (isModes == false)
-            {
-                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetitions) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || start >= stop || step <= 0 || repetitions < 1)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetitions) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || !double.TryParse(TextboxMagneticFields.Text, out magneticfields) || start >= stop || step <= 0 || repetitions < 1 || magneticfields < 0)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private double ConvertValueBasedOnUnit(string unit, double value)  //Method สำหรับการแปลงค่า
-        {
-            switch (unit)
-            {
-                case "mV":
-                    return value * 1E-3;  // แปลงเป็นหน่วย milliVolt
-                case "V":
-                    return value;  // แปลงเป็นหน่วย Volt
-                case "nA":
-                    return value * 1E-9;  // แปลงเป็นหน่วย nanoAmpere
-                case "µA":
-                    return value * 1E-6;  // แปลงเป็นหน่วย microAmpere
-                case "mA":
-                    return value * 1E-3;  // แปลงเป็นหน่วย milliAmpere
-                case "A":
-                    return value;  // แปลงเป็นหน่วย Ampere
-                case "nm":
-                    return value * 1E-9; //แปลงเป็นหน่วย nanoMeter
-                case "µm":
-                    return value * 1E-6;  //แปลงเป็นหน่วย microMeter
-                case "mm":
-                    return value * 1E-3;  //แปลงเป็นหน่วย milliMeter
-                case "m":
-                    return value;  //แปลงเป็นหน่วย Meter
-                case "G":
-                    return value * 1E+4;  //แปลงเป็นหน่วย Gauss
-                case "T":
-                    return value;  //แปลงเป็นหน่วย Tesla
-                default:
-                    throw new Exception("Unknown unit");  //ไม่รู้จักหน่วย (Error)
-            }
-        }
-
-        private void ButtonData_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                OpenChildForm(new MeasurementSettingsDataChildForm());
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
-        }
-
-        private void OpenChildForm(Form childForm)
-        {
-            try
-            {
-                CurrentTunerandDataChildForm?.Close();
-                CurrentTunerandDataChildForm = childForm;
-                childForm.TopLevel = false;
-                childForm.FormBorderStyle = FormBorderStyle.None;
-                childForm.Dock = DockStyle.Fill;
-                PanelTunerandData.Controls.Add(childForm);
-                PanelTunerandData.Tag = childForm;
-                childForm.BringToFront();
-                childForm.Show();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
-        }
-
-        private void ButtonTuner_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                CurrentTunerandDataChildForm.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
-        }
-
-        private void PlaySMUConnectionMelody()
-        {
-            var melody = new List<(int frequency, double duration)>
-            {
-                (784, 0.150), // G5
-                //(20, 0.100),
-                (699, 0.150), // F5
-                //(20, 0.100),
-                (440, 0.250), // A4
-                //(20, 0.100),
-                (494, 0.250), // B4
-                //(20, 0.100),
-                (659, 0.150), // E5
-                //(20, 0.100),
-                (587, 0.150), // D5
-                //(20, 0.100),
-                (349, 0.250), // F4
-                //(20, 0.100),
-                (392, 0.250), // G4
-                //(20, 0.100),
-                (587, 0.150), // D5
-                //(20, 0.400),
-                (523, 0.150), // C5
-                //(20, 0.400),
-                (330, 0.300), // E4
-                //(20, 0.800),
-                (392, 0.400), // G4
-                //(20, 1.000),
-                (523, 1.000) // C4
-            };
-
-            foreach (var (frequency, duration) in melody)
-            {
-                string scpiCommand = $"SYSTem:BEEPer {frequency}, {duration}";
-                SMU.WriteString(scpiCommand);
-                //Console.Beep(frequency, (int)duration);
-                System.Threading.Thread.Sleep((int)(duration * 1));
-            }
-        }
-
-        /*private void PlaySSConnectionMelody()
-        {
-            var melody = new List<(int frequency, double duration)>
-            {
-                (372, 125), // F#4+3 Hz
-                (372, 125), // F#4+3 Hz
-                (372, 125), // F#4+3 Hz
-                (372, 125), // F#4+3 Hz
-                (314, 150), // D#4+3 Hz
-                (332, 150), // E4+3 Hz
-                (372, 1000), // F#4+3 Hz
-            };
-
-            foreach (var (frequency, duration) in melody)
-            {
-                //string scpiCommand = $"SYSTem:BEEPer {frequency}, {duration}";
-                //SMU.WriteString(scpiCommand);
-                Console.Beep(frequency, (int)duration);
-                System.Threading.Thread.Sleep((int)(duration * 0.2));
-            }
-        }*/
-
-        private void PictureboxTuner1_Click(object sender, EventArgs e)
+        /*private void IconbuttonRunMeasurement_Click(object sender, EventArgs e)
         {
             try
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    Debug.WriteLine("SMU or SS is not connected. Exiting function.");
+                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
                     return;
                 }
 
-                if (isModes == false)
-                {
-                    SS.WriteString("");
-                }
-                else
-                {
+                SMU.WriteString("OUTPut OFF");
 
+                if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue))
+                {
+                    MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                string startUnit = ComboboxStartUnit.SelectedItem.ToString();
+                string stopUnit = ComboboxStopUnit.SelectedItem.ToString();
+                string stepUnit = ComboboxStepUnit.SelectedItem.ToString();
+                startValue = ConvertValueBasedOnUnit(startUnit, startValue);
+                stopValue = ConvertValueBasedOnUnit(stopUnit, stopValue);
+                stepValue = ConvertValueBasedOnUnit(stepUnit, stepValue);
+
+                string sourcelimitUnit = ComboboxSourceLimitLevelUnit.SelectedItem.ToString();
+                sourcelimitValue = ConvertValueBasedOnUnit(sourcelimitUnit, sourcelimitValue);
+
+                string thicknessUnit = ComboboxThicknessUnit.SelectedItem.ToString();
+                thicknessValue = ConvertValueBasedOnUnit(thicknessUnit, thicknessValue);
+
+                string magneticfieldsUnit = ComboboxMagneticFieldsUnit.SelectedItem.ToString();
+                magneticfieldsValue = ConvertValueBasedOnUnit(magneticfieldsUnit, magneticfieldsValue);
+
+
+                int loopCount = 0;
+
+                while (loopCount < 9)
+                {
+                    if (savedSourceMode == "Voltage" && savedMeasureMode == "Voltage")
+                    {
+                        SMU.WriteString($"SOURce:FUNCtion VOLTage");
+                        SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
+                        SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
+                        SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
+                        SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
+
+                        if (savedRsenseMode == "4-Wires")
+                        {
+                            SMU.WriteString("SENSe:VOLTage:RSENse ON");
+                        }
+                        else
+                        {
+                            SMU.WriteString("SENSe:VOLTage:RSENse OFF");
+                        }
+
+                        string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
+                        Debug.WriteLine($"Sending command: {sweepCommand}");
+                        Debug.WriteLine($"{allValues}");
+                        SMU.WriteString(sweepCommand);
+                        SMU.WriteString("OUTPut ON");
+                        SMU.WriteString("INIT");
+                        SMU.WriteString("*WAI");
+                        SMU.WriteString("OUTPut OFF");
+                    }
+
+                    else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current")
+                    {
+                        SMU.WriteString($"SOURce:FUNCtion VOLTage");
+                        SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
+                        SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
+                        SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
+                        SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
+
+                        if (savedRsenseMode == "4-Wires")
+                        {
+                            SMU.WriteString("SENSe:CURRent:RSENse ON");
+                        }
+                        else
+                        {
+                            SMU.WriteString("SENSe:CURRent:RSENse OFF");
+                        }
+
+                        string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
+                        Debug.WriteLine($"Sending command: {sweepCommand}");
+                        Debug.WriteLine($"{allValues}");
+                        SMU.WriteString(sweepCommand);
+                        SMU.WriteString("OUTPut ON");
+                        SMU.WriteString("INIT");
+                        SMU.WriteString("*WAI");
+                        SMU.WriteString("OUTPut OFF");
+                    }
+
+                    else if (savedSourceMode == "Current" && savedMeasureMode == "Voltage")
+                    {
+                        SMU.WriteString($"SOURce:FUNCtion CURRent");
+                        SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
+                        SMU.WriteString($"SOURce:CURRent:VLIM {sourcelimitValue}");
+                        SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
+                        SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
+
+                        if (savedRsenseMode == "4-Wires")
+                        {
+                            SMU.WriteString("SENSe:VOLTage:RSENse ON");
+                        }
+                        else
+                        {
+                            SMU.WriteString("SENSe:VOLTage:RSENse OFF");
+                        }
+
+                        string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
+                        Debug.WriteLine($"Sending command: {sweepCommand}");
+                        Debug.WriteLine($"{allValues}");
+                        SMU.WriteString(sweepCommand);
+                        SMU.WriteString("OUTPut ON");
+                        SMU.WriteString("INIT");
+                        SMU.WriteString("*WAI");
+                        SMU.WriteString("OUTPut OFF");
+                    }
+
+                    else if (savedSourceMode == "Current" && savedMeasureMode == "Current")
+                    {
+                        SMU.WriteString($"SOURce:FUNCtion CURRent");
+                        SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
+                        SMU.WriteString($"SOURce:CURRent:VLIM {sourcelimitValue}");
+                        SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
+                        SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
+
+                        if (savedRsenseMode == "4-Wires")
+                        {
+                            SMU.WriteString("SENSe:CURRent:RSENse ON");
+                        }
+                        else
+                        {
+                            SMU.WriteString("SENSe:CURRent:RSENse OFF");
+                        }
+
+                        string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
+                        Debug.WriteLine($"Sending command: {sweepCommand}");
+                        Debug.WriteLine($"{allValues}.");
+                        SMU.WriteString(sweepCommand);
+                        SMU.WriteString("OUTPut ON");
+                        SMU.WriteString("INIT");
+                        SMU.WriteString("*WAI");
+                        SMU.WriteString("OUTPut OFF");
+                        Debug.WriteLine($"{loopCount}");
+                        loopCount++;
+                    }
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}");
             }
-        }
+        }*/
     }
 }

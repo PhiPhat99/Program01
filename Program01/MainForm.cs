@@ -48,7 +48,7 @@ namespace Program01
         private readonly struct RGBColors
         {
             public static readonly Color Color1 = Color.FromArgb(172, 126, 241);
-            public static readonly Color Color2 = Color.FromArgb(219, 118, 176);
+            public static readonly Color Color2 = Color.FromArgb(242, 234, 213);
             public static readonly Color Color3 = Color.FromArgb(253, 138, 114);
             public static readonly Color Color4 = Color.FromArgb(95, 77, 221);
             public static readonly Color Color5 = Color.FromArgb(249, 88, 155);

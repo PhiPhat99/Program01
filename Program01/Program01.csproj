@@ -240,5 +240,53 @@
   <ItemGroup>
     <None Include="Resources\Sample.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\R1_VdP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\R2_VdP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\R3_VdP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\R4_VdP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\R5_VdP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\R6_VdP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\R7_VdP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\R8_VdP.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V1_Hall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V2_Hall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V3_Hall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V4_Hall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V5_Hall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V6_Hall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V7_Hall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V8_Hall.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -121,10 +121,58 @@
   <data name="Applied Physics KMITL Logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Applied Physics KMITL Logo.jpeg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Sample" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Sample.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="Tuner_Description" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Tuner_Description.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Sample" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Sample.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="R1_VdP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\R1_VdP.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="R2_VdP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\R2_VdP.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="R3_VdP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\R3_VdP.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="R4_VdP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\R4_VdP.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="R5_VdP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\R5_VdP.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="R6_VdP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\R6_VdP.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="R7_VdP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\R7_VdP.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="R8_VdP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\R8_VdP.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="V1_Hall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\V1_Hall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="V2_Hall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\V2_Hall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="V3_Hall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\V3_Hall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="V4_Hall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\V4_Hall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="V5_Hall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\V5_Hall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="V6_Hall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\V6_Hall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="V7_Hall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\V7_Hall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="V8_Hall" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\V8_Hall.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

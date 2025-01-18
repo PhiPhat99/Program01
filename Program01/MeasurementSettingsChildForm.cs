@@ -473,36 +473,49 @@ namespace Program01
 
         private void ClearSettings()
         {
-            ComboboxRsense.SelectedIndex = -1;
-            ComboboxMeasure.SelectedIndex = -1;
-            ComboboxSource.SelectedIndex = -1;
-            ComboboxSourceLimitMode.SelectedIndex = -1;
-            ComboboxStartUnit.SelectedIndex = -1;
-            ComboboxStopUnit.SelectedIndex = -1;
-            ComboboxStepUnit.SelectedIndex = -1;
-            ComboboxSourceLimitLevelUnit.SelectedIndex = -1;
-            ComboboxThicknessUnit.SelectedIndex = -1;
-            ComboboxMagneticFieldsUnit.SelectedIndex = -1;
-            TextboxStart.Text = "";
-            TextboxStep.Text = "";
-            TextboxStop.Text = "";
-            TextboxSourceLimitLevel.Text = "";
-            TextboxThickness.Text = "";
-            TextboxRepetition.Text = "";
-            TextboxMagneticFields.Text = "";
-            savedRsenseMode = "";
-            savedMeasureMode = "";
-            savedSourceMode = "";
-            savedSourceLimitMode = "";
-            savedStartValue = "";
-            savedStopValue = "";
-            savedStepValue = "";
-            savedSourceLimitValue = "";
-            savedThicknessValue = "";
-            savedRepetitionValue = "";
-            MagneticFieldsValue = "";
-            
-            SS.WriteString("ROUTe:OPEN ALL");
+            try
+            {
+                if (!isSMUConnected && !isSSConnected)
+                {
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                ComboboxRsense.SelectedIndex = -1;
+                ComboboxMeasure.SelectedIndex = -1;
+                ComboboxSource.SelectedIndex = -1;
+                ComboboxSourceLimitMode.SelectedIndex = -1;
+                ComboboxStartUnit.SelectedIndex = -1;
+                ComboboxStopUnit.SelectedIndex = -1;
+                ComboboxStepUnit.SelectedIndex = -1;
+                ComboboxSourceLimitLevelUnit.SelectedIndex = -1;
+                ComboboxThicknessUnit.SelectedIndex = -1;
+                ComboboxMagneticFieldsUnit.SelectedIndex = -1;
+                TextboxStart.Text = "";
+                TextboxStep.Text = "";
+                TextboxStop.Text = "";
+                TextboxSourceLimitLevel.Text = "";
+                TextboxThickness.Text = "";
+                TextboxRepetition.Text = "";
+                TextboxMagneticFields.Text = "";
+                savedRsenseMode = "";
+                savedMeasureMode = "";
+                savedSourceMode = "";
+                savedSourceLimitMode = "";
+                savedStartValue = "";
+                savedStopValue = "";
+                savedStepValue = "";
+                savedSourceLimitValue = "";
+                savedThicknessValue = "";
+                savedRepetitionValue = "";
+                MagneticFieldsValue = "";
+
+                SS.WriteString("ROUTe:OPEN ALL");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
         }
 
         private void PanelToggleSwitchBase_MouseClick(object sender, MouseEventArgs e)
@@ -526,14 +539,14 @@ namespace Program01
                     ComboboxMagneticFieldsUnit.Visible = false;
                     Debug.WriteLine($"You select: {Modes} measurement");
 
-                    PictureboxTuner1.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R1_VdP.png");
-                    PictureboxTuner2.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R2_VdP.png");
-                    PictureboxTuner3.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R3_VdP.png");
-                    PictureboxTuner4.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R4_VdP.png");
-                    PictureboxTuner5.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R5_VdP.png");
-                    PictureboxTuner6.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R6_VdP.png");
-                    PictureboxTuner7.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R7_VdP.png");
-                    PictureboxTuner8.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\R8_VdP.png");
+                    PictureboxTuner1.Image = global::Program01.Properties.Resources.R1_VdP;
+                    PictureboxTuner2.Image = global::Program01.Properties.Resources.R2_VdP;
+                    PictureboxTuner3.Image = global::Program01.Properties.Resources.R3_VdP;
+                    PictureboxTuner4.Image = global::Program01.Properties.Resources.R4_VdP;
+                    PictureboxTuner5.Image = global::Program01.Properties.Resources.R5_VdP;
+                    PictureboxTuner6.Image = global::Program01.Properties.Resources.R6_VdP;
+                    PictureboxTuner7.Image = global::Program01.Properties.Resources.R7_VdP;
+                    PictureboxTuner8.Image = global::Program01.Properties.Resources.R8_VdP;
                 }
 
                 else if (isModes == true)
@@ -549,19 +562,18 @@ namespace Program01
                     ComboboxMagneticFieldsUnit.Visible = true;
                     Debug.WriteLine($"You select: {Modes} measurement");
 
-                    PictureboxTuner1.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V1_Hall.png");
-                    PictureboxTuner2.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V2_Hall.png");
-                    PictureboxTuner3.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V3_Hall.png");
-                    PictureboxTuner4.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V4_Hall.png");
-                    PictureboxTuner5.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V5_Hall.png");
-                    PictureboxTuner6.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V6_Hall.png");
-                    PictureboxTuner7.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V7_Hall.png");
-                    PictureboxTuner8.Image = Image.FromFile("C:\\Users\\HP\\OneDrive\\เดสก์ท็อป\\Results\\V8_Hall.png");
+                    PictureboxTuner1.Image = global::Program01.Properties.Resources.V1_Hall;
+                    PictureboxTuner2.Image = global::Program01.Properties.Resources.V2_Hall;
+                    PictureboxTuner3.Image = global::Program01.Properties.Resources.V3_Hall;
+                    PictureboxTuner4.Image = global::Program01.Properties.Resources.V4_Hall;
+                    PictureboxTuner5.Image = global::Program01.Properties.Resources.V5_Hall;
+                    PictureboxTuner6.Image = global::Program01.Properties.Resources.V6_Hall;
+                    PictureboxTuner7.Image = global::Program01.Properties.Resources.V7_Hall;
+                    PictureboxTuner8.Image = global::Program01.Properties.Resources.V8_Hall;
                 }
 
                 OnToggleChanged();
             }
-
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}");
@@ -585,56 +597,26 @@ namespace Program01
             }
         }
 
-        private bool ValidateInputs(out double start, out double stop, out double step, out int repetitions, out double sourcelimit, out double thickness, out double magneticfields)
+        private bool ValidateInputs(out double start, out double stop, out double step, out int repetition, out double sourcelimit, out double thickness, out double magneticfields)
         {
             start = stop = step = sourcelimit = 0;
-            repetitions = 1;
+            repetition = 1;
             thickness = 0;
             magneticfields = 0;
             
             if (isModes == false)
             {
-                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetitions) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || start >= stop || step <= 0 || repetitions < 1 || thickness < 0)
+                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetition) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || start >= stop || step <= 0 || repetition < 1 || thickness < 0)
                 {
                     return false;
                 }
-
-                /*if (SourceLimit == "Current")
-                {
-                    if ( < -1.05 || sourcelimit > 1.05)
-                    {
-                        return false;
-                    }
-                }
-                else if (SourceLimit == "Voltage")
-                {
-                    if (sourcelimit < -210 || sourcelimit > 210)
-                    {
-                        return false;
-                    }
-                }*/
             }
             else
             {
-                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetitions) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || !double.TryParse(TextboxMagneticFields.Text, out magneticfields) || step <= 0 || repetitions < 1 || step >= stop || thickness < 0 || magneticfields < 0)
+                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetition) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || !double.TryParse(TextboxMagneticFields.Text, out magneticfields) || step <= 0 || repetition < 1 || step >= stop || thickness < 0 || magneticfields < 0)
                 {
                     return false;
                 }
-
-                /*if (SourceLimit == "Current")
-                {
-                    if (sourcelimit < -1.05 || sourcelimit > 1.05)
-                    {
-                        return false;
-                    }
-                }
-                else if (SourceLimit == "Voltage")
-                {
-                    if (sourcelimit < -210 || sourcelimit > 210)
-                    {
-                        return false;
-                    }
-                }*/
             }
 
             return true;
@@ -672,50 +654,6 @@ namespace Program01
                     return value;  //แปลงเป็นหน่วย Tesla
                 default:
                     throw new Exception("Unknown unit");  //ไม่รู้จักหน่วย (Unit Error)
-            }
-        }
-
-        private void ButtonData_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                OpenChildForm(new MeasurementSettingsDataChildForm());
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
-        }
-
-        private void OpenChildForm(Form childForm)
-        {
-            try
-            {
-                CurrentTunerandDataChildForm?.Close();
-                CurrentTunerandDataChildForm = childForm;
-                childForm.TopLevel = false;
-                childForm.FormBorderStyle = FormBorderStyle.None;
-                childForm.Dock = DockStyle.Fill;
-                PanelTunerandData.Controls.Add(childForm);
-                PanelTunerandData.Tag = childForm;
-                childForm.BringToFront();
-                childForm.Show();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
-        }
-
-        private void ButtonTuner_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                CurrentTunerandDataChildForm.Close();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 
@@ -1229,12 +1167,13 @@ namespace Program01
                         SMU.WriteString("SENSe:VOLTage:RSENse OFF");
                     }
 
-                    for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
+                    for (int repetition = 1; repetition < repetitionValue; repetition++)
                     {
-                        SetTuner(tunerNumber);
 
-                        for (int repetition = 1; repetition < repetitionValue; repetition++)
+                        for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
                         {
+                            SetTuner(tunerNumber);
+
                             string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
                             string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
                             Debug.WriteLine($"Sending command: {sweepCommand}");
@@ -1243,7 +1182,7 @@ namespace Program01
                             SMU.WriteString("OUTPut ON");
                             SMU.WriteString("INIT");
                             SMU.WriteString("*WAI");
-                            SMU.WriteString("OUTPut OFF");
+                            //SMU.WriteString("OUTPut OFF");
                         }
                     }
                 }
@@ -1265,12 +1204,13 @@ namespace Program01
                         SMU.WriteString("SENSe:CURRent:RSENse OFF");
                     }
 
-                    for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
+                    for (int repetition = 1; repetition < repetitionValue; repetition++)
                     {
-                        SetTuner(tunerNumber);
 
-                        for (int repetition = 1; repetition < repetitionValue; repetition++)
+                        for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
                         {
+                            SetTuner(tunerNumber);
+
                             string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
                             string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
                             Debug.WriteLine($"Sending command: {sweepCommand}");
@@ -1279,7 +1219,7 @@ namespace Program01
                             SMU.WriteString("OUTPut ON");
                             SMU.WriteString("INIT");
                             SMU.WriteString("*WAI");
-                            SMU.WriteString("OUTPut OFF");
+                            //SMU.WriteString("OUTPut OFF");
                         }
                     }
                 }
@@ -1301,21 +1241,23 @@ namespace Program01
                         SMU.WriteString("SENSe:VOLTage:RSENse OFF");
                     }
 
-                    for (int tunerNumber = 1; tunerNumber < 9;)
+                    for (int repetition = 1; repetition < repetitionValue; repetition++)
                     {
-                        SetTuner(tunerNumber);
 
-                        string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
-                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
-                        Debug.WriteLine($"Sending command: {sweepCommand}");
-                        Debug.WriteLine($"{allValues}");
-                        SMU.WriteString(sweepCommand);
-                        SMU.WriteString("OUTPut ON");
-                        SMU.WriteString("INIT");
-                        SMU.WriteString("*WAI");
-                        SMU.WriteString("OUTPut OFF");
+                        for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
+                        {
+                            SetTuner(tunerNumber);
 
-                        tunerNumber++;
+                            string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                            string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
+                            Debug.WriteLine($"Sending command: {sweepCommand}");
+                            Debug.WriteLine($"{allValues}");
+                            SMU.WriteString(sweepCommand);
+                            SMU.WriteString("OUTPut ON");
+                            SMU.WriteString("INIT");
+                            SMU.WriteString("*WAI");
+                            //SMU.WriteString("OUTPut OFF");
+                        }
                     }
                 }
 
@@ -1336,12 +1278,13 @@ namespace Program01
                         SMU.WriteString("SENSe:CURRent:RSENse OFF");
                     }
 
-                    for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
+                    for (int repetition = 1; repetition < repetitionValue; repetition++)
                     {
-                        SetTuner(tunerNumber);
 
-                        for (int repetition = 1; repetition < repetitionValue; repetition++)
+                        for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
                         {
+                            SetTuner(tunerNumber);
+
                             string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
                             string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
                             Debug.WriteLine($"Sending command: {sweepCommand}");
@@ -1350,12 +1293,15 @@ namespace Program01
                             SMU.WriteString("OUTPut ON");
                             SMU.WriteString("INIT");
                             SMU.WriteString("*WAI");
-                            SMU.WriteString("OUTPut OFF");
+                            //SMU.WriteString("OUTPut OFF");
                         }
                     }
                 }
 
-                //SMU.WriteString("OUTPut OFF");
+                SMU.WriteString("OUTPut OFF");
+                SMU.WriteString("*CLS");
+                SS.WriteString("ROUTe:OPEN ALL");
+                SS.WriteString("*CLS");
             }
             catch (Exception ex)
             {
@@ -1374,6 +1320,7 @@ namespace Program01
                 }
 
                 SS.WriteString("ROUTe:OPEN ALL");
+
                 switch (tunerNumber)
                 {
                     case 1:
@@ -1560,6 +1507,50 @@ namespace Program01
                 string SSresponse = SS.ReadString();
                 Debug.WriteLine($"There is SMU error : {SMUrespones}");
                 Debug.WriteLine($"There is SS error : {SSresponse}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void ButtonData_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OpenChildForm(new MeasurementSettingsDataChildForm());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void OpenChildForm(Form childForm)
+        {
+            try
+            {
+                CurrentTunerandDataChildForm?.Close();
+                CurrentTunerandDataChildForm = childForm;
+                childForm.TopLevel = false;
+                childForm.FormBorderStyle = FormBorderStyle.None;
+                childForm.Dock = DockStyle.Fill;
+                PanelTunerandData.Controls.Add(childForm);
+                PanelTunerandData.Tag = childForm;
+                childForm.BringToFront();
+                childForm.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void ButtonTuner_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                CurrentTunerandDataChildForm.Close();
             }
             catch (Exception ex)
             {

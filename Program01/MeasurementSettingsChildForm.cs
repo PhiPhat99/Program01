@@ -168,7 +168,7 @@ namespace Program01
                     isSMUConnected = true;
                     PlaySMUConnectionMelody();
 
-                    System.Threading.Thread.Sleep(4000);
+                    //System.Threading.Thread.Sleep(4000);
                     IconbuttonSMUConnection.BackColor = Color.Snow;
                     IconbuttonSMUConnection.IconColor = Color.GreenYellow;
                     MessageBox.Show("Connected to Source Measure Unit", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -594,17 +594,47 @@ namespace Program01
             
             if (isModes == false)
             {
-                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetitions) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || start >= stop || step <= 0 || repetitions < 1)
+                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetitions) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || start >= stop || step <= 0 || repetitions < 1 || thickness < 0)
                 {
                     return false;
                 }
+
+                /*if (SourceLimit == "Current")
+                {
+                    if ( < -1.05 || sourcelimit > 1.05)
+                    {
+                        return false;
+                    }
+                }
+                else if (SourceLimit == "Voltage")
+                {
+                    if (sourcelimit < -210 || sourcelimit > 210)
+                    {
+                        return false;
+                    }
+                }*/
             }
             else
             {
-                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetitions) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || !double.TryParse(TextboxMagneticFields.Text, out magneticfields) || start >= stop || step <= 0 || repetitions < 1 || magneticfields < 0)
+                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetitions) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || !double.TryParse(TextboxMagneticFields.Text, out magneticfields) || step <= 0 || repetitions < 1 || step >= stop || thickness < 0 || magneticfields < 0)
                 {
                     return false;
                 }
+
+                /*if (SourceLimit == "Current")
+                {
+                    if (sourcelimit < -1.05 || sourcelimit > 1.05)
+                    {
+                        return false;
+                    }
+                }
+                else if (SourceLimit == "Voltage")
+                {
+                    if (sourcelimit < -210 || sourcelimit > 210)
+                    {
+                        return false;
+                    }
+                }*/
             }
 
             return true;
@@ -693,7 +723,7 @@ namespace Program01
         {
             var melody = new List<(int frequency, double duration)>
             {
-                (784, 0.150), // G5
+                /*(784, 0.150), // G5
                 (699, 0.150), // F5
                 (440, 0.250), // A4
                 (494, 0.250), // B4
@@ -704,8 +734,8 @@ namespace Program01
                 (587, 0.150), // D5
                 (523, 0.150), // C5
                 (330, 0.300), // E4
-                (392, 0.400), // G4
-                (523, 1.000) // C4
+                (392, 0.400), // G4*/
+                (523, 0.800) // C4
             };
 
             foreach (var (frequency, duration) in melody)
@@ -722,7 +752,7 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -751,36 +781,13 @@ namespace Program01
             }
         }
 
-        private void IconbuttonErrorCheck_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!isSMUConnected &&  isSSConnected)
-                {
-                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
-                    return;
-                }
-
-                SMU.WriteString("SYSTem:ERRor?");
-                string SMUrespones = SMU.ReadString();
-                SS.WriteString("SYSTem:ERRor?");
-                string SSresponse = SS.ReadString();
-                Debug.WriteLine($"There is SMU error : {SMUrespones}");
-                Debug.WriteLine($"There is SS error : {SSresponse}");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
-        }
-
         private void PictureboxTuner2_Click(object sender, EventArgs e)
         {
             try
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -815,7 +822,7 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -850,7 +857,7 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -885,7 +892,7 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -920,7 +927,7 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -1025,7 +1032,7 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -1171,13 +1178,13 @@ namespace Program01
             }
         }
 
-        /*private void IconbuttonRunMeasurement_Click(object sender, EventArgs e)
+        private void IconbuttonRunMeasurement_Click(object sender, EventArgs e)
         {
             try
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -1205,83 +1212,98 @@ namespace Program01
                 string magneticfieldsUnit = ComboboxMagneticFieldsUnit.SelectedItem.ToString();
                 magneticfieldsValue = ConvertValueBasedOnUnit(magneticfieldsUnit, magneticfieldsValue);
 
-
-                int loopCount = 0;
-
-                while (loopCount < 9)
+                if (savedSourceMode == "Voltage" && savedMeasureMode == "Voltage")
                 {
-                    if (savedSourceMode == "Voltage" && savedMeasureMode == "Voltage")
+                    SMU.WriteString($"SOURce:FUNCtion VOLTage");
+                    SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
+                    SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
+                    SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
+                    SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
+
+                    if (savedRsenseMode == "4-Wires")
                     {
-                        SMU.WriteString($"SOURce:FUNCtion VOLTage");
-                        SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
-                        SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
-                        SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
-                        SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
-
-                        if (savedRsenseMode == "4-Wires")
-                        {
-                            SMU.WriteString("SENSe:VOLTage:RSENse ON");
-                        }
-                        else
-                        {
-                            SMU.WriteString("SENSe:VOLTage:RSENse OFF");
-                        }
-
-                        string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
-                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
-                        Debug.WriteLine($"Sending command: {sweepCommand}");
-                        Debug.WriteLine($"{allValues}");
-                        SMU.WriteString(sweepCommand);
-                        SMU.WriteString("OUTPut ON");
-                        SMU.WriteString("INIT");
-                        SMU.WriteString("*WAI");
-                        SMU.WriteString("OUTPut OFF");
+                        SMU.WriteString("SENSe:VOLTage:RSENse ON");
+                    }
+                    else
+                    {
+                        SMU.WriteString("SENSe:VOLTage:RSENse OFF");
                     }
 
-                    else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current")
+                    for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
                     {
-                        SMU.WriteString($"SOURce:FUNCtion VOLTage");
-                        SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
-                        SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
-                        SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
-                        SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
+                        SetTuner(tunerNumber);
 
-                        if (savedRsenseMode == "4-Wires")
+                        for (int repetition = 1; repetition < repetitionValue; repetition++)
                         {
-                            SMU.WriteString("SENSe:CURRent:RSENse ON");
+                            string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                            string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
+                            Debug.WriteLine($"Sending command: {sweepCommand}");
+                            Debug.WriteLine($"{allValues}");
+                            SMU.WriteString(sweepCommand);
+                            SMU.WriteString("OUTPut ON");
+                            SMU.WriteString("INIT");
+                            SMU.WriteString("*WAI");
+                            SMU.WriteString("OUTPut OFF");
                         }
-                        else
-                        {
-                            SMU.WriteString("SENSe:CURRent:RSENse OFF");
-                        }
+                    }
+                }
 
-                        string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
-                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
-                        Debug.WriteLine($"Sending command: {sweepCommand}");
-                        Debug.WriteLine($"{allValues}");
-                        SMU.WriteString(sweepCommand);
-                        SMU.WriteString("OUTPut ON");
-                        SMU.WriteString("INIT");
-                        SMU.WriteString("*WAI");
-                        SMU.WriteString("OUTPut OFF");
+                else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current")
+                {
+                    SMU.WriteString($"SOURce:FUNCtion VOLTage");
+                    SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
+                    SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
+                    SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
+                    SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
+
+                    if (savedRsenseMode == "4-Wires")
+                    {
+                        SMU.WriteString("SENSe:CURRent:RSENse ON");
+                    }
+                    else
+                    {
+                        SMU.WriteString("SENSe:CURRent:RSENse OFF");
                     }
 
-                    else if (savedSourceMode == "Current" && savedMeasureMode == "Voltage")
+                    for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
                     {
-                        SMU.WriteString($"SOURce:FUNCtion CURRent");
-                        SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
-                        SMU.WriteString($"SOURce:CURRent:VLIM {sourcelimitValue}");
-                        SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
-                        SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
+                        SetTuner(tunerNumber);
 
-                        if (savedRsenseMode == "4-Wires")
+                        for (int repetition = 1; repetition < repetitionValue; repetition++)
                         {
-                            SMU.WriteString("SENSe:VOLTage:RSENse ON");
+                            string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                            string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
+                            Debug.WriteLine($"Sending command: {sweepCommand}");
+                            Debug.WriteLine($"{allValues}");
+                            SMU.WriteString(sweepCommand);
+                            SMU.WriteString("OUTPut ON");
+                            SMU.WriteString("INIT");
+                            SMU.WriteString("*WAI");
+                            SMU.WriteString("OUTPut OFF");
                         }
-                        else
-                        {
-                            SMU.WriteString("SENSe:VOLTage:RSENse OFF");
-                        }
+                    }
+                }
+
+                else if (savedSourceMode == "Current" && savedMeasureMode == "Voltage")
+                {
+                    SMU.WriteString($"SOURce:FUNCtion CURRent");
+                    SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
+                    SMU.WriteString($"SOURce:CURRent:VLIM {sourcelimitValue}");
+                    SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
+                    SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
+
+                    if (savedRsenseMode == "4-Wires")
+                    {
+                        SMU.WriteString("SENSe:VOLTage:RSENse ON");
+                    }
+                    else
+                    {
+                        SMU.WriteString("SENSe:VOLTage:RSENse OFF");
+                    }
+
+                    for (int tunerNumber = 1; tunerNumber < 9;)
+                    {
+                        SetTuner(tunerNumber);
 
                         string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
                         string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
@@ -1292,43 +1314,257 @@ namespace Program01
                         SMU.WriteString("INIT");
                         SMU.WriteString("*WAI");
                         SMU.WriteString("OUTPut OFF");
-                    }
 
-                    else if (savedSourceMode == "Current" && savedMeasureMode == "Current")
+                        tunerNumber++;
+                    }
+                }
+
+                else if (savedSourceMode == "Current" && savedMeasureMode == "Current")
+                {
+                    SMU.WriteString($"SOURce:FUNCtion CURRent");
+                    SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
+                    SMU.WriteString($"SOURce:CURRent:VLIM {sourcelimitValue}");
+                    SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
+                    SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
+
+                    if (savedRsenseMode == "4-Wires")
                     {
-                        SMU.WriteString($"SOURce:FUNCtion CURRent");
-                        SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
-                        SMU.WriteString($"SOURce:CURRent:VLIM {sourcelimitValue}");
-                        SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
-                        SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
-
-                        if (savedRsenseMode == "4-Wires")
-                        {
-                            SMU.WriteString("SENSe:CURRent:RSENse ON");
-                        }
-                        else
-                        {
-                            SMU.WriteString("SENSe:CURRent:RSENse OFF");
-                        }
-
-                        string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
-                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
-                        Debug.WriteLine($"Sending command: {sweepCommand}");
-                        Debug.WriteLine($"{allValues}.");
-                        SMU.WriteString(sweepCommand);
-                        SMU.WriteString("OUTPut ON");
-                        SMU.WriteString("INIT");
-                        SMU.WriteString("*WAI");
-                        SMU.WriteString("OUTPut OFF");
-                        Debug.WriteLine($"{loopCount}");
-                        loopCount++;
+                        SMU.WriteString("SENSe:CURRent:RSENse ON");
                     }
+                    else
+                    {
+                        SMU.WriteString("SENSe:CURRent:RSENse OFF");
+                    }
+
+                    for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
+                    {
+                        SetTuner(tunerNumber);
+
+                        for (int repetition = 1; repetition < repetitionValue; repetition++)
+                        {
+                            string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                            string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
+                            Debug.WriteLine($"Sending command: {sweepCommand}");
+                            Debug.WriteLine($"{allValues}.");
+                            SMU.WriteString(sweepCommand);
+                            SMU.WriteString("OUTPut ON");
+                            SMU.WriteString("INIT");
+                            SMU.WriteString("*WAI");
+                            SMU.WriteString("OUTPut OFF");
+                        }
+                    }
+                }
+
+                //SMU.WriteString("OUTPut OFF");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void SetTuner (int tunerNumber)
+        {
+            try
+            {
+                if (!isSMUConnected && !isSSConnected)
+                {
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                SS.WriteString("ROUTe:OPEN ALL");
+                switch (tunerNumber)
+                {
+                    case 1:
+                        if (isModes == false)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                        }
+                        else if (isModes == true)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!10)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!8)");
+                        }
+                        break;
+                    case 2:
+                        if (isModes == false)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                        }
+                        else if (isModes == true)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!10)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!8)");
+                        }
+                        break;
+                    case 3:
+                        if (isModes == false)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
+                        }
+                        else if (isModes == true)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
+                        }
+                        break;
+                    case 4:
+                        if (isModes == false)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
+                        }
+                        else if (isModes == true)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
+                        }
+                        break;
+                    case 5:
+                        if (isModes == false)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                        }
+                        else if (isModes == true)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                        }
+                        break;
+                    case 6:
+                        if (isModes == false)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                        }
+                        else if (isModes == true)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                        }
+                        break;
+                    case 7:
+                        if (isModes == false)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
+                        }
+                        else if (isModes == true)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
+                        }
+                        break;
+                    case 8:
+                        if (isModes == false)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
+                        }
+                        else if (isModes == true)
+                        {
+                            SS.WriteString("ROUTe:OPEN ALL");
+
+                            SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
+                            SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
+                        }
+                        break;
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}");
             }
-        }*/
+        }
+
+        private void IconbuttonErrorCheck_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMUConnected && isSSConnected)
+                {
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                SMU.WriteString("SYSTem:ERRor?");
+                SS.WriteString("SYSTem:ERRor?");
+                string SMUrespones = SMU.ReadString();
+                string SSresponse = SS.ReadString();
+                Debug.WriteLine($"There is SMU error : {SMUrespones}");
+                Debug.WriteLine($"There is SS error : {SSresponse}");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
     }
 }

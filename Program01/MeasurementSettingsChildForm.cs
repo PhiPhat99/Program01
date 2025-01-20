@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using FontAwesome.Sharp;
@@ -198,7 +199,7 @@ namespace Program01
                         MessageBox.Show($"Error during disconnection: {disconnectEx.Message}", "Disconnection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-                    
+
             }
             catch (Exception ex)
             {
@@ -223,7 +224,7 @@ namespace Program01
                     SS.IO = (Ivi.Visa.Interop.IMessage)resourcemanagerSS.Open(selectedSSAddress);
                     SS.IO.Timeout = 5000;
 
-                    SS.WriteString("*CLS");  
+                    SS.WriteString("*CLS");
                     SS.WriteString("*IDN?");
                     string response = SS.ReadString();
                     Debug.WriteLine($"{response}");
@@ -410,15 +411,15 @@ namespace Program01
                 if (SourceMode == "Voltage")
                 {
                     ComboboxStartUnit.Items.Clear();
-                    ComboboxStartUnit.Items.AddRange(new string[] { "mV", "V"});
+                    ComboboxStartUnit.Items.AddRange(new string[] { "mV", "V" });
                     ComboboxStartUnit.SelectedIndex = 0;
 
                     ComboboxStopUnit.Items.Clear();
-                    ComboboxStopUnit.Items.AddRange(new string[] { "mV", "V"});
+                    ComboboxStopUnit.Items.AddRange(new string[] { "mV", "V" });
                     ComboboxStopUnit.SelectedIndex = 0;
 
                     ComboboxStepUnit.Items.Clear();
-                    ComboboxStepUnit.Items.AddRange(new string[] { "mV", "V"});
+                    ComboboxStepUnit.Items.AddRange(new string[] { "mV", "V" });
                     ComboboxStepUnit.SelectedIndex = 0;
 
                     ComboboxSourceLimitMode.Items.Clear();
@@ -457,7 +458,7 @@ namespace Program01
                 ComboboxThicknessUnit.SelectedIndex = 0;
 
                 ComboboxMagneticFieldsUnit.Items.Clear();
-                ComboboxMagneticFieldsUnit.Items.AddRange(new string[] { "T", "G"});
+                ComboboxMagneticFieldsUnit.Items.AddRange(new string[] { "T", "G" });
                 ComboboxMagneticFieldsUnit.SelectedIndex = 0;
             }
             catch (Exception ex)
@@ -594,66 +595,6 @@ namespace Program01
             if (PanelToggleSwitchButton.Location.X < 0 || PanelToggleSwitchButton.Location.X > PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width)
             {
                 PanelToggleSwitchButton.Location = new Point(1, PanelToggleSwitchButton.Location.Y);
-            }
-        }
-
-        private bool ValidateInputs(out double start, out double stop, out double step, out int repetition, out double sourcelimit, out double thickness, out double magneticfields)
-        {
-            start = stop = step = sourcelimit = 0;
-            repetition = 1;
-            thickness = 0;
-            magneticfields = 0;
-            
-            if (isModes == false)
-            {
-                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetition) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || start >= stop || step <= 0 || repetition < 1 || thickness < 0)
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (!double.TryParse(TextboxStart.Text, out start) || !double.TryParse(TextboxStop.Text, out stop) || !double.TryParse(TextboxStep.Text, out step) || !int.TryParse(TextboxRepetition.Text, out repetition) || !double.TryParse(TextboxSourceLimitLevel.Text, out sourcelimit) || !double.TryParse(TextboxThickness.Text, out thickness) || !double.TryParse(TextboxMagneticFields.Text, out magneticfields) || step <= 0 || repetition < 1 || step >= stop || thickness < 0 || magneticfields < 0)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private double ConvertValueBasedOnUnit(string unit, double value)  //  Method สำหรับการแปลงหน่วยของค่าที่ผู้ใช้ป้อนเข้ามา
-        {
-            switch (unit)
-            {
-                case "mV":
-                    return value * 1E-3;  // แปลงเป็นหน่วย milliVolt
-                case "V":
-                    return value;  // แปลงเป็นหน่วย Volt
-                case "nA":
-                    return value * 1E-9;  // แปลงเป็นหน่วย nanoAmpere
-                case "µA":
-                    return value * 1E-6;  // แปลงเป็นหน่วย microAmpere
-                case "mA":
-                    return value * 1E-3;  // แปลงเป็นหน่วย milliAmpere
-                case "A":
-                    return value;  // แปลงเป็นหน่วย Ampere
-                case "nm":
-                    return value * 1E-9; //แปลงเป็นหน่วย nanoMeter
-                case "µm":
-                    return value * 1E-6;  //แปลงเป็นหน่วย microMeter
-                case "mm":
-                    return value * 1E-3;  //แปลงเป็นหน่วย milliMeter
-                case "cm":
-                    return value * 1E-2;  //แปลงเป็นหน่วย centiMeter
-                case "m":
-                    return value;  //แปลงเป็นหน่วย Meter
-                case "G":
-                    return value * 1E+4;  //แปลงเป็นหน่วย Gauss
-                case "T":
-                    return value;  //แปลงเป็นหน่วย Tesla
-                default:
-                    throw new Exception("Unknown unit");  //ไม่รู้จักหน่วย (Unit Error)
             }
         }
 
@@ -900,7 +841,7 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -935,7 +876,7 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("There is the instrument(s) is not connected. Exiting function.");
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
@@ -982,26 +923,10 @@ namespace Program01
                     return;
                 }
 
-                string startUnit = ComboboxStartUnit.SelectedItem.ToString();
-                string stopUnit = ComboboxStopUnit.SelectedItem.ToString();
-                string stepUnit = ComboboxStepUnit.SelectedItem.ToString();
-                startValue = ConvertValueBasedOnUnit(startUnit, startValue);
-                stopValue = ConvertValueBasedOnUnit(stopUnit, stopValue);
-                stepValue = ConvertValueBasedOnUnit(stepUnit, stepValue);
-
-                string sourcelimitUnit = ComboboxSourceLimitLevelUnit.SelectedItem.ToString();
-                sourcelimitValue = ConvertValueBasedOnUnit(sourcelimitUnit, sourcelimitValue);
-
-                string thicknessUnit = ComboboxThicknessUnit.SelectedItem.ToString();
-                thicknessValue = ConvertValueBasedOnUnit(thicknessUnit, thicknessValue);
-
-                string magneticfieldsUnit = ComboboxMagneticFieldsUnit.SelectedItem.ToString();
-                magneticfieldsValue = ConvertValueBasedOnUnit(magneticfieldsUnit, magneticfieldsValue);
-
                 if (savedSourceMode == "Voltage" && savedMeasureMode == "Voltage")
                 {
                     SMU.WriteString($"SOURce:FUNCtion VOLTage");
-                    SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
+                    SMU.WriteString($"SOURce:VOLTage:RANGe:AUTO ON");
                     SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
                     SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
                     SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
@@ -1018,12 +943,13 @@ namespace Program01
                     string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
                     string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
-                    Debug.WriteLine($"{allValues}");
+                    Debug.WriteLine($"{allValues}.");
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
+
                 }
 
                 else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current")
@@ -1134,57 +1060,34 @@ namespace Program01
                     return;
                 }
 
-                string startUnit = ComboboxStartUnit.SelectedItem.ToString();
-                string stopUnit = ComboboxStopUnit.SelectedItem.ToString();
-                string stepUnit = ComboboxStepUnit.SelectedItem.ToString();
-                startValue = ConvertValueBasedOnUnit(startUnit, startValue);
-                stopValue = ConvertValueBasedOnUnit(stopUnit, stopValue);
-                stepValue = ConvertValueBasedOnUnit(stepUnit, stepValue);
-
-                string sourcelimitUnit = ComboboxSourceLimitLevelUnit.SelectedItem.ToString();
-                sourcelimitValue = ConvertValueBasedOnUnit(sourcelimitUnit, sourcelimitValue);
-
-                string thicknessUnit = ComboboxThicknessUnit.SelectedItem.ToString();
-                thicknessValue = ConvertValueBasedOnUnit(thicknessUnit, thicknessValue);
-
-                string magneticfieldsUnit = ComboboxMagneticFieldsUnit.SelectedItem.ToString();
-                magneticfieldsValue = ConvertValueBasedOnUnit(magneticfieldsUnit, magneticfieldsValue);
+                SMU.WriteString($"SOURce:FUNCtion VOLTage");
+                SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
+                SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
+                SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
+                SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
+                SMU.WriteString($"SENSe:VOLTage:RSENse {(savedRsenseMode == "4-Wires" ? "ON" : "OFF")}");
 
                 if (savedSourceMode == "Voltage" && savedMeasureMode == "Voltage")
                 {
-                    SMU.WriteString($"SOURce:FUNCtion VOLTage");
-                    SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
-                    SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
-                    SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
-
-                    if (savedRsenseMode == "4-Wires")
+                    for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
                     {
-                        SMU.WriteString("SENSe:VOLTage:RSENse ON");
-                    }
-                    else
-                    {
-                        SMU.WriteString("SENSe:VOLTage:RSENse OFF");
-                    }
+                        SetTuner(tunerNumber);
 
-                    for (int repetition = 1; repetition < repetitionValue; repetition++)
-                    {
-
-                        for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
+                        for (int repetition = 0; repetition < repetitionValue; repetition++)
                         {
-                            SetTuner(tunerNumber);
-
                             string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
                             string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
                             Debug.WriteLine($"Sending command: {sweepCommand}");
-                            Debug.WriteLine($"{allValues}");
+                            Debug.WriteLine($"{allValues}.");
                             SMU.WriteString(sweepCommand);
                             SMU.WriteString("OUTPut ON");
                             SMU.WriteString("INIT");
                             SMU.WriteString("*WAI");
-                            //SMU.WriteString("OUTPut OFF");
+                            SMU.WriteString("OUTPut OFF");
                         }
                     }
+
+                    MessageBox.Show("Measurement completed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                 else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current")
@@ -1309,7 +1212,7 @@ namespace Program01
             }
         }
 
-        private void SetTuner (int tunerNumber)
+        private void SetTuner(int tunerNumber)
         {
             try
             {
@@ -1321,169 +1224,42 @@ namespace Program01
 
                 SS.WriteString("ROUTe:OPEN ALL");
 
-                switch (tunerNumber)
+                var channelConfigurations = new Dictionary<int, List<string>>
                 {
-                    case 1:
-                        if (isModes == false)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
+                    { 1, isModes == false ? new List<string> { "1!1!8", "1!2!9", "1!3!7", "1!4!10" } :
+                                            new List<string> { "1!1!7", "1!2!9", "1!3!10", "1!4!8" }},
+                    { 2, isModes == false ? new List<string> { "1!1!9", "1!2!8", "1!3!7", "1!4!10" } :
+                                            new List<string> { "1!1!9", "1!2!7", "1!3!10", "1!4!8" }},
+                    { 3, isModes == false ? new List<string> { "1!1!7", "1!2!10", "1!3!8", "1!4!9" } :
+                                            new List<string> { "1!1!8", "1!2!10", "1!3!7", "1!4!9" }},
+                    { 4, isModes == false ? new List<string> { "1!1!10", "1!2!7", "1!3!8", "1!4!9" } :
+                                            new List<string> { "1!1!10", "1!2!8", "1!3!7", "1!4!9" }},
+                    { 5, isModes == false ? new List<string> { "1!1!8", "1!2!7", "1!3!9", "1!4!10" } :
+                                            new List<string> { "1!1!9", "1!2!7", "1!3!8", "1!4!10" }},
+                    { 6, isModes == false ? new List<string> { "1!1!7", "1!2!8", "1!3!9", "1!4!10" } :
+                                            new List<string> { "1!1!7", "1!2!9", "1!3!8", "1!4!10" }},
+                    { 7, isModes == false ? new List<string> { "1!1!9", "1!2!10", "1!3!8", "1!4!7" } :
+                                            new List<string> { "1!1!8", "1!2!10", "1!3!9", "1!4!7" }},
+                    { 8, isModes == false ? new List<string> { "1!1!10", "1!2!9", "1!3!8", "1!4!7" } :
+                                            new List<string> { "1!1!10", "1!2!8", "1!3!9", "1!4!7" }}
+                };
 
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
-                        }
-                        else if (isModes == true)
+                if (channelConfigurations.ContainsKey(tunerNumber))
+                {
+                    foreach (var channel in channelConfigurations[tunerNumber])
+                    {
+                        SS.WriteString($"ROUTe:CLOSe (@ {channel})");
+                        SS.WriteString("*OPC?");
+                        string tunerResponse = SS.ReadString();
+                        if (tunerResponse.Trim() != "1")
                         {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!10)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!8)");
+                            throw new Exception("Channel switching on Model 7001 did not complete.");
                         }
-                        break;
-                    case 2:
-                        if (isModes == false)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
-                        }
-                        else if (isModes == true)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!10)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!8)");
-                        }
-                        break;
-                    case 3:
-                        if (isModes == false)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
-                        }
-                        else if (isModes == true)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
-                        }
-                        break;
-                    case 4:
-                        if (isModes == false)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
-                        }
-                        else if (isModes == true)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
-                        }
-                        break;
-                    case 5:
-                        if (isModes == false)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
-                        }
-                        else if (isModes == true)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
-                        }
-                        break;
-                    case 6:
-                        if (isModes == false)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
-                        }
-                        else if (isModes == true)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
-                        }
-                        break;
-                    case 7:
-                        if (isModes == false)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
-                        }
-                        else if (isModes == true)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
-                        }
-                        break;
-                    case 8:
-                        if (isModes == false)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
-                        }
-                        else if (isModes == true)
-                        {
-                            SS.WriteString("ROUTe:OPEN ALL");
-
-                            SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
-                            SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
-                        }
-                        break;
+                    }
                 }
+
+                SS.WriteString("*WAI");
+                SS.WriteString("SYSTem:PRESet");
             }
             catch (Exception ex)
             {
@@ -1555,6 +1331,84 @@ namespace Program01
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private bool ValidateInputs(out double start, out double stop, out double step, out int repetition, out double sourcelimit, out double thickness, out double magneticfields)
+        {
+            start = stop = step = sourcelimit = thickness = magneticfields = 0;
+            repetition = 1;
+
+            try
+            {
+                start = ConvertValueBasedOnUnit(ComboboxStartUnit.SelectedItem.ToString(), double.Parse(TextboxStart.Text));
+                stop = ConvertValueBasedOnUnit(ComboboxStopUnit.SelectedItem.ToString(), double.Parse(TextboxStop.Text));
+                step = ConvertValueBasedOnUnit(ComboboxStepUnit.SelectedItem.ToString(), double.Parse(TextboxStep.Text));
+                sourcelimit = ConvertValueBasedOnUnit(ComboboxSourceLimitLevelUnit.SelectedItem.ToString(), double.Parse(TextboxSourceLimitLevel.Text));
+                thickness = ConvertValueBasedOnUnit(ComboboxThicknessUnit.SelectedItem.ToString(), double.Parse(TextboxThickness.Text));
+                magneticfields = isModes ? ConvertValueBasedOnUnit(ComboboxMagneticFieldsUnit.SelectedItem.ToString(), double.Parse(TextboxMagneticFields.Text)) : 0;
+                repetition = int.Parse(TextboxRepetition.Text);
+
+                if (start >= stop || step <= 0 || repetition < 1 || repetition > 999 || thickness < 0 || sourcelimit < 0)
+                {
+                    return false;
+                }
+
+                if (isModes && (magneticfields < 0 || step >= stop))
+                {
+                    return false;
+                }
+
+                if (SourceLimit == "Current" && sourcelimit > 1.05 || sourcelimit < -1.05)
+                {
+                    return false;
+                }
+
+                if (SourceLimit == "Voltage" && sourcelimit > 210 || sourcelimit < -210)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        private double ConvertValueBasedOnUnit(string unit, double value)  //  Method สำหรับการแปลงหน่วยของค่าที่ผู้ใช้ป้อนเข้ามา
+        {
+            switch (unit)
+            {
+                case "mV":
+                    return value * 1E-3;  // แปลงเป็นหน่วย milliVolt
+                case "V":
+                    return value;  // แปลงเป็นหน่วย Volt
+                case "nA":
+                    return value * 1E-9;  // แปลงเป็นหน่วย nanoAmpere
+                case "µA":
+                    return value * 1E-6;  // แปลงเป็นหน่วย microAmpere
+                case "mA":
+                    return value * 1E-3;  // แปลงเป็นหน่วย milliAmpere
+                case "A":
+                    return value;  // แปลงเป็นหน่วย Ampere
+                case "nm":
+                    return value * 1E-9; //แปลงเป็นหน่วย nanoMeter
+                case "µm":
+                    return value * 1E-6;  //แปลงเป็นหน่วย microMeter
+                case "mm":
+                    return value * 1E-3;  //แปลงเป็นหน่วย milliMeter
+                case "cm":
+                    return value * 1E-2;  //แปลงเป็นหน่วย centiMeter
+                case "m":
+                    return value;  //แปลงเป็นหน่วย Meter
+                case "G":
+                    return value * 1E+4;  //แปลงเป็นหน่วย Gauss
+                case "T":
+                    return value;  //แปลงเป็นหน่วย Tesla
+                default:
+                    throw new Exception("Unknown unit");  //ไม่รู้จักหน่วย (Unit Error)
             }
         }
     }

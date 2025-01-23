@@ -949,7 +949,8 @@ namespace Program01
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
-
+                    SMU.WriteString("TRACe:DATA?");
+                    string measureValue = SMU.ReadString();
                 }
 
                 else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current")
@@ -978,6 +979,8 @@ namespace Program01
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
+                    SMU.WriteString("TRACe:DATA?");
+                    string measureValue = SMU.ReadString();
                 }
 
                 else if (savedSourceMode == "Current" && savedMeasureMode == "Voltage")
@@ -1006,6 +1009,8 @@ namespace Program01
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
+                    SMU.WriteString("TRACe:DATA?");
+                    string measureValue = SMU.ReadString();
                 }
 
                 else if (savedSourceMode == "Current" && savedMeasureMode == "Current")
@@ -1034,6 +1039,8 @@ namespace Program01
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
+                    SMU.WriteString("TRACe:DATA?");
+                    string measureValue = SMU.ReadString();
                 }
             }
             catch (Exception ex)
@@ -1042,7 +1049,7 @@ namespace Program01
             }
         }
 
-        private void IconbuttonRunMeasurement_Click(object sender, EventArgs e)
+        /*private void IconbuttonRunMeasurement_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1076,17 +1083,23 @@ namespace Program01
                         for (int repetition = 0; repetition < repetitionValue; repetition++)
                         {
                             string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
-                            string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
-                            Debug.WriteLine($"Sending command: {sweepCommand}");
-                            Debug.WriteLine($"{allValues}.");
                             SMU.WriteString(sweepCommand);
-                            SMU.WriteString("OUTPut ON");
-                            SMU.WriteString("INIT");
+                            SMU.WriteString("INITiate");
                             SMU.WriteString("*WAI");
+
+                            string measurementData = SMU.ReadString();
+                            Debug.WriteLine($"Measurement Data: {measurementData}");
+
+                            int totalDelay = CalculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
+                            System.Threading.Thread.Sleep(totalDelay);
+
                             SMU.WriteString("OUTPut OFF");
                         }
                     }
 
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SMU.WriteString("*CLS");
+                    SS.WriteString("*CLS");
                     MessageBox.Show("Measurement completed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
@@ -1115,16 +1128,29 @@ namespace Program01
                             SetTuner(tunerNumber);
 
                             string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
-                            string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
-                            Debug.WriteLine($"Sending command: {sweepCommand}");
-                            Debug.WriteLine($"{allValues}");
                             SMU.WriteString(sweepCommand);
-                            SMU.WriteString("OUTPut ON");
-                            SMU.WriteString("INIT");
-                            SMU.WriteString("*WAI");
-                            //SMU.WriteString("OUTPut OFF");
+                            SMU.WriteString("INITiate");
+                            SMU.WriteString("*OPC?");
+                            string opcSMUResponse = SMU.ReadString();
+
+                            if (opcSMUResponse.Trim() != "1")
+                            {
+                                throw new Exception("Sweep operation did not complete successfully.");
+                            }
+
+                            string measurementData = SMU.ReadString();
+                            Debug.WriteLine($"Measurement Data: {measurementData}");
+                            int totalDelay = CalculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
+                            Debug.WriteLine($"Applying delay of {totalDelay} ms before switching tuner.");
+                            System.Threading.Thread.Sleep(totalDelay);
                         }
                     }
+
+                    SMU.WriteString("OUTPut OFF");
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SMU.WriteString("*CLS");
+                    SS.WriteString("*CLS");
+                    MessageBox.Show("Measurement completed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                 else if (savedSourceMode == "Current" && savedMeasureMode == "Voltage")
@@ -1151,17 +1177,30 @@ namespace Program01
                         {
                             SetTuner(tunerNumber);
 
-                            string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
-                            string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
-                            Debug.WriteLine($"Sending command: {sweepCommand}");
-                            Debug.WriteLine($"{allValues}");
+                            string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
                             SMU.WriteString(sweepCommand);
-                            SMU.WriteString("OUTPut ON");
-                            SMU.WriteString("INIT");
-                            SMU.WriteString("*WAI");
-                            //SMU.WriteString("OUTPut OFF");
+                            SMU.WriteString("INITiate");
+                            SMU.WriteString("*OPC?");
+                            string opcSMUResponse = SMU.ReadString();
+
+                            if (opcSMUResponse.Trim() != "1")
+                            {
+                                throw new Exception("Sweep operation did not complete successfully.");
+                            }
+
+                            string measurementData = SMU.ReadString();
+                            Debug.WriteLine($"Measurement Data: {measurementData}");
+                            int totalDelay = CalculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
+                            Debug.WriteLine($"Applying delay of {totalDelay} ms before switching tuner.");
+                            System.Threading.Thread.Sleep(totalDelay);
                         }
                     }
+
+                    SMU.WriteString("OUTPut OFF");
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SMU.WriteString("*CLS");
+                    SS.WriteString("*CLS");
+                    MessageBox.Show("Measurement completed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
 
                 else if (savedSourceMode == "Current" && savedMeasureMode == "Current")
@@ -1188,23 +1227,31 @@ namespace Program01
                         {
                             SetTuner(tunerNumber);
 
-                            string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
-                            string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
-                            Debug.WriteLine($"Sending command: {sweepCommand}");
-                            Debug.WriteLine($"{allValues}.");
+                            string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
                             SMU.WriteString(sweepCommand);
-                            SMU.WriteString("OUTPut ON");
-                            SMU.WriteString("INIT");
-                            SMU.WriteString("*WAI");
-                            //SMU.WriteString("OUTPut OFF");
+                            SMU.WriteString("INITiate");
+                            SMU.WriteString("*OPC?");
+                            string opcSMUResponse = SMU.ReadString();
+
+                            if (opcSMUResponse.Trim() != "1")
+                            {
+                                throw new Exception("Sweep operation did not complete successfully.");
+                            }
+
+                            string measurementData = SMU.ReadString();
+                            Debug.WriteLine($"Measurement Data: {measurementData}");
+                            int totalDelay = CalculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
+                            Debug.WriteLine($"Applying delay of {totalDelay} ms before switching tuner.");
+                            System.Threading.Thread.Sleep(totalDelay);
                         }
                     }
                 }
 
                 SMU.WriteString("OUTPut OFF");
-                SMU.WriteString("*CLS");
                 SS.WriteString("ROUTe:OPEN ALL");
+                SMU.WriteString("*CLS");
                 SS.WriteString("*CLS");
+                MessageBox.Show("Measurement completed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
             {
@@ -1222,7 +1269,9 @@ namespace Program01
                     return;
                 }
 
+                SS.WriteString("*CLS");
                 SS.WriteString("ROUTe:OPEN ALL");
+                System.Threading.Thread.Sleep(500);
 
                 var channelConfigurations = new Dictionary<int, List<string>>
                 {
@@ -1250,22 +1299,24 @@ namespace Program01
                     {
                         SS.WriteString($"ROUTe:CLOSe (@ {channel})");
                         SS.WriteString("*OPC?");
-                        string tunerResponse = SS.ReadString();
-                        if (tunerResponse.Trim() != "1")
+                        string response = SS.ReadString();
+
+                        if (response.Trim() != "1")
                         {
-                            throw new Exception("Channel switching on Model 7001 did not complete.");
+                            throw new Exception("Channel switching failed.");
                         }
+
+                        System.Threading.Thread.Sleep(500);
                     }
                 }
 
-                SS.WriteString("*WAI");
                 SS.WriteString("SYSTem:PRESet");
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}");
             }
-        }
+        }*/
 
         private void IconbuttonErrorCheck_Click(object sender, EventArgs e)
         {
@@ -1294,7 +1345,13 @@ namespace Program01
         {
             try
             {
-                OpenChildForm(new MeasurementSettingsDataChildForm());
+                // สร้างฟอร์ม MeasurementSettingsDataChildForm และส่งข้อมูลให้ฟอร์มลูก
+                var dataChildForm = new MeasurementSettingsDataChildForm();
+
+                // อัปเดต Chart ด้วยข้อมูลเริ่มต้น
+                dataChildForm.UpdateChartData(new[] { 5, 10, 15, 20 });
+
+                OpenChildForm(dataChildForm); // เปิดฟอร์มลูกใน Panel
             }
             catch (Exception ex)
             {
@@ -1306,11 +1363,15 @@ namespace Program01
         {
             try
             {
+                // ปิดฟอร์มลูกก่อนหน้า ถ้ามี
                 CurrentTunerandDataChildForm?.Close();
                 CurrentTunerandDataChildForm = childForm;
+
+                // ตั้งค่าฟอร์มลูกให้อยู่ใน Panel
                 childForm.TopLevel = false;
                 childForm.FormBorderStyle = FormBorderStyle.None;
                 childForm.Dock = DockStyle.Fill;
+
                 PanelTunerandData.Controls.Add(childForm);
                 PanelTunerandData.Tag = childForm;
                 childForm.BringToFront();
@@ -1409,6 +1470,22 @@ namespace Program01
                     return value;  //แปลงเป็นหน่วย Tesla
                 default:
                     throw new Exception("Unknown unit");  //ไม่รู้จักหน่วย (Unit Error)
+            }
+        }
+
+        private void IconbuttonUpdateChart_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // อัปเดตข้อมูลในฟอร์มลูก (เช่น ส่งข้อมูลใหม่ให้ Chart)
+                if (CurrentTunerandDataChildForm is MeasurementSettingsDataChildForm dataChildForm)
+                {
+                    dataChildForm.UpdateChartData(new[] { 25, 30, 35, 40 }); // ส่งข้อมูลใหม่ไปยัง Chart
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
     }

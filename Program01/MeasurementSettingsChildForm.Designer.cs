@@ -60,7 +60,7 @@
             this.TextboxMagneticFields = new System.Windows.Forms.TextBox();
             this.LabelMagneticFieldsUnit = new System.Windows.Forms.Label();
             this.PanelTunerandData = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.PictureboxSample = new System.Windows.Forms.PictureBox();
             this.PictureboxTunerDescription = new System.Windows.Forms.PictureBox();
             this.IconbuttonTunerTest = new FontAwesome.Sharp.IconButton();
             this.PictureboxTuner8 = new System.Windows.Forms.PictureBox();
@@ -92,8 +92,9 @@
             this.IconbuttonClearSettings = new FontAwesome.Sharp.IconButton();
             this.IconbuttonSSConnection = new FontAwesome.Sharp.IconButton();
             this.IconbuttonSMUConnection = new FontAwesome.Sharp.IconButton();
+            this.IconbuttonUpdateChart = new FontAwesome.Sharp.IconButton();
             this.PanelTunerandData.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxSample)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTunerDescription)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner8)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner7)).BeginInit();
@@ -409,7 +410,8 @@
             // PanelTunerandData
             // 
             this.PanelTunerandData.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(248)))), ((int)(((byte)(231)))));
-            this.PanelTunerandData.Controls.Add(this.pictureBox1);
+            this.PanelTunerandData.Controls.Add(this.IconbuttonUpdateChart);
+            this.PanelTunerandData.Controls.Add(this.PictureboxSample);
             this.PanelTunerandData.Controls.Add(this.PictureboxTunerDescription);
             this.PanelTunerandData.Controls.Add(this.IconbuttonTunerTest);
             this.PanelTunerandData.Controls.Add(this.PictureboxTuner8);
@@ -427,16 +429,16 @@
             this.PanelTunerandData.Size = new System.Drawing.Size(790, 640);
             this.PanelTunerandData.TabIndex = 28;
             // 
-            // pictureBox1
+            // PictureboxSample
             // 
-            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox1.Image = global::Program01.Properties.Resources.Sample;
-            this.pictureBox1.Location = new System.Drawing.Point(280, 450);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(320, 180);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 43;
-            this.pictureBox1.TabStop = false;
+            this.PictureboxSample.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxSample.Image = global::Program01.Properties.Resources.Sample;
+            this.PictureboxSample.Location = new System.Drawing.Point(280, 450);
+            this.PictureboxSample.Name = "PictureboxSample";
+            this.PictureboxSample.Size = new System.Drawing.Size(320, 180);
+            this.PictureboxSample.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxSample.TabIndex = 43;
+            this.PictureboxSample.TabStop = false;
             // 
             // PictureboxTunerDescription
             // 
@@ -778,7 +780,6 @@
             this.IconbuttonRunMeasurement.Text = "RUN";
             this.IconbuttonRunMeasurement.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.IconbuttonRunMeasurement.UseVisualStyleBackColor = false;
-            this.IconbuttonRunMeasurement.Click += new System.EventHandler(this.IconbuttonRunMeasurement_Click);
             // 
             // IconbuttonClearSettings
             // 
@@ -827,6 +828,24 @@
             this.IconbuttonSMUConnection.TabIndex = 0;
             this.IconbuttonSMUConnection.UseVisualStyleBackColor = false;
             this.IconbuttonSMUConnection.Click += new System.EventHandler(this.IconbuttonSMUConnection_Click);
+            // 
+            // IconbuttonUpdateChart
+            // 
+            this.IconbuttonUpdateChart.BackColor = System.Drawing.Color.Snow;
+            this.IconbuttonUpdateChart.FlatAppearance.BorderSize = 0;
+            this.IconbuttonUpdateChart.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.IconbuttonUpdateChart.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IconbuttonUpdateChart.IconChar = FontAwesome.Sharp.IconChar.None;
+            this.IconbuttonUpdateChart.IconColor = System.Drawing.Color.Black;
+            this.IconbuttonUpdateChart.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.IconbuttonUpdateChart.Location = new System.Drawing.Point(630, 577);
+            this.IconbuttonUpdateChart.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.IconbuttonUpdateChart.Name = "IconbuttonUpdateChart";
+            this.IconbuttonUpdateChart.Size = new System.Drawing.Size(120, 30);
+            this.IconbuttonUpdateChart.TabIndex = 44;
+            this.IconbuttonUpdateChart.Text = "UPDATE";
+            this.IconbuttonUpdateChart.UseVisualStyleBackColor = false;
+            this.IconbuttonUpdateChart.Click += new System.EventHandler(this.IconbuttonUpdateChart_Click);
             // 
             // MeasurementSettingsChildForm
             // 
@@ -888,7 +907,7 @@
             this.Text = "2";
             this.Load += new System.EventHandler(this.MeasurementSettingsChildForm_Load);
             this.PanelTunerandData.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxSample)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTunerDescription)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner8)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner7)).EndInit();
@@ -968,7 +987,8 @@
         private System.Windows.Forms.Label LabelToggleSwitchVdP;
         private System.Windows.Forms.Label LabelToggleSwitchHall;
         private System.Windows.Forms.Label LabelToggleSwitchMeasurementMode;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox PictureboxSample;
         private FontAwesome.Sharp.IconButton IconbuttonErrorCheck;
+        private FontAwesome.Sharp.IconButton IconbuttonUpdateChart;
     }
 }

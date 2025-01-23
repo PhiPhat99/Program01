@@ -257,17 +257,17 @@ namespace Program01
         {
             try
             {
-                if (!isLoggedIn)
+                /*if (!isLoggedIn)
                 {
                     MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-                else
-                {
+                else*/
+                //{
                     ActivateButton(sender, RGBColors.Color2);
                     UpdatePath("Measurement Settings");
                     OpenChildForm(new MeasurementSettingsChildForm());
                     ToggleSubMenuVisibility(null);
-                }
+                //}
             }
             catch (Exception ex)
             {

@@ -1031,7 +1031,7 @@ namespace Program01
             }
         }
 
-        /*private void IconbuttonRunMeasurement_Click(object sender, EventArgs e)
+        private void IconbuttonRunMeasurement_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1043,7 +1043,7 @@ namespace Program01
 
                 SMU.WriteString("OUTPut OFF");
 
-                if (!validateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue))
+                if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue))
                 {
                     MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -1071,11 +1071,9 @@ namespace Program01
 
                             string measurementData = SMU.ReadString();
                             Debug.WriteLine($"Measurement Data: {measurementData}");
-
-                            int totalDelay = calculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
-                            System.Threading.Thread.Sleep(totalDelay);
-
                             SMU.WriteString("OUTPut OFF");
+                            
+                            //คำสั่งเกี่ยวกับการหน่วงเวลา หรือรอคำสั่งการวัดกวาดเสร็จสิ้นแล้วจึงส่งคำสั่งสั่งเปลี่ยนขั้วไฟฟ้า
                         }
                     }
 
@@ -1109,26 +1107,18 @@ namespace Program01
                         {
                             SetTuner(tunerNumber);
 
-                            string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                            string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                             SMU.WriteString(sweepCommand);
                             SMU.WriteString("INITiate");
-                            SMU.WriteString("*OPC?");
-                            string opcSMUResponse = SMU.ReadString();
-
-                            if (opcSMUResponse.Trim() != "1")
-                            {
-                                throw new Exception("Sweep operation did not complete successfully.");
-                            }
 
                             string measurementData = SMU.ReadString();
                             Debug.WriteLine($"Measurement Data: {measurementData}");
-                            int totalDelay = calculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
-                            Debug.WriteLine($"Applying delay of {totalDelay} ms before switching tuner.");
-                            System.Threading.Thread.Sleep(totalDelay);
+                            SMU.WriteString("OUTPut OFF");
+
+                            //คำสั่งเกี่ยวกับการหน่วงเวลา หรือรอคำสั่งการวัดกวาดเสร็จสิ้นแล้วจึงส่งคำสั่งสั่งเปลี่ยนขั้วไฟฟ้า
                         }
                     }
 
-                    SMU.WriteString("OUTPut OFF");
                     SS.WriteString("ROUTe:OPEN ALL");
                     SMU.WriteString("*CLS");
                     SS.WriteString("*CLS");
@@ -1159,26 +1149,18 @@ namespace Program01
                         {
                             SetTuner(tunerNumber);
 
-                            string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                            string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue},  {delayValue}, {repetitionValue}";
                             SMU.WriteString(sweepCommand);
                             SMU.WriteString("INITiate");
-                            SMU.WriteString("*OPC?");
-                            string opcSMUResponse = SMU.ReadString();
-
-                            if (opcSMUResponse.Trim() != "1")
-                            {
-                                throw new Exception("Sweep operation did not complete successfully.");
-                            }
 
                             string measurementData = SMU.ReadString();
                             Debug.WriteLine($"Measurement Data: {measurementData}");
-                            int totalDelay = calculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
-                            Debug.WriteLine($"Applying delay of {totalDelay} ms before switching tuner.");
-                            System.Threading.Thread.Sleep(totalDelay);
+                            SMU.WriteString("OUTPut OFF");
+
+                            //คำสั่งเกี่ยวกับการหน่วงเวลา หรือรอคำสั่งการวัดกวาดเสร็จสิ้นแล้วจึงส่งคำสั่งสั่งเปลี่ยนขั้วไฟฟ้า
                         }
                     }
 
-                    SMU.WriteString("OUTPut OFF");
                     SS.WriteString("ROUTe:OPEN ALL");
                     SMU.WriteString("*CLS");
                     SS.WriteString("*CLS");
@@ -1209,27 +1191,21 @@ namespace Program01
                         {
                             SetTuner(tunerNumber);
 
-                            string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
+                            string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue},  {delayValue}, {repetitionValue}";
                             SMU.WriteString(sweepCommand);
                             SMU.WriteString("INITiate");
                             SMU.WriteString("*OPC?");
                             string opcSMUResponse = SMU.ReadString();
 
-                            if (opcSMUResponse.Trim() != "1")
-                            {
-                                throw new Exception("Sweep operation did not complete successfully.");
-                            }
-
                             string measurementData = SMU.ReadString();
                             Debug.WriteLine($"Measurement Data: {measurementData}");
-                            int totalDelay = calculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
-                            Debug.WriteLine($"Applying delay of {totalDelay} ms before switching tuner.");
-                            System.Threading.Thread.Sleep(totalDelay);
+                            SMU.WriteString("OUTPut OFF");
+
+                            //คำสั่งเกี่ยวกับการหน่วงเวลา หรือรอคำสั่งการวัดกวาดเสร็จสิ้นแล้วจึงส่งคำสั่งสั่งเปลี่ยนขั้วไฟฟ้า
                         }
                     }
                 }
 
-                SMU.WriteString("OUTPut OFF");
                 SS.WriteString("ROUTe:OPEN ALL");
                 SMU.WriteString("*CLS");
                 SS.WriteString("*CLS");
@@ -1262,17 +1238,17 @@ namespace Program01
                     { 2, isModes == false ? new List<string> { "1!1!9", "1!2!8", "1!3!7", "1!4!10" } :
                                             new List<string> { "1!1!9", "1!2!7", "1!3!10", "1!4!8" }},
                     { 3, isModes == false ? new List<string> { "1!1!7", "1!2!10", "1!3!8", "1!4!9" } :
-                                            new List<string> { "1!1!8", "1!2!10", "1!3!7", "1!4!9" }},
-                    { 4, isModes == false ? new List<string> { "1!1!10", "1!2!7", "1!3!8", "1!4!9" } :
                                             new List<string> { "1!1!10", "1!2!8", "1!3!7", "1!4!9" }},
+                    { 4, isModes == false ? new List<string> { "1!1!10", "1!2!7", "1!3!8", "1!4!9" } :
+                                            new List<string> { "1!1!8", "1!2!10", "1!3!7", "1!4!9" }},
                     { 5, isModes == false ? new List<string> { "1!1!8", "1!2!7", "1!3!9", "1!4!10" } :
-                                            new List<string> { "1!1!9", "1!2!7", "1!3!8", "1!4!10" }},
-                    { 6, isModes == false ? new List<string> { "1!1!7", "1!2!8", "1!3!9", "1!4!10" } :
                                             new List<string> { "1!1!7", "1!2!9", "1!3!8", "1!4!10" }},
+                    { 6, isModes == false ? new List<string> { "1!1!7", "1!2!8", "1!3!9", "1!4!10" } :
+                                            new List<string> { "1!1!9", "1!2!7", "1!3!8", "1!4!10" }},
                     { 7, isModes == false ? new List<string> { "1!1!9", "1!2!10", "1!3!8", "1!4!7" } :
-                                            new List<string> { "1!1!8", "1!2!10", "1!3!9", "1!4!7" }},
+                                            new List<string> { "1!1!10", "1!2!8", "1!3!9", "1!4!7" }},
                     { 8, isModes == false ? new List<string> { "1!1!10", "1!2!9", "1!3!8", "1!4!7" } :
-                                            new List<string> { "1!1!10", "1!2!8", "1!3!9", "1!4!7" }}
+                                            new List<string> { "1!1!8", "1!2!10", "1!3!9", "1!4!7" }}
                 };
 
                 if (channelConfigurations.ContainsKey(tunerNumber))
@@ -1298,7 +1274,7 @@ namespace Program01
             {
                 MessageBox.Show($"Error: {ex.Message}");
             }
-        }*/
+        }
 
         private void IconbuttonErrorCheck_Click(object sender, EventArgs e)
         {

@@ -18,7 +18,7 @@ namespace Program01
             InitializeComponent();
         }
 
-        public void updateChartData(int[] data)
+        public void UpdateChartData(int[] data)
         {
             try
             {

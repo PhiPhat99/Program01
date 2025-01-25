@@ -18,16 +18,16 @@ namespace Program01
             InitializeComponent();
         }
 
-        public void UpdateChartData(int[] data)
+        public void updateChartData(int[] data)
         {
             try
             {
-                if (ChartTunerTesting.Series.Count == 0)
+                if (chartTunerTesting.Series.Count == 0)
                 {
-                    ChartTunerTesting.Series.Add("Series 1"); // เพิ่ม Series ใหม่ถ้ายังไม่มี
+                    chartTunerTesting.Series.Add("Series 1"); // เพิ่ม Series ใหม่ถ้ายังไม่มี
                 }
 
-                var series = ChartTunerTesting.Series["I-V Curve"];
+                var series = chartTunerTesting.Series["I-V Curve"];
                 series.Points.Clear(); // ลบข้อมูลเก่า
                 foreach (var value in data)
                 {

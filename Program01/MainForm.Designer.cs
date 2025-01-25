@@ -29,254 +29,254 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.PanelTabBar = new System.Windows.Forms.Panel();
-            this.IconpictureboxMinimizeProgram = new FontAwesome.Sharp.IconPictureBox();
-            this.IconpictureboxExitProgram = new FontAwesome.Sharp.IconPictureBox();
-            this.PanelTitleTabBar = new System.Windows.Forms.Panel();
-            this.LabelUserLogin = new System.Windows.Forms.Label();
-            this.LabelCurrentDateandRealTime = new System.Windows.Forms.Label();
-            this.LabelTitleCurrentForm = new System.Windows.Forms.Label();
-            this.IconpictureboxCurrentForm = new FontAwesome.Sharp.IconPictureBox();
-            this.PanelDesktop = new System.Windows.Forms.Panel();
-            this.IconbuttonUserLogin = new FontAwesome.Sharp.IconButton();
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath = new FontAwesome.Sharp.IconButton();
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly = new FontAwesome.Sharp.IconButton();
+            this.panelTabBar = new System.Windows.Forms.Panel();
+            this.iconpictureboxMinimizeProgram = new FontAwesome.Sharp.IconPictureBox();
+            this.iconpictureboxExitProgram = new FontAwesome.Sharp.IconPictureBox();
+            this.panelTitleTabBar = new System.Windows.Forms.Panel();
+            this.labelUserLogin = new System.Windows.Forms.Label();
+            this.labelCurrentDateandRealTime = new System.Windows.Forms.Label();
+            this.labelTitleCurrentForm = new System.Windows.Forms.Label();
+            this.iconpictureboxCurrentForm = new FontAwesome.Sharp.IconPictureBox();
+            this.panelDesktop = new System.Windows.Forms.Panel();
+            this.iconbuttonUserLogin = new FontAwesome.Sharp.IconButton();
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath = new FontAwesome.Sharp.IconButton();
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly = new FontAwesome.Sharp.IconButton();
             this.IconbuttonBrowseFileVdPDataPathOnly = new FontAwesome.Sharp.IconButton();
-            this.IconbuttonSaveFileVdPandHallMeasurementPath = new FontAwesome.Sharp.IconButton();
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly = new FontAwesome.Sharp.IconButton();
+            this.iconbuttonSaveFileVdPandHallMeasurementPath = new FontAwesome.Sharp.IconButton();
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly = new FontAwesome.Sharp.IconButton();
             this.IconbuttonSaveFileVdPDataPathOnly = new FontAwesome.Sharp.IconButton();
-            this.TextboxFileVdPandHallMeasurementDataPath = new System.Windows.Forms.TextBox();
-            this.TextboxFileHallMeasurementDataPath = new System.Windows.Forms.TextBox();
-            this.TextboxFileVdPDataPath = new System.Windows.Forms.TextBox();
-            this.LabelUserLastname = new System.Windows.Forms.Label();
-            this.TextboxUserLastname = new System.Windows.Forms.TextBox();
-            this.LabelUserFirstName = new System.Windows.Forms.Label();
-            this.TextboxUserFirstName = new System.Windows.Forms.TextBox();
-            this.LabelUserFirstNameLastname = new System.Windows.Forms.Label();
-            this.LabelSaveVdPandHallMeasurementData = new System.Windows.Forms.Label();
-            this.LabelSaveHallMeasurementDataOnly = new System.Windows.Forms.Label();
-            this.LabelSaveVdPDataOnly = new System.Windows.Forms.Label();
-            this.LabelProgramTitle = new System.Windows.Forms.Label();
-            this.PanelHome = new System.Windows.Forms.Panel();
-            this.IconpictureboxLogo = new System.Windows.Forms.PictureBox();
-            this.IconbuttonHelp = new FontAwesome.Sharp.IconButton();
-            this.PanelSideMenu = new System.Windows.Forms.Panel();
+            this.textboxFileVdPandHallMeasurementDataPath = new System.Windows.Forms.TextBox();
+            this.textboxFileHallMeasurementDataPath = new System.Windows.Forms.TextBox();
+            this.textboxFileVdPDataPath = new System.Windows.Forms.TextBox();
+            this.labelUserLastname = new System.Windows.Forms.Label();
+            this.textboxUserLastname = new System.Windows.Forms.TextBox();
+            this.labelUserFirstName = new System.Windows.Forms.Label();
+            this.textboxUserFirstName = new System.Windows.Forms.TextBox();
+            this.labelUserFirstNameLastname = new System.Windows.Forms.Label();
+            this.labelSaveVdPandHallMeasurementData = new System.Windows.Forms.Label();
+            this.labelSaveHallMeasurementDataOnly = new System.Windows.Forms.Label();
+            this.labelSaveVdPDataOnly = new System.Windows.Forms.Label();
+            this.labelProgramTitle = new System.Windows.Forms.Label();
+            this.panelHome = new System.Windows.Forms.Panel();
+            this.iconpictureboxLogo = new System.Windows.Forms.PictureBox();
+            this.iconbuttonHelp = new FontAwesome.Sharp.IconButton();
+            this.panelSideMenu = new System.Windows.Forms.Panel();
             this.PanelHallMeasurementSubMenu = new System.Windows.Forms.Panel();
-            this.ButtonHallMeasurementResults = new System.Windows.Forms.Button();
-            this.ButtonHallTotalVoltage = new System.Windows.Forms.Button();
-            this.IconbuttonHalleffectMeasurement = new FontAwesome.Sharp.IconButton();
+            this.buttonHallMeasurementResults = new System.Windows.Forms.Button();
+            this.buttonHallTotalVoltage = new System.Windows.Forms.Button();
+            this.iconbuttonHalleffectMeasurement = new FontAwesome.Sharp.IconButton();
             this.PanelVanderPauwSubMenu = new System.Windows.Forms.Panel();
-            this.ButtonVdPMeasurementResults = new System.Windows.Forms.Button();
-            this.ButtonVdPTotalVoltage = new System.Windows.Forms.Button();
-            this.IconbuttonVanderPauwMethod = new FontAwesome.Sharp.IconButton();
-            this.IconbuttonMeasurementSettings = new FontAwesome.Sharp.IconButton();
+            this.buttonVdPMeasurementResults = new System.Windows.Forms.Button();
+            this.buttonVdPTotalVoltage = new System.Windows.Forms.Button();
+            this.iconbuttonVanderPauwMethod = new FontAwesome.Sharp.IconButton();
+            this.iconbuttonMeasurementSettings = new FontAwesome.Sharp.IconButton();
             this.TimerCurrentDateandRealTime = new System.Windows.Forms.Timer(this.components);
             this.FolderBrowserDialogVdPFile = new System.Windows.Forms.FolderBrowserDialog();
             this.FolderBrowserDialogHallMeasurementFile = new System.Windows.Forms.FolderBrowserDialog();
             this.FolderBrowserDialogVdPandHallMeasurementFile = new System.Windows.Forms.FolderBrowserDialog();
-            this.PanelTabBar.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxMinimizeProgram)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxExitProgram)).BeginInit();
-            this.PanelTitleTabBar.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxCurrentForm)).BeginInit();
-            this.PanelDesktop.SuspendLayout();
-            this.PanelHome.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxLogo)).BeginInit();
-            this.PanelSideMenu.SuspendLayout();
+            this.panelTabBar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.iconpictureboxMinimizeProgram)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.iconpictureboxExitProgram)).BeginInit();
+            this.panelTitleTabBar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.iconpictureboxCurrentForm)).BeginInit();
+            this.panelDesktop.SuspendLayout();
+            this.panelHome.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.iconpictureboxLogo)).BeginInit();
+            this.panelSideMenu.SuspendLayout();
             this.PanelHallMeasurementSubMenu.SuspendLayout();
             this.PanelVanderPauwSubMenu.SuspendLayout();
             this.SuspendLayout();
             // 
-            // PanelTabBar
+            // panelTabBar
             // 
-            this.PanelTabBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
-            this.PanelTabBar.Controls.Add(this.IconpictureboxMinimizeProgram);
-            this.PanelTabBar.Controls.Add(this.IconpictureboxExitProgram);
-            this.PanelTabBar.Dock = System.Windows.Forms.DockStyle.Top;
-            this.PanelTabBar.Location = new System.Drawing.Point(240, 0);
-            this.PanelTabBar.Name = "PanelTabBar";
-            this.PanelTabBar.Size = new System.Drawing.Size(1260, 30);
-            this.PanelTabBar.TabIndex = 1;
-            this.PanelTabBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.PanelTabBar_MouseDown);
+            this.panelTabBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
+            this.panelTabBar.Controls.Add(this.iconpictureboxMinimizeProgram);
+            this.panelTabBar.Controls.Add(this.iconpictureboxExitProgram);
+            this.panelTabBar.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTabBar.Location = new System.Drawing.Point(240, 0);
+            this.panelTabBar.Name = "panelTabBar";
+            this.panelTabBar.Size = new System.Drawing.Size(1260, 30);
+            this.panelTabBar.TabIndex = 1;
+            this.panelTabBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panelTabBar_MouseDown);
             // 
-            // IconpictureboxMinimizeProgram
+            // iconpictureboxMinimizeProgram
             // 
-            this.IconpictureboxMinimizeProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.IconpictureboxMinimizeProgram.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
-            this.IconpictureboxMinimizeProgram.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.IconpictureboxMinimizeProgram.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.IconpictureboxMinimizeProgram.IconChar = FontAwesome.Sharp.IconChar.Minus;
-            this.IconpictureboxMinimizeProgram.IconColor = System.Drawing.SystemColors.ControlLightLight;
-            this.IconpictureboxMinimizeProgram.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconpictureboxMinimizeProgram.IconSize = 24;
-            this.IconpictureboxMinimizeProgram.Location = new System.Drawing.Point(1198, 3);
-            this.IconpictureboxMinimizeProgram.Name = "IconpictureboxMinimizeProgram";
-            this.IconpictureboxMinimizeProgram.Size = new System.Drawing.Size(24, 24);
-            this.IconpictureboxMinimizeProgram.TabIndex = 2;
-            this.IconpictureboxMinimizeProgram.TabStop = false;
-            this.IconpictureboxMinimizeProgram.Click += new System.EventHandler(this.IconpictureboxMinimizeProgram_Click);
+            this.iconpictureboxMinimizeProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.iconpictureboxMinimizeProgram.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
+            this.iconpictureboxMinimizeProgram.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.iconpictureboxMinimizeProgram.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.iconpictureboxMinimizeProgram.IconChar = FontAwesome.Sharp.IconChar.Minus;
+            this.iconpictureboxMinimizeProgram.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            this.iconpictureboxMinimizeProgram.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.iconpictureboxMinimizeProgram.IconSize = 24;
+            this.iconpictureboxMinimizeProgram.Location = new System.Drawing.Point(1198, 3);
+            this.iconpictureboxMinimizeProgram.Name = "iconpictureboxMinimizeProgram";
+            this.iconpictureboxMinimizeProgram.Size = new System.Drawing.Size(24, 24);
+            this.iconpictureboxMinimizeProgram.TabIndex = 2;
+            this.iconpictureboxMinimizeProgram.TabStop = false;
+            this.iconpictureboxMinimizeProgram.Click += new System.EventHandler(this.iconpictureboxMinimizeProgram_Click);
             // 
-            // IconpictureboxExitProgram
+            // iconpictureboxExitProgram
             // 
-            this.IconpictureboxExitProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.IconpictureboxExitProgram.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
-            this.IconpictureboxExitProgram.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.IconpictureboxExitProgram.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.IconpictureboxExitProgram.IconChar = FontAwesome.Sharp.IconChar.X;
-            this.IconpictureboxExitProgram.IconColor = System.Drawing.SystemColors.ControlLightLight;
-            this.IconpictureboxExitProgram.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconpictureboxExitProgram.IconSize = 24;
-            this.IconpictureboxExitProgram.Location = new System.Drawing.Point(1228, 3);
-            this.IconpictureboxExitProgram.Name = "IconpictureboxExitProgram";
-            this.IconpictureboxExitProgram.Size = new System.Drawing.Size(24, 24);
-            this.IconpictureboxExitProgram.TabIndex = 0;
-            this.IconpictureboxExitProgram.TabStop = false;
-            this.IconpictureboxExitProgram.Click += new System.EventHandler(this.IconpictureboxExitProgram_Click);
+            this.iconpictureboxExitProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.iconpictureboxExitProgram.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(16)))), ((int)(((byte)(16)))), ((int)(((byte)(16)))));
+            this.iconpictureboxExitProgram.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.iconpictureboxExitProgram.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.iconpictureboxExitProgram.IconChar = FontAwesome.Sharp.IconChar.X;
+            this.iconpictureboxExitProgram.IconColor = System.Drawing.SystemColors.ControlLightLight;
+            this.iconpictureboxExitProgram.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.iconpictureboxExitProgram.IconSize = 24;
+            this.iconpictureboxExitProgram.Location = new System.Drawing.Point(1228, 3);
+            this.iconpictureboxExitProgram.Name = "iconpictureboxExitProgram";
+            this.iconpictureboxExitProgram.Size = new System.Drawing.Size(24, 24);
+            this.iconpictureboxExitProgram.TabIndex = 0;
+            this.iconpictureboxExitProgram.TabStop = false;
+            this.iconpictureboxExitProgram.Click += new System.EventHandler(this.iconpictureboxExitProgram_Click);
             // 
-            // PanelTitleTabBar
+            // panelTitleTabBar
             // 
-            this.PanelTitleTabBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(33)))), ((int)(((byte)(80)))));
-            this.PanelTitleTabBar.Controls.Add(this.LabelUserLogin);
-            this.PanelTitleTabBar.Controls.Add(this.LabelCurrentDateandRealTime);
-            this.PanelTitleTabBar.Controls.Add(this.LabelTitleCurrentForm);
-            this.PanelTitleTabBar.Controls.Add(this.IconpictureboxCurrentForm);
-            this.PanelTitleTabBar.Dock = System.Windows.Forms.DockStyle.Top;
-            this.PanelTitleTabBar.Location = new System.Drawing.Point(240, 30);
-            this.PanelTitleTabBar.Name = "PanelTitleTabBar";
-            this.PanelTitleTabBar.Size = new System.Drawing.Size(1260, 150);
-            this.PanelTitleTabBar.TabIndex = 2;
+            this.panelTitleTabBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(33)))), ((int)(((byte)(80)))));
+            this.panelTitleTabBar.Controls.Add(this.labelUserLogin);
+            this.panelTitleTabBar.Controls.Add(this.labelCurrentDateandRealTime);
+            this.panelTitleTabBar.Controls.Add(this.labelTitleCurrentForm);
+            this.panelTitleTabBar.Controls.Add(this.iconpictureboxCurrentForm);
+            this.panelTitleTabBar.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTitleTabBar.Location = new System.Drawing.Point(240, 30);
+            this.panelTitleTabBar.Name = "panelTitleTabBar";
+            this.panelTitleTabBar.Size = new System.Drawing.Size(1260, 150);
+            this.panelTitleTabBar.TabIndex = 2;
             // 
-            // LabelUserLogin
+            // labelUserLogin
             // 
-            this.LabelUserLogin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.LabelUserLogin.AutoSize = true;
-            this.LabelUserLogin.BackColor = System.Drawing.Color.Transparent;
-            this.LabelUserLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.LabelUserLogin.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelUserLogin.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.LabelUserLogin.Location = new System.Drawing.Point(950, 90);
-            this.LabelUserLogin.Name = "LabelUserLogin";
-            this.LabelUserLogin.Size = new System.Drawing.Size(65, 28);
-            this.LabelUserLogin.TabIndex = 3;
-            this.LabelUserLogin.Text = "Guest";
+            this.labelUserLogin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelUserLogin.AutoSize = true;
+            this.labelUserLogin.BackColor = System.Drawing.Color.Transparent;
+            this.labelUserLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.labelUserLogin.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelUserLogin.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.labelUserLogin.Location = new System.Drawing.Point(950, 90);
+            this.labelUserLogin.Name = "labelUserLogin";
+            this.labelUserLogin.Size = new System.Drawing.Size(65, 28);
+            this.labelUserLogin.TabIndex = 3;
+            this.labelUserLogin.Text = "Guest";
             // 
-            // LabelCurrentDateandRealTime
+            // labelCurrentDateandRealTime
             // 
-            this.LabelCurrentDateandRealTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.LabelCurrentDateandRealTime.AutoSize = true;
-            this.LabelCurrentDateandRealTime.BackColor = System.Drawing.Color.Transparent;
-            this.LabelCurrentDateandRealTime.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.LabelCurrentDateandRealTime.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelCurrentDateandRealTime.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.LabelCurrentDateandRealTime.Location = new System.Drawing.Point(950, 50);
-            this.LabelCurrentDateandRealTime.Name = "LabelCurrentDateandRealTime";
-            this.LabelCurrentDateandRealTime.Size = new System.Drawing.Size(168, 28);
-            this.LabelCurrentDateandRealTime.TabIndex = 2;
-            this.LabelCurrentDateandRealTime.Text = "--/--/----   --:--:--";
+            this.labelCurrentDateandRealTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelCurrentDateandRealTime.AutoSize = true;
+            this.labelCurrentDateandRealTime.BackColor = System.Drawing.Color.Transparent;
+            this.labelCurrentDateandRealTime.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.labelCurrentDateandRealTime.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelCurrentDateandRealTime.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.labelCurrentDateandRealTime.Location = new System.Drawing.Point(950, 50);
+            this.labelCurrentDateandRealTime.Name = "labelCurrentDateandRealTime";
+            this.labelCurrentDateandRealTime.Size = new System.Drawing.Size(168, 28);
+            this.labelCurrentDateandRealTime.TabIndex = 2;
+            this.labelCurrentDateandRealTime.Text = "--/--/----   --:--:--";
             // 
-            // LabelTitleCurrentForm
+            // labelTitleCurrentForm
             // 
-            this.LabelTitleCurrentForm.AutoSize = true;
-            this.LabelTitleCurrentForm.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelTitleCurrentForm.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.LabelTitleCurrentForm.Location = new System.Drawing.Point(90, 50);
-            this.LabelTitleCurrentForm.Name = "LabelTitleCurrentForm";
-            this.LabelTitleCurrentForm.Size = new System.Drawing.Size(68, 28);
-            this.LabelTitleCurrentForm.TabIndex = 1;
-            this.LabelTitleCurrentForm.Text = "Home";
+            this.labelTitleCurrentForm.AutoSize = true;
+            this.labelTitleCurrentForm.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelTitleCurrentForm.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.labelTitleCurrentForm.Location = new System.Drawing.Point(90, 50);
+            this.labelTitleCurrentForm.Name = "labelTitleCurrentForm";
+            this.labelTitleCurrentForm.Size = new System.Drawing.Size(68, 28);
+            this.labelTitleCurrentForm.TabIndex = 1;
+            this.labelTitleCurrentForm.Text = "Home";
             // 
-            // IconpictureboxCurrentForm
+            // iconpictureboxCurrentForm
             // 
-            this.IconpictureboxCurrentForm.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(33)))), ((int)(((byte)(80)))));
-            this.IconpictureboxCurrentForm.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.IconpictureboxCurrentForm.IconChar = FontAwesome.Sharp.IconChar.HomeUser;
-            this.IconpictureboxCurrentForm.IconColor = System.Drawing.Color.WhiteSmoke;
-            this.IconpictureboxCurrentForm.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconpictureboxCurrentForm.IconSize = 48;
-            this.IconpictureboxCurrentForm.Location = new System.Drawing.Point(36, 36);
-            this.IconpictureboxCurrentForm.Name = "IconpictureboxCurrentForm";
-            this.IconpictureboxCurrentForm.Size = new System.Drawing.Size(48, 48);
-            this.IconpictureboxCurrentForm.TabIndex = 0;
-            this.IconpictureboxCurrentForm.TabStop = false;
+            this.iconpictureboxCurrentForm.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(33)))), ((int)(((byte)(80)))));
+            this.iconpictureboxCurrentForm.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.iconpictureboxCurrentForm.IconChar = FontAwesome.Sharp.IconChar.HomeUser;
+            this.iconpictureboxCurrentForm.IconColor = System.Drawing.Color.WhiteSmoke;
+            this.iconpictureboxCurrentForm.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.iconpictureboxCurrentForm.IconSize = 48;
+            this.iconpictureboxCurrentForm.Location = new System.Drawing.Point(36, 36);
+            this.iconpictureboxCurrentForm.Name = "iconpictureboxCurrentForm";
+            this.iconpictureboxCurrentForm.Size = new System.Drawing.Size(48, 48);
+            this.iconpictureboxCurrentForm.TabIndex = 0;
+            this.iconpictureboxCurrentForm.TabStop = false;
             // 
-            // PanelDesktop
+            // panelDesktop
             // 
-            this.PanelDesktop.BackColor = System.Drawing.Color.Snow;
-            this.PanelDesktop.Controls.Add(this.IconbuttonUserLogin);
-            this.PanelDesktop.Controls.Add(this.IconbuttonBrowseFileVdPandHallMeasurementPath);
-            this.PanelDesktop.Controls.Add(this.IconbuttonBrowseFileHallMeasurementDataPathOnly);
-            this.PanelDesktop.Controls.Add(this.IconbuttonBrowseFileVdPDataPathOnly);
-            this.PanelDesktop.Controls.Add(this.IconbuttonSaveFileVdPandHallMeasurementPath);
-            this.PanelDesktop.Controls.Add(this.IconbuttonSaveFileHallMeasurementDataPathOnly);
-            this.PanelDesktop.Controls.Add(this.IconbuttonSaveFileVdPDataPathOnly);
-            this.PanelDesktop.Controls.Add(this.TextboxFileVdPandHallMeasurementDataPath);
-            this.PanelDesktop.Controls.Add(this.TextboxFileHallMeasurementDataPath);
-            this.PanelDesktop.Controls.Add(this.TextboxFileVdPDataPath);
-            this.PanelDesktop.Controls.Add(this.LabelUserLastname);
-            this.PanelDesktop.Controls.Add(this.TextboxUserLastname);
-            this.PanelDesktop.Controls.Add(this.LabelUserFirstName);
-            this.PanelDesktop.Controls.Add(this.TextboxUserFirstName);
-            this.PanelDesktop.Controls.Add(this.LabelUserFirstNameLastname);
-            this.PanelDesktop.Controls.Add(this.LabelSaveVdPandHallMeasurementData);
-            this.PanelDesktop.Controls.Add(this.LabelSaveHallMeasurementDataOnly);
-            this.PanelDesktop.Controls.Add(this.LabelSaveVdPDataOnly);
-            this.PanelDesktop.Controls.Add(this.LabelProgramTitle);
-            this.PanelDesktop.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.PanelDesktop.Location = new System.Drawing.Point(240, 180);
-            this.PanelDesktop.Name = "PanelDesktop";
-            this.PanelDesktop.Size = new System.Drawing.Size(1260, 820);
-            this.PanelDesktop.TabIndex = 3;
+            this.panelDesktop.BackColor = System.Drawing.Color.Snow;
+            this.panelDesktop.Controls.Add(this.iconbuttonUserLogin);
+            this.panelDesktop.Controls.Add(this.iconbuttonBrowseFileVdPandHallMeasurementPath);
+            this.panelDesktop.Controls.Add(this.iconbuttonBrowseFileHallMeasurementDataPathOnly);
+            this.panelDesktop.Controls.Add(this.IconbuttonBrowseFileVdPDataPathOnly);
+            this.panelDesktop.Controls.Add(this.iconbuttonSaveFileVdPandHallMeasurementPath);
+            this.panelDesktop.Controls.Add(this.iconbuttonSaveFileHallMeasurementDataPathOnly);
+            this.panelDesktop.Controls.Add(this.IconbuttonSaveFileVdPDataPathOnly);
+            this.panelDesktop.Controls.Add(this.textboxFileVdPandHallMeasurementDataPath);
+            this.panelDesktop.Controls.Add(this.textboxFileHallMeasurementDataPath);
+            this.panelDesktop.Controls.Add(this.textboxFileVdPDataPath);
+            this.panelDesktop.Controls.Add(this.labelUserLastname);
+            this.panelDesktop.Controls.Add(this.textboxUserLastname);
+            this.panelDesktop.Controls.Add(this.labelUserFirstName);
+            this.panelDesktop.Controls.Add(this.textboxUserFirstName);
+            this.panelDesktop.Controls.Add(this.labelUserFirstNameLastname);
+            this.panelDesktop.Controls.Add(this.labelSaveVdPandHallMeasurementData);
+            this.panelDesktop.Controls.Add(this.labelSaveHallMeasurementDataOnly);
+            this.panelDesktop.Controls.Add(this.labelSaveVdPDataOnly);
+            this.panelDesktop.Controls.Add(this.labelProgramTitle);
+            this.panelDesktop.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelDesktop.Location = new System.Drawing.Point(240, 180);
+            this.panelDesktop.Name = "panelDesktop";
+            this.panelDesktop.Size = new System.Drawing.Size(1260, 820);
+            this.panelDesktop.TabIndex = 3;
             // 
-            // IconbuttonUserLogin
+            // iconbuttonUserLogin
             // 
-            this.IconbuttonUserLogin.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.IconbuttonUserLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonUserLogin.IconChar = FontAwesome.Sharp.IconChar.User;
-            this.IconbuttonUserLogin.IconColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(161)))), ((int)(((byte)(251)))));
-            this.IconbuttonUserLogin.IconFont = FontAwesome.Sharp.IconFont.Solid;
-            this.IconbuttonUserLogin.IconSize = 24;
-            this.IconbuttonUserLogin.Location = new System.Drawing.Point(720, 190);
-            this.IconbuttonUserLogin.Name = "IconbuttonUserLogin";
-            this.IconbuttonUserLogin.Size = new System.Drawing.Size(100, 30);
-            this.IconbuttonUserLogin.TabIndex = 19;
-            this.IconbuttonUserLogin.Text = "Login";
-            this.IconbuttonUserLogin.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonUserLogin.UseVisualStyleBackColor = true;
-            this.IconbuttonUserLogin.Click += new System.EventHandler(this.IconbuttonUserLogin_Click);
+            this.iconbuttonUserLogin.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
+            this.iconbuttonUserLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.iconbuttonUserLogin.IconChar = FontAwesome.Sharp.IconChar.User;
+            this.iconbuttonUserLogin.IconColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(161)))), ((int)(((byte)(251)))));
+            this.iconbuttonUserLogin.IconFont = FontAwesome.Sharp.IconFont.Solid;
+            this.iconbuttonUserLogin.IconSize = 24;
+            this.iconbuttonUserLogin.Location = new System.Drawing.Point(720, 190);
+            this.iconbuttonUserLogin.Name = "iconbuttonUserLogin";
+            this.iconbuttonUserLogin.Size = new System.Drawing.Size(100, 30);
+            this.iconbuttonUserLogin.TabIndex = 19;
+            this.iconbuttonUserLogin.Text = "Login";
+            this.iconbuttonUserLogin.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.iconbuttonUserLogin.UseVisualStyleBackColor = true;
+            this.iconbuttonUserLogin.Click += new System.EventHandler(this.iconbuttonUserLogin_Click);
             // 
-            // IconbuttonBrowseFileVdPandHallMeasurementPath
+            // iconbuttonBrowseFileVdPandHallMeasurementPath
             // 
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.IconChar = FontAwesome.Sharp.IconChar.FolderOpen;
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.IconColor = System.Drawing.Color.Gold;
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.IconFont = FontAwesome.Sharp.IconFont.Solid;
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.IconSize = 24;
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.Location = new System.Drawing.Point(460, 498);
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.Name = "IconbuttonBrowseFileVdPandHallMeasurementPath";
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.Size = new System.Drawing.Size(110, 30);
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.TabIndex = 18;
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.Text = "Browse";
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.UseVisualStyleBackColor = true;
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.Click += new System.EventHandler(this.IconbuttonBrowseFileVdPandHallMeasurementPath_Click);
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath.IconChar = FontAwesome.Sharp.IconChar.FolderOpen;
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath.IconColor = System.Drawing.Color.Gold;
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath.IconFont = FontAwesome.Sharp.IconFont.Solid;
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath.IconSize = 24;
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath.Location = new System.Drawing.Point(460, 498);
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath.Name = "iconbuttonBrowseFileVdPandHallMeasurementPath";
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath.Size = new System.Drawing.Size(110, 30);
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath.TabIndex = 18;
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath.Text = "Browse";
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath.UseVisualStyleBackColor = true;
+            this.iconbuttonBrowseFileVdPandHallMeasurementPath.Click += new System.EventHandler(this.iconbuttonBrowseFileVdPandHallMeasurementPath_Click);
             // 
-            // IconbuttonBrowseFileHallMeasurementDataPathOnly
+            // iconbuttonBrowseFileHallMeasurementDataPathOnly
             // 
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.IconChar = FontAwesome.Sharp.IconChar.FolderOpen;
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.IconColor = System.Drawing.Color.Gold;
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.IconFont = FontAwesome.Sharp.IconFont.Solid;
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.IconSize = 24;
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Location = new System.Drawing.Point(460, 398);
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Name = "IconbuttonBrowseFileHallMeasurementDataPathOnly";
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Size = new System.Drawing.Size(110, 30);
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.TabIndex = 17;
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Text = "Browse";
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.UseVisualStyleBackColor = true;
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Click += new System.EventHandler(this.IconbuttonBrowseFileHallMeasurementDataPathOnly_Click);
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly.IconChar = FontAwesome.Sharp.IconChar.FolderOpen;
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly.IconColor = System.Drawing.Color.Gold;
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly.IconFont = FontAwesome.Sharp.IconFont.Solid;
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly.IconSize = 24;
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly.Location = new System.Drawing.Point(460, 398);
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly.Name = "iconbuttonBrowseFileHallMeasurementDataPathOnly";
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly.Size = new System.Drawing.Size(110, 30);
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly.TabIndex = 17;
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly.Text = "Browse";
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly.UseVisualStyleBackColor = true;
+            this.iconbuttonBrowseFileHallMeasurementDataPathOnly.Click += new System.EventHandler(this.iconbuttonBrowseFileHallMeasurementDataPathOnly_Click);
             // 
             // IconbuttonBrowseFileVdPDataPathOnly
             // 
@@ -293,41 +293,41 @@
             this.IconbuttonBrowseFileVdPDataPathOnly.Text = "Browse";
             this.IconbuttonBrowseFileVdPDataPathOnly.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.IconbuttonBrowseFileVdPDataPathOnly.UseVisualStyleBackColor = true;
-            this.IconbuttonBrowseFileVdPDataPathOnly.Click += new System.EventHandler(this.IconbuttonBrowseFileVdPDataPathOnly_Click);
+            this.IconbuttonBrowseFileVdPDataPathOnly.Click += new System.EventHandler(this.iconbuttonBrowseFileVdPDataPathOnly_Click);
             // 
-            // IconbuttonSaveFileVdPandHallMeasurementPath
+            // iconbuttonSaveFileVdPandHallMeasurementPath
             // 
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.IconChar = FontAwesome.Sharp.IconChar.FileExcel;
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.IconColor = System.Drawing.Color.Green;
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.IconFont = FontAwesome.Sharp.IconFont.Solid;
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.IconSize = 24;
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.Location = new System.Drawing.Point(590, 498);
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.Name = "IconbuttonSaveFileVdPandHallMeasurementPath";
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.Size = new System.Drawing.Size(90, 30);
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.TabIndex = 14;
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.Text = "Save";
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.UseVisualStyleBackColor = true;
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.Click += new System.EventHandler(this.IconbuttonSaveFileVdPandHallMeasurementPath_Click);
+            this.iconbuttonSaveFileVdPandHallMeasurementPath.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
+            this.iconbuttonSaveFileVdPandHallMeasurementPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.iconbuttonSaveFileVdPandHallMeasurementPath.IconChar = FontAwesome.Sharp.IconChar.FileExcel;
+            this.iconbuttonSaveFileVdPandHallMeasurementPath.IconColor = System.Drawing.Color.Green;
+            this.iconbuttonSaveFileVdPandHallMeasurementPath.IconFont = FontAwesome.Sharp.IconFont.Solid;
+            this.iconbuttonSaveFileVdPandHallMeasurementPath.IconSize = 24;
+            this.iconbuttonSaveFileVdPandHallMeasurementPath.Location = new System.Drawing.Point(590, 498);
+            this.iconbuttonSaveFileVdPandHallMeasurementPath.Name = "iconbuttonSaveFileVdPandHallMeasurementPath";
+            this.iconbuttonSaveFileVdPandHallMeasurementPath.Size = new System.Drawing.Size(90, 30);
+            this.iconbuttonSaveFileVdPandHallMeasurementPath.TabIndex = 14;
+            this.iconbuttonSaveFileVdPandHallMeasurementPath.Text = "Save";
+            this.iconbuttonSaveFileVdPandHallMeasurementPath.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.iconbuttonSaveFileVdPandHallMeasurementPath.UseVisualStyleBackColor = true;
+            this.iconbuttonSaveFileVdPandHallMeasurementPath.Click += new System.EventHandler(this.iconbuttonSaveFileVdPandHallMeasurementPath_Click);
             // 
-            // IconbuttonSaveFileHallMeasurementDataPathOnly
+            // iconbuttonSaveFileHallMeasurementDataPathOnly
             // 
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.IconChar = FontAwesome.Sharp.IconChar.FileExcel;
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.IconColor = System.Drawing.Color.Green;
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.IconFont = FontAwesome.Sharp.IconFont.Solid;
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.IconSize = 24;
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.Location = new System.Drawing.Point(590, 398);
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.Name = "IconbuttonSaveFileHallMeasurementDataPathOnly";
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.Size = new System.Drawing.Size(90, 30);
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.TabIndex = 13;
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.Text = "Save";
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.UseVisualStyleBackColor = true;
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.Click += new System.EventHandler(this.IconbuttonSaveFileHallMeasurementDataPathOnly_Click);
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly.IconChar = FontAwesome.Sharp.IconChar.FileExcel;
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly.IconColor = System.Drawing.Color.Green;
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly.IconFont = FontAwesome.Sharp.IconFont.Solid;
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly.IconSize = 24;
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly.Location = new System.Drawing.Point(590, 398);
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly.Name = "iconbuttonSaveFileHallMeasurementDataPathOnly";
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly.Size = new System.Drawing.Size(90, 30);
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly.TabIndex = 13;
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly.Text = "Save";
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly.UseVisualStyleBackColor = true;
+            this.iconbuttonSaveFileHallMeasurementDataPathOnly.Click += new System.EventHandler(this.iconbuttonSaveFileHallMeasurementDataPathOnly_Click);
             // 
             // IconbuttonSaveFileVdPDataPathOnly
             // 
@@ -344,189 +344,189 @@
             this.IconbuttonSaveFileVdPDataPathOnly.Text = "Save";
             this.IconbuttonSaveFileVdPDataPathOnly.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.IconbuttonSaveFileVdPDataPathOnly.UseVisualStyleBackColor = true;
-            this.IconbuttonSaveFileVdPDataPathOnly.Click += new System.EventHandler(this.IconbuttonSaveFileVdPDataPathOnly_Click);
+            this.IconbuttonSaveFileVdPDataPathOnly.Click += new System.EventHandler(this.iconbuttonSaveFileVdPDataPathOnly_Click);
             // 
-            // TextboxFileVdPandHallMeasurementDataPath
+            // textboxFileVdPandHallMeasurementDataPath
             // 
-            this.TextboxFileVdPandHallMeasurementDataPath.Location = new System.Drawing.Point(85, 498);
-            this.TextboxFileVdPandHallMeasurementDataPath.Multiline = true;
-            this.TextboxFileVdPandHallMeasurementDataPath.Name = "TextboxFileVdPandHallMeasurementDataPath";
-            this.TextboxFileVdPandHallMeasurementDataPath.ReadOnly = true;
-            this.TextboxFileVdPandHallMeasurementDataPath.Size = new System.Drawing.Size(360, 30);
-            this.TextboxFileVdPandHallMeasurementDataPath.TabIndex = 11;
+            this.textboxFileVdPandHallMeasurementDataPath.Location = new System.Drawing.Point(85, 498);
+            this.textboxFileVdPandHallMeasurementDataPath.Multiline = true;
+            this.textboxFileVdPandHallMeasurementDataPath.Name = "textboxFileVdPandHallMeasurementDataPath";
+            this.textboxFileVdPandHallMeasurementDataPath.ReadOnly = true;
+            this.textboxFileVdPandHallMeasurementDataPath.Size = new System.Drawing.Size(360, 30);
+            this.textboxFileVdPandHallMeasurementDataPath.TabIndex = 11;
             // 
-            // TextboxFileHallMeasurementDataPath
+            // textboxFileHallMeasurementDataPath
             // 
-            this.TextboxFileHallMeasurementDataPath.Location = new System.Drawing.Point(85, 398);
-            this.TextboxFileHallMeasurementDataPath.Multiline = true;
-            this.TextboxFileHallMeasurementDataPath.Name = "TextboxFileHallMeasurementDataPath";
-            this.TextboxFileHallMeasurementDataPath.ReadOnly = true;
-            this.TextboxFileHallMeasurementDataPath.Size = new System.Drawing.Size(360, 30);
-            this.TextboxFileHallMeasurementDataPath.TabIndex = 10;
+            this.textboxFileHallMeasurementDataPath.Location = new System.Drawing.Point(85, 398);
+            this.textboxFileHallMeasurementDataPath.Multiline = true;
+            this.textboxFileHallMeasurementDataPath.Name = "textboxFileHallMeasurementDataPath";
+            this.textboxFileHallMeasurementDataPath.ReadOnly = true;
+            this.textboxFileHallMeasurementDataPath.Size = new System.Drawing.Size(360, 30);
+            this.textboxFileHallMeasurementDataPath.TabIndex = 10;
             // 
-            // TextboxFileVdPDataPath
+            // textboxFileVdPDataPath
             // 
-            this.TextboxFileVdPDataPath.Location = new System.Drawing.Point(85, 298);
-            this.TextboxFileVdPDataPath.Multiline = true;
-            this.TextboxFileVdPDataPath.Name = "TextboxFileVdPDataPath";
-            this.TextboxFileVdPDataPath.ReadOnly = true;
-            this.TextboxFileVdPDataPath.Size = new System.Drawing.Size(360, 30);
-            this.TextboxFileVdPDataPath.TabIndex = 9;
+            this.textboxFileVdPDataPath.Location = new System.Drawing.Point(85, 298);
+            this.textboxFileVdPDataPath.Multiline = true;
+            this.textboxFileVdPDataPath.Name = "textboxFileVdPDataPath";
+            this.textboxFileVdPDataPath.ReadOnly = true;
+            this.textboxFileVdPDataPath.Size = new System.Drawing.Size(360, 30);
+            this.textboxFileVdPDataPath.TabIndex = 9;
             // 
-            // LabelUserLastname
+            // labelUserLastname
             // 
-            this.LabelUserLastname.AutoSize = true;
-            this.LabelUserLastname.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelUserLastname.Location = new System.Drawing.Point(400, 190);
-            this.LabelUserLastname.Name = "LabelUserLastname";
-            this.LabelUserLastname.Size = new System.Drawing.Size(104, 28);
-            this.LabelUserLastname.TabIndex = 8;
-            this.LabelUserLastname.Text = "Lastname:";
+            this.labelUserLastname.AutoSize = true;
+            this.labelUserLastname.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelUserLastname.Location = new System.Drawing.Point(400, 190);
+            this.labelUserLastname.Name = "labelUserLastname";
+            this.labelUserLastname.Size = new System.Drawing.Size(104, 28);
+            this.labelUserLastname.TabIndex = 8;
+            this.labelUserLastname.Text = "Lastname:";
             // 
-            // TextboxUserLastname
+            // textboxUserLastname
             // 
-            this.TextboxUserLastname.Location = new System.Drawing.Point(510, 190);
-            this.TextboxUserLastname.Multiline = true;
-            this.TextboxUserLastname.Name = "TextboxUserLastname";
-            this.TextboxUserLastname.Size = new System.Drawing.Size(180, 30);
-            this.TextboxUserLastname.TabIndex = 7;
-            this.TextboxUserLastname.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextboxUserLastname_KeyPress);
+            this.textboxUserLastname.Location = new System.Drawing.Point(510, 190);
+            this.textboxUserLastname.Multiline = true;
+            this.textboxUserLastname.Name = "textboxUserLastname";
+            this.textboxUserLastname.Size = new System.Drawing.Size(180, 30);
+            this.textboxUserLastname.TabIndex = 7;
+            this.textboxUserLastname.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textboxUserLastname_KeyPress);
             // 
-            // LabelUserFirstName
+            // labelUserFirstName
             // 
-            this.LabelUserFirstName.AutoSize = true;
-            this.LabelUserFirstName.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelUserFirstName.Location = new System.Drawing.Point(80, 190);
-            this.LabelUserFirstName.Name = "LabelUserFirstName";
-            this.LabelUserFirstName.Size = new System.Drawing.Size(106, 28);
-            this.LabelUserFirstName.TabIndex = 6;
-            this.LabelUserFirstName.Text = "Firstname:";
+            this.labelUserFirstName.AutoSize = true;
+            this.labelUserFirstName.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelUserFirstName.Location = new System.Drawing.Point(80, 190);
+            this.labelUserFirstName.Name = "labelUserFirstName";
+            this.labelUserFirstName.Size = new System.Drawing.Size(106, 28);
+            this.labelUserFirstName.TabIndex = 6;
+            this.labelUserFirstName.Text = "Firstname:";
             // 
-            // TextboxUserFirstName
+            // textboxUserFirstName
             // 
-            this.TextboxUserFirstName.Location = new System.Drawing.Point(190, 190);
-            this.TextboxUserFirstName.Multiline = true;
-            this.TextboxUserFirstName.Name = "TextboxUserFirstName";
-            this.TextboxUserFirstName.Size = new System.Drawing.Size(180, 30);
-            this.TextboxUserFirstName.TabIndex = 5;
-            this.TextboxUserFirstName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextboxUserName_KeyPress);
+            this.textboxUserFirstName.Location = new System.Drawing.Point(190, 190);
+            this.textboxUserFirstName.Multiline = true;
+            this.textboxUserFirstName.Name = "textboxUserFirstName";
+            this.textboxUserFirstName.Size = new System.Drawing.Size(180, 30);
+            this.textboxUserFirstName.TabIndex = 5;
+            this.textboxUserFirstName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textboxUserName_KeyPress);
             // 
-            // LabelUserFirstNameLastname
+            // labelUserFirstNameLastname
             // 
-            this.LabelUserFirstNameLastname.AutoSize = true;
-            this.LabelUserFirstNameLastname.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelUserFirstNameLastname.Location = new System.Drawing.Point(80, 150);
-            this.LabelUserFirstNameLastname.Name = "LabelUserFirstNameLastname";
-            this.LabelUserFirstNameLastname.Size = new System.Drawing.Size(211, 28);
-            this.LabelUserFirstNameLastname.TabIndex = 4;
-            this.LabelUserFirstNameLastname.Text = "FirstName - Lastname";
+            this.labelUserFirstNameLastname.AutoSize = true;
+            this.labelUserFirstNameLastname.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelUserFirstNameLastname.Location = new System.Drawing.Point(80, 150);
+            this.labelUserFirstNameLastname.Name = "labelUserFirstNameLastname";
+            this.labelUserFirstNameLastname.Size = new System.Drawing.Size(211, 28);
+            this.labelUserFirstNameLastname.TabIndex = 4;
+            this.labelUserFirstNameLastname.Text = "FirstName - Lastname";
             // 
-            // LabelSaveVdPandHallMeasurementData
+            // labelSaveVdPandHallMeasurementData
             // 
-            this.LabelSaveVdPandHallMeasurementData.AutoSize = true;
-            this.LabelSaveVdPandHallMeasurementData.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSaveVdPandHallMeasurementData.Location = new System.Drawing.Point(80, 450);
-            this.LabelSaveVdPandHallMeasurementData.Name = "LabelSaveVdPandHallMeasurementData";
-            this.LabelSaveVdPandHallMeasurementData.Size = new System.Drawing.Size(637, 28);
-            this.LabelSaveVdPandHallMeasurementData.TabIndex = 3;
-            this.LabelSaveVdPandHallMeasurementData.Text = "Save file data of Van der Pauw method and Hall effect measurement";
+            this.labelSaveVdPandHallMeasurementData.AutoSize = true;
+            this.labelSaveVdPandHallMeasurementData.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSaveVdPandHallMeasurementData.Location = new System.Drawing.Point(80, 450);
+            this.labelSaveVdPandHallMeasurementData.Name = "labelSaveVdPandHallMeasurementData";
+            this.labelSaveVdPandHallMeasurementData.Size = new System.Drawing.Size(637, 28);
+            this.labelSaveVdPandHallMeasurementData.TabIndex = 3;
+            this.labelSaveVdPandHallMeasurementData.Text = "Save file data of Van der Pauw method and Hall effect measurement";
             // 
-            // LabelSaveHallMeasurementDataOnly
+            // labelSaveHallMeasurementDataOnly
             // 
-            this.LabelSaveHallMeasurementDataOnly.AutoSize = true;
-            this.LabelSaveHallMeasurementDataOnly.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSaveHallMeasurementDataOnly.Location = new System.Drawing.Point(80, 350);
-            this.LabelSaveHallMeasurementDataOnly.Name = "LabelSaveHallMeasurementDataOnly";
-            this.LabelSaveHallMeasurementDataOnly.Size = new System.Drawing.Size(440, 28);
-            this.LabelSaveHallMeasurementDataOnly.TabIndex = 2;
-            this.LabelSaveHallMeasurementDataOnly.Text = "Save file data of Hall effect measurement only ";
+            this.labelSaveHallMeasurementDataOnly.AutoSize = true;
+            this.labelSaveHallMeasurementDataOnly.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSaveHallMeasurementDataOnly.Location = new System.Drawing.Point(80, 350);
+            this.labelSaveHallMeasurementDataOnly.Name = "labelSaveHallMeasurementDataOnly";
+            this.labelSaveHallMeasurementDataOnly.Size = new System.Drawing.Size(440, 28);
+            this.labelSaveHallMeasurementDataOnly.TabIndex = 2;
+            this.labelSaveHallMeasurementDataOnly.Text = "Save file data of Hall effect measurement only ";
             // 
-            // LabelSaveVdPDataOnly
+            // labelSaveVdPDataOnly
             // 
-            this.LabelSaveVdPDataOnly.AutoSize = true;
-            this.LabelSaveVdPDataOnly.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSaveVdPDataOnly.Location = new System.Drawing.Point(80, 250);
-            this.LabelSaveVdPDataOnly.Name = "LabelSaveVdPDataOnly";
-            this.LabelSaveVdPDataOnly.Size = new System.Drawing.Size(417, 28);
-            this.LabelSaveVdPDataOnly.TabIndex = 1;
-            this.LabelSaveVdPDataOnly.Text = "Save file data of Van der Pauw method only ";
+            this.labelSaveVdPDataOnly.AutoSize = true;
+            this.labelSaveVdPDataOnly.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSaveVdPDataOnly.Location = new System.Drawing.Point(80, 250);
+            this.labelSaveVdPDataOnly.Name = "labelSaveVdPDataOnly";
+            this.labelSaveVdPDataOnly.Size = new System.Drawing.Size(417, 28);
+            this.labelSaveVdPDataOnly.TabIndex = 1;
+            this.labelSaveVdPDataOnly.Text = "Save file data of Van der Pauw method only ";
             // 
-            // LabelProgramTitle
+            // labelProgramTitle
             // 
-            this.LabelProgramTitle.Font = new System.Drawing.Font("Segoe UI", 21F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelProgramTitle.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.LabelProgramTitle.Location = new System.Drawing.Point(30, 30);
-            this.LabelProgramTitle.Name = "LabelProgramTitle";
-            this.LabelProgramTitle.Size = new System.Drawing.Size(1200, 100);
-            this.LabelProgramTitle.TabIndex = 0;
-            this.LabelProgramTitle.Text = "SOFTWARE PROGRAM FOR CONTROLLING INSTRUMENTS OF HALL EFFECT MEASUREMENT";
+            this.labelProgramTitle.Font = new System.Drawing.Font("Segoe UI", 21F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelProgramTitle.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.labelProgramTitle.Location = new System.Drawing.Point(30, 30);
+            this.labelProgramTitle.Name = "labelProgramTitle";
+            this.labelProgramTitle.Size = new System.Drawing.Size(1200, 100);
+            this.labelProgramTitle.TabIndex = 0;
+            this.labelProgramTitle.Text = "SOFTWARE PROGRAM FOR CONTROLLING INSTRUMENTS OF HALL EFFECT MEASUREMENT";
             // 
-            // PanelHome
+            // panelHome
             // 
-            this.PanelHome.BackColor = System.Drawing.Color.White;
-            this.PanelHome.Controls.Add(this.IconpictureboxLogo);
-            this.PanelHome.Dock = System.Windows.Forms.DockStyle.Top;
-            this.PanelHome.Location = new System.Drawing.Point(0, 0);
-            this.PanelHome.Margin = new System.Windows.Forms.Padding(0);
-            this.PanelHome.Name = "PanelHome";
-            this.PanelHome.Size = new System.Drawing.Size(240, 180);
-            this.PanelHome.TabIndex = 0;
+            this.panelHome.BackColor = System.Drawing.Color.White;
+            this.panelHome.Controls.Add(this.iconpictureboxLogo);
+            this.panelHome.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelHome.Location = new System.Drawing.Point(0, 0);
+            this.panelHome.Margin = new System.Windows.Forms.Padding(0);
+            this.panelHome.Name = "panelHome";
+            this.panelHome.Size = new System.Drawing.Size(240, 180);
+            this.panelHome.TabIndex = 0;
             // 
-            // IconpictureboxLogo
+            // iconpictureboxLogo
             // 
-            this.IconpictureboxLogo.Image = global::Program01.Properties.Resources.Applied_Physics_KMITL_Logo;
-            this.IconpictureboxLogo.Location = new System.Drawing.Point(30, 0);
-            this.IconpictureboxLogo.Name = "IconpictureboxLogo";
-            this.IconpictureboxLogo.Size = new System.Drawing.Size(180, 180);
-            this.IconpictureboxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.IconpictureboxLogo.TabIndex = 0;
-            this.IconpictureboxLogo.TabStop = false;
-            this.IconpictureboxLogo.Click += new System.EventHandler(this.IconpictureboxLogo_Click);
+            this.iconpictureboxLogo.Image = global::Program01.Properties.Resources.Applied_Physics_KMITL_Logo;
+            this.iconpictureboxLogo.Location = new System.Drawing.Point(30, 0);
+            this.iconpictureboxLogo.Name = "iconpictureboxLogo";
+            this.iconpictureboxLogo.Size = new System.Drawing.Size(180, 180);
+            this.iconpictureboxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.iconpictureboxLogo.TabIndex = 0;
+            this.iconpictureboxLogo.TabStop = false;
+            this.iconpictureboxLogo.Click += new System.EventHandler(this.iconpictureboxLogo_Click);
             // 
-            // IconbuttonHelp
+            // iconbuttonHelp
             // 
-            this.IconbuttonHelp.Dock = System.Windows.Forms.DockStyle.Top;
-            this.IconbuttonHelp.FlatAppearance.BorderSize = 0;
-            this.IconbuttonHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonHelp.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IconbuttonHelp.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.IconbuttonHelp.IconChar = FontAwesome.Sharp.IconChar.CircleInfo;
-            this.IconbuttonHelp.IconColor = System.Drawing.Color.WhiteSmoke;
-            this.IconbuttonHelp.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonHelp.IconSize = 30;
-            this.IconbuttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.IconbuttonHelp.Location = new System.Drawing.Point(0, 180);
-            this.IconbuttonHelp.Margin = new System.Windows.Forms.Padding(0);
-            this.IconbuttonHelp.Name = "IconbuttonHelp";
-            this.IconbuttonHelp.Size = new System.Drawing.Size(240, 60);
-            this.IconbuttonHelp.TabIndex = 1;
-            this.IconbuttonHelp.Text = "Help";
-            this.IconbuttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.IconbuttonHelp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonHelp.UseVisualStyleBackColor = true;
-            this.IconbuttonHelp.Click += new System.EventHandler(this.IconbuttonHelp_Click);
+            this.iconbuttonHelp.Dock = System.Windows.Forms.DockStyle.Top;
+            this.iconbuttonHelp.FlatAppearance.BorderSize = 0;
+            this.iconbuttonHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.iconbuttonHelp.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.iconbuttonHelp.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.iconbuttonHelp.IconChar = FontAwesome.Sharp.IconChar.CircleInfo;
+            this.iconbuttonHelp.IconColor = System.Drawing.Color.WhiteSmoke;
+            this.iconbuttonHelp.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.iconbuttonHelp.IconSize = 30;
+            this.iconbuttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.iconbuttonHelp.Location = new System.Drawing.Point(0, 180);
+            this.iconbuttonHelp.Margin = new System.Windows.Forms.Padding(0);
+            this.iconbuttonHelp.Name = "iconbuttonHelp";
+            this.iconbuttonHelp.Size = new System.Drawing.Size(240, 60);
+            this.iconbuttonHelp.TabIndex = 1;
+            this.iconbuttonHelp.Text = "Help";
+            this.iconbuttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.iconbuttonHelp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.iconbuttonHelp.UseVisualStyleBackColor = true;
+            this.iconbuttonHelp.Click += new System.EventHandler(this.iconbuttonHelp_Click);
             // 
-            // PanelSideMenu
+            // panelSideMenu
             // 
-            this.PanelSideMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(33)))), ((int)(((byte)(80)))));
-            this.PanelSideMenu.Controls.Add(this.PanelHallMeasurementSubMenu);
-            this.PanelSideMenu.Controls.Add(this.IconbuttonHalleffectMeasurement);
-            this.PanelSideMenu.Controls.Add(this.PanelVanderPauwSubMenu);
-            this.PanelSideMenu.Controls.Add(this.IconbuttonVanderPauwMethod);
-            this.PanelSideMenu.Controls.Add(this.IconbuttonMeasurementSettings);
-            this.PanelSideMenu.Controls.Add(this.IconbuttonHelp);
-            this.PanelSideMenu.Controls.Add(this.PanelHome);
-            this.PanelSideMenu.Dock = System.Windows.Forms.DockStyle.Left;
-            this.PanelSideMenu.Location = new System.Drawing.Point(0, 0);
-            this.PanelSideMenu.Margin = new System.Windows.Forms.Padding(0);
-            this.PanelSideMenu.Name = "PanelSideMenu";
-            this.PanelSideMenu.Size = new System.Drawing.Size(240, 1000);
-            this.PanelSideMenu.TabIndex = 0;
+            this.panelSideMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(33)))), ((int)(((byte)(80)))));
+            this.panelSideMenu.Controls.Add(this.PanelHallMeasurementSubMenu);
+            this.panelSideMenu.Controls.Add(this.iconbuttonHalleffectMeasurement);
+            this.panelSideMenu.Controls.Add(this.PanelVanderPauwSubMenu);
+            this.panelSideMenu.Controls.Add(this.iconbuttonVanderPauwMethod);
+            this.panelSideMenu.Controls.Add(this.iconbuttonMeasurementSettings);
+            this.panelSideMenu.Controls.Add(this.iconbuttonHelp);
+            this.panelSideMenu.Controls.Add(this.panelHome);
+            this.panelSideMenu.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panelSideMenu.Location = new System.Drawing.Point(0, 0);
+            this.panelSideMenu.Margin = new System.Windows.Forms.Padding(0);
+            this.panelSideMenu.Name = "panelSideMenu";
+            this.panelSideMenu.Size = new System.Drawing.Size(240, 1000);
+            this.panelSideMenu.TabIndex = 0;
             // 
             // PanelHallMeasurementSubMenu
             // 
-            this.PanelHallMeasurementSubMenu.Controls.Add(this.ButtonHallMeasurementResults);
-            this.PanelHallMeasurementSubMenu.Controls.Add(this.ButtonHallTotalVoltage);
+            this.PanelHallMeasurementSubMenu.Controls.Add(this.buttonHallMeasurementResults);
+            this.PanelHallMeasurementSubMenu.Controls.Add(this.buttonHallTotalVoltage);
             this.PanelHallMeasurementSubMenu.Dock = System.Windows.Forms.DockStyle.Top;
             this.PanelHallMeasurementSubMenu.ForeColor = System.Drawing.Color.Snow;
             this.PanelHallMeasurementSubMenu.Location = new System.Drawing.Point(0, 510);
@@ -535,64 +535,64 @@
             this.PanelHallMeasurementSubMenu.TabIndex = 17;
             this.PanelHallMeasurementSubMenu.Visible = false;
             // 
-            // ButtonHallMeasurementResults
+            // buttonHallMeasurementResults
             // 
-            this.ButtonHallMeasurementResults.Dock = System.Windows.Forms.DockStyle.Top;
-            this.ButtonHallMeasurementResults.FlatAppearance.BorderSize = 0;
-            this.ButtonHallMeasurementResults.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonHallMeasurementResults.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ButtonHallMeasurementResults.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.ButtonHallMeasurementResults.Location = new System.Drawing.Point(0, 45);
-            this.ButtonHallMeasurementResults.Margin = new System.Windows.Forms.Padding(0);
-            this.ButtonHallMeasurementResults.Name = "ButtonHallMeasurementResults";
-            this.ButtonHallMeasurementResults.Size = new System.Drawing.Size(240, 45);
-            this.ButtonHallMeasurementResults.TabIndex = 4;
-            this.ButtonHallMeasurementResults.Text = "Measurement Results";
-            this.ButtonHallMeasurementResults.UseVisualStyleBackColor = true;
-            this.ButtonHallMeasurementResults.Click += new System.EventHandler(this.ButtonHallMeasurementResults_Click);
+            this.buttonHallMeasurementResults.Dock = System.Windows.Forms.DockStyle.Top;
+            this.buttonHallMeasurementResults.FlatAppearance.BorderSize = 0;
+            this.buttonHallMeasurementResults.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonHallMeasurementResults.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonHallMeasurementResults.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.buttonHallMeasurementResults.Location = new System.Drawing.Point(0, 45);
+            this.buttonHallMeasurementResults.Margin = new System.Windows.Forms.Padding(0);
+            this.buttonHallMeasurementResults.Name = "buttonHallMeasurementResults";
+            this.buttonHallMeasurementResults.Size = new System.Drawing.Size(240, 45);
+            this.buttonHallMeasurementResults.TabIndex = 4;
+            this.buttonHallMeasurementResults.Text = "Measurement Results";
+            this.buttonHallMeasurementResults.UseVisualStyleBackColor = true;
+            this.buttonHallMeasurementResults.Click += new System.EventHandler(this.buttonHallMeasurementResults_Click);
             // 
-            // ButtonHallTotalVoltage
+            // buttonHallTotalVoltage
             // 
-            this.ButtonHallTotalVoltage.Dock = System.Windows.Forms.DockStyle.Top;
-            this.ButtonHallTotalVoltage.FlatAppearance.BorderSize = 0;
-            this.ButtonHallTotalVoltage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonHallTotalVoltage.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ButtonHallTotalVoltage.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.ButtonHallTotalVoltage.Location = new System.Drawing.Point(0, 0);
-            this.ButtonHallTotalVoltage.Margin = new System.Windows.Forms.Padding(0);
-            this.ButtonHallTotalVoltage.Name = "ButtonHallTotalVoltage";
-            this.ButtonHallTotalVoltage.Size = new System.Drawing.Size(240, 45);
-            this.ButtonHallTotalVoltage.TabIndex = 3;
-            this.ButtonHallTotalVoltage.Text = "Total Voltage";
-            this.ButtonHallTotalVoltage.UseVisualStyleBackColor = true;
-            this.ButtonHallTotalVoltage.Click += new System.EventHandler(this.ButtonHallTotalVoltage_Click);
+            this.buttonHallTotalVoltage.Dock = System.Windows.Forms.DockStyle.Top;
+            this.buttonHallTotalVoltage.FlatAppearance.BorderSize = 0;
+            this.buttonHallTotalVoltage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonHallTotalVoltage.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonHallTotalVoltage.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.buttonHallTotalVoltage.Location = new System.Drawing.Point(0, 0);
+            this.buttonHallTotalVoltage.Margin = new System.Windows.Forms.Padding(0);
+            this.buttonHallTotalVoltage.Name = "buttonHallTotalVoltage";
+            this.buttonHallTotalVoltage.Size = new System.Drawing.Size(240, 45);
+            this.buttonHallTotalVoltage.TabIndex = 3;
+            this.buttonHallTotalVoltage.Text = "Total Voltage";
+            this.buttonHallTotalVoltage.UseVisualStyleBackColor = true;
+            this.buttonHallTotalVoltage.Click += new System.EventHandler(this.buttonHallTotalVoltage_Click);
             // 
-            // IconbuttonHalleffectMeasurement
+            // iconbuttonHalleffectMeasurement
             // 
-            this.IconbuttonHalleffectMeasurement.Dock = System.Windows.Forms.DockStyle.Top;
-            this.IconbuttonHalleffectMeasurement.FlatAppearance.BorderSize = 0;
-            this.IconbuttonHalleffectMeasurement.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonHalleffectMeasurement.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IconbuttonHalleffectMeasurement.ForeColor = System.Drawing.Color.Snow;
-            this.IconbuttonHalleffectMeasurement.IconChar = FontAwesome.Sharp.IconChar.Magnet;
-            this.IconbuttonHalleffectMeasurement.IconColor = System.Drawing.Color.WhiteSmoke;
-            this.IconbuttonHalleffectMeasurement.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonHalleffectMeasurement.IconSize = 30;
-            this.IconbuttonHalleffectMeasurement.Location = new System.Drawing.Point(0, 450);
-            this.IconbuttonHalleffectMeasurement.Margin = new System.Windows.Forms.Padding(0);
-            this.IconbuttonHalleffectMeasurement.Name = "IconbuttonHalleffectMeasurement";
-            this.IconbuttonHalleffectMeasurement.Size = new System.Drawing.Size(240, 60);
-            this.IconbuttonHalleffectMeasurement.TabIndex = 16;
-            this.IconbuttonHalleffectMeasurement.Text = "Hall effect Measurement";
-            this.IconbuttonHalleffectMeasurement.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.IconbuttonHalleffectMeasurement.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonHalleffectMeasurement.UseVisualStyleBackColor = true;
-            this.IconbuttonHalleffectMeasurement.Click += new System.EventHandler(this.IconbuttonHalleffectMeasurement_Click);
+            this.iconbuttonHalleffectMeasurement.Dock = System.Windows.Forms.DockStyle.Top;
+            this.iconbuttonHalleffectMeasurement.FlatAppearance.BorderSize = 0;
+            this.iconbuttonHalleffectMeasurement.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.iconbuttonHalleffectMeasurement.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.iconbuttonHalleffectMeasurement.ForeColor = System.Drawing.Color.Snow;
+            this.iconbuttonHalleffectMeasurement.IconChar = FontAwesome.Sharp.IconChar.Magnet;
+            this.iconbuttonHalleffectMeasurement.IconColor = System.Drawing.Color.WhiteSmoke;
+            this.iconbuttonHalleffectMeasurement.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.iconbuttonHalleffectMeasurement.IconSize = 30;
+            this.iconbuttonHalleffectMeasurement.Location = new System.Drawing.Point(0, 450);
+            this.iconbuttonHalleffectMeasurement.Margin = new System.Windows.Forms.Padding(0);
+            this.iconbuttonHalleffectMeasurement.Name = "iconbuttonHalleffectMeasurement";
+            this.iconbuttonHalleffectMeasurement.Size = new System.Drawing.Size(240, 60);
+            this.iconbuttonHalleffectMeasurement.TabIndex = 16;
+            this.iconbuttonHalleffectMeasurement.Text = "Hall effect Measurement";
+            this.iconbuttonHalleffectMeasurement.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.iconbuttonHalleffectMeasurement.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.iconbuttonHalleffectMeasurement.UseVisualStyleBackColor = true;
+            this.iconbuttonHalleffectMeasurement.Click += new System.EventHandler(this.iconbuttonHalleffectMeasurement_Click);
             // 
             // PanelVanderPauwSubMenu
             // 
-            this.PanelVanderPauwSubMenu.Controls.Add(this.ButtonVdPMeasurementResults);
-            this.PanelVanderPauwSubMenu.Controls.Add(this.ButtonVdPTotalVoltage);
+            this.PanelVanderPauwSubMenu.Controls.Add(this.buttonVdPMeasurementResults);
+            this.PanelVanderPauwSubMenu.Controls.Add(this.buttonVdPTotalVoltage);
             this.PanelVanderPauwSubMenu.Dock = System.Windows.Forms.DockStyle.Top;
             this.PanelVanderPauwSubMenu.Location = new System.Drawing.Point(0, 360);
             this.PanelVanderPauwSubMenu.Name = "PanelVanderPauwSubMenu";
@@ -600,87 +600,87 @@
             this.PanelVanderPauwSubMenu.TabIndex = 15;
             this.PanelVanderPauwSubMenu.Visible = false;
             // 
-            // ButtonVdPMeasurementResults
+            // buttonVdPMeasurementResults
             // 
-            this.ButtonVdPMeasurementResults.Dock = System.Windows.Forms.DockStyle.Top;
-            this.ButtonVdPMeasurementResults.FlatAppearance.BorderSize = 0;
-            this.ButtonVdPMeasurementResults.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonVdPMeasurementResults.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ButtonVdPMeasurementResults.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.ButtonVdPMeasurementResults.Location = new System.Drawing.Point(0, 45);
-            this.ButtonVdPMeasurementResults.Margin = new System.Windows.Forms.Padding(0);
-            this.ButtonVdPMeasurementResults.Name = "ButtonVdPMeasurementResults";
-            this.ButtonVdPMeasurementResults.Size = new System.Drawing.Size(240, 45);
-            this.ButtonVdPMeasurementResults.TabIndex = 4;
-            this.ButtonVdPMeasurementResults.Text = "Measurement Results";
-            this.ButtonVdPMeasurementResults.UseVisualStyleBackColor = true;
-            this.ButtonVdPMeasurementResults.Click += new System.EventHandler(this.ButtonVdPMeasurementResults_Click);
+            this.buttonVdPMeasurementResults.Dock = System.Windows.Forms.DockStyle.Top;
+            this.buttonVdPMeasurementResults.FlatAppearance.BorderSize = 0;
+            this.buttonVdPMeasurementResults.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonVdPMeasurementResults.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonVdPMeasurementResults.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.buttonVdPMeasurementResults.Location = new System.Drawing.Point(0, 45);
+            this.buttonVdPMeasurementResults.Margin = new System.Windows.Forms.Padding(0);
+            this.buttonVdPMeasurementResults.Name = "buttonVdPMeasurementResults";
+            this.buttonVdPMeasurementResults.Size = new System.Drawing.Size(240, 45);
+            this.buttonVdPMeasurementResults.TabIndex = 4;
+            this.buttonVdPMeasurementResults.Text = "Measurement Results";
+            this.buttonVdPMeasurementResults.UseVisualStyleBackColor = true;
+            this.buttonVdPMeasurementResults.Click += new System.EventHandler(this.buttonVdPMeasurementResults_Click);
             // 
-            // ButtonVdPTotalVoltage
+            // buttonVdPTotalVoltage
             // 
-            this.ButtonVdPTotalVoltage.Dock = System.Windows.Forms.DockStyle.Top;
-            this.ButtonVdPTotalVoltage.FlatAppearance.BorderSize = 0;
-            this.ButtonVdPTotalVoltage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonVdPTotalVoltage.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ButtonVdPTotalVoltage.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.ButtonVdPTotalVoltage.Location = new System.Drawing.Point(0, 0);
-            this.ButtonVdPTotalVoltage.Margin = new System.Windows.Forms.Padding(0);
-            this.ButtonVdPTotalVoltage.Name = "ButtonVdPTotalVoltage";
-            this.ButtonVdPTotalVoltage.Size = new System.Drawing.Size(240, 45);
-            this.ButtonVdPTotalVoltage.TabIndex = 3;
-            this.ButtonVdPTotalVoltage.Text = "Total Voltage";
-            this.ButtonVdPTotalVoltage.UseVisualStyleBackColor = true;
-            this.ButtonVdPTotalVoltage.Click += new System.EventHandler(this.ButtonVdPTotalVoltage_Click);
+            this.buttonVdPTotalVoltage.Dock = System.Windows.Forms.DockStyle.Top;
+            this.buttonVdPTotalVoltage.FlatAppearance.BorderSize = 0;
+            this.buttonVdPTotalVoltage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonVdPTotalVoltage.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonVdPTotalVoltage.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.buttonVdPTotalVoltage.Location = new System.Drawing.Point(0, 0);
+            this.buttonVdPTotalVoltage.Margin = new System.Windows.Forms.Padding(0);
+            this.buttonVdPTotalVoltage.Name = "buttonVdPTotalVoltage";
+            this.buttonVdPTotalVoltage.Size = new System.Drawing.Size(240, 45);
+            this.buttonVdPTotalVoltage.TabIndex = 3;
+            this.buttonVdPTotalVoltage.Text = "Total Voltage";
+            this.buttonVdPTotalVoltage.UseVisualStyleBackColor = true;
+            this.buttonVdPTotalVoltage.Click += new System.EventHandler(this.buttonVdPTotalVoltage_Click);
             // 
-            // IconbuttonVanderPauwMethod
+            // iconbuttonVanderPauwMethod
             // 
-            this.IconbuttonVanderPauwMethod.Dock = System.Windows.Forms.DockStyle.Top;
-            this.IconbuttonVanderPauwMethod.FlatAppearance.BorderSize = 0;
-            this.IconbuttonVanderPauwMethod.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonVanderPauwMethod.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IconbuttonVanderPauwMethod.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.IconbuttonVanderPauwMethod.IconChar = FontAwesome.Sharp.IconChar.Diamond;
-            this.IconbuttonVanderPauwMethod.IconColor = System.Drawing.Color.WhiteSmoke;
-            this.IconbuttonVanderPauwMethod.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonVanderPauwMethod.IconSize = 30;
-            this.IconbuttonVanderPauwMethod.Location = new System.Drawing.Point(0, 300);
-            this.IconbuttonVanderPauwMethod.Margin = new System.Windows.Forms.Padding(0);
-            this.IconbuttonVanderPauwMethod.Name = "IconbuttonVanderPauwMethod";
-            this.IconbuttonVanderPauwMethod.Size = new System.Drawing.Size(240, 60);
-            this.IconbuttonVanderPauwMethod.TabIndex = 14;
-            this.IconbuttonVanderPauwMethod.Text = "Van der Pauw Method";
-            this.IconbuttonVanderPauwMethod.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.IconbuttonVanderPauwMethod.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonVanderPauwMethod.UseVisualStyleBackColor = true;
-            this.IconbuttonVanderPauwMethod.Click += new System.EventHandler(this.IconbuttonVanderPauwMethod_Click);
+            this.iconbuttonVanderPauwMethod.Dock = System.Windows.Forms.DockStyle.Top;
+            this.iconbuttonVanderPauwMethod.FlatAppearance.BorderSize = 0;
+            this.iconbuttonVanderPauwMethod.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.iconbuttonVanderPauwMethod.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.iconbuttonVanderPauwMethod.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.iconbuttonVanderPauwMethod.IconChar = FontAwesome.Sharp.IconChar.Diamond;
+            this.iconbuttonVanderPauwMethod.IconColor = System.Drawing.Color.WhiteSmoke;
+            this.iconbuttonVanderPauwMethod.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.iconbuttonVanderPauwMethod.IconSize = 30;
+            this.iconbuttonVanderPauwMethod.Location = new System.Drawing.Point(0, 300);
+            this.iconbuttonVanderPauwMethod.Margin = new System.Windows.Forms.Padding(0);
+            this.iconbuttonVanderPauwMethod.Name = "iconbuttonVanderPauwMethod";
+            this.iconbuttonVanderPauwMethod.Size = new System.Drawing.Size(240, 60);
+            this.iconbuttonVanderPauwMethod.TabIndex = 14;
+            this.iconbuttonVanderPauwMethod.Text = "Van der Pauw Method";
+            this.iconbuttonVanderPauwMethod.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.iconbuttonVanderPauwMethod.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.iconbuttonVanderPauwMethod.UseVisualStyleBackColor = true;
+            this.iconbuttonVanderPauwMethod.Click += new System.EventHandler(this.iconbuttonVanderPauwMethod_Click);
             // 
-            // IconbuttonMeasurementSettings
+            // iconbuttonMeasurementSettings
             // 
-            this.IconbuttonMeasurementSettings.Dock = System.Windows.Forms.DockStyle.Top;
-            this.IconbuttonMeasurementSettings.FlatAppearance.BorderSize = 0;
-            this.IconbuttonMeasurementSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonMeasurementSettings.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IconbuttonMeasurementSettings.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.IconbuttonMeasurementSettings.IconChar = FontAwesome.Sharp.IconChar.Gears;
-            this.IconbuttonMeasurementSettings.IconColor = System.Drawing.Color.WhiteSmoke;
-            this.IconbuttonMeasurementSettings.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonMeasurementSettings.IconSize = 30;
-            this.IconbuttonMeasurementSettings.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.IconbuttonMeasurementSettings.Location = new System.Drawing.Point(0, 240);
-            this.IconbuttonMeasurementSettings.Margin = new System.Windows.Forms.Padding(0);
-            this.IconbuttonMeasurementSettings.Name = "IconbuttonMeasurementSettings";
-            this.IconbuttonMeasurementSettings.Size = new System.Drawing.Size(240, 60);
-            this.IconbuttonMeasurementSettings.TabIndex = 2;
-            this.IconbuttonMeasurementSettings.Text = "Measurement Settings";
-            this.IconbuttonMeasurementSettings.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.IconbuttonMeasurementSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonMeasurementSettings.UseVisualStyleBackColor = true;
-            this.IconbuttonMeasurementSettings.Click += new System.EventHandler(this.IconbuttonMeasurementSettings_Click);
+            this.iconbuttonMeasurementSettings.Dock = System.Windows.Forms.DockStyle.Top;
+            this.iconbuttonMeasurementSettings.FlatAppearance.BorderSize = 0;
+            this.iconbuttonMeasurementSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.iconbuttonMeasurementSettings.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.iconbuttonMeasurementSettings.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.iconbuttonMeasurementSettings.IconChar = FontAwesome.Sharp.IconChar.Gears;
+            this.iconbuttonMeasurementSettings.IconColor = System.Drawing.Color.WhiteSmoke;
+            this.iconbuttonMeasurementSettings.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.iconbuttonMeasurementSettings.IconSize = 30;
+            this.iconbuttonMeasurementSettings.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.iconbuttonMeasurementSettings.Location = new System.Drawing.Point(0, 240);
+            this.iconbuttonMeasurementSettings.Margin = new System.Windows.Forms.Padding(0);
+            this.iconbuttonMeasurementSettings.Name = "iconbuttonMeasurementSettings";
+            this.iconbuttonMeasurementSettings.Size = new System.Drawing.Size(240, 60);
+            this.iconbuttonMeasurementSettings.TabIndex = 2;
+            this.iconbuttonMeasurementSettings.Text = "Measurement Settings";
+            this.iconbuttonMeasurementSettings.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.iconbuttonMeasurementSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.iconbuttonMeasurementSettings.UseVisualStyleBackColor = true;
+            this.iconbuttonMeasurementSettings.Click += new System.EventHandler(this.iconbuttonMeasurementSettings_Click);
             // 
             // TimerCurrentDateandRealTime
             // 
             this.TimerCurrentDateandRealTime.Interval = 1000;
-            this.TimerCurrentDateandRealTime.Tick += new System.EventHandler(this.TimerCurrentDateandRealTime_Tick);
+            this.TimerCurrentDateandRealTime.Tick += new System.EventHandler(this.timerCurrentDateandRealTime_Tick);
             // 
             // Program01Form
             // 
@@ -688,25 +688,25 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.AppWorkspace;
             this.ClientSize = new System.Drawing.Size(1500, 1000);
-            this.Controls.Add(this.PanelDesktop);
-            this.Controls.Add(this.PanelTitleTabBar);
-            this.Controls.Add(this.PanelTabBar);
-            this.Controls.Add(this.PanelSideMenu);
+            this.Controls.Add(this.panelDesktop);
+            this.Controls.Add(this.panelTitleTabBar);
+            this.Controls.Add(this.panelTabBar);
+            this.Controls.Add(this.panelSideMenu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "Program01Form";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Program01";
-            this.PanelTabBar.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxMinimizeProgram)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxExitProgram)).EndInit();
-            this.PanelTitleTabBar.ResumeLayout(false);
-            this.PanelTitleTabBar.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxCurrentForm)).EndInit();
-            this.PanelDesktop.ResumeLayout(false);
-            this.PanelDesktop.PerformLayout();
-            this.PanelHome.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxLogo)).EndInit();
-            this.PanelSideMenu.ResumeLayout(false);
+            this.panelTabBar.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.iconpictureboxMinimizeProgram)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.iconpictureboxExitProgram)).EndInit();
+            this.panelTitleTabBar.ResumeLayout(false);
+            this.panelTitleTabBar.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.iconpictureboxCurrentForm)).EndInit();
+            this.panelDesktop.ResumeLayout(false);
+            this.panelDesktop.PerformLayout();
+            this.panelHome.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.iconpictureboxLogo)).EndInit();
+            this.panelSideMenu.ResumeLayout(false);
             this.PanelHallMeasurementSubMenu.ResumeLayout(false);
             this.PanelVanderPauwSubMenu.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -714,51 +714,51 @@
         }
 
         #endregion
-        private System.Windows.Forms.Panel PanelTabBar;
-        private FontAwesome.Sharp.IconPictureBox IconpictureboxExitProgram;
-        private FontAwesome.Sharp.IconPictureBox IconpictureboxMinimizeProgram;
-        private System.Windows.Forms.Panel PanelTitleTabBar;
-        private FontAwesome.Sharp.IconPictureBox IconpictureboxCurrentForm;
-        private System.Windows.Forms.Label LabelTitleCurrentForm;
-        private System.Windows.Forms.Panel PanelDesktop;
-        private System.Windows.Forms.Panel PanelHome;
-        private System.Windows.Forms.PictureBox IconpictureboxLogo;
-        private FontAwesome.Sharp.IconButton IconbuttonHelp;
-        private System.Windows.Forms.Panel PanelSideMenu;
-        private FontAwesome.Sharp.IconButton IconbuttonMeasurementSettings;
+        private System.Windows.Forms.Panel panelTabBar;
+        private FontAwesome.Sharp.IconPictureBox iconpictureboxExitProgram;
+        private FontAwesome.Sharp.IconPictureBox iconpictureboxMinimizeProgram;
+        private System.Windows.Forms.Panel panelTitleTabBar;
+        private FontAwesome.Sharp.IconPictureBox iconpictureboxCurrentForm;
+        private System.Windows.Forms.Label labelTitleCurrentForm;
+        private System.Windows.Forms.Panel panelDesktop;
+        private System.Windows.Forms.Panel panelHome;
+        private System.Windows.Forms.PictureBox iconpictureboxLogo;
+        private FontAwesome.Sharp.IconButton iconbuttonHelp;
+        private System.Windows.Forms.Panel panelSideMenu;
+        private FontAwesome.Sharp.IconButton iconbuttonMeasurementSettings;
         private System.Windows.Forms.Panel PanelHallMeasurementSubMenu;
-        private System.Windows.Forms.Button ButtonHallMeasurementResults;
-        private System.Windows.Forms.Button ButtonHallTotalVoltage;
-        private FontAwesome.Sharp.IconButton IconbuttonHalleffectMeasurement;
+        private System.Windows.Forms.Button buttonHallMeasurementResults;
+        private System.Windows.Forms.Button buttonHallTotalVoltage;
+        private FontAwesome.Sharp.IconButton iconbuttonHalleffectMeasurement;
         private System.Windows.Forms.Panel PanelVanderPauwSubMenu;
-        private System.Windows.Forms.Button ButtonVdPMeasurementResults;
-        private System.Windows.Forms.Button ButtonVdPTotalVoltage;
-        private FontAwesome.Sharp.IconButton IconbuttonVanderPauwMethod;
-        private System.Windows.Forms.Label LabelProgramTitle;
-        private System.Windows.Forms.Label LabelSaveVdPDataOnly;
-        private System.Windows.Forms.Label LabelUserFirstNameLastname;
-        private System.Windows.Forms.Label LabelSaveVdPandHallMeasurementData;
-        private System.Windows.Forms.Label LabelSaveHallMeasurementDataOnly;
-        private System.Windows.Forms.Label LabelUserLastname;
-        private System.Windows.Forms.TextBox TextboxUserLastname;
-        private System.Windows.Forms.Label LabelUserFirstName;
-        private System.Windows.Forms.TextBox TextboxUserFirstName;
-        private System.Windows.Forms.TextBox TextboxFileVdPandHallMeasurementDataPath;
-        private System.Windows.Forms.TextBox TextboxFileHallMeasurementDataPath;
-        private System.Windows.Forms.TextBox TextboxFileVdPDataPath;
-        private FontAwesome.Sharp.IconButton IconbuttonSaveFileVdPandHallMeasurementPath;
-        private FontAwesome.Sharp.IconButton IconbuttonSaveFileHallMeasurementDataPathOnly;
+        private System.Windows.Forms.Button buttonVdPMeasurementResults;
+        private System.Windows.Forms.Button buttonVdPTotalVoltage;
+        private FontAwesome.Sharp.IconButton iconbuttonVanderPauwMethod;
+        private System.Windows.Forms.Label labelProgramTitle;
+        private System.Windows.Forms.Label labelSaveVdPDataOnly;
+        private System.Windows.Forms.Label labelUserFirstNameLastname;
+        private System.Windows.Forms.Label labelSaveVdPandHallMeasurementData;
+        private System.Windows.Forms.Label labelSaveHallMeasurementDataOnly;
+        private System.Windows.Forms.Label labelUserLastname;
+        private System.Windows.Forms.TextBox textboxUserLastname;
+        private System.Windows.Forms.Label labelUserFirstName;
+        private System.Windows.Forms.TextBox textboxUserFirstName;
+        private System.Windows.Forms.TextBox textboxFileVdPandHallMeasurementDataPath;
+        private System.Windows.Forms.TextBox textboxFileHallMeasurementDataPath;
+        private System.Windows.Forms.TextBox textboxFileVdPDataPath;
+        private FontAwesome.Sharp.IconButton iconbuttonSaveFileVdPandHallMeasurementPath;
+        private FontAwesome.Sharp.IconButton iconbuttonSaveFileHallMeasurementDataPathOnly;
         private FontAwesome.Sharp.IconButton IconbuttonSaveFileVdPDataPathOnly;
         private FontAwesome.Sharp.IconButton IconbuttonBrowseFileVdPDataPathOnly;
-        private FontAwesome.Sharp.IconButton IconbuttonBrowseFileVdPandHallMeasurementPath;
-        private FontAwesome.Sharp.IconButton IconbuttonBrowseFileHallMeasurementDataPathOnly;
-        private System.Windows.Forms.Label LabelCurrentDateandRealTime;
+        private FontAwesome.Sharp.IconButton iconbuttonBrowseFileVdPandHallMeasurementPath;
+        private FontAwesome.Sharp.IconButton iconbuttonBrowseFileHallMeasurementDataPathOnly;
+        private System.Windows.Forms.Label labelCurrentDateandRealTime;
         private System.Windows.Forms.Timer TimerCurrentDateandRealTime;
         private System.Windows.Forms.FolderBrowserDialog FolderBrowserDialogVdPFile;
         private System.Windows.Forms.FolderBrowserDialog FolderBrowserDialogHallMeasurementFile;
         private System.Windows.Forms.FolderBrowserDialog FolderBrowserDialogVdPandHallMeasurementFile;
-        private System.Windows.Forms.Label LabelUserLogin;
-        private FontAwesome.Sharp.IconButton IconbuttonUserLogin;
+        private System.Windows.Forms.Label labelUserLogin;
+        private FontAwesome.Sharp.IconButton iconbuttonUserLogin;
     }
 }
 

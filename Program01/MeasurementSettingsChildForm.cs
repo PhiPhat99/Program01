@@ -36,15 +36,15 @@ namespace Program01
         private bool isSMUConnected = false;
         private bool isSSConnected = false;
         private bool isModes = false;
-        private Form CurrentTunerandDataChildForm;
-        public event EventHandler ToggleChanged;
+        private Form currentTunerandDataChildForm;
+        public event EventHandler toggleChanged;
         public bool IsOn
         {
             get => isModes;
             set
             {
                 isModes = value;
-                UpdateToggleState();
+                updateToggleState();
             }
         }
 
@@ -67,37 +67,37 @@ namespace Program01
                 string[] SMUgpibAddress = resourcemanagerSMU.FindRsrc("GPIB?*::?*::INSTR");
                 string[] SSgpibAddress = resourcemanagerSS.FindRsrc("GPIB?*::?*::INSTR");
 
-                ComboboxVISASMUIOPort.Items.Clear();
-                ComboboxVISASSIOPort.Items.Clear();
+                comboboxVISASMUIOPort.Items.Clear();
+                comboboxVISASSIOPort.Items.Clear();
 
                 foreach (string SMUaddress in SMUgpibAddress)
                 {
-                    ComboboxVISASMUIOPort.Items.Add(SMUaddress);
+                    comboboxVISASMUIOPort.Items.Add(SMUaddress);
                 }
 
-                if (ComboboxVISASMUIOPort.Items.Count > 0)
+                if (comboboxVISASMUIOPort.Items.Count > 0)
                 {
-                    ComboboxVISASMUIOPort.SelectedIndex = 0;
+                    comboboxVISASMUIOPort.SelectedIndex = 0;
                 }
 
-                if (ComboboxVISASMUIOPort.Items.Count > 0)
+                if (comboboxVISASMUIOPort.Items.Count > 0)
                 {
-                    ComboboxVISASMUIOPort.SelectedIndex = 0;
+                    comboboxVISASMUIOPort.SelectedIndex = 0;
                 }
 
                 foreach (string SSaddress in SSgpibAddress)
                 {
-                    ComboboxVISASSIOPort.Items.Add(SSaddress);
+                    comboboxVISASSIOPort.Items.Add(SSaddress);
                 }
 
-                if (ComboboxVISASSIOPort.Items.Count > 0)
+                if (comboboxVISASSIOPort.Items.Count > 0)
                 {
-                    ComboboxVISASSIOPort.SelectedIndex = 0;
+                    comboboxVISASSIOPort.SelectedIndex = 0;
                 }
 
-                if (ComboboxVISASSIOPort.Items.Count > 0)
+                if (comboboxVISASSIOPort.Items.Count > 0)
                 {
-                    ComboboxVISASSIOPort.SelectedIndex = 0;
+                    comboboxVISASSIOPort.SelectedIndex = 0;
                 }
             }
             catch (Exception ex)
@@ -131,7 +131,7 @@ namespace Program01
             public static string MagneticFieldsValue { get; set; }
         }
 
-        /*private void SaveSettings()
+        /*private void saveSettings()
         {
             GlobalSettings.RsenseMode = ComboboxRsense.SelectedItem?.ToString() ?? "";
             GlobalSettings.MeasureMode = ComboboxMeasure.SelectedItem?.ToString() ?? "";
@@ -146,17 +146,17 @@ namespace Program01
             GlobalSettings.MagneticFieldsValue = TextboxMagneticFields.Text;
         }*/
 
-        private void IconbuttonSMUConnection_Click(object sender, EventArgs e)
+        private void iconbuttonSMUConnection_Click(object sender, EventArgs e)
         {
             try
             {
-                if (ComboboxVISASMUIOPort.SelectedItem == null)
+                if (comboboxVISASMUIOPort.SelectedItem == null)
                 {
                     MessageBox.Show("Please select a GPIB Address for Source Measure Unit.", "Address Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                string selectedSMUAddress = ComboboxVISASMUIOPort.SelectedItem.ToString();
+                string selectedSMUAddress = comboboxVISASMUIOPort.SelectedItem.ToString();
 
                 if (!isSMUConnected)
                 {
@@ -167,11 +167,11 @@ namespace Program01
                     Debug.WriteLine($"{response}");
 
                     isSMUConnected = true;
-                    PlaySMUConnectionMelody();
+                    playSMUConnectionMelody();
 
                     //System.Threading.Thread.Sleep(4000);
-                    IconbuttonSMUConnection.BackColor = Color.Snow;
-                    IconbuttonSMUConnection.IconColor = Color.GreenYellow;
+                    iconbuttonSMUConnection.BackColor = Color.Snow;
+                    iconbuttonSMUConnection.IconColor = Color.GreenYellow;
                     MessageBox.Show("Connected to Source Measure Unit", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
@@ -189,8 +189,8 @@ namespace Program01
 
                         isSMUConnected = false;
 
-                        IconbuttonSMUConnection.BackColor = Color.Snow;
-                        IconbuttonSMUConnection.IconColor = Color.Gainsboro;
+                        iconbuttonSMUConnection.BackColor = Color.Snow;
+                        iconbuttonSMUConnection.IconColor = Color.Gainsboro;
 
                         MessageBox.Show("Disconnected from the Source Measure Unit.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -207,17 +207,17 @@ namespace Program01
             }
         }
 
-        private void IconbuttonSSConnection_Click(object sender, EventArgs e)
+        private void iconbuttonSSConnection_Click(object sender, EventArgs e)
         {
             try
             {
-                if (ComboboxVISASSIOPort.SelectedItem == null)
+                if (comboboxVISASSIOPort.SelectedItem == null)
                 {
                     MessageBox.Show("Please select a GPIB Address for Switch System.", "Address Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                string selectedSSAddress = ComboboxVISASSIOPort.SelectedItem.ToString();
+                string selectedSSAddress = comboboxVISASSIOPort.SelectedItem.ToString();
 
                 if (!isSSConnected)
                 {
@@ -231,8 +231,8 @@ namespace Program01
 
                     isSSConnected = true;
 
-                    IconbuttonSSConnection.BackColor = Color.Snow;
-                    IconbuttonSSConnection.IconColor = Color.GreenYellow;
+                    iconbuttonSSConnection.BackColor = Color.Snow;
+                    iconbuttonSSConnection.IconColor = Color.GreenYellow;
                     MessageBox.Show("Connected to Switch System", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
@@ -250,8 +250,8 @@ namespace Program01
 
                         isSSConnected = false;
 
-                        IconbuttonSSConnection.BackColor = Color.Snow;
-                        IconbuttonSSConnection.IconColor = Color.Gainsboro;
+                        iconbuttonSSConnection.BackColor = Color.Snow;
+                        iconbuttonSSConnection.IconColor = Color.Gainsboro;
 
                         MessageBox.Show("Disconnected from the Switch System.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
@@ -269,38 +269,38 @@ namespace Program01
 
         private void MeasurementSettingsChildForm_Load(object sender, EventArgs e)
         {
-            ComboboxRsense.Items.Add("2-Wires");
-            ComboboxRsense.Items.Add("4-Wires");
+            comboboxRsense.Items.Add("2-Wires");
+            comboboxRsense.Items.Add("4-Wires");
 
-            ComboboxMeasure.Items.Add("Voltage");
-            ComboboxMeasure.Items.Add("Current");
+            comboboxMeasure.Items.Add("Voltage");
+            comboboxMeasure.Items.Add("Current");
 
-            ComboboxSource.Items.Add("Voltage");
-            ComboboxSource.Items.Add("Current");
+            comboboxSource.Items.Add("Voltage");
+            comboboxSource.Items.Add("Current");
 
-            ComboboxRsense.SelectedItem = GlobalSettings.RsenseMode;
-            ComboboxMeasure.SelectedItem = GlobalSettings.MeasureMode;
-            ComboboxSource.SelectedItem = GlobalSettings.SourceMode;
-            ComboboxSourceLimitMode.SelectedItem = GlobalSettings.SourceLimitType;
-            TextboxStart.Text = GlobalSettings.StartValue;
-            TextboxStop.Text = GlobalSettings.StopValue;
-            TextboxStep.Text = GlobalSettings.StepValue;
-            TextboxSourceLimitLevel.Text = GlobalSettings.SourceLimitLevelValue;
-            TextboxThickness.Text = GlobalSettings.ThicknessValue;
-            TextboxRepetition.Text = GlobalSettings.RepetitionValue;
-            TextboxMagneticFields.Text = GlobalSettings.MagneticFieldsValue;
+            comboboxRsense.SelectedItem = GlobalSettings.RsenseMode;
+            comboboxMeasure.SelectedItem = GlobalSettings.MeasureMode;
+            comboboxSource.SelectedItem = GlobalSettings.SourceMode;
+            comboboxSourceLimitMode.SelectedItem = GlobalSettings.SourceLimitType;
+            textboxStart.Text = GlobalSettings.StartValue;
+            textboxStop.Text = GlobalSettings.StopValue;
+            textboxStep.Text = GlobalSettings.StepValue;
+            textboxSourceLimitLevel.Text = GlobalSettings.SourceLimitLevelValue;
+            textboxThickness.Text = GlobalSettings.ThicknessValue;
+            textboxRepetition.Text = GlobalSettings.RepetitionValue;
+            textboxMagneticFields.Text = GlobalSettings.MagneticFieldsValue;
         }
 
         /*private void MeasurementSettingsChildForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SaveSettings();
+            saveSettings();
         }*/
 
-        private void ComboboxRsense_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboboxRsense_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
-                RsenseMode = ComboboxRsense.SelectedItem?.ToString();
+                RsenseMode = comboboxRsense.SelectedItem?.ToString();
                 savedRsenseMode = RsenseMode;
 
                 if (MeasureMode == "Voltage")
@@ -312,7 +312,7 @@ namespace Program01
                         case "4-Wires":
                             break;
                         default:
-                            ComboboxRsense.SelectedIndex = -1;
+                            comboboxRsense.SelectedIndex = -1;
                             RsenseMode = "";
                             break;
                     }
@@ -327,7 +327,7 @@ namespace Program01
                         case "4-Wires":
                             break;
                         default:
-                            ComboboxRsense.SelectedIndex = -1;
+                            comboboxRsense.SelectedIndex = -1;
                             RsenseMode = "";
                             break;
                     }
@@ -339,11 +339,11 @@ namespace Program01
             }
         }
 
-        private void ComboboxMeasure_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboboxMeasure_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
-                MeasureMode = ComboboxMeasure.SelectedItem?.ToString();
+                MeasureMode = comboboxMeasure.SelectedItem?.ToString();
                 savedMeasureMode = MeasureMode;
 
                 switch (MeasureMode)
@@ -353,7 +353,7 @@ namespace Program01
                     case "Current":
                         break;
                     default:
-                        ComboboxMeasure.SelectedIndex = -1;
+                        comboboxMeasure.SelectedIndex = -1;
                         MeasureMode = "";
                         break;
                 }
@@ -364,23 +364,23 @@ namespace Program01
             }
         }
 
-        private void ComboboxSource_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboboxSource_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
-                SourceMode = ComboboxSource.SelectedItem?.ToString();
+                SourceMode = comboboxSource.SelectedItem?.ToString();
                 savedSourceMode = SourceMode;
 
                 switch (SourceMode)
                 {
                     case "Voltage":
-                        UpdateMeasurementSettingsUnits("Voltage");
+                        updateMeasurementSettingsUnits("Voltage");
                         break;
                     case "Current":
-                        UpdateMeasurementSettingsUnits("Current");
+                        updateMeasurementSettingsUnits("Current");
                         break;
                     default:
-                        ComboboxSource.SelectedIndex = -1;
+                        comboboxSource.SelectedIndex = -1;
                         SourceMode = "";
                         break;
                 }
@@ -391,11 +391,11 @@ namespace Program01
             }
         }
 
-        private void ComboboxSourceLimitMode_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboboxSourceLimitMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
             {
-                SourceLimit = ComboboxSourceLimitMode.SelectedItem?.ToString();
+                SourceLimit = comboboxSourceLimitMode.SelectedItem?.ToString();
                 savedSourceLimitMode = SourceLimit;
             }
             catch (Exception ex)
@@ -404,62 +404,62 @@ namespace Program01
             }
         }
 
-        private void UpdateMeasurementSettingsUnits(string SourceMode)
+        private void updateMeasurementSettingsUnits(string SourceMode)
         {
             try
             {
                 if (SourceMode == "Voltage")
                 {
-                    ComboboxStartUnit.Items.Clear();
-                    ComboboxStartUnit.Items.AddRange(new string[] { "mV", "V" });
-                    ComboboxStartUnit.SelectedIndex = 0;
+                    comboboxStartUnit.Items.Clear();
+                    comboboxStartUnit.Items.AddRange(new string[] { "mV", "V" });
+                    comboboxStartUnit.SelectedIndex = 0;
 
-                    ComboboxStopUnit.Items.Clear();
-                    ComboboxStopUnit.Items.AddRange(new string[] { "mV", "V" });
-                    ComboboxStopUnit.SelectedIndex = 0;
+                    comboboxStopUnit.Items.Clear();
+                    comboboxStopUnit.Items.AddRange(new string[] { "mV", "V" });
+                    comboboxStopUnit.SelectedIndex = 0;
 
-                    ComboboxStepUnit.Items.Clear();
-                    ComboboxStepUnit.Items.AddRange(new string[] { "mV", "V" });
-                    ComboboxStepUnit.SelectedIndex = 0;
+                    comboboxStepUnit.Items.Clear();
+                    comboboxStepUnit.Items.AddRange(new string[] { "mV", "V" });
+                    comboboxStepUnit.SelectedIndex = 0;
 
-                    ComboboxSourceLimitMode.Items.Clear();
-                    ComboboxSourceLimitMode.Items.AddRange(new string[] { "Current" });
-                    ComboboxSourceLimitMode.SelectedIndex = 0;
+                    comboboxSourceLimitMode.Items.Clear();
+                    comboboxSourceLimitMode.Items.AddRange(new string[] { "Current" });
+                    comboboxSourceLimitMode.SelectedIndex = 0;
 
-                    ComboboxSourceLimitLevelUnit.Items.Clear();
-                    ComboboxSourceLimitLevelUnit.Items.AddRange(new string[] { "nA", "µA", "mA", "A" });
-                    ComboboxSourceLimitLevelUnit.SelectedIndex = 0;
+                    comboboxSourceLimitLevelUnit.Items.Clear();
+                    comboboxSourceLimitLevelUnit.Items.AddRange(new string[] { "nA", "µA", "mA", "A" });
+                    comboboxSourceLimitLevelUnit.SelectedIndex = 0;
                 }
                 else if (SourceMode == "Current")
                 {
-                    ComboboxStartUnit.Items.Clear();
-                    ComboboxStartUnit.Items.AddRange(new string[] { "nA", "µA", "mA", "A" });
-                    ComboboxStartUnit.SelectedIndex = 0;
+                    comboboxStartUnit.Items.Clear();
+                    comboboxStartUnit.Items.AddRange(new string[] { "nA", "µA", "mA", "A" });
+                    comboboxStartUnit.SelectedIndex = 0;
 
-                    ComboboxStopUnit.Items.Clear();
-                    ComboboxStopUnit.Items.AddRange(new string[] { "nA", "µA", "mA", "A" });
-                    ComboboxStopUnit.SelectedIndex = 0;
+                    comboboxStopUnit.Items.Clear();
+                    comboboxStopUnit.Items.AddRange(new string[] { "nA", "µA", "mA", "A" });
+                    comboboxStopUnit.SelectedIndex = 0;
 
-                    ComboboxStepUnit.Items.Clear();
-                    ComboboxStepUnit.Items.AddRange(new string[] { "nA", "µA", "mA", "A" });
-                    ComboboxStepUnit.SelectedIndex = 0;
+                    comboboxStepUnit.Items.Clear();
+                    comboboxStepUnit.Items.AddRange(new string[] { "nA", "µA", "mA", "A" });
+                    comboboxStepUnit.SelectedIndex = 0;
 
-                    ComboboxSourceLimitMode.Items.Clear();
-                    ComboboxSourceLimitMode.Items.AddRange(new string[] { "Voltage" });
-                    ComboboxSourceLimitMode.SelectedIndex = 0;
+                    comboboxSourceLimitMode.Items.Clear();
+                    comboboxSourceLimitMode.Items.AddRange(new string[] { "Voltage" });
+                    comboboxSourceLimitMode.SelectedIndex = 0;
 
-                    ComboboxSourceLimitLevelUnit.Items.Clear();
-                    ComboboxSourceLimitLevelUnit.Items.AddRange(new string[] { "mV", "V" });
-                    ComboboxSourceLimitLevelUnit.SelectedIndex = 0;
+                    comboboxSourceLimitLevelUnit.Items.Clear();
+                    comboboxSourceLimitLevelUnit.Items.AddRange(new string[] { "mV", "V" });
+                    comboboxSourceLimitLevelUnit.SelectedIndex = 0;
                 }
 
-                ComboboxThicknessUnit.Items.Clear();
-                ComboboxThicknessUnit.Items.AddRange(new string[] { "nm", "µm", "mm", "cm", "m" });
-                ComboboxThicknessUnit.SelectedIndex = 0;
+                comboboxThicknessUnit.Items.Clear();
+                comboboxThicknessUnit.Items.AddRange(new string[] { "nm", "µm", "mm", "cm", "m" });
+                comboboxThicknessUnit.SelectedIndex = 0;
 
-                ComboboxMagneticFieldsUnit.Items.Clear();
-                ComboboxMagneticFieldsUnit.Items.AddRange(new string[] { "T", "G" });
-                ComboboxMagneticFieldsUnit.SelectedIndex = 0;
+                comboboxMagneticFieldsUnit.Items.Clear();
+                comboboxMagneticFieldsUnit.Items.AddRange(new string[] { "T", "G" });
+                comboboxMagneticFieldsUnit.SelectedIndex = 0;
             }
             catch (Exception ex)
             {
@@ -469,10 +469,10 @@ namespace Program01
 
         private void IconbuttonClearSettings_Click(object sender, EventArgs e)
         {
-            ClearSettings();
+            clearSettings();
         }
 
-        private void ClearSettings()
+        private void clearSettings()
         {
             try
             {
@@ -482,23 +482,23 @@ namespace Program01
                     return;
                 }
 
-                ComboboxRsense.SelectedIndex = -1;
-                ComboboxMeasure.SelectedIndex = -1;
-                ComboboxSource.SelectedIndex = -1;
-                ComboboxSourceLimitMode.SelectedIndex = -1;
-                ComboboxStartUnit.SelectedIndex = -1;
-                ComboboxStopUnit.SelectedIndex = -1;
-                ComboboxStepUnit.SelectedIndex = -1;
-                ComboboxSourceLimitLevelUnit.SelectedIndex = -1;
-                ComboboxThicknessUnit.SelectedIndex = -1;
-                ComboboxMagneticFieldsUnit.SelectedIndex = -1;
-                TextboxStart.Text = "";
-                TextboxStep.Text = "";
-                TextboxStop.Text = "";
-                TextboxSourceLimitLevel.Text = "";
-                TextboxThickness.Text = "";
-                TextboxRepetition.Text = "";
-                TextboxMagneticFields.Text = "";
+                comboboxRsense.SelectedIndex = -1;
+                comboboxMeasure.SelectedIndex = -1;
+                comboboxSource.SelectedIndex = -1;
+                comboboxSourceLimitMode.SelectedIndex = -1;
+                comboboxStartUnit.SelectedIndex = -1;
+                comboboxStopUnit.SelectedIndex = -1;
+                comboboxStepUnit.SelectedIndex = -1;
+                comboboxSourceLimitLevelUnit.SelectedIndex = -1;
+                comboboxThicknessUnit.SelectedIndex = -1;
+                comboboxMagneticFieldsUnit.SelectedIndex = -1;
+                textboxStart.Text = "";
+                textboxStep.Text = "";
+                textboxStop.Text = "";
+                textboxSourceLimitLevel.Text = "";
+                textboxThickness.Text = "";
+                textboxRepetition.Text = "";
+                textboxMagneticFields.Text = "";
                 savedRsenseMode = "";
                 savedMeasureMode = "";
                 savedSourceMode = "";
@@ -519,61 +519,61 @@ namespace Program01
             }
         }
 
-        private void PanelToggleSwitchBase_MouseClick(object sender, MouseEventArgs e)
+        private void panelToggleSwitchBase_MouseClick(object sender, MouseEventArgs e)
         {
             try
             {
                 isModes = !isModes;
 
-                UpdateToggleState();
+                updateToggleState();
 
                 if (isModes == false)
                 {
                     string Modes = "Van der Pauw";
-                    TextboxMagneticFields.Enabled = false;
-                    TextboxMagneticFields.Visible = false;
-                    LabelMagneticFields.Visible = false;
-                    LabelMagneticFieldsUnit.Visible = false;
-                    LabelToggleSwitchVdP.ForeColor = Color.FromArgb(144, 198, 101);
-                    LabelToggleSwitchHall.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-                    PanelToggleSwitchButton.BackColor = Color.FromArgb(253, 138, 114);
-                    ComboboxMagneticFieldsUnit.Visible = false;
+                    textboxMagneticFields.Enabled = false;
+                    textboxMagneticFields.Visible = false;
+                    labelMagneticFields.Visible = false;
+                    labelMagneticFieldsUnit.Visible = false;
+                    labelToggleSwitchVdP.ForeColor = Color.FromArgb(144, 198, 101);
+                    labelToggleSwitchHall.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+                    panelToggleSwitchButton.BackColor = Color.FromArgb(253, 138, 114);
+                    comboboxMagneticFieldsUnit.Visible = false;
                     Debug.WriteLine($"You select: {Modes} measurement");
 
-                    PictureboxTuner1.Image = global::Program01.Properties.Resources.R1_VdP;
-                    PictureboxTuner2.Image = global::Program01.Properties.Resources.R2_VdP;
-                    PictureboxTuner3.Image = global::Program01.Properties.Resources.R3_VdP;
-                    PictureboxTuner4.Image = global::Program01.Properties.Resources.R4_VdP;
-                    PictureboxTuner5.Image = global::Program01.Properties.Resources.R5_VdP;
-                    PictureboxTuner6.Image = global::Program01.Properties.Resources.R6_VdP;
-                    PictureboxTuner7.Image = global::Program01.Properties.Resources.R7_VdP;
-                    PictureboxTuner8.Image = global::Program01.Properties.Resources.R8_VdP;
+                    pictureboxTuner1.Image = global::Program01.Properties.Resources.R1_VdP;
+                    pictureboxTuner2.Image = global::Program01.Properties.Resources.R2_VdP;
+                    pictureboxTuner3.Image = global::Program01.Properties.Resources.R3_VdP;
+                    pictureboxTuner4.Image = global::Program01.Properties.Resources.R4_VdP;
+                    pictureboxTuner5.Image = global::Program01.Properties.Resources.R5_VdP;
+                    pictureboxTuner6.Image = global::Program01.Properties.Resources.R6_VdP;
+                    pictureboxTuner7.Image = global::Program01.Properties.Resources.R7_VdP;
+                    pictureboxTuner8.Image = global::Program01.Properties.Resources.R8_VdP;
                 }
 
                 else if (isModes == true)
                 {
                     string Modes = "Hall effect";
-                    TextboxMagneticFields.Enabled = true;
-                    TextboxMagneticFields.Visible = true;
-                    LabelMagneticFields.Visible = true;
-                    LabelMagneticFieldsUnit.Visible = true;
-                    LabelToggleSwitchVdP.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-                    LabelToggleSwitchHall.ForeColor = Color.FromArgb(144, 198, 101);
-                    PanelToggleSwitchButton.BackColor = Color.FromArgb(95, 77, 221);
-                    ComboboxMagneticFieldsUnit.Visible = true;
+                    textboxMagneticFields.Enabled = true;
+                    textboxMagneticFields.Visible = true;
+                    labelMagneticFields.Visible = true;
+                    labelMagneticFieldsUnit.Visible = true;
+                    labelToggleSwitchVdP.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+                    labelToggleSwitchHall.ForeColor = Color.FromArgb(144, 198, 101);
+                    panelToggleSwitchButton.BackColor = Color.FromArgb(95, 77, 221);
+                    comboboxMagneticFieldsUnit.Visible = true;
                     Debug.WriteLine($"You select: {Modes} measurement");
 
-                    PictureboxTuner1.Image = global::Program01.Properties.Resources.V1_Hall;
-                    PictureboxTuner2.Image = global::Program01.Properties.Resources.V2_Hall;
-                    PictureboxTuner3.Image = global::Program01.Properties.Resources.V3_Hall;
-                    PictureboxTuner4.Image = global::Program01.Properties.Resources.V4_Hall;
-                    PictureboxTuner5.Image = global::Program01.Properties.Resources.V5_Hall;
-                    PictureboxTuner6.Image = global::Program01.Properties.Resources.V6_Hall;
-                    PictureboxTuner7.Image = global::Program01.Properties.Resources.V7_Hall;
-                    PictureboxTuner8.Image = global::Program01.Properties.Resources.V8_Hall;
+                    pictureboxTuner1.Image = global::Program01.Properties.Resources.V1_Hall;
+                    pictureboxTuner2.Image = global::Program01.Properties.Resources.V2_Hall;
+                    pictureboxTuner3.Image = global::Program01.Properties.Resources.V3_Hall;
+                    pictureboxTuner4.Image = global::Program01.Properties.Resources.V4_Hall;
+                    pictureboxTuner5.Image = global::Program01.Properties.Resources.V5_Hall;
+                    pictureboxTuner6.Image = global::Program01.Properties.Resources.V6_Hall;
+                    pictureboxTuner7.Image = global::Program01.Properties.Resources.V7_Hall;
+                    pictureboxTuner8.Image = global::Program01.Properties.Resources.V8_Hall;
                 }
 
-                OnToggleChanged();
+                onToggleChanged();
             }
             catch (Exception ex)
             {
@@ -581,24 +581,24 @@ namespace Program01
             }
         }
 
-        protected virtual void OnToggleChanged()
+        protected virtual void onToggleChanged()
         {
-            ToggleChanged?.Invoke(this, EventArgs.Empty);
-            PanelToggleSwitchBase.BackColor = isModes ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
+            toggleChanged?.Invoke(this, EventArgs.Empty);
+            panelToggleSwitchBase.BackColor = isModes ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
         }
 
-        private void UpdateToggleState()
+        private void updateToggleState()
         {
-            targetPosition = isModes ? PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width - 1 : 1;
-            PanelToggleSwitchButton.Location = new Point(targetPosition, PanelToggleSwitchButton.Location.Y);
+            targetPosition = isModes ? panelToggleSwitchBase.Width - panelToggleSwitchButton.Width - 1 : 1;
+            panelToggleSwitchButton.Location = new Point(targetPosition, panelToggleSwitchButton.Location.Y);
 
-            if (PanelToggleSwitchButton.Location.X < 0 || PanelToggleSwitchButton.Location.X > PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width)
+            if (panelToggleSwitchButton.Location.X < 0 || panelToggleSwitchButton.Location.X > panelToggleSwitchBase.Width - panelToggleSwitchButton.Width)
             {
-                PanelToggleSwitchButton.Location = new Point(1, PanelToggleSwitchButton.Location.Y);
+                panelToggleSwitchButton.Location = new Point(1, panelToggleSwitchButton.Location.Y);
             }
         }
 
-        private void PlaySMUConnectionMelody()
+        private void playSMUConnectionMelody()
         {
             var melody = new List<(int frequency, double duration)>
             {
@@ -625,7 +625,7 @@ namespace Program01
             }
         }
 
-        private void PictureboxTuner1_Click(object sender, EventArgs e)
+        private void pictureboxTuner1_Click(object sender, EventArgs e)
         {
             try
             {
@@ -660,7 +660,7 @@ namespace Program01
             }
         }
 
-        private void PictureboxTuner2_Click(object sender, EventArgs e)
+        private void pictureboxTuner2_Click(object sender, EventArgs e)
         {
             try
             {
@@ -695,7 +695,7 @@ namespace Program01
             }
         }
 
-        private void PictureboxTuner3_Click(object sender, EventArgs e)
+        private void pictureboxTuner3_Click(object sender, EventArgs e)
         {
             try
             {
@@ -711,41 +711,6 @@ namespace Program01
 
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
-                }
-                else if (isModes == true)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
-        }
-
-        private void PictureboxTuner4_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!isSMUConnected && !isSSConnected)
-                {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                if (isModes == false)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
                 }
@@ -765,7 +730,41 @@ namespace Program01
             }
         }
 
-        private void PictureboxTuner5_Click(object sender, EventArgs e)
+        private void pictureboxTuner4_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMUConnected && !isSSConnected)
+                {
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (isModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
+                }
+                else if (isModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void pictureboxTuner5_Click(object sender, EventArgs e)
         {
             try
             {
@@ -788,8 +787,8 @@ namespace Program01
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
 
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
                 }
@@ -800,7 +799,7 @@ namespace Program01
             }
         }
 
-        private void PictureboxTuner6_Click(object sender, EventArgs e)
+        private void pictureboxTuner6_Click(object sender, EventArgs e)
         {
             try
             {
@@ -823,8 +822,8 @@ namespace Program01
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
 
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
                 }
@@ -835,7 +834,7 @@ namespace Program01
             }
         }
 
-        private void PictureboxTuner7_Click(object sender, EventArgs e)
+        private void pictureboxTuner7_Click(object sender, EventArgs e)
         {
             try
             {
@@ -851,6 +850,41 @@ namespace Program01
 
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
+                }
+                else if (isModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void pictureboxTuner8_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!isSMUConnected && !isSSConnected)
+                {
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (isModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
                 }
@@ -870,42 +904,7 @@ namespace Program01
             }
         }
 
-        private void PictureboxTuner8_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!isSMUConnected && !isSSConnected)
-                {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                if (isModes == false)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
-                }
-                else if (isModes == true)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
-        }
-
-        private void IconbuttonTunerTest_Click(object sender, EventArgs e)
+        private void iconbuttonTunerTest_Click(object sender, EventArgs e)
         {
             try
             {
@@ -917,7 +916,7 @@ namespace Program01
 
                 SMU.WriteString("OUTPut OFF");
 
-                if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue))
+                if (!validateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue))
                 {
                     MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -1049,7 +1048,7 @@ namespace Program01
             }
         }
 
-        /*private void IconbuttonRunMeasurement_Click(object sender, EventArgs e)
+        /*private void iconbuttonRunMeasurement_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1061,7 +1060,7 @@ namespace Program01
 
                 SMU.WriteString("OUTPut OFF");
 
-                if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue))
+                if (!validateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue))
                 {
                     MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -1090,7 +1089,7 @@ namespace Program01
                             string measurementData = SMU.ReadString();
                             Debug.WriteLine($"Measurement Data: {measurementData}");
 
-                            int totalDelay = CalculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
+                            int totalDelay = calculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
                             System.Threading.Thread.Sleep(totalDelay);
 
                             SMU.WriteString("OUTPut OFF");
@@ -1140,7 +1139,7 @@ namespace Program01
 
                             string measurementData = SMU.ReadString();
                             Debug.WriteLine($"Measurement Data: {measurementData}");
-                            int totalDelay = CalculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
+                            int totalDelay = calculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
                             Debug.WriteLine($"Applying delay of {totalDelay} ms before switching tuner.");
                             System.Threading.Thread.Sleep(totalDelay);
                         }
@@ -1190,7 +1189,7 @@ namespace Program01
 
                             string measurementData = SMU.ReadString();
                             Debug.WriteLine($"Measurement Data: {measurementData}");
-                            int totalDelay = CalculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
+                            int totalDelay = calculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
                             Debug.WriteLine($"Applying delay of {totalDelay} ms before switching tuner.");
                             System.Threading.Thread.Sleep(totalDelay);
                         }
@@ -1240,7 +1239,7 @@ namespace Program01
 
                             string measurementData = SMU.ReadString();
                             Debug.WriteLine($"Measurement Data: {measurementData}");
-                            int totalDelay = CalculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
+                            int totalDelay = calculateTotalDelay(stepValue, startValue, stopValue, repetitionValue, 100);
                             Debug.WriteLine($"Applying delay of {totalDelay} ms before switching tuner.");
                             System.Threading.Thread.Sleep(totalDelay);
                         }
@@ -1259,7 +1258,7 @@ namespace Program01
             }
         }
 
-        private void SetTuner(int tunerNumber)
+        private void setTuner(int tunerNumber)
         {
             try
             {
@@ -1318,7 +1317,7 @@ namespace Program01
             }
         }*/
 
-        private void IconbuttonErrorCheck_Click(object sender, EventArgs e)
+        private void iconbuttonErrorCheck_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1341,7 +1340,7 @@ namespace Program01
             }
         }
 
-        private void ButtonData_Click(object sender, EventArgs e)
+        private void buttonData_Click(object sender, EventArgs e)
         {
             try
             {
@@ -1349,9 +1348,9 @@ namespace Program01
                 var dataChildForm = new MeasurementSettingsDataChildForm();
 
                 // อัปเดต Chart ด้วยข้อมูลเริ่มต้น
-                dataChildForm.UpdateChartData(new[] { 5, 10, 15, 20 });
+                dataChildForm.updateChartData(new[] { 5, 10, 15, 20 });
 
-                OpenChildForm(dataChildForm); // เปิดฟอร์มลูกใน Panel
+                openChildForm(dataChildForm); // เปิดฟอร์มลูกใน Panel
             }
             catch (Exception ex)
             {
@@ -1359,21 +1358,21 @@ namespace Program01
             }
         }
 
-        private void OpenChildForm(Form childForm)
+        private void openChildForm(Form childForm)
         {
             try
             {
                 // ปิดฟอร์มลูกก่อนหน้า ถ้ามี
-                CurrentTunerandDataChildForm?.Close();
-                CurrentTunerandDataChildForm = childForm;
+                currentTunerandDataChildForm?.Close();
+                currentTunerandDataChildForm = childForm;
 
                 // ตั้งค่าฟอร์มลูกให้อยู่ใน Panel
                 childForm.TopLevel = false;
                 childForm.FormBorderStyle = FormBorderStyle.None;
                 childForm.Dock = DockStyle.Fill;
 
-                PanelTunerandData.Controls.Add(childForm);
-                PanelTunerandData.Tag = childForm;
+                panelTunerandData.Controls.Add(childForm);
+                panelTunerandData.Tag = childForm;
                 childForm.BringToFront();
                 childForm.Show();
             }
@@ -1383,11 +1382,11 @@ namespace Program01
             }
         }
 
-        private void ButtonTuner_Click(object sender, EventArgs e)
+        private void buttonTuner_Click(object sender, EventArgs e)
         {
             try
             {
-                CurrentTunerandDataChildForm.Close();
+                currentTunerandDataChildForm.Close();
             }
             catch (Exception ex)
             {
@@ -1395,20 +1394,20 @@ namespace Program01
             }
         }
 
-        private bool ValidateInputs(out double start, out double stop, out double step, out int repetition, out double sourcelimit, out double thickness, out double magneticfields)
+        private bool validateInputs(out double start, out double stop, out double step, out int repetition, out double sourcelimit, out double thickness, out double magneticfields)
         {
             start = stop = step = sourcelimit = thickness = magneticfields = 0;
             repetition = 1;
 
             try
             {
-                start = ConvertValueBasedOnUnit(ComboboxStartUnit.SelectedItem.ToString(), double.Parse(TextboxStart.Text));
-                stop = ConvertValueBasedOnUnit(ComboboxStopUnit.SelectedItem.ToString(), double.Parse(TextboxStop.Text));
-                step = ConvertValueBasedOnUnit(ComboboxStepUnit.SelectedItem.ToString(), double.Parse(TextboxStep.Text));
-                sourcelimit = ConvertValueBasedOnUnit(ComboboxSourceLimitLevelUnit.SelectedItem.ToString(), double.Parse(TextboxSourceLimitLevel.Text));
-                thickness = ConvertValueBasedOnUnit(ComboboxThicknessUnit.SelectedItem.ToString(), double.Parse(TextboxThickness.Text));
-                magneticfields = isModes ? ConvertValueBasedOnUnit(ComboboxMagneticFieldsUnit.SelectedItem.ToString(), double.Parse(TextboxMagneticFields.Text)) : 0;
-                repetition = int.Parse(TextboxRepetition.Text);
+                start = convertValueBasedOnUnit(comboboxStartUnit.SelectedItem.ToString(), double.Parse(textboxStart.Text));
+                stop = convertValueBasedOnUnit(comboboxStopUnit.SelectedItem.ToString(), double.Parse(textboxStop.Text));
+                step = convertValueBasedOnUnit(comboboxStepUnit.SelectedItem.ToString(), double.Parse(textboxStep.Text));
+                sourcelimit = convertValueBasedOnUnit(comboboxSourceLimitLevelUnit.SelectedItem.ToString(), double.Parse(textboxSourceLimitLevel.Text));
+                thickness = convertValueBasedOnUnit(comboboxThicknessUnit.SelectedItem.ToString(), double.Parse(textboxThickness.Text));
+                magneticfields = isModes ? convertValueBasedOnUnit(comboboxMagneticFieldsUnit.SelectedItem.ToString(), double.Parse(textboxMagneticFields.Text)) : 0;
+                repetition = int.Parse(textboxRepetition.Text);
 
                 if (start >= stop || step <= 0 || repetition < 1 || repetition > 999 || thickness < 0 || sourcelimit < 0)
                 {
@@ -1438,7 +1437,7 @@ namespace Program01
             }
         }
 
-        private double ConvertValueBasedOnUnit(string unit, double value)  //  Method สำหรับการแปลงหน่วยของค่าที่ผู้ใช้ป้อนเข้ามา
+        private double convertValueBasedOnUnit(string unit, double value)  //  Method สำหรับการแปลงหน่วยของค่าที่ผู้ใช้ป้อนเข้ามา
         {
             switch (unit)
             {
@@ -1473,14 +1472,14 @@ namespace Program01
             }
         }
 
-        private void IconbuttonUpdateChart_Click(object sender, EventArgs e)
+        private void iconbuttonUpdateChart_Click(object sender, EventArgs e)
         {
             try
             {
                 // อัปเดตข้อมูลในฟอร์มลูก (เช่น ส่งข้อมูลใหม่ให้ Chart)
-                if (CurrentTunerandDataChildForm is MeasurementSettingsDataChildForm dataChildForm)
+                if (currentTunerandDataChildForm is MeasurementSettingsDataChildForm dataChildForm)
                 {
-                    dataChildForm.UpdateChartData(new[] { 25, 30, 35, 40 }); // ส่งข้อมูลใหม่ไปยัง Chart
+                    dataChildForm.updateChartData(new[] { 25, 30, 35, 40 }); // ส่งข้อมูลใหม่ไปยัง Chart
                 }
             }
             catch (Exception ex)

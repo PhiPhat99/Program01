@@ -289,5 +289,23 @@
   <ItemGroup>
     <None Include="Resources\V8_Hall.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V3_Hall1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V4_Hall1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V5_Hall1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V6_Hall1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V7_Hall1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V8_Hall1.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

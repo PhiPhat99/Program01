@@ -36,13 +36,13 @@ namespace Program01
             this.DoubleBuffered = true;
             this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
 
-            ToggleSubMenuVisibility(null);
+            toggleSubMenuVisibility(null);
 
             TimerCurrentDateandRealTime = new Timer();
             TimerCurrentDateandRealTime.Interval = 1000;
-            TimerCurrentDateandRealTime.Tick += TimerCurrentDateandRealTime_Tick;
+            TimerCurrentDateandRealTime.Tick += timerCurrentDateandRealTime_Tick;
             TimerCurrentDateandRealTime.Start();
-            LabelCurrentDateandRealTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+            labelCurrentDateandRealTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
         }
 
         private readonly struct RGBColors
@@ -55,13 +55,13 @@ namespace Program01
             public static readonly Color Color6 = Color.FromArgb(24, 161, 251);
         }
 
-        private void ActivateButton(object sender, Color color)
+        private void activateButton(object sender, Color color)
         {
             try
             {
                 if (sender is IconButton button)
                 {
-                    ResetButtonStyles();
+                    resetButtonStyles();
 
                     CurrentButton = button;
                     CurrentButton.BackColor = Color.FromArgb(31, 31, 80);
@@ -71,8 +71,8 @@ namespace Program01
                     CurrentButton.TextImageRelation = TextImageRelation.TextBeforeImage;
                     CurrentButton.ImageAlign = ContentAlignment.MiddleRight;
 
-                    IconpictureboxCurrentForm.IconChar = button.IconChar;
-                    IconpictureboxCurrentForm.IconColor = color;
+                    iconpictureboxCurrentForm.IconChar = button.IconChar;
+                    iconpictureboxCurrentForm.IconColor = color;
                 }
             }
             catch (Exception ex)
@@ -81,7 +81,7 @@ namespace Program01
             }
         }
 
-        private void ResetButtonStyles()
+        private void resetButtonStyles()
         {
             try
             {
@@ -101,7 +101,7 @@ namespace Program01
             }
         }
 
-        private void OpenChildForm(Form childForm)
+        private void openChildForm(Form childForm)
         {
             try
             {
@@ -110,8 +110,8 @@ namespace Program01
                 childForm.TopLevel = false;
                 childForm.FormBorderStyle = FormBorderStyle.None;
                 childForm.Dock = DockStyle.Fill;
-                PanelDesktop.Controls.Add(childForm);
-                PanelDesktop.Tag = childForm;
+                panelDesktop.Controls.Add(childForm);
+                panelDesktop.Tag = childForm;
                 childForm.BringToFront();
                 childForm.Show();
             }
@@ -121,7 +121,7 @@ namespace Program01
             }
         }
 
-        private void ToggleSubMenuVisibility(Panel activeSubMenu)
+        private void toggleSubMenuVisibility(Panel activeSubMenu)
         {
             try
             {
@@ -138,14 +138,14 @@ namespace Program01
             }
         }
 
-        private void UpdatePath(string primary, string sub = "")
+        private void updatePath(string primary, string sub = "")
         {
             try
             {
                 string PrimaryPath = primary;
                 string SubPath = sub;
 
-                LabelTitleCurrentForm.Text = string.IsNullOrEmpty(sub)
+                labelTitleCurrentForm.Text = string.IsNullOrEmpty(sub)
                     ? primary
                     : $"{primary} > {sub}";
             }
@@ -155,18 +155,18 @@ namespace Program01
             }
         }
 
-        private void TimerCurrentDateandRealTime_Tick(object sender, EventArgs e)
+        private void timerCurrentDateandRealTime_Tick(object sender, EventArgs e)
         {
-            LabelCurrentDateandRealTime.Text = DateTime.Now.ToString("dd/MM/yyyy   HH:mm:ss");
+            labelCurrentDateandRealTime.Text = DateTime.Now.ToString("dd/MM/yyyy   HH:mm:ss");
         }
 
-        private void PanelTabBar_MouseDown(object sender, MouseEventArgs e)
+        private void panelTabBar_MouseDown(object sender, MouseEventArgs e)
         {
             ReleaseCapture();
             SendMessage(this.Handle, 0x112, 0xf012, 0);
         }
 
-        private void TextboxUserName_KeyPress(object sender, KeyPressEventArgs e)
+        private void textboxUserName_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsLetter(e.KeyChar) && e.KeyChar != '.' && !char.IsWhiteSpace(e.KeyChar) && e.KeyChar != (char)Keys.Back)
             {
@@ -174,7 +174,7 @@ namespace Program01
             }
         }
 
-        private void TextboxUserLastname_KeyPress(object sender, KeyPressEventArgs e)
+        private void textboxUserLastname_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsLetter(e.KeyChar) && e.KeyChar != '.' && !char.IsWhiteSpace(e.KeyChar) && e.KeyChar != (char)Keys.Back)
             {
@@ -182,24 +182,24 @@ namespace Program01
             }
         }
 
-        private void IconbuttonUserLogin_Click(object sender, EventArgs e)
+        private void iconbuttonUserLogin_Click(object sender, EventArgs e)
         {
             try
             {
                 if (!isLoggedIn)
                 {
-                    string FirstName = TextboxUserFirstName.Text.Trim();
-                    string LastName = TextboxUserLastname.Text.Trim();
+                    string FirstName = textboxUserFirstName.Text.Trim();
+                    string LastName = textboxUserLastname.Text.Trim();
                     if (!string.IsNullOrEmpty(FirstName) && !string.IsNullOrEmpty(LastName))
                     {
                         isLoggedIn = true;
-                        LabelUserLogin.Text = $"{FirstName} {LastName}";
-                        TextboxUserFirstName.Enabled = false;
-                        TextboxUserLastname.Enabled = false;
-                        IconbuttonUserLogin.IconChar = IconChar.User;
-                        IconbuttonUserLogin.IconColor = Color.Black;
-                        IconbuttonUserLogin.TextImageRelation = TextImageRelation.TextBeforeImage;
-                        IconbuttonUserLogin.Text = "Logout";
+                        labelUserLogin.Text = $"{FirstName} {LastName}";
+                        textboxUserFirstName.Enabled = false;
+                        textboxUserLastname.Enabled = false;
+                        iconbuttonUserLogin.IconChar = IconChar.User;
+                        iconbuttonUserLogin.IconColor = Color.Black;
+                        iconbuttonUserLogin.TextImageRelation = TextImageRelation.TextBeforeImage;
+                        iconbuttonUserLogin.Text = "Logout";
                         MessageBox.Show("You have been logged in successfully", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     }
@@ -211,12 +211,12 @@ namespace Program01
                 else
                 {
                     isLoggedIn = false;
-                    LabelUserLogin.Text = "Guest";
-                    TextboxUserFirstName.Enabled = true;
-                    TextboxUserLastname.Enabled = true;
-                    IconbuttonUserLogin.IconColor = RGBColors.Color6;
-                    IconbuttonUserLogin.TextImageRelation = TextImageRelation.ImageBeforeText;
-                    IconbuttonUserLogin.Text = "Login";
+                    labelUserLogin.Text = "Guest";
+                    textboxUserFirstName.Enabled = true;
+                    textboxUserLastname.Enabled = true;
+                    iconbuttonUserLogin.IconColor = RGBColors.Color6;
+                    iconbuttonUserLogin.TextImageRelation = TextImageRelation.ImageBeforeText;
+                    iconbuttonUserLogin.Text = "Login";
                     MessageBox.Show("You have been logged out successfully", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 }
@@ -227,11 +227,11 @@ namespace Program01
             }
         }
 
-        private void IconpictureboxExitProgram_Click(object sender, EventArgs e) => Application.Exit();
+        private void iconpictureboxExitProgram_Click(object sender, EventArgs e) => Application.Exit();
 
-        private void IconpictureboxMinimizeProgram_Click(object sender, EventArgs e) => WindowState = FormWindowState.Minimized;
+        private void iconpictureboxMinimizeProgram_Click(object sender, EventArgs e) => WindowState = FormWindowState.Minimized;
 
-        private void IconbuttonHelp_Click(object sender, EventArgs e)
+        private void iconbuttonHelp_Click(object sender, EventArgs e)
         {
             try
             {
@@ -241,10 +241,10 @@ namespace Program01
                 }
                 else
                 {
-                    ActivateButton(sender, RGBColors.Color1);
-                    UpdatePath("Help");
-                    OpenChildForm(new HelpChildForm());
-                    ToggleSubMenuVisibility(null);
+                    activateButton(sender, RGBColors.Color1);
+                    updatePath("Help");
+                    openChildForm(new HelpChildForm());
+                    toggleSubMenuVisibility(null);
                 }
             }
             catch (Exception ex)
@@ -253,7 +253,7 @@ namespace Program01
             }
         }
 
-        private void IconbuttonMeasurementSettings_Click(object sender, EventArgs e)
+        private void iconbuttonMeasurementSettings_Click(object sender, EventArgs e)
         {
             try
             {
@@ -263,10 +263,10 @@ namespace Program01
                 }
                 else*/
                 //{
-                    ActivateButton(sender, RGBColors.Color2);
-                    UpdatePath("Measurement Settings");
-                    OpenChildForm(new MeasurementSettingsChildForm());
-                    ToggleSubMenuVisibility(null);
+                    activateButton(sender, RGBColors.Color2);
+                    updatePath("Measurement Settings");
+                    openChildForm(new MeasurementSettingsChildForm());
+                    toggleSubMenuVisibility(null);
                 //}
             }
             catch (Exception ex)
@@ -275,7 +275,7 @@ namespace Program01
             }
         }
 
-        private void IconbuttonVanderPauwMethod_Click(object sender, EventArgs e)
+        private void iconbuttonVanderPauwMethod_Click(object sender, EventArgs e)
         {
             try
             {
@@ -287,14 +287,14 @@ namespace Program01
                 {
                     if (PanelVanderPauwSubMenu.Visible)
                     {
-                        ToggleSubMenuVisibility(null);
-                        ResetButtonStyles();
+                        toggleSubMenuVisibility(null);
+                        resetButtonStyles();
                     }
                     else
                     {
-                        ActivateButton(sender, RGBColors.Color3);
-                        UpdatePath("Van der Pauw Method");
-                        ToggleSubMenuVisibility(PanelVanderPauwSubMenu);
+                        activateButton(sender, RGBColors.Color3);
+                        updatePath("Van der Pauw Method");
+                        toggleSubMenuVisibility(PanelVanderPauwSubMenu);
                     }
                 }  
             }
@@ -304,19 +304,19 @@ namespace Program01
             }
         }
 
-        private void ButtonVdPTotalVoltage_Click(object sender, EventArgs e)
+        private void buttonVdPTotalVoltage_Click(object sender, EventArgs e)
         {
-            UpdatePath("Van der Pauw Method", "Total Voltage");
-            OpenChildForm(new VdPTotalVoltageChildForm());
+            updatePath("Van der Pauw Method", "Total Voltage");
+            openChildForm(new VdPTotalVoltageChildForm());
         }
 
-        private void ButtonVdPMeasurementResults_Click(object sender, EventArgs e)
+        private void buttonVdPMeasurementResults_Click(object sender, EventArgs e)
         {
-            UpdatePath("Van der Pauw Method", "Measurement Results");
-            OpenChildForm(new VdPMeasurementResultsChildForm());
+            updatePath("Van der Pauw Method", "Measurement Results");
+            openChildForm(new VdPMeasurementResultsChildForm());
         }
 
-        private void IconbuttonHalleffectMeasurement_Click(object sender, EventArgs e)
+        private void iconbuttonHalleffectMeasurement_Click(object sender, EventArgs e)
         {
             try
             {
@@ -328,14 +328,14 @@ namespace Program01
                 {
                     if (PanelHallMeasurementSubMenu.Visible)
                     {
-                        ToggleSubMenuVisibility(null);
-                        ResetButtonStyles();
+                        toggleSubMenuVisibility(null);
+                        resetButtonStyles();
                     }
                     else
                     {
-                        ActivateButton(sender, RGBColors.Color4);
-                        UpdatePath("Hall Effect Measurement");
-                        ToggleSubMenuVisibility(PanelHallMeasurementSubMenu);
+                        activateButton(sender, RGBColors.Color4);
+                        updatePath("Hall Effect Measurement");
+                        toggleSubMenuVisibility(PanelHallMeasurementSubMenu);
                     }
                 }  
             }
@@ -345,16 +345,16 @@ namespace Program01
             }
         }
 
-        private void ButtonHallTotalVoltage_Click(object sender, EventArgs e)
+        private void buttonHallTotalVoltage_Click(object sender, EventArgs e)
         {
-            UpdatePath("Hall Effect Measurement", "Total Voltage");
-            OpenChildForm(new HallEffectMeasurementResultsChildForm());
+            updatePath("Hall Effect Measurement", "Total Voltage");
+            openChildForm(new HallEffectMeasurementResultsChildForm());
         }
 
-        private void ButtonHallMeasurementResults_Click(object sender, EventArgs e)
+        private void buttonHallMeasurementResults_Click(object sender, EventArgs e)
         {
-            UpdatePath("Hall Effect Measurement", "Measurement Results");
-            OpenChildForm(new HallEffectMeasurementResultsChildForm());
+            updatePath("Hall Effect Measurement", "Measurement Results");
+            openChildForm(new HallEffectMeasurementResultsChildForm());
         }
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
@@ -363,14 +363,14 @@ namespace Program01
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
         private extern static void SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
 
-        private void IconpictureboxLogo_Click(object sender, EventArgs e)
+        private void iconpictureboxLogo_Click(object sender, EventArgs e)
         {
             try
             {
-                UpdatePath("Home");
-                ResetDefault();
-                ResetButtonStyles();
-                ToggleSubMenuVisibility(null);
+                updatePath("Home");
+                resetDefault();
+                resetButtonStyles();
+                toggleSubMenuVisibility(null);
             }
             catch (Exception ex)
             {
@@ -378,7 +378,7 @@ namespace Program01
             }
         }
 
-        private void ResetDefault()
+        private void resetDefault()
         {
             try
             {
@@ -388,8 +388,8 @@ namespace Program01
                 CurrentButton.ForeColor = Color.Snow;
                 CurrentButton.IconColor = Color.Snow;
 
-                IconpictureboxCurrentForm.IconChar = IconChar.HomeUser;
-                IconpictureboxCurrentForm.IconColor = Color.Snow;
+                iconpictureboxCurrentForm.IconChar = IconChar.HomeUser;
+                iconpictureboxCurrentForm.IconColor = Color.Snow;
             }
             catch (Exception ex)
             {
@@ -397,7 +397,7 @@ namespace Program01
             }
         }
 
-        private void IconbuttonBrowseFileVdPDataPathOnly_Click(object sender, EventArgs e)
+        private void iconbuttonBrowseFileVdPDataPathOnly_Click(object sender, EventArgs e)
         {
             try
             {
@@ -415,11 +415,11 @@ namespace Program01
                         string selectedVdPFilePath = FolderBrowserDialogVdPFile.SelectedPath;
                         if (selectedVdPFilePath.Length > 60)
                         {
-                            TextboxFileVdPDataPath.Text = selectedVdPFilePath.Substring(0, 55) + "...";
+                            textboxFileVdPDataPath.Text = selectedVdPFilePath.Substring(0, 55) + "...";
                         }
                         else
                         {
-                            TextboxFileVdPDataPath.Text = selectedVdPFilePath;
+                            textboxFileVdPDataPath.Text = selectedVdPFilePath;
                         }
                     }
                 }
@@ -430,7 +430,7 @@ namespace Program01
             }
         }
 
-        private void IconbuttonSaveFileVdPDataPathOnly_Click(object sender, EventArgs e)
+        private void iconbuttonSaveFileVdPDataPathOnly_Click(object sender, EventArgs e)
         {
             try
             {
@@ -441,7 +441,7 @@ namespace Program01
                 else
                 {
                     ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-                    string VdPFilePath = TextboxFileVdPDataPath.Text;
+                    string VdPFilePath = textboxFileVdPDataPath.Text;
                     if (string.IsNullOrWhiteSpace(VdPFilePath))
                     {
                         MessageBox.Show("Please enter the file path first!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -455,8 +455,8 @@ namespace Program01
                     }
                     string newFileName = "VanderPauwResultsData.xlsx";
                     string newFilePath = Path.Combine(directory, newFileName);
-                    string FirstName = TextboxUserFirstName.Text.Trim();
-                    string LastName = TextboxUserLastname.Text.Trim();
+                    string FirstName = textboxUserFirstName.Text.Trim();
+                    string LastName = textboxUserLastname.Text.Trim();
                     string UserFullName = $"{FirstName} {LastName}";
                     using (ExcelPackage package = new ExcelPackage())
                     {
@@ -488,7 +488,7 @@ namespace Program01
             }
         }
 
-        private void IconbuttonBrowseFileHallMeasurementDataPathOnly_Click(object sender, EventArgs e)
+        private void iconbuttonBrowseFileHallMeasurementDataPathOnly_Click(object sender, EventArgs e)
         {
             try
             {
@@ -506,11 +506,11 @@ namespace Program01
                         string selectedHallFilePath = FolderBrowserDialogHallMeasurementFile.SelectedPath;
                         if (selectedHallFilePath.Length > 60)
                         {
-                            TextboxFileHallMeasurementDataPath.Text = selectedHallFilePath.Substring(0, 55) + "...";
+                            textboxFileHallMeasurementDataPath.Text = selectedHallFilePath.Substring(0, 55) + "...";
                         }
                         else
                         {
-                            TextboxFileHallMeasurementDataPath.Text = selectedHallFilePath;
+                            textboxFileHallMeasurementDataPath.Text = selectedHallFilePath;
                         }
                     }
                 }
@@ -521,7 +521,7 @@ namespace Program01
             }
         }
 
-        private void IconbuttonSaveFileHallMeasurementDataPathOnly_Click(object sender, EventArgs e)
+        private void iconbuttonSaveFileHallMeasurementDataPathOnly_Click(object sender, EventArgs e)
         {
             try
             {
@@ -532,7 +532,7 @@ namespace Program01
                 else
                 {
                     ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-                    string HallFilePath = TextboxFileHallMeasurementDataPath.Text;
+                    string HallFilePath = textboxFileHallMeasurementDataPath.Text;
                     if (string.IsNullOrWhiteSpace(HallFilePath))
                     {
                         MessageBox.Show("Please enter the file path first!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -546,8 +546,8 @@ namespace Program01
                     }
                     string newFileName = "HallMeasurementResultsData.xlsx";
                     string newFilePath = Path.Combine(directory, newFileName);
-                    string FirstName = TextboxUserFirstName.Text.Trim();
-                    string LastName = TextboxUserLastname.Text.Trim();
+                    string FirstName = textboxUserFirstName.Text.Trim();
+                    string LastName = textboxUserLastname.Text.Trim();
                     string UserFullName = $"{FirstName} {LastName}";
                     using (ExcelPackage package = new ExcelPackage())
                     {
@@ -579,7 +579,7 @@ namespace Program01
             }
         }
 
-        private void IconbuttonBrowseFileVdPandHallMeasurementPath_Click(object sender, EventArgs e)
+        private void iconbuttonBrowseFileVdPandHallMeasurementPath_Click(object sender, EventArgs e)
         {
             try
             {
@@ -597,11 +597,11 @@ namespace Program01
                         string selectedVdPandHallFilePath = FolderBrowserDialogVdPandHallMeasurementFile.SelectedPath;
                         if (selectedVdPandHallFilePath.Length > 60)
                         {
-                            TextboxFileVdPandHallMeasurementDataPath.Text = selectedVdPandHallFilePath.Substring(0, 55) + "...";
+                            textboxFileVdPandHallMeasurementDataPath.Text = selectedVdPandHallFilePath.Substring(0, 55) + "...";
                         }
                         else
                         {
-                            TextboxFileVdPandHallMeasurementDataPath.Text = selectedVdPandHallFilePath;
+                            textboxFileVdPandHallMeasurementDataPath.Text = selectedVdPandHallFilePath;
                         }
                     }
                 }
@@ -612,7 +612,7 @@ namespace Program01
             }
         }
 
-        private void IconbuttonSaveFileVdPandHallMeasurementPath_Click(object sender, EventArgs e)
+        private void iconbuttonSaveFileVdPandHallMeasurementPath_Click(object sender, EventArgs e)
         {
             try
             {
@@ -623,7 +623,7 @@ namespace Program01
                 else
                 {
                     ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-                    string VdPandHallFilePath = TextboxFileVdPandHallMeasurementDataPath.Text;
+                    string VdPandHallFilePath = textboxFileVdPandHallMeasurementDataPath.Text;
                     if (string.IsNullOrWhiteSpace(VdPandHallFilePath))
                     {
                         MessageBox.Show("Please enter the file path first!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -637,8 +637,8 @@ namespace Program01
                     }
                     string newFileName = "VanderPauwandHallMeasurementResultsData.xlsx";
                     string newFilePath = Path.Combine(directory, newFileName);
-                    string FirstName = TextboxUserFirstName.Text.Trim();
-                    string LastName = TextboxUserLastname.Text.Trim();
+                    string FirstName = textboxUserFirstName.Text.Trim();
+                    string LastName = textboxUserLastname.Text.Trim();
                     string UserFullName = $"{FirstName} {LastName}";
                     using (ExcelPackage package = new ExcelPackage())
                     {

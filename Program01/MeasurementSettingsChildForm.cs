@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Runtime.Remoting.Channels;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using FontAwesome.Sharp;
@@ -33,6 +36,8 @@ namespace Program01
         private string savedRepetitionValue;
         private string MagneticFieldsValue;
         private int targetPosition;
+        private int currentTuner;
+        private int currentRepeat;
         private bool isSMUConnected = false;
         private bool isSSConnected = false;
         private bool isModes = false;
@@ -167,9 +172,7 @@ namespace Program01
                     Debug.WriteLine($"{response}");
 
                     isSMUConnected = true;
-                    PlaySMUConnectionMelody();
 
-                    //System.Threading.Thread.Sleep(4000);
                     IconbuttonSMUConnection.BackColor = Color.Snow;
                     IconbuttonSMUConnection.IconColor = Color.GreenYellow;
                     MessageBox.Show("Connected to Source Measure Unit", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -225,6 +228,7 @@ namespace Program01
                     SS.IO.Timeout = 5000;
 
                     SS.WriteString("*CLS");
+                    SS.IO.Timeout = 5000;
                     SS.WriteString("*IDN?");
                     string response = SS.ReadString();
                     Debug.WriteLine($"{response}");
@@ -604,33 +608,6 @@ namespace Program01
             }
         }
 
-        private void PlaySMUConnectionMelody()
-        {
-            var melody = new List<(int frequency, double duration)>
-            {
-                /*(784, 0.150), // G5
-                (699, 0.150), // F5
-                (440, 0.250), // A4
-                (494, 0.250), // B4
-                (659, 0.150), // E5
-                (587, 0.150), // D5
-                (349, 0.250), // F4
-                (392, 0.250), // G4
-                (587, 0.150), // D5
-                (523, 0.150), // C5
-                (330, 0.300), // E4
-                (392, 0.400), // G4*/
-                (523, 0.800) // C4
-            };
-
-            foreach (var (frequency, duration) in melody)
-            {
-                string scpiCommand = $"SYSTem:BEEPer {frequency}, {duration}";
-                SMU.WriteString(scpiCommand);
-                System.Threading.Thread.Sleep((int)(duration * 1));
-            }
-        }
-
         private void PictureboxTuner1_Click(object sender, EventArgs e)
         {
             try
@@ -676,17 +653,19 @@ namespace Program01
 
                 if (isModes == false)
                 {
-                    SS.WriteString("ROUTe:OPEN (@ 1!1!8)");
-                    SS.WriteString("ROUTe:OPEN (@ 1!2!9)");
+                    SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
                 }
                 else if (isModes == true)
                 {
-                    SS.WriteString("ROUTe:OPEN (@ 1!1!7)");
-                    SS.WriteString("ROUTe:OPEN (@ 1!2!9)");
+                    SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!8)");
                 }
             }
             catch (Exception ex)
@@ -740,17 +719,19 @@ namespace Program01
 
                 if (isModes == false)
                 {
-                    SS.WriteString("ROUTe:OPEN (@ 1!1!7)");
-                    SS.WriteString("ROUTe:OPEN (@ 1!2!10)");
+                    SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
                 }
                 else if (isModes == true)
                 {
-                    SS.WriteString("ROUTe:OPEN (@ 1!1!10)");
-                    SS.WriteString("ROUTe:OPEN (@ 1!2!8)");
+                    SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
                 }
             }
             catch (Exception ex)
@@ -804,17 +785,19 @@ namespace Program01
 
                 if (isModes == false)
                 {
-                    SS.WriteString("ROUTe:OPEN (@ 1!1!8)");
-                    SS.WriteString("ROUTe:OPEN (@ 1!2!7)");
+                    SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
                 }
                 else if (isModes == true)
                 {
-                    SS.WriteString("ROUTe:OPEN (@ 1!1!7)");
-                    SS.WriteString("ROUTe:OPEN (@ 1!2!9)");
+                    SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
                 }
             }
             catch (Exception ex)
@@ -868,17 +851,19 @@ namespace Program01
 
                 if (isModes == false)
                 {
-                    SS.WriteString("ROUTe:OPEN (@ 1!1!9)");
-                    SS.WriteString("ROUTe:OPEN (@ 1!2!10)");
+                    SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
                 }
                 else if (isModes == true)
                 {
-                    SS.WriteString("ROUTe:OPEN (@ 1!1!10)");
-                    SS.WriteString("ROUTe:OPEN (@ 1!2!8)");
+                    SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
                 }
             }
             catch (Exception ex)
@@ -899,7 +884,7 @@ namespace Program01
 
                 SMU.WriteString("OUTPut OFF");
 
-                if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue))
+                if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
                 {
                     MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -931,8 +916,6 @@ namespace Program01
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
-                    //SMU.WriteString("TRACe:DATA?");
-                    //string measureValue = SMU.ReadString();
                 }
 
                 else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current")
@@ -961,8 +944,6 @@ namespace Program01
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
-                    //SMU.WriteString("TRACe:DATA?");
-                    //string measureValue = SMU.ReadString();
                 }
 
                 else if (savedSourceMode == "Current" && savedMeasureMode == "Voltage")
@@ -991,8 +972,6 @@ namespace Program01
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
-                    //SMU.WriteString("TRACe:DATA?");
-                    //string measureValue = SMU.ReadString();
                 }
 
                 else if (savedSourceMode == "Current" && savedMeasureMode == "Current")
@@ -1021,8 +1000,6 @@ namespace Program01
                     SMU.WriteString("INIT");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
-                    //SMU.WriteString("TRACe:DATA?");
-                    //string measureValue = SMU.ReadString();
                 }
             }
             catch (Exception ex)
@@ -1043,173 +1020,15 @@ namespace Program01
 
                 SMU.WriteString("OUTPut OFF");
 
-                if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue))
+                if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
                 {
                     MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                SMU.WriteString($"SOURce:FUNCtion VOLTage");
-                SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
-                SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
-                SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
-                SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
-                SMU.WriteString($"SENSe:VOLTage:RSENse {(savedRsenseMode == "4-Wires" ? "ON" : "OFF")}");
-
-                if (savedSourceMode == "Voltage" && savedMeasureMode == "Voltage")
-                {
-                    for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
-                    {
-                        SetTuner(tunerNumber);
-
-                        for (int repetition = 0; repetition < repetitionValue; repetition++)
-                        {
-                            string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, 100e-3, {repetitionValue}";
-                            SMU.WriteString(sweepCommand);
-                            SMU.WriteString("INITiate");
-                            SMU.WriteString("*WAI");
-
-                            string measurementData = SMU.ReadString();
-                            Debug.WriteLine($"Measurement Data: {measurementData}");
-                            SMU.WriteString("OUTPut OFF");
-                            
-                            //คำสั่งเกี่ยวกับการหน่วงเวลา หรือรอคำสั่งการวัดกวาดเสร็จสิ้นแล้วจึงส่งคำสั่งสั่งเปลี่ยนขั้วไฟฟ้า
-                        }
-                    }
-
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SMU.WriteString("*CLS");
-                    SS.WriteString("*CLS");
-                    MessageBox.Show("Measurement completed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-
-                else if (savedSourceMode == "Voltage" && savedMeasureMode == "Current")
-                {
-                    SMU.WriteString($"SOURce:FUNCtion VOLTage");
-                    SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
-                    SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
-                    SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
-
-                    if (savedRsenseMode == "4-Wires")
-                    {
-                        SMU.WriteString("SENSe:CURRent:RSENse ON");
-                    }
-                    else
-                    {
-                        SMU.WriteString("SENSe:CURRent:RSENse OFF");
-                    }
-
-                    for (int repetition = 1; repetition < repetitionValue; repetition++)
-                    {
-
-                        for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
-                        {
-                            SetTuner(tunerNumber);
-
-                            string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
-                            SMU.WriteString(sweepCommand);
-                            SMU.WriteString("INITiate");
-
-                            string measurementData = SMU.ReadString();
-                            Debug.WriteLine($"Measurement Data: {measurementData}");
-                            SMU.WriteString("OUTPut OFF");
-
-                            //คำสั่งเกี่ยวกับการหน่วงเวลา หรือรอคำสั่งการวัดกวาดเสร็จสิ้นแล้วจึงส่งคำสั่งสั่งเปลี่ยนขั้วไฟฟ้า
-                        }
-                    }
-
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SMU.WriteString("*CLS");
-                    SS.WriteString("*CLS");
-                    MessageBox.Show("Measurement completed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-
-                else if (savedSourceMode == "Current" && savedMeasureMode == "Voltage")
-                {
-                    SMU.WriteString($"SOURce:FUNCtion CURRent");
-                    SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:CURRent:VLIM {sourcelimitValue}");
-                    SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
-                    SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
-
-                    if (savedRsenseMode == "4-Wires")
-                    {
-                        SMU.WriteString("SENSe:VOLTage:RSENse ON");
-                    }
-                    else
-                    {
-                        SMU.WriteString("SENSe:VOLTage:RSENse OFF");
-                    }
-
-                    for (int repetition = 1; repetition < repetitionValue; repetition++)
-                    {
-
-                        for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
-                        {
-                            SetTuner(tunerNumber);
-
-                            string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue},  {delayValue}, {repetitionValue}";
-                            SMU.WriteString(sweepCommand);
-                            SMU.WriteString("INITiate");
-
-                            string measurementData = SMU.ReadString();
-                            Debug.WriteLine($"Measurement Data: {measurementData}");
-                            SMU.WriteString("OUTPut OFF");
-
-                            //คำสั่งเกี่ยวกับการหน่วงเวลา หรือรอคำสั่งการวัดกวาดเสร็จสิ้นแล้วจึงส่งคำสั่งสั่งเปลี่ยนขั้วไฟฟ้า
-                        }
-                    }
-
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SMU.WriteString("*CLS");
-                    SS.WriteString("*CLS");
-                    MessageBox.Show("Measurement completed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-
-                else if (savedSourceMode == "Current" && savedMeasureMode == "Current")
-                {
-                    SMU.WriteString($"SOURce:FUNCtion CURRent");
-                    SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:CURRent:VLIM {sourcelimitValue}");
-                    SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
-                    SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
-
-                    if (savedRsenseMode == "4-Wires")
-                    {
-                        SMU.WriteString("SENSe:CURRent:RSENse ON");
-                    }
-                    else
-                    {
-                        SMU.WriteString("SENSe:CURRent:RSENse OFF");
-                    }
-
-                    for (int repetition = 1; repetition < repetitionValue; repetition++)
-                    {
-
-                        for (int tunerNumber = 1; tunerNumber <= 8; tunerNumber++)
-                        {
-                            SetTuner(tunerNumber);
-
-                            string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue},  {delayValue}, {repetitionValue}";
-                            SMU.WriteString(sweepCommand);
-                            SMU.WriteString("INITiate");
-                            SMU.WriteString("*OPC?");
-                            string opcSMUResponse = SMU.ReadString();
-
-                            string measurementData = SMU.ReadString();
-                            Debug.WriteLine($"Measurement Data: {measurementData}");
-                            SMU.WriteString("OUTPut OFF");
-
-                            //คำสั่งเกี่ยวกับการหน่วงเวลา หรือรอคำสั่งการวัดกวาดเสร็จสิ้นแล้วจึงส่งคำสั่งสั่งเปลี่ยนขั้วไฟฟ้า
-                        }
-                    }
-                }
-
-                SS.WriteString("ROUTe:OPEN ALL");
-                SMU.WriteString("*CLS");
-                SS.WriteString("*CLS");
-                MessageBox.Show("Measurement completed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                currentTuner = 1;
+                currentRepeat = 0;
+                RunMeasurement();
             }
             catch (Exception ex)
             {
@@ -1217,62 +1036,156 @@ namespace Program01
             }
         }
 
-        private void SetTuner(int tunerNumber)
+        private async void RunMeasurement()
         {
             try
             {
-                if (!isSMUConnected && !isSSConnected)
+                if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
-                SS.WriteString("*CLS");
-                SS.WriteString("ROUTe:OPEN ALL");
-                System.Threading.Thread.Sleep(500);
-
-                var channelConfigurations = new Dictionary<int, List<string>>
+                while (currentTuner <= 8)
                 {
-                    { 1, isModes == false ? new List<string> { "1!1!8", "1!2!9", "1!3!7", "1!4!10" } :
-                                            new List<string> { "1!1!7", "1!2!9", "1!3!10", "1!4!8" }},
-                    { 2, isModes == false ? new List<string> { "1!1!9", "1!2!8", "1!3!7", "1!4!10" } :
-                                            new List<string> { "1!1!9", "1!2!7", "1!3!10", "1!4!8" }},
-                    { 3, isModes == false ? new List<string> { "1!1!7", "1!2!10", "1!3!8", "1!4!9" } :
-                                            new List<string> { "1!1!10", "1!2!8", "1!3!7", "1!4!9" }},
-                    { 4, isModes == false ? new List<string> { "1!1!10", "1!2!7", "1!3!8", "1!4!9" } :
-                                            new List<string> { "1!1!8", "1!2!10", "1!3!7", "1!4!9" }},
-                    { 5, isModes == false ? new List<string> { "1!1!8", "1!2!7", "1!3!9", "1!4!10" } :
-                                            new List<string> { "1!1!7", "1!2!9", "1!3!8", "1!4!10" }},
-                    { 6, isModes == false ? new List<string> { "1!1!7", "1!2!8", "1!3!9", "1!4!10" } :
-                                            new List<string> { "1!1!9", "1!2!7", "1!3!8", "1!4!10" }},
-                    { 7, isModes == false ? new List<string> { "1!1!9", "1!2!10", "1!3!8", "1!4!7" } :
-                                            new List<string> { "1!1!10", "1!2!8", "1!3!9", "1!4!7" }},
-                    { 8, isModes == false ? new List<string> { "1!1!10", "1!2!9", "1!3!8", "1!4!7" } :
-                                            new List<string> { "1!1!8", "1!2!10", "1!3!9", "1!4!7" }}
-                };
+                    ConfigureSwitchSystem();
+                    ConfigureSourceMeasureUnit();
+                    UpdateMeasurementState();
 
-                if (channelConfigurations.ContainsKey(tunerNumber))
-                {
-                    foreach (var channel in channelConfigurations[tunerNumber])
+                    await ExecuteSweep();
+                    await Task.Delay(points * repetitionValue * 400);
+
+                    if (currentTuner > 8)
                     {
-                        SS.WriteString($"ROUTe:CLOSe (@ {channel})");
-                        SS.WriteString("*OPC?");
-                        string response = SS.ReadString();
-
-                        if (response.Trim() != "1")
-                        {
-                            throw new Exception("Channel switching failed.");
-                        }
-
-                        System.Threading.Thread.Sleep(500);
+                        Debug.WriteLine("All tuners completed.");
+                        MessageBox.Show("Measurement completed", "Measurement Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        SMU.WriteString("OUTPut OFF");
+                        SS.WriteString("*CLS");
+                        //break;
                     }
                 }
-
-                SS.WriteString("SYSTem:PRESet");
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void ConfigureSwitchSystem()
+        {
+            SS.WriteString("ROUTe:OPEN ALL");
+
+            var channels = GetChannelConfiguration(currentTuner, isModes);
+            foreach (var channel in channels)
+            {
+                SS.WriteString($"ROUTe:CLOSe (@ {channel})");
+                Debug.WriteLine($"ROUTe:CLOSe (@ {channel})");
+            }
+        }
+
+        private List<string> GetChannelConfiguration(int tuner, bool isModes)
+        {
+            var configurations = new Dictionary<int, List<string>>
+            {
+                { 1, isModes == false ? new List<string> { "1!1!8", "1!2!9", "1!3!7", "1!4!10" } :
+                                        new List<string> { "1!1!7", "1!2!9", "1!3!10", "1!4!8" }},
+                { 2, isModes == false ? new List<string> { "1!1!9", "1!2!8", "1!3!7", "1!4!10" } :
+                                        new List<string> { "1!1!9", "1!2!7", "1!3!10", "1!4!8" }},
+                { 3, isModes == false ? new List<string> { "1!1!7", "1!2!10", "1!3!8", "1!4!9" } :
+                                        new List<string> { "1!1!10", "1!2!8", "1!3!7", "1!4!9" }},
+                { 4, isModes == false ? new List<string> { "1!1!10", "1!2!7", "1!3!8", "1!4!9" } :
+                                        new List<string> { "1!1!8", "1!2!10", "1!3!7", "1!4!9" }},
+                { 5, isModes == false ? new List<string> { "1!1!8", "1!2!7", "1!3!9", "1!4!10" } :
+                                        new List<string> { "1!1!7", "1!2!9", "1!3!8", "1!4!10" }},
+                { 6, isModes == false ? new List<string> { "1!1!7", "1!2!8", "1!3!9", "1!4!10" } :
+                                        new List<string> { "1!1!9", "1!2!7", "1!3!8", "1!4!10" }},
+                { 7, isModes == false ? new List<string> { "1!1!9", "1!2!10", "1!3!8", "1!4!7" } :
+                                        new List<string> { "1!1!10", "1!2!8", "1!3!9", "1!4!7" }},
+                { 8, isModes == false ? new List<string> { "1!1!10", "1!2!9", "1!3!8", "1!4!7" } :
+                                        new List<string> { "1!1!8", "1!2!10", "1!3!9", "1!4!7" }}
+            };
+
+            return configurations.ContainsKey(tuner) ? configurations[tuner] : new List<string>();
+        }
+
+        private void ConfigureSourceMeasureUnit()
+        {
+            if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
+            {
+                MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (savedSourceMode == "Current")
+            {
+                SMU.WriteString($"SOURce:FUNCtion CURRent");
+                SMU.WriteString($"SOURce:CURRent:RANGe:AUTO ON");
+                SMU.WriteString($"SOURce:CURRent:VLIMit {sourcelimitValue}");
+
+            }
+            else
+            {
+                SMU.WriteString($"SOURce:FUNCtion VOLTage");
+                SMU.WriteString($"SOURce:VOLTage:RANGe:AUTO ON");
+                SMU.WriteString($"SOURce:VOLTage:ILIMit {sourcelimitValue}");
+            }
+
+            if (savedMeasureMode == "Current")
+            {
+                SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
+                SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
+            }
+            else
+            {
+                SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
+                SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
+            }
+
+            if (savedRsenseMode == "4-Wires")
+            {
+                SMU.WriteString($"SENSe:{savedMeasureMode}:RSENse ON");
+            }
+            else
+            {
+                SMU.WriteString($"SENSe:{savedMeasureMode}:RSENse OFF");
+            }
+        }
+
+        private async Task ExecuteSweep()
+        {
+            if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
+            {
+                MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string sweepCommand = $"SOURce:SWEep:{savedSourceMode}:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
+            Debug.WriteLine($"Sending command: {sweepCommand}");
+
+            SMU.WriteString(sweepCommand);
+            SMU.WriteString("OUTPut ON");
+            SMU.WriteString("INITiate");
+            SMU.WriteString("*WAI");
+            SMU.WriteString("OUTPut OFF");
+            await Task.Delay(points * repetitionValue * 100);
+        }
+
+        private void UpdateMeasurementState()
+        {
+            if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
+            {
+                MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            currentRepeat++;
+            Debug.WriteLine($"Measuring Tuner {currentTuner}, Repeat Count: {currentRepeat} / {repetitionValue}");
+
+
+            if (currentRepeat == repetitionValue)
+            {
+                currentRepeat = 0;
+                currentTuner++;
             }
         }
 
@@ -1303,13 +1216,11 @@ namespace Program01
         {
             try
             {
-                // สร้างฟอร์ม MeasurementSettingsDataChildForm และส่งข้อมูลให้ฟอร์มลูก
                 var dataChildForm = new MeasurementSettingsDataChildForm();
 
-                // อัปเดต Chart ด้วยข้อมูลเริ่มต้น
                 dataChildForm.UpdateChartData(new[] { 5, 10, 15, 20 });
 
-                OpenChildForm(dataChildForm); // เปิดฟอร์มลูกใน Panel
+                OpenChildForm(dataChildForm);
             }
             catch (Exception ex)
             {
@@ -1351,10 +1262,10 @@ namespace Program01
             }
         }
 
-        private bool ValidateInputs(out double start, out double stop, out double step, out int repetition, out double sourcelimit, out double thickness, out double magneticfields, out double delay)
+        private bool ValidateInputs(out double start, out double stop, out double step, out int repetition, out double sourcelimit, out double thickness, out double magneticfields, out double delay, out int points)
         {
             start = stop = step = sourcelimit = thickness = magneticfields = delay = 0;
-            repetition = 1;
+            repetition = points = 1;
 
             try
             {
@@ -1366,8 +1277,10 @@ namespace Program01
                 thickness = ConvertValueBasedOnUnit(ComboboxThicknessUnit.SelectedItem.ToString(), double.Parse(TextboxThickness.Text));
                 magneticfields = isModes ? ConvertValueBasedOnUnit(ComboboxMagneticFieldsUnit.SelectedItem.ToString(), double.Parse(TextboxMagneticFields.Text)) : 0;
                 repetition = int.Parse(TextboxRepetition.Text);
+                points = (int)((stop - start) / step) + 1;
 
-                if (start >= stop || step <= 0 || repetition < 1 || repetition > 999 || thickness < 0 || sourcelimit < 0 || delay < 49E-6 || delay > 10E+3)
+
+                if (start >= stop || step <= 0 || repetition < 1 || repetition > 999 || thickness < 0 || sourcelimit < 0 || delay < 49E-6 || delay > 10E+3 || points < 1 )
                 {
                     return false;
                 }
@@ -1382,7 +1295,7 @@ namespace Program01
                     return false;
                 }
 
-                if (SourceLimit == "Voltage" && sourcelimit > 21 || sourcelimit < -21)
+                if (SourceLimit == "Voltage" && sourcelimit > 210 || sourcelimit < -210)
                 {
                     return false;
                 }
@@ -1444,7 +1357,7 @@ namespace Program01
             {
                 if (CurrentTunerandDataChildForm is MeasurementSettingsDataChildForm dataChildForm)
                 {
-                    dataChildForm.UpdateChartData(new[] { 25, 30, 35, 40 });
+                    dataChildForm.UpdateChartData(new[]  { 0 });
                 }
             }
             catch (Exception ex)

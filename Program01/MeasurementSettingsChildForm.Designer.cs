@@ -802,6 +802,7 @@
             this.IconbuttonRunMeasurement.Text = "RUN";
             this.IconbuttonRunMeasurement.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.IconbuttonRunMeasurement.UseVisualStyleBackColor = false;
+            this.IconbuttonRunMeasurement.Click += new System.EventHandler(this.IconbuttonRunMeasurement_Click);
             // 
             // IconbuttonClearSettings
             // 

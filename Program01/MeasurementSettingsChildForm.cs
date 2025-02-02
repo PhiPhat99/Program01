@@ -907,10 +907,21 @@ namespace Program01
                         SMU.WriteString("SENSe:VOLTage:RSENse OFF");
                     }
 
-                    string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
-                    string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Source Delay: {delayValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
+                    string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
-                    Debug.WriteLine($"{allValues}.");
+
+                    if (isModes == true)
+                    {
+
+                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {savedSourceLimitMode}, Limit Level: {TextboxSourceLimit.Text} {ComboboxSourceLimitUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
+                        Debug.WriteLine($"{allValues}.");
+                    }
+                    else
+                    {
+                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {savedSourceLimitMode}, Limit Level: {TextboxSourceLimit.Text} {ComboboxSourceLimitUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}";
+                        Debug.WriteLine($"{allValues}.");
+                    }
+
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INIT");
@@ -935,10 +946,21 @@ namespace Program01
                         SMU.WriteString("SENSe:CURRent:RSENse OFF");
                     }
 
-                    string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
-                    string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Source Delay: {delayValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
+                    string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
-                    Debug.WriteLine($"{allValues}");
+
+                    if (isModes == true)
+                    {
+
+                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {savedSourceLimitMode}, Limit Level: {TextboxSourceLimit.Text} {ComboboxSourceLimitUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
+                        Debug.WriteLine($"{allValues}.");
+                    }
+                    else
+                    {
+                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {savedSourceLimitMode}, Limit Level: {TextboxSourceLimit.Text} {ComboboxSourceLimitUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}";
+                        Debug.WriteLine($"{allValues}.");
+                    }
+
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INIT");
@@ -964,9 +986,20 @@ namespace Program01
                     }
 
                     string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
-                    string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Source Delay: {delayValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
-                    Debug.WriteLine($"{allValues}");
+
+                    if (isModes == true)
+                    {
+
+                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {savedSourceLimitMode}, Limit Level: {TextboxSourceLimit.Text} {ComboboxSourceLimitUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
+                        Debug.WriteLine($"{allValues}.");
+                    }
+                    else
+                    {
+                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {savedSourceLimitMode}, Limit Level: {TextboxSourceLimit.Text} {ComboboxSourceLimitUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}";
+                        Debug.WriteLine($"{allValues}.");
+                    }
+
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INIT");
@@ -992,9 +1025,20 @@ namespace Program01
                     }
 
                     string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
-                    string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {startValue}, Step: {stepValue}, Source Delay: {delayValue}, Stop: {stopValue}, Source Limit: {savedSourceLimitMode}, Limit Level: {sourcelimitValue}, Repetition: {repetitionValue}, Thickness: {thicknessValue}, Magnetic Fields: {magneticfieldsValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
-                    Debug.WriteLine($"{allValues}.");
+                    
+                    if (isModes == true)
+                    {
+
+                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {savedSourceLimitMode}, Limit Level: {TextboxSourceLimit.Text} {ComboboxSourceLimitUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
+                        Debug.WriteLine($"{allValues}.");
+                    }
+                    else
+                    {
+                        string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {savedSourceLimitMode}, Limit Level: {TextboxSourceLimit.Text} {ComboboxSourceLimitUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}";
+                        Debug.WriteLine($"{allValues}.");
+                    }
+
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INIT");
@@ -1050,10 +1094,11 @@ namespace Program01
                 {
                     ConfigureSwitchSystem();
                     ConfigureSourceMeasureUnit();
+                    await ExecuteSweep();
+                    await Task.Delay(points * (repetitionValue / 2) * 1000);
                     UpdateMeasurementState();
 
-                    await ExecuteSweep();
-                    await Task.Delay(points * repetitionValue * 400);
+                    currentTuner++;
 
                     if (currentTuner > 8)
                     {
@@ -1061,7 +1106,7 @@ namespace Program01
                         MessageBox.Show("Measurement completed", "Measurement Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         SMU.WriteString("OUTPut OFF");
                         SS.WriteString("*CLS");
-                        //break;
+                        break;
                     }
                 }
             }
@@ -1162,12 +1207,25 @@ namespace Program01
             string sweepCommand = $"SOURce:SWEep:{savedSourceMode}:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
             Debug.WriteLine($"Sending command: {sweepCommand}");
 
+            if (isModes == true)
+            {
+
+                string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {savedSourceLimitMode}, Limit Level: {TextboxSourceLimit.Text} {ComboboxSourceLimitUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
+                Debug.WriteLine($"{allValues}.");
+            }
+            else
+            {
+                string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {savedSourceLimitMode}, Limit Level: {TextboxSourceLimit.Text} {ComboboxSourceLimitUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}";
+                Debug.WriteLine($"{allValues}.");
+            }
+
             SMU.WriteString(sweepCommand);
             SMU.WriteString("OUTPut ON");
             SMU.WriteString("INITiate");
             SMU.WriteString("*WAI");
             SMU.WriteString("OUTPut OFF");
-            await Task.Delay(points * repetitionValue * 100);
+
+            await Task.Delay(points * 300);
         }
 
         private void UpdateMeasurementState()
@@ -1179,14 +1237,13 @@ namespace Program01
             }
 
             currentRepeat++;
-            Debug.WriteLine($"Measuring Tuner {currentTuner}, Repeat Count: {currentRepeat} / {repetitionValue}");
-
 
             if (currentRepeat == repetitionValue)
             {
                 currentRepeat = 0;
-                currentTuner++;
             }
+
+            Debug.WriteLine($"Measuring Tuner {currentTuner}, Repeat Count: {currentRepeat} / {repetitionValue}");
         }
 
         private void IconbuttonErrorCheck_Click(object sender, EventArgs e)
@@ -1269,41 +1326,59 @@ namespace Program01
 
             try
             {
-                start = ConvertValueBasedOnUnit(ComboboxStartUnit.SelectedItem.ToString(), double.Parse(TextboxStart.Text));
-                stop = ConvertValueBasedOnUnit(ComboboxStopUnit.SelectedItem.ToString(), double.Parse(TextboxStop.Text));
-                step = ConvertValueBasedOnUnit(ComboboxStepUnit.SelectedItem.ToString(), double.Parse(TextboxStep.Text));
-                delay = ConvertValueBasedOnUnit(ComboboxSourceDelayUnit.SelectedItem.ToString(), double.Parse(TextboxSourceDelay.Text));
-                sourcelimit = ConvertValueBasedOnUnit(ComboboxSourceLimitUnit.SelectedItem.ToString(), double.Parse(TextboxSourceLimit.Text));
-                thickness = ConvertValueBasedOnUnit(ComboboxThicknessUnit.SelectedItem.ToString(), double.Parse(TextboxThickness.Text));
-                magneticfields = isModes ? ConvertValueBasedOnUnit(ComboboxMagneticFieldsUnit.SelectedItem.ToString(), double.Parse(TextboxMagneticFields.Text)) : 0;
-                repetition = int.Parse(TextboxRepetition.Text);
+                if (!ValidateInputConvert(TextboxStart.Text, ComboboxStartUnit.SelectedItem, out start) ||
+                    !ValidateInputConvert(TextboxStop.Text, ComboboxStopUnit.SelectedItem, out stop) ||
+                    !ValidateInputConvert(TextboxStep.Text, ComboboxStepUnit.SelectedItem, out step) ||
+                    !ValidateInputConvert(TextboxSourceDelay.Text, ComboboxSourceDelayUnit.SelectedItem, out delay) ||
+                    !ValidateInputConvert(TextboxSourceLimit.Text, ComboboxSourceLimitUnit.SelectedItem, out sourcelimit) ||
+                    !ValidateInputConvert(TextboxThickness.Text, ComboboxThicknessUnit.SelectedItem, out thickness))
+                {
+                    return false;
+                }
+
+                if (isModes)
+                {
+                    if (!ValidateInputConvert(TextboxMagneticFields.Text, ComboboxMagneticFieldsUnit.SelectedItem, out magneticfields))
+                    {
+                        return false;
+                    }
+
+                    if (magneticfields <= 0)
+                    {
+                        return false;
+                    }
+                }
+
+                if (!int.TryParse(TextboxRepetition.Text, out repetition) || repetition < 1)
+                {
+                    return false;
+                }
+
                 points = (int)((stop - start) / step) + 1;
 
-
-                if (start >= stop || step <= 0 || repetition < 1 || repetition > 999 || thickness < 0 || sourcelimit < 0 || delay < 49E-6 || delay > 10E+3 || points < 1 )
+                if (start >= stop || step <= 0 || repetition < 1 || repetition > 999 || thickness < 0 || sourcelimit < 0 ||
+                    delay < 49E-6 || delay > 10E+3 || points < 1 || step >= stop)
                 {
                     return false;
                 }
 
-                if (isModes && (magneticfields < 0 || step >= stop))
+                if (string.Equals(SourceLimit, "Current", StringComparison.OrdinalIgnoreCase) &&
+                    (sourcelimit > 1.05 || sourcelimit < -1.05))
                 {
                     return false;
                 }
 
-                if (SourceLimit == "Current" && sourcelimit > 1.05 || sourcelimit < -1.05)
-                {
-                    return false;
-                }
-
-                if (SourceLimit == "Voltage" && sourcelimit > 210 || sourcelimit < -210)
+                if (string.Equals(SourceLimit, "Voltage", StringComparison.OrdinalIgnoreCase) &&
+                    (sourcelimit > 210 || sourcelimit < -210))
                 {
                     return false;
                 }
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                MessageBox.Show($"Validation Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
@@ -1349,6 +1424,23 @@ namespace Program01
                 default:
                     throw new Exception("Unknown unit");  //ไม่รู้จักหน่วย (Unit Error)
             }
+        }
+
+        private bool ValidateInputConvert(string textValue, object unit, out double result)
+        {
+            result = 0;
+            if (string.IsNullOrWhiteSpace(textValue) || unit == null)
+            {
+                return false;
+            }
+
+            if (double.TryParse(textValue, out double value))
+            {
+                result = ConvertValueBasedOnUnit(unit.ToString(), value);
+                return true;
+            }
+
+            return false;
         }
 
         private void IconbuttonUpdateChart_Click(object sender, EventArgs e)

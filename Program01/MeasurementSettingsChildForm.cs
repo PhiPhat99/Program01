@@ -168,6 +168,7 @@ namespace Program01
                     SMU.IO = (Ivi.Visa.Interop.IMessage)resourcemanagerSMU.Open(selectedSMUAddress);
                     SMU.IO.Timeout = 5000;
                     SMU.WriteString("*IDN?");
+                    SMU.WriteString("SYSTem:BEEPer 555, 0.3");
                     string response = SMU.ReadString();
                     Debug.WriteLine($"{response}");
 
@@ -894,7 +895,7 @@ namespace Program01
                 {
                     SMU.WriteString($"SOURce:FUNCtion VOLTage");
                     SMU.WriteString($"SOURce:VOLTage:RANGe:AUTO ON");
-                    SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
+                    SMU.WriteString($"SOURce:VOLTage:ILIMit {sourcelimitValue}");
                     SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
                     SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
 
@@ -907,7 +908,7 @@ namespace Program01
                         SMU.WriteString("SENSe:VOLTage:RSENse OFF");
                     }
 
-                    string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
+                    string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
 
                     if (isModes == true)
@@ -924,7 +925,7 @@ namespace Program01
 
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
-                    SMU.WriteString("INIT");
+                    SMU.WriteString("INITiate");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
                 }
@@ -933,7 +934,7 @@ namespace Program01
                 {
                     SMU.WriteString($"SOURce:FUNCtion VOLTage");
                     SMU.WriteString($"SOURce:VOLTage:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:VOLTage:ILIM {sourcelimitValue}");
+                    SMU.WriteString($"SOURce:VOLTage:ILIMit {sourcelimitValue}");
                     SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
                     SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
 
@@ -946,7 +947,7 @@ namespace Program01
                         SMU.WriteString("SENSe:CURRent:RSENse OFF");
                     }
 
-                    string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
+                    string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
 
                     if (isModes == true)
@@ -963,7 +964,7 @@ namespace Program01
 
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
-                    SMU.WriteString("INIT");
+                    SMU.WriteString("INITiate");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
                 }
@@ -972,7 +973,7 @@ namespace Program01
                 {
                     SMU.WriteString($"SOURce:FUNCtion CURRent");
                     SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:CURRent:VLIM {sourcelimitValue}");
+                    SMU.WriteString($"SOURce:CURRent:VLIMit {sourcelimitValue}");
                     SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
                     SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
 
@@ -1002,7 +1003,7 @@ namespace Program01
 
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
-                    SMU.WriteString("INIT");
+                    SMU.WriteString("INITiate");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
                 }
@@ -1011,7 +1012,7 @@ namespace Program01
                 {
                     SMU.WriteString($"SOURce:FUNCtion CURRent");
                     SMU.WriteString($"SOURce:CURRent:RANG:AUTO ON");
-                    SMU.WriteString($"SOURce:CURRent:VLIM {sourcelimitValue}");
+                    SMU.WriteString($"SOURce:CURRent:VLIMit {sourcelimitValue}");
                     SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
                     SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
 
@@ -1041,7 +1042,7 @@ namespace Program01
 
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
-                    SMU.WriteString("INIT");
+                    SMU.WriteString("INITiate");
                     SMU.WriteString("*WAI");
                     SMU.WriteString("OUTPut OFF");
                 }
@@ -1070,8 +1071,6 @@ namespace Program01
                     return;
                 }
 
-                currentTuner = 1;
-                currentRepeat = 0;
                 RunMeasurement();
             }
             catch (Exception ex)
@@ -1090,13 +1089,15 @@ namespace Program01
                     return;
                 }
 
+                currentTuner = 1;
+
                 while (currentTuner <= 8)
                 {
                     ConfigureSwitchSystem();
+                    UpdateMeasurementState();
                     ConfigureSourceMeasureUnit();
                     await ExecuteSweep();
-                    await Task.Delay(points * (repetitionValue / 2) * 1000);
-                    UpdateMeasurementState();
+                    await Task.Delay(points * repetitionValue * 200);
 
                     currentTuner++;
 
@@ -1204,9 +1205,6 @@ namespace Program01
                 return;
             }
 
-            string sweepCommand = $"SOURce:SWEep:{savedSourceMode}:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
-            Debug.WriteLine($"Sending command: {sweepCommand}");
-
             if (isModes == true)
             {
 
@@ -1219,13 +1217,25 @@ namespace Program01
                 Debug.WriteLine($"{allValues}.");
             }
 
-            SMU.WriteString(sweepCommand);
+            if (savedSourceMode == "Current")
+            {
+                string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
+                SMU.WriteString(sweepCommand);
+                Debug.WriteLine($"Sending command: {sweepCommand}");
+            }
+            else
+            {
+                string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
+                SMU.WriteString(sweepCommand);
+                Debug.WriteLine($"Sending command: {sweepCommand}");
+            }
+
             SMU.WriteString("OUTPut ON");
             SMU.WriteString("INITiate");
             SMU.WriteString("*WAI");
             SMU.WriteString("OUTPut OFF");
 
-            await Task.Delay(points * 300);
+            await Task.Delay(points * repetitionValue * 300);
         }
 
         private void UpdateMeasurementState()
@@ -1236,14 +1246,7 @@ namespace Program01
                 return;
             }
 
-            currentRepeat++;
-
-            if (currentRepeat == repetitionValue)
-            {
-                currentRepeat = 0;
-            }
-
-            Debug.WriteLine($"Measuring Tuner {currentTuner}, Repeat Count: {currentRepeat} / {repetitionValue}");
+            Debug.WriteLine($"Measuring Tuner {currentTuner}");
         }
 
         private void IconbuttonErrorCheck_Click(object sender, EventArgs e)
@@ -1383,7 +1386,7 @@ namespace Program01
             }
         }
 
-        private double ConvertValueBasedOnUnit(string unit, double value)  //  Method สำหรับการแปลงหน่วยของค่าที่ผู้ใช้ป้อนเข้ามา
+        private double ConvertValueBasedOnUnit(string unit, double value)  //  Method สำหรับการแปลงหน่วยของค่าที่ป้อนมาใน Textbox ผ่านการเลือก Combobox
         {
             switch (unit)
             {

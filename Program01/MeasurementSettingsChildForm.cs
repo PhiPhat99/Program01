@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
+using System.Windows.Markup;
 using FontAwesome.Sharp;
 using Ivi.Visa.Interop;
 
@@ -168,8 +169,8 @@ namespace Program01
                     SMU.IO = (Ivi.Visa.Interop.IMessage)resourcemanagerSMU.Open(selectedSMUAddress);
                     SMU.IO.Timeout = 5000;
                     SMU.WriteString("*IDN?");
-                    SMU.WriteString("SYSTem:BEEPer 555, 0.3");
                     string response = SMU.ReadString();
+                    SMU.WriteString("SYSTem:BEEPer 555, 0.3");
                     Debug.WriteLine($"{response}");
 
                     isSMUConnected = true;
@@ -229,7 +230,6 @@ namespace Program01
                     SS.IO.Timeout = 5000;
 
                     SS.WriteString("*CLS");
-                    SS.IO.Timeout = 5000;
                     SS.WriteString("*IDN?");
                     string response = SS.ReadString();
                     Debug.WriteLine($"{response}");
@@ -891,6 +891,12 @@ namespace Program01
                     return;
                 }
 
+                if (repetitionValue > 1)
+                {
+                    MessageBox.Show("Can not set the repetition vakues greater than 1 in Tuner testing");
+                    return;
+                }
+
                 if (savedSourceMode == "Voltage" && savedMeasureMode == "Voltage")
                 {
                     SMU.WriteString($"SOURce:FUNCtion VOLTage");
@@ -927,6 +933,8 @@ namespace Program01
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INITiate");
                     SMU.WriteString("*WAI");
+                    /*SMU.WriteString("READ?");
+                    string MeasureData = SMU.ReadString();*/
                     SMU.WriteString("OUTPut OFF");
                 }
 
@@ -966,6 +974,8 @@ namespace Program01
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INITiate");
                     SMU.WriteString("*WAI");
+                    /*SMU.WriteString("READ?");
+                    string MeasureData = SMU.ReadString();*/
                     SMU.WriteString("OUTPut OFF");
                 }
 
@@ -1005,6 +1015,26 @@ namespace Program01
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INITiate");
                     SMU.WriteString("*WAI");
+                    SMU.WriteString("TRACe:ACTual?");
+                    string BufferCount = SMU.ReadString().Trim();
+
+                    if (!int.TryParse(BufferCount, out int BufferPoints))
+                    {
+                        throw new Exception($"Invalid buffer count received: {BufferCount}");
+                    }
+                    
+                    if (BufferPoints > 0)
+                    {
+                        SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOUR, READ");
+                        string Measure = SMU.ReadString();
+                        Debug.WriteLine($"Buffer contains: {BufferPoints} readings.");
+                        Debug.WriteLine($"Measured Data: {Measure}");
+                    }
+                    else
+                    {
+                        MessageBox.Show("No data in buffer!");
+                    }
+
                     SMU.WriteString("OUTPut OFF");
                 }
 
@@ -1044,8 +1074,12 @@ namespace Program01
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INITiate");
                     SMU.WriteString("*WAI");
+                    /*SMU.WriteString("READ?");
+                    string MeasureData = SMU.ReadString();*/
                     SMU.WriteString("OUTPut OFF");
                 }
+
+
             }
             catch (Exception ex)
             {

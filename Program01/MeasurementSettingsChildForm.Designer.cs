@@ -60,7 +60,6 @@
             this.TextboxMagneticFields = new System.Windows.Forms.TextBox();
             this.LabelMagneticFieldsUnit = new System.Windows.Forms.Label();
             this.PanelTunerandData = new System.Windows.Forms.Panel();
-            this.IconbuttonUpdateChart = new FontAwesome.Sharp.IconButton();
             this.PictureboxSample = new System.Windows.Forms.PictureBox();
             this.PictureboxTunerDescription = new System.Windows.Forms.PictureBox();
             this.IconbuttonTunerTest = new FontAwesome.Sharp.IconButton();
@@ -414,7 +413,6 @@
             // PanelTunerandData
             // 
             this.PanelTunerandData.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(248)))), ((int)(((byte)(231)))));
-            this.PanelTunerandData.Controls.Add(this.IconbuttonUpdateChart);
             this.PanelTunerandData.Controls.Add(this.PictureboxSample);
             this.PanelTunerandData.Controls.Add(this.PictureboxTunerDescription);
             this.PanelTunerandData.Controls.Add(this.IconbuttonTunerTest);
@@ -432,24 +430,6 @@
             this.PanelTunerandData.Name = "PanelTunerandData";
             this.PanelTunerandData.Size = new System.Drawing.Size(790, 640);
             this.PanelTunerandData.TabIndex = 28;
-            // 
-            // IconbuttonUpdateChart
-            // 
-            this.IconbuttonUpdateChart.BackColor = System.Drawing.Color.Snow;
-            this.IconbuttonUpdateChart.FlatAppearance.BorderSize = 0;
-            this.IconbuttonUpdateChart.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.IconbuttonUpdateChart.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IconbuttonUpdateChart.IconChar = FontAwesome.Sharp.IconChar.None;
-            this.IconbuttonUpdateChart.IconColor = System.Drawing.Color.Black;
-            this.IconbuttonUpdateChart.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonUpdateChart.Location = new System.Drawing.Point(630, 577);
-            this.IconbuttonUpdateChart.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.IconbuttonUpdateChart.Name = "IconbuttonUpdateChart";
-            this.IconbuttonUpdateChart.Size = new System.Drawing.Size(120, 30);
-            this.IconbuttonUpdateChart.TabIndex = 44;
-            this.IconbuttonUpdateChart.Text = "UPDATE";
-            this.IconbuttonUpdateChart.UseVisualStyleBackColor = false;
-            this.IconbuttonUpdateChart.Click += new System.EventHandler(this.IconbuttonUpdateChart_Click);
             // 
             // PictureboxSample
             // 
@@ -1037,7 +1017,6 @@
         private System.Windows.Forms.Label LabelToggleSwitchMeasurementMode;
         private System.Windows.Forms.PictureBox PictureboxSample;
         private FontAwesome.Sharp.IconButton IconbuttonErrorCheck;
-        private FontAwesome.Sharp.IconButton IconbuttonUpdateChart;
         private System.Windows.Forms.ComboBox ComboboxSourceDelayUnit;
         private System.Windows.Forms.Label LabelSourceDelayUnit;
         private System.Windows.Forms.TextBox TextboxSourceDelay;

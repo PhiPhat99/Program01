@@ -9,6 +9,7 @@ using System.Timers;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Markup;
+using System.Xml.Linq;
 using FontAwesome.Sharp;
 using Ivi.Visa.Interop;
 
@@ -17,14 +18,14 @@ namespace Program01
     public partial class MeasurementSettingsChildForm : Form
     {
         //Fields
-        private Ivi.Visa.Interop.FormattedIO488 SMU;
-        private Ivi.Visa.Interop.FormattedIO488 SS;
-        private ResourceManager resourcemanagerSMU;
-        private ResourceManager resourcemanagerSS;
-        private string RsenseMode;
-        private string MeasureMode;
-        private string SourceMode;
-        private string SourceLimit;
+        public Ivi.Visa.Interop.FormattedIO488 SMU;
+        public Ivi.Visa.Interop.FormattedIO488 SS;
+        public ResourceManager resourcemanagerSMU;
+        public ResourceManager resourcemanagerSS;
+        public string RsenseMode;
+        public string MeasureMode;
+        public string SourceMode;
+        public string SourceLimit;
         private string savedRsenseMode;
         private string savedMeasureMode;
         private string savedSourceMode;
@@ -39,11 +40,15 @@ namespace Program01
         private int targetPosition;
         private int currentTuner;
         private int currentRepeat;
-        private bool isSMUConnected = false;
-        private bool isSSConnected = false;
-        private bool isModes = false;
+        public bool isSMUConnected = false;
+        public bool isSSConnected = false;
+        public bool isModes = false;
         private Form CurrentTunerandDataChildForm;
         public event EventHandler ToggleChanged;
+        public MeasurementSettingsDataChildForm DataChildForm = null;
+        public List<double> XDataBuffer = new List<double>();
+        public List<double> YDataBuffer = new List<double>();
+
         public bool IsOn
         {
             get => isModes;
@@ -60,13 +65,12 @@ namespace Program01
             InitializeGPIB();
         }
 
-        private void InitializeGPIB()
+        public void InitializeGPIB()
         {
             try
             {
                 resourcemanagerSMU = new Ivi.Visa.Interop.ResourceManager();
                 resourcemanagerSS = new Ivi.Visa.Interop.ResourceManager();
-
                 SMU = new Ivi.Visa.Interop.FormattedIO488();
                 SS = new Ivi.Visa.Interop.FormattedIO488();
 
@@ -883,6 +887,7 @@ namespace Program01
                     return;
                 }
 
+                SMU.IO.Timeout = 50000;
                 SMU.WriteString("OUTPut OFF");
 
                 if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
@@ -893,7 +898,7 @@ namespace Program01
 
                 if (repetitionValue > 1)
                 {
-                    MessageBox.Show("Can not set the repetition vakues greater than 1 in Tuner testing");
+                    MessageBox.Show("Cannot set the repetition value greater than 1 in Tuner testing", "Testing Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -919,7 +924,6 @@ namespace Program01
 
                     if (isModes == true)
                     {
-
                         string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {savedSourceLimitMode}, Limit Level: {TextboxSourceLimit.Text} {ComboboxSourceLimitUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
                         Debug.WriteLine($"{allValues}.");
                     }
@@ -933,8 +937,7 @@ namespace Program01
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INITiate");
                     SMU.WriteString("*WAI");
-                    /*SMU.WriteString("READ?");
-                    string MeasureData = SMU.ReadString();*/
+                    TracingTunerData();
                     SMU.WriteString("OUTPut OFF");
                 }
 
@@ -960,7 +963,6 @@ namespace Program01
 
                     if (isModes == true)
                     {
-
                         string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {savedSourceLimitMode}, Limit Level: {TextboxSourceLimit.Text} {ComboboxSourceLimitUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
                         Debug.WriteLine($"{allValues}.");
                     }
@@ -974,8 +976,7 @@ namespace Program01
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INITiate");
                     SMU.WriteString("*WAI");
-                    /*SMU.WriteString("READ?");
-                    string MeasureData = SMU.ReadString();*/
+                    TracingTunerData();
                     SMU.WriteString("OUTPut OFF");
                 }
 
@@ -1001,7 +1002,6 @@ namespace Program01
 
                     if (isModes == true)
                     {
-
                         string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {savedSourceLimitMode}, Limit Level: {TextboxSourceLimit.Text} {ComboboxSourceLimitUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
                         Debug.WriteLine($"{allValues}.");
                     }
@@ -1015,26 +1015,7 @@ namespace Program01
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INITiate");
                     SMU.WriteString("*WAI");
-                    SMU.WriteString("TRACe:ACTual?");
-                    string BufferCount = SMU.ReadString().Trim();
-
-                    if (!int.TryParse(BufferCount, out int BufferPoints))
-                    {
-                        throw new Exception($"Invalid buffer count received: {BufferCount}");
-                    }
-                    
-                    if (BufferPoints > 0)
-                    {
-                        SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOUR, READ");
-                        string Measure = SMU.ReadString();
-                        Debug.WriteLine($"Buffer contains: {BufferPoints} readings.");
-                        Debug.WriteLine($"Measured Data: {Measure}");
-                    }
-                    else
-                    {
-                        MessageBox.Show("No data in buffer!");
-                    }
-
+                    TracingTunerData();
                     SMU.WriteString("OUTPut OFF");
                 }
 
@@ -1055,12 +1036,11 @@ namespace Program01
                         SMU.WriteString("SENSe:CURRent:RSENse OFF");
                     }
 
-                    string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
+                    string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue},  {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
-                    
+
                     if (isModes == true)
                     {
-
                         string allValues = $"Sense: {savedRsenseMode}, Measure: {savedMeasureMode}, Source: {savedSourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {savedSourceLimitMode}, Limit Level: {TextboxSourceLimit.Text} {ComboboxSourceLimitUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
                         Debug.WriteLine($"{allValues}.");
                     }
@@ -1074,12 +1054,9 @@ namespace Program01
                     SMU.WriteString("OUTPut ON");
                     SMU.WriteString("INITiate");
                     SMU.WriteString("*WAI");
-                    /*SMU.WriteString("READ?");
-                    string MeasureData = SMU.ReadString();*/
+                    TracingTunerData();
                     SMU.WriteString("OUTPut OFF");
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -1310,11 +1287,20 @@ namespace Program01
         {
             try
             {
-                var dataChildForm = new MeasurementSettingsDataChildForm();
+                if (DataChildForm == null || DataChildForm.IsDisposed)
+                {
+                    DataChildForm = new MeasurementSettingsDataChildForm();
+                    OpenChildForm(DataChildForm);
 
-                dataChildForm.UpdateChartData(new[] { 5, 10, 15, 20 });
-
-                OpenChildForm(dataChildForm);
+                    if (XDataBuffer.Count > 0 && YDataBuffer.Count > 0)
+                    {
+                        DataChildForm.UpdateChart(XDataBuffer, YDataBuffer);
+                    }
+                }
+                else
+                {
+                    OpenChildForm(DataChildForm);
+                }
             }
             catch (Exception ex)
             {
@@ -1480,13 +1466,44 @@ namespace Program01
             return false;
         }
 
-        private void IconbuttonUpdateChart_Click(object sender, EventArgs e)
+        private void TracingTunerData()
         {
             try
             {
-                if (CurrentTunerandDataChildForm is MeasurementSettingsDataChildForm dataChildForm)
+                SMU.WriteString("TRACe:ACTual?");
+                string BufferCount = SMU.ReadString().Trim();
+
+                if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
                 {
-                    dataChildForm.UpdateChartData(new[]  { 0 });
+                    MessageBox.Show("No data in buffer!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOUR, READ");
+                string MeasureRawData = SMU.ReadString();
+                Debug.WriteLine($"Buffer contains: {BufferPoints} readings.");
+                Debug.WriteLine($"Measured Raw Data: {MeasureRawData}");
+
+                string[] DataPairs = MeasureRawData.Split(',');
+                List<double> XData = new List<double>();
+                List<double> YData = new List<double>();
+
+                for (int i = 0; i < DataPairs.Length; i += 2)
+                {
+                    if (double.TryParse(DataPairs[i], out double SourceValue) && double.TryParse(DataPairs[i + 1], out double MeasuredValue))
+                    {
+                        XData.Add(SourceValue);
+                        YData.Add(MeasuredValue);
+                    }
+                }
+
+                XDataBuffer = new List<double>(XData);
+                YDataBuffer = new List<double>(YData);
+
+                // ส่งค่าข้อมูลไปยังฟอร์มลูกถ้ายังเปิดอยู่
+                if (DataChildForm != null && !DataChildForm.IsDisposed)
+                {
+                    DataChildForm.UpdateChart(XDataBuffer, YDataBuffer);
                 }
             }
             catch (Exception ex)

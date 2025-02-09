@@ -45,7 +45,7 @@
             // 
             this.comboBox1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(620, 60);
+            this.comboBox1.Location = new System.Drawing.Point(640, 60);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(80, 31);
             this.comboBox1.TabIndex = 4;
@@ -55,7 +55,7 @@
             this.labelTunerTesting.AutoSize = true;
             this.labelTunerTesting.BackColor = System.Drawing.Color.Transparent;
             this.labelTunerTesting.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelTunerTesting.Location = new System.Drawing.Point(520, 60);
+            this.labelTunerTesting.Location = new System.Drawing.Point(540, 60);
             this.labelTunerTesting.Name = "labelTunerTesting";
             this.labelTunerTesting.Size = new System.Drawing.Size(78, 28);
             this.labelTunerTesting.TabIndex = 5;
@@ -66,7 +66,7 @@
             this.labelTunerEquations.AutoSize = true;
             this.labelTunerEquations.BackColor = System.Drawing.Color.Transparent;
             this.labelTunerEquations.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.labelTunerEquations.Location = new System.Drawing.Point(520, 110);
+            this.labelTunerEquations.Location = new System.Drawing.Point(540, 110);
             this.labelTunerEquations.Name = "labelTunerEquations";
             this.labelTunerEquations.Size = new System.Drawing.Size(125, 28);
             this.labelTunerEquations.TabIndex = 6;
@@ -77,7 +77,7 @@
             this.labelSlopeTunerTesting.AutoSize = true;
             this.labelSlopeTunerTesting.BackColor = System.Drawing.Color.Transparent;
             this.labelSlopeTunerTesting.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelSlopeTunerTesting.Location = new System.Drawing.Point(520, 205);
+            this.labelSlopeTunerTesting.Location = new System.Drawing.Point(540, 205);
             this.labelSlopeTunerTesting.Name = "labelSlopeTunerTesting";
             this.labelSlopeTunerTesting.Size = new System.Drawing.Size(77, 28);
             this.labelSlopeTunerTesting.TabIndex = 8;
@@ -86,7 +86,7 @@
             // textboxSlopeTunerTesting
             // 
             this.textboxSlopeTunerTesting.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textboxSlopeTunerTesting.Location = new System.Drawing.Point(530, 250);
+            this.textboxSlopeTunerTesting.Location = new System.Drawing.Point(550, 250);
             this.textboxSlopeTunerTesting.Multiline = true;
             this.textboxSlopeTunerTesting.Name = "textboxSlopeTunerTesting";
             this.textboxSlopeTunerTesting.Size = new System.Drawing.Size(100, 30);
@@ -95,7 +95,7 @@
             // textBox1
             // 
             this.textBox1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBox1.Location = new System.Drawing.Point(530, 155);
+            this.textBox1.Location = new System.Drawing.Point(550, 155);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(220, 30);
@@ -129,7 +129,7 @@
             legend1.Enabled = false;
             legend1.Name = "Legend1";
             this.ChartTunerTesting.Legends.Add(legend1);
-            this.ChartTunerTesting.Location = new System.Drawing.Point(15, 45);
+            this.ChartTunerTesting.Location = new System.Drawing.Point(15, 35);
             this.ChartTunerTesting.Name = "ChartTunerTesting";
             series1.BorderWidth = 2;
             series1.ChartArea = "ChartAreaTunerTesting";
@@ -145,7 +145,7 @@
             series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Diamond;
             series1.Name = "MeasurementData";
             this.ChartTunerTesting.Series.Add(series1);
-            this.ChartTunerTesting.Size = new System.Drawing.Size(510, 510);
+            this.ChartTunerTesting.Size = new System.Drawing.Size(530, 530);
             this.ChartTunerTesting.TabIndex = 11;
             this.ChartTunerTesting.Text = "Tuner Testing";
             // 

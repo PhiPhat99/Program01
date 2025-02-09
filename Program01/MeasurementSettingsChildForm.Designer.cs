@@ -415,7 +415,6 @@
             this.PanelTunerandData.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(248)))), ((int)(((byte)(231)))));
             this.PanelTunerandData.Controls.Add(this.PictureboxSample);
             this.PanelTunerandData.Controls.Add(this.PictureboxTunerDescription);
-            this.PanelTunerandData.Controls.Add(this.IconbuttonTunerTest);
             this.PanelTunerandData.Controls.Add(this.PictureboxTuner8);
             this.PanelTunerandData.Controls.Add(this.PictureboxTuner7);
             this.PanelTunerandData.Controls.Add(this.PictureboxTuner6);
@@ -462,7 +461,7 @@
             this.IconbuttonTunerTest.IconChar = FontAwesome.Sharp.IconChar.None;
             this.IconbuttonTunerTest.IconColor = System.Drawing.Color.Black;
             this.IconbuttonTunerTest.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonTunerTest.Location = new System.Drawing.Point(630, 530);
+            this.IconbuttonTunerTest.Location = new System.Drawing.Point(29, 757);
             this.IconbuttonTunerTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.IconbuttonTunerTest.Name = "IconbuttonTunerTest";
             this.IconbuttonTunerTest.Size = new System.Drawing.Size(120, 30);
@@ -879,6 +878,7 @@
             this.ClientSize = new System.Drawing.Size(1260, 820);
             this.Controls.Add(this.ComboboxSourceDelayUnit);
             this.Controls.Add(this.LabelSourceDelayUnit);
+            this.Controls.Add(this.IconbuttonTunerTest);
             this.Controls.Add(this.TextboxSourceDelay);
             this.Controls.Add(this.LabelSourceDelay);
             this.Controls.Add(this.IconbuttonErrorCheck);

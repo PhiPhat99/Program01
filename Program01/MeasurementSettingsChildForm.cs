@@ -26,13 +26,14 @@ namespace Program01
         public string MeasureMode;
         public string SourceMode;
         public string SourceLimit;
-        private string savedRsenseMode;
-        private string savedMeasureMode;
-        private string savedSourceMode;
+        public string savedRsenseMode;
+        public string savedMeasureMode;
+        public string savedSourceMode;
         private string savedSourceLimitMode;
         private string savedStartValue;
         private string savedStopValue;
         private string savedStepValue;
+        private string savedSourceDelayValue;
         private string savedSourceLimitValue;
         private string savedThicknessValue;
         private string savedRepetitionValue;
@@ -128,33 +129,164 @@ namespace Program01
 
         public static class GlobalSettings
         {
-            public static string RsenseMode { get; set; }
-            public static string MeasureMode { get; set; }
-            public static string SourceMode { get; set; }
-            public static string SourceLimitType { get; set; }
-            public static string StartValue { get; set; }
-            public static string StopValue { get; set; }
-            public static string StepValue { get; set; }
-            public static string ThicknessValue { get; set; }
-            public static string RepetitionValue { get; set; }
-            public static string SourceLimitLevelValue { get; set; }
-            public static string MagneticFieldsValue { get; set; }
+            public static event Action OnSettingsChanged;
+
+            private static string CRsenseMode;
+            public static string RsenseMode
+            {
+                get => CRsenseMode;
+                set { CRsenseMode = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CMeasureMode;
+            public static string MeasureMode
+            {
+                get => CMeasureMode;
+                set { CMeasureMode = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CSourceMode;
+            public static string SourceMode
+            {
+                get => CSourceMode;
+                set { CSourceMode = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CSourceLimitType;
+            public static string SourceLimitType
+            {
+                get => CSourceLimitType;
+                set { CSourceLimitType = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CStartValue;
+            public static string StartValue
+            {
+                get => CStartValue;
+                set { CStartValue = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CStopValue;
+            public static string StopValue
+            {
+                get => CStopValue;
+                set { CStopValue = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CStepValue;
+            public static string StepValue
+            {
+                get => CStepValue;
+                set { CStepValue = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CSourceDelayValue;
+            public static string SourceDelayValue
+            {
+                get => CSourceDelayValue;
+                set { CSourceDelayValue = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CSourceLimitValue;
+            public static string SourceLimitValue
+            {
+                get => CSourceLimitValue;
+                set { CSourceLimitValue = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CThicknessValue;
+            public static string ThicknessValue
+            {
+                get => CThicknessValue;
+                set { CThicknessValue = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CRepetitionValue;
+            public static string RepetitionValue
+            {
+                get => CRepetitionValue;
+                set { CRepetitionValue = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CMagneticFieldsValue;
+            public static string MagneticFieldsValue
+            {
+                get => CMagneticFieldsValue;
+                set { CMagneticFieldsValue = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CStartUnit;
+            public static string StartUnit
+            {
+                get => CStartUnit;
+                set { CStartUnit = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CStopUnit;
+            public static string StopUnit
+            {
+                get => CStopUnit;
+                set { CStopUnit = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CStepUnit;
+            public static string StepUnit
+            {
+                get => CStepUnit;
+                set { CStepUnit = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CSourceDelayUnit;
+            public static string SourceDelayUnit
+            {
+                get => CSourceDelayUnit;
+                set { CSourceDelayUnit = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CSourceLimitUnit;
+            public static string SourceLimitUnit
+            {
+                get => CSourceLimitUnit;
+                set { CSourceLimitUnit = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CThicknessUnit;
+            public static string ThicknessUnit
+            {
+                get => CThicknessUnit;
+                set { CThicknessUnit = value; OnSettingsChanged?.Invoke(); }
+            }
+
+            private static string CMagneticFieldsUnit;
+            public static string MagneticFieldsUnit
+            {
+                get => CMagneticFieldsUnit;
+                set { CMagneticFieldsUnit = value; OnSettingsChanged?.Invoke(); }
+            }
         }
 
-        /*private void saveSettings()
+        private void SaveToGlobal()
         {
             GlobalSettings.RsenseMode = ComboboxRsense.SelectedItem?.ToString() ?? "";
             GlobalSettings.MeasureMode = ComboboxMeasure.SelectedItem?.ToString() ?? "";
             GlobalSettings.SourceMode = ComboboxSource.SelectedItem?.ToString() ?? "";
             GlobalSettings.SourceLimitType = ComboboxSourceLimitMode.SelectedItem?.ToString() ?? "";
+            GlobalSettings.StartUnit = ComboboxStartUnit.SelectedItem?.ToString() ?? "";
+            GlobalSettings.StepUnit = ComboboxStepUnit.SelectedItem?.ToString() ?? "";
+            GlobalSettings.StopUnit = ComboboxStopUnit.SelectedItem?.ToString() ?? "";
+            GlobalSettings.SourceDelayUnit = ComboboxSourceDelayUnit.SelectedItem?.ToString() ?? "";
+            GlobalSettings.SourceLimitUnit = ComboboxSourceLimitUnit.SelectedItem?.ToString() ?? "";
+            GlobalSettings.ThicknessUnit = ComboboxThicknessUnit.SelectedItem?.ToString() ?? "";
+            GlobalSettings.MagneticFieldsUnit = ComboboxMagneticFieldsUnit.SelectedItem?.ToString() ?? "";
             GlobalSettings.StartValue = TextboxStart.Text;
             GlobalSettings.StopValue = TextboxStop.Text;
             GlobalSettings.StepValue = TextboxStep.Text;
-            GlobalSettings.SourceLimitLevelValue = TextboxSourceLimitLevel.Text;
+            GlobalSettings.SourceDelayValue = TextboxSourceDelay.Text;
+            GlobalSettings.SourceLimitValue = TextboxSourceLimit.Text;
             GlobalSettings.ThicknessValue = TextboxThickness.Text;
             GlobalSettings.RepetitionValue = TextboxRepetition.Text;
             GlobalSettings.MagneticFieldsValue = TextboxMagneticFields.Text;
-        }*/
+        }
 
         private void IconbuttonSMUConnection_Click(object sender, EventArgs e)
         {
@@ -291,10 +423,19 @@ namespace Program01
             ComboboxMeasure.SelectedItem = GlobalSettings.MeasureMode;
             ComboboxSource.SelectedItem = GlobalSettings.SourceMode;
             ComboboxSourceLimitMode.SelectedItem = GlobalSettings.SourceLimitType;
+            ComboboxStartUnit.SelectedItem = GlobalSettings.StartUnit;
+            ComboboxStepUnit.SelectedItem = GlobalSettings.StepUnit;
+            ComboboxStopUnit.SelectedItem = GlobalSettings.StopUnit;
+            ComboboxSourceDelayUnit.SelectedItem = GlobalSettings.SourceDelayUnit;
+            ComboboxSourceLimitUnit.SelectedItem = GlobalSettings.SourceLimitUnit;
+            ComboboxThicknessUnit.SelectedItem = GlobalSettings.ThicknessUnit;
+            ComboboxMagneticFieldsUnit.SelectedItem = GlobalSettings.MagneticFieldsUnit;
+
             TextboxStart.Text = GlobalSettings.StartValue;
             TextboxStop.Text = GlobalSettings.StopValue;
             TextboxStep.Text = GlobalSettings.StepValue;
-            TextboxSourceLimit.Text = GlobalSettings.SourceLimitLevelValue;
+            TextboxSourceDelay.Text = GlobalSettings.SourceDelayValue;
+            TextboxSourceLimit.Text = GlobalSettings.SourceLimitValue;
             TextboxThickness.Text = GlobalSettings.ThicknessValue;
             TextboxRepetition.Text = GlobalSettings.RepetitionValue;
             TextboxMagneticFields.Text = GlobalSettings.MagneticFieldsValue;
@@ -881,12 +1022,14 @@ namespace Program01
         {
             try
             {
+
                 if (!isSMUConnected && !isSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
+                SaveToGlobal();
                 SMU.IO.Timeout = 50000;
                 SMU.WriteString("OUTPut OFF");
 
@@ -1500,7 +1643,6 @@ namespace Program01
                 XDataBuffer = new List<double>(XData);
                 YDataBuffer = new List<double>(YData);
 
-                // ส่งค่าข้อมูลไปยังฟอร์มลูกถ้ายังเปิดอยู่
                 if (DataChildForm != null && !DataChildForm.IsDisposed)
                 {
                     DataChildForm.UpdateChart(XDataBuffer, YDataBuffer);

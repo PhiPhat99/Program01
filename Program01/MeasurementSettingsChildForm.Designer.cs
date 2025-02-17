@@ -48,9 +48,9 @@
             this.LabelStep = new System.Windows.Forms.Label();
             this.ComboboxSourceLimitMode = new System.Windows.Forms.ComboBox();
             this.LabelSourceLimitType = new System.Windows.Forms.Label();
-            this.LabelSourceLimitUnit = new System.Windows.Forms.Label();
-            this.TextboxSourceLimit = new System.Windows.Forms.TextBox();
-            this.LabelSourceLimit = new System.Windows.Forms.Label();
+            this.LabelSourceLimitLevelUnit = new System.Windows.Forms.Label();
+            this.TextboxSourceLimitLevel = new System.Windows.Forms.TextBox();
+            this.LabelSourceLimitLevel = new System.Windows.Forms.Label();
             this.LabelThickness = new System.Windows.Forms.Label();
             this.LabelThicknessUnit = new System.Windows.Forms.Label();
             this.TextboxThickness = new System.Windows.Forms.TextBox();
@@ -62,7 +62,6 @@
             this.PanelTunerandData = new System.Windows.Forms.Panel();
             this.PictureboxSample = new System.Windows.Forms.PictureBox();
             this.PictureboxTunerDescription = new System.Windows.Forms.PictureBox();
-            this.IconbuttonTunerTest = new FontAwesome.Sharp.IconButton();
             this.PictureboxTuner8 = new System.Windows.Forms.PictureBox();
             this.PictureboxTuner7 = new System.Windows.Forms.PictureBox();
             this.PictureboxTuner6 = new System.Windows.Forms.PictureBox();
@@ -74,12 +73,13 @@
             this.PanelButtonTabBar = new System.Windows.Forms.Panel();
             this.ButtonData = new System.Windows.Forms.Button();
             this.ButtonTuner = new System.Windows.Forms.Button();
+            this.IconbuttonTunerTest = new FontAwesome.Sharp.IconButton();
             this.ComboboxVISASMUIOPort = new System.Windows.Forms.ComboBox();
             this.ComboboxVISASSIOPort = new System.Windows.Forms.ComboBox();
             this.ComboboxStartUnit = new System.Windows.Forms.ComboBox();
             this.ComboboxStopUnit = new System.Windows.Forms.ComboBox();
             this.ComboboxStepUnit = new System.Windows.Forms.ComboBox();
-            this.ComboboxSourceLimitUnit = new System.Windows.Forms.ComboBox();
+            this.ComboboxSourceLimitLevelUnit = new System.Windows.Forms.ComboBox();
             this.ComboboxThicknessUnit = new System.Windows.Forms.ComboBox();
             this.ComboboxMagneticFieldsUnit = new System.Windows.Forms.ComboBox();
             this.PanelToggleSwitchBase = new System.Windows.Forms.Panel();
@@ -304,34 +304,34 @@
             this.LabelSourceLimitType.TabIndex = 11;
             this.LabelSourceLimitType.Text = "LIMIT :";
             // 
-            // LabelSourceLimitUnit
+            // LabelSourceLimitLevelUnit
             // 
-            this.LabelSourceLimitUnit.AutoSize = true;
-            this.LabelSourceLimitUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSourceLimitUnit.Location = new System.Drawing.Point(265, 503);
-            this.LabelSourceLimitUnit.Name = "LabelSourceLimitUnit";
-            this.LabelSourceLimitUnit.Size = new System.Drawing.Size(63, 25);
-            this.LabelSourceLimitUnit.TabIndex = 20;
-            this.LabelSourceLimitUnit.Text = "UNIT :";
+            this.LabelSourceLimitLevelUnit.AutoSize = true;
+            this.LabelSourceLimitLevelUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelSourceLimitLevelUnit.Location = new System.Drawing.Point(265, 503);
+            this.LabelSourceLimitLevelUnit.Name = "LabelSourceLimitLevelUnit";
+            this.LabelSourceLimitLevelUnit.Size = new System.Drawing.Size(63, 25);
+            this.LabelSourceLimitLevelUnit.TabIndex = 20;
+            this.LabelSourceLimitLevelUnit.Text = "UNIT :";
             // 
-            // TextboxSourceLimit
+            // TextboxSourceLimitLevel
             // 
-            this.TextboxSourceLimit.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxSourceLimit.Location = new System.Drawing.Point(150, 500);
-            this.TextboxSourceLimit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxSourceLimit.Name = "TextboxSourceLimit";
-            this.TextboxSourceLimit.Size = new System.Drawing.Size(100, 30);
-            this.TextboxSourceLimit.TabIndex = 19;
+            this.TextboxSourceLimitLevel.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TextboxSourceLimitLevel.Location = new System.Drawing.Point(170, 500);
+            this.TextboxSourceLimitLevel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.TextboxSourceLimitLevel.Name = "TextboxSourceLimitLevel";
+            this.TextboxSourceLimitLevel.Size = new System.Drawing.Size(80, 30);
+            this.TextboxSourceLimitLevel.TabIndex = 19;
             // 
-            // LabelSourceLimit
+            // LabelSourceLimitLevel
             // 
-            this.LabelSourceLimit.AutoSize = true;
-            this.LabelSourceLimit.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSourceLimit.Location = new System.Drawing.Point(67, 503);
-            this.LabelSourceLimit.Name = "LabelSourceLimit";
-            this.LabelSourceLimit.Size = new System.Drawing.Size(67, 25);
-            this.LabelSourceLimit.TabIndex = 18;
-            this.LabelSourceLimit.Text = "LIMIT :";
+            this.LabelSourceLimitLevel.AutoSize = true;
+            this.LabelSourceLimitLevel.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelSourceLimitLevel.Location = new System.Drawing.Point(40, 503);
+            this.LabelSourceLimitLevel.Name = "LabelSourceLimitLevel";
+            this.LabelSourceLimitLevel.Size = new System.Drawing.Size(120, 25);
+            this.LabelSourceLimitLevel.TabIndex = 18;
+            this.LabelSourceLimitLevel.Text = "LIMIT LEVEL :";
             // 
             // LabelThickness
             // 
@@ -356,10 +356,10 @@
             // TextboxThickness
             // 
             this.TextboxThickness.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxThickness.Location = new System.Drawing.Point(166, 550);
+            this.TextboxThickness.Location = new System.Drawing.Point(170, 550);
             this.TextboxThickness.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TextboxThickness.Name = "TextboxThickness";
-            this.TextboxThickness.Size = new System.Drawing.Size(84, 30);
+            this.TextboxThickness.Size = new System.Drawing.Size(80, 30);
             this.TextboxThickness.TabIndex = 21;
             // 
             // LabelRepetition
@@ -451,24 +451,6 @@
             this.PictureboxTunerDescription.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.PictureboxTunerDescription.TabIndex = 42;
             this.PictureboxTunerDescription.TabStop = false;
-            // 
-            // IconbuttonTunerTest
-            // 
-            this.IconbuttonTunerTest.BackColor = System.Drawing.Color.Snow;
-            this.IconbuttonTunerTest.FlatAppearance.BorderSize = 0;
-            this.IconbuttonTunerTest.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.IconbuttonTunerTest.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IconbuttonTunerTest.IconChar = FontAwesome.Sharp.IconChar.None;
-            this.IconbuttonTunerTest.IconColor = System.Drawing.Color.Black;
-            this.IconbuttonTunerTest.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonTunerTest.Location = new System.Drawing.Point(29, 757);
-            this.IconbuttonTunerTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.IconbuttonTunerTest.Name = "IconbuttonTunerTest";
-            this.IconbuttonTunerTest.Size = new System.Drawing.Size(120, 30);
-            this.IconbuttonTunerTest.TabIndex = 41;
-            this.IconbuttonTunerTest.Text = "TUNER TEST";
-            this.IconbuttonTunerTest.UseVisualStyleBackColor = false;
-            this.IconbuttonTunerTest.Click += new System.EventHandler(this.IconbuttonTunerTest_Click);
             // 
             // PictureboxTuner8
             // 
@@ -605,6 +587,24 @@
             this.ButtonTuner.UseVisualStyleBackColor = false;
             this.ButtonTuner.Click += new System.EventHandler(this.ButtonTuner_Click);
             // 
+            // IconbuttonTunerTest
+            // 
+            this.IconbuttonTunerTest.BackColor = System.Drawing.Color.Snow;
+            this.IconbuttonTunerTest.FlatAppearance.BorderSize = 0;
+            this.IconbuttonTunerTest.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.IconbuttonTunerTest.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IconbuttonTunerTest.IconChar = FontAwesome.Sharp.IconChar.None;
+            this.IconbuttonTunerTest.IconColor = System.Drawing.Color.Black;
+            this.IconbuttonTunerTest.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.IconbuttonTunerTest.Location = new System.Drawing.Point(29, 757);
+            this.IconbuttonTunerTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.IconbuttonTunerTest.Name = "IconbuttonTunerTest";
+            this.IconbuttonTunerTest.Size = new System.Drawing.Size(120, 30);
+            this.IconbuttonTunerTest.TabIndex = 41;
+            this.IconbuttonTunerTest.Text = "TUNER TEST";
+            this.IconbuttonTunerTest.UseVisualStyleBackColor = false;
+            this.IconbuttonTunerTest.Click += new System.EventHandler(this.IconbuttonTunerTest_Click);
+            // 
             // ComboboxVISASMUIOPort
             // 
             this.ComboboxVISASMUIOPort.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -655,15 +655,15 @@
             this.ComboboxStepUnit.Size = new System.Drawing.Size(60, 31);
             this.ComboboxStepUnit.TabIndex = 37;
             // 
-            // ComboboxSourceLimitUnit
+            // ComboboxSourceLimitLevelUnit
             // 
-            this.ComboboxSourceLimitUnit.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ComboboxSourceLimitUnit.FormattingEnabled = true;
-            this.ComboboxSourceLimitUnit.Location = new System.Drawing.Point(330, 500);
-            this.ComboboxSourceLimitUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.ComboboxSourceLimitUnit.Name = "ComboboxSourceLimitUnit";
-            this.ComboboxSourceLimitUnit.Size = new System.Drawing.Size(60, 31);
-            this.ComboboxSourceLimitUnit.TabIndex = 38;
+            this.ComboboxSourceLimitLevelUnit.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ComboboxSourceLimitLevelUnit.FormattingEnabled = true;
+            this.ComboboxSourceLimitLevelUnit.Location = new System.Drawing.Point(330, 500);
+            this.ComboboxSourceLimitLevelUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ComboboxSourceLimitLevelUnit.Name = "ComboboxSourceLimitLevelUnit";
+            this.ComboboxSourceLimitLevelUnit.Size = new System.Drawing.Size(60, 31);
+            this.ComboboxSourceLimitLevelUnit.TabIndex = 38;
             // 
             // ComboboxThicknessUnit
             // 
@@ -888,7 +888,7 @@
             this.Controls.Add(this.PanelToggleSwitchBase);
             this.Controls.Add(this.ComboboxMagneticFieldsUnit);
             this.Controls.Add(this.ComboboxThicknessUnit);
-            this.Controls.Add(this.ComboboxSourceLimitUnit);
+            this.Controls.Add(this.ComboboxSourceLimitLevelUnit);
             this.Controls.Add(this.ComboboxStepUnit);
             this.Controls.Add(this.ComboboxStopUnit);
             this.Controls.Add(this.ComboboxStartUnit);
@@ -900,16 +900,16 @@
             this.Controls.Add(this.LabelMagneticFieldsUnit);
             this.Controls.Add(this.LabelMagneticFields);
             this.Controls.Add(this.TextboxMagneticFields);
-            this.Controls.Add(this.LabelSourceLimitUnit);
+            this.Controls.Add(this.LabelSourceLimitLevelUnit);
             this.Controls.Add(this.LabelRepetition);
             this.Controls.Add(this.LabelStartUnit);
             this.Controls.Add(this.TextboxRepetition);
             this.Controls.Add(this.TextboxStart);
-            this.Controls.Add(this.TextboxSourceLimit);
+            this.Controls.Add(this.TextboxSourceLimitLevel);
             this.Controls.Add(this.LabelThicknessUnit);
             this.Controls.Add(this.LabelStart);
             this.Controls.Add(this.LabelThickness);
-            this.Controls.Add(this.LabelSourceLimit);
+            this.Controls.Add(this.LabelSourceLimitLevel);
             this.Controls.Add(this.TextboxThickness);
             this.Controls.Add(this.TextboxStop);
             this.Controls.Add(this.ComboboxSourceLimitMode);
@@ -975,9 +975,9 @@
         private System.Windows.Forms.Label LabelStopUnit;
         private System.Windows.Forms.ComboBox ComboboxSourceLimitMode;
         private System.Windows.Forms.Label LabelSourceLimitType;
-        private System.Windows.Forms.Label LabelSourceLimitUnit;
-        private System.Windows.Forms.TextBox TextboxSourceLimit;
-        private System.Windows.Forms.Label LabelSourceLimit;
+        private System.Windows.Forms.Label LabelSourceLimitLevelUnit;
+        private System.Windows.Forms.TextBox TextboxSourceLimitLevel;
+        private System.Windows.Forms.Label LabelSourceLimitLevel;
         private System.Windows.Forms.Label LabelThickness;
         private System.Windows.Forms.Label LabelThicknessUnit;
         private System.Windows.Forms.TextBox TextboxThickness;
@@ -997,7 +997,7 @@
         private System.Windows.Forms.ComboBox ComboboxStartUnit;
         private System.Windows.Forms.ComboBox ComboboxStopUnit;
         private System.Windows.Forms.ComboBox ComboboxStepUnit;
-        private System.Windows.Forms.ComboBox ComboboxSourceLimitUnit;
+        private System.Windows.Forms.ComboBox ComboboxSourceLimitLevelUnit;
         private System.Windows.Forms.ComboBox ComboboxThicknessUnit;
         private System.Windows.Forms.ComboBox ComboboxMagneticFieldsUnit;
         private System.Windows.Forms.PictureBox PictureboxTuner1;

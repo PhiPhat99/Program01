@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Text;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,12 +23,7 @@ namespace Program01
         public MeasurementSettingsDataChildForm()
         {
             InitializeComponent();
-        }
-
-        private void MeasurementSettingsDataChildForm_Load(object sender, EventArgs e)
-        {
-
-        }
+        }   
 
         public void UpdateChart(List<double> XData, List<double> YData)
         {
@@ -38,58 +34,86 @@ namespace Program01
             else
             {
                 ChartTunerTesting.Series["MeasurementData"].Points.Clear();
-                double XMax = XData.Max();
-                double YMax = YData.Max();
 
                 if (GlobalSettings.SourceMode == "Voltage" && GlobalSettings.MeasureMode == "Voltage")
                 {
-                    ChartTunerTesting.ChartAreas[0].AxisX.Title = $"{GlobalSettings.SourceMode} ({GlobalSettings.StepUnit})";
-                    ChartTunerTesting.ChartAreas[0].AxisY.Title = $"{GlobalSettings.MeasureMode} ({GlobalSettings.StepUnit})";
+                    ChartTunerTesting.ChartAreas[0].AxisX.Title = $"{GlobalSettings.SourceMode} (Source) V";
+                    ChartTunerTesting.ChartAreas[0].AxisY.Title = $"{GlobalSettings.MeasureMode} (Measure) V";
                 }
 
                 else if (GlobalSettings.SourceMode == "Voltage" && GlobalSettings.MeasureMode == "Current")
                 {
-                    ChartTunerTesting.ChartAreas[0].AxisX.Title = $"{GlobalSettings.SourceMode} ({GlobalSettings.StepUnit})";
-                    ChartTunerTesting.ChartAreas[0].AxisY.Title = $"{GlobalSettings.MeasureMode} ({GlobalSettings.SourceLimitUnit})";
+                    ChartTunerTesting.ChartAreas[0].AxisX.Title = $"{GlobalSettings.SourceMode} (Source) V";
+
+                    if (GlobalSettings.SourceLimitLevelUnit == "nA")
+                    {
+                        ChartTunerTesting.ChartAreas[0].AxisY.Title = $"{GlobalSettings.MeasureMode} (Measure) µA";
+                    }
+                    else if (GlobalSettings.SourceLimitLevelUnit == "µA")
+                    {
+                        ChartTunerTesting.ChartAreas[0].AxisY.Title = $"{GlobalSettings.MeasureMode} (Measure) mA";
+                    }
+                    else if (GlobalSettings.SourceLimitLevelUnit == "mA" || GlobalSettings.SourceLimitLevelUnit == "A")
+                    {
+                        ChartTunerTesting.ChartAreas[0].AxisY.Title = $"{GlobalSettings.MeasureMode} (Measure) A";
+                    }
                 }
 
                 else if (GlobalSettings.SourceMode == "Current" && GlobalSettings.MeasureMode == "Voltage")
                 {
-                    ChartTunerTesting.ChartAreas[0].AxisX.Title = $"{GlobalSettings.SourceMode} ({GlobalSettings.SourceLimitUnit})";
-                    ChartTunerTesting.ChartAreas[0].AxisY.Title = $"{GlobalSettings.MeasureMode} ({GlobalSettings.StepUnit})";
+                    if (GlobalSettings.StepUnit == "nA")
+                    {
+                        ChartTunerTesting.ChartAreas[0].AxisX.Title = $"{GlobalSettings.SourceMode} (Source) µA";
+                    }
+                    else if (GlobalSettings.StepUnit == "µA")
+                    {
+                        ChartTunerTesting.ChartAreas[0].AxisX.Title = $"{GlobalSettings.SourceMode} (Source) mA";
+                    }
+                    else if (GlobalSettings.StepUnit == "mA" || GlobalSettings.StepUnit == "A")
+                    {
+                        ChartTunerTesting.ChartAreas[0].AxisX.Title = $"{GlobalSettings.SourceMode} (Source) A";
+                    }
+
+                    ChartTunerTesting.ChartAreas[0].AxisY.Title = $"{GlobalSettings.MeasureMode} (Measure) V";
                 }
 
                 else if (GlobalSettings.SourceMode == "Current" && GlobalSettings.MeasureMode == "Current")
                 {
-                    ChartTunerTesting.ChartAreas[0].AxisX.Title = $"{GlobalSettings.SourceMode} ({GlobalSettings.StepUnit})";
-                    ChartTunerTesting.ChartAreas[0].AxisY.Title = $"{GlobalSettings.MeasureMode} ({GlobalSettings.StepUnit})";
+                    if (GlobalSettings.StepUnit == "nA")
+                    {
+                        ChartTunerTesting.ChartAreas[0].AxisX.Title = $"{GlobalSettings.SourceMode} (Source) µA";
+                        ChartTunerTesting.ChartAreas[0].AxisY.Title = $"{GlobalSettings.MeasureMode} (Measure) µA";
+                    }
+                    else if (GlobalSettings.StepUnit == "µA")
+                    {
+                        ChartTunerTesting.ChartAreas[0].AxisX.Title = $"{GlobalSettings.SourceMode} (Source) mA";
+                        ChartTunerTesting.ChartAreas[0].AxisY.Title = $"{GlobalSettings.MeasureMode} (Measure) mA";
+                    }
+                    else if (GlobalSettings.StepUnit == "mA" || GlobalSettings.StepUnit == "A")
+                    {
+                        ChartTunerTesting.ChartAreas[0].AxisX.Title = $"{GlobalSettings.SourceMode} (Source) A";
+                        ChartTunerTesting.ChartAreas[0].AxisY.Title = $"{GlobalSettings.MeasureMode} (Measure) A";
+                    }
                 }
 
                 for (int i = 0; i < XData.Count; i++)
                 {
                     if (GlobalSettings.SourceMode == "Voltage" && GlobalSettings.MeasureMode == "Voltage")
                     {
-                        if (GlobalSettings.StepUnit == "mV")
-                        {
-                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i] * 10, YData[i] * 10);
-                        }
-                        else if (GlobalSettings.StepUnit == "V")
-                        {
-                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i], YData[i]);
-                        }
+                        ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i], YData[i]);
                     }
 
                     else if (GlobalSettings.SourceMode == "Current" && GlobalSettings.MeasureMode == "Current")
                     {
-                        if (GlobalSettings.StepUnit == "µA")
+                        if (GlobalSettings.StepUnit == "nA")
                         {
-                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i] * 10E4, YData[i] * 10E4);
+                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i] * 10E5, YData[i] * 10E5);
                         }
-                        else if (GlobalSettings.StepUnit == "mA")
+                        else if (GlobalSettings.StepUnit == "µA")
                         {
-                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i] * 10, YData[i] * 10);
+                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i] * 10E2, YData[i] * 10E2);
                         }
-                        else if (GlobalSettings.StepUnit == "A")
+                        else if (GlobalSettings.StepUnit == "mA" || GlobalSettings.StepUnit == "A")
                         {
                             ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i], YData[i]);
                         }
@@ -97,27 +121,15 @@ namespace Program01
 
                     else if (GlobalSettings.SourceMode == "Voltage" && GlobalSettings.MeasureMode == "Current")
                     {
-                        if (GlobalSettings.StepUnit == "mV" && GlobalSettings.SourceLimitUnit == "µA")
+                        if ((GlobalSettings.StepUnit == "mV" || GlobalSettings.StepUnit == "V") && GlobalSettings.SourceLimitLevelUnit == "nA")
                         {
-                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i] * 10, YData[i] * 10E4);
+                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i], YData[i] * 10E5);
                         }
-                        else if (GlobalSettings.StepUnit == "mV" && GlobalSettings.SourceLimitUnit == "mA")
+                        else if ((GlobalSettings.StepUnit == "mV" || GlobalSettings.StepUnit == "V") && GlobalSettings.SourceLimitLevelUnit == "µA")
                         {
-                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i] * 10, YData[i] * 10);
+                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i], YData[i] * 10E2);
                         }
-                        else if (GlobalSettings.StepUnit == "mV" && GlobalSettings.SourceLimitUnit == "A")
-                        {
-                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i] * 10, YData[i]);
-                        }
-                        if (GlobalSettings.StepUnit == "V" && GlobalSettings.SourceLimitUnit == "µA")
-                        {
-                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i], YData[i] * 10E4);
-                        }
-                        else if (GlobalSettings.StepUnit == "V" && GlobalSettings.SourceLimitUnit == "mA")
-                        {
-                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i], YData[i] * 10);
-                        }
-                        else if (GlobalSettings.StepUnit == "V" && GlobalSettings.SourceLimitUnit == "A")
+                        else if ((GlobalSettings.StepUnit == "mV" || GlobalSettings.StepUnit == "V") && (GlobalSettings.SourceLimitLevelUnit == "mA" || GlobalSettings.SourceLimitLevelUnit == "A"))
                         {
                             ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i], YData[i]);
                         }
@@ -125,44 +137,79 @@ namespace Program01
 
                     else if (GlobalSettings.SourceMode == "Current" && GlobalSettings.MeasureMode == "Voltage")
                     {
-                        if (GlobalSettings.StepUnit == "µA" && GlobalSettings.SourceLimitUnit == "mV")
+                        if (GlobalSettings.StepUnit == "nA" && (GlobalSettings.SourceLimitLevelUnit == "mV" || GlobalSettings.SourceLimitLevelUnit == "V"))
                         {
-                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i] * 10E4, YData[i] * 10);
+                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i] * 10E5, YData[i]);
                         }
-                        else if (GlobalSettings.StepUnit == "mA" && GlobalSettings.SourceLimitUnit == "mV")
+                        else if (GlobalSettings.StepUnit == "µA" && (GlobalSettings.SourceLimitLevelUnit == "mV" || GlobalSettings.SourceLimitLevelUnit == "V"))
                         {
-                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i] * 10, YData[i] * 10);
+                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i] * 10E2, YData[i]);
                         }
-                        else if (GlobalSettings.StepUnit == "A" && GlobalSettings.SourceLimitUnit == "mV")
-                        {
-                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i], YData[i] * 10);
-                        }
-                        if (GlobalSettings.StepUnit == "µA" && GlobalSettings.SourceLimitUnit == "V")
-                        {
-                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i] * 10E4, YData[i]);
-                        }
-                        else if (GlobalSettings.StepUnit == "mA" && GlobalSettings.SourceLimitUnit == "V")
-                        {
-                            ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i] * 10, YData[i]);
-                        }
-                        else if (GlobalSettings.StepUnit == "A" && GlobalSettings.SourceLimitUnit == "V")
+                        else if ((GlobalSettings.StepUnit == "mA" || GlobalSettings.StepUnit == "A") && (GlobalSettings.SourceLimitLevelUnit == "mV" || GlobalSettings.SourceLimitLevelUnit == "V"))
                         {
                             ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i], YData[i]);
                         }
                     }
                 }
 
-                ChartTunerTesting.ChartAreas[0].AxisX.LabelStyle.Format = "0.###";
+                ChartTunerTesting.ChartAreas[0].AxisX.LabelStyle.Format = "0.####";
                 ChartTunerTesting.ChartAreas[0].AxisX.MajorTickMark.Size = 1.5f;
-                ChartTunerTesting.ChartAreas[0].AxisY.LabelStyle.Format = "0.###";
+                ChartTunerTesting.ChartAreas[0].AxisY.LabelStyle.Format = "0.####";
                 ChartTunerTesting.ChartAreas[0].AxisY.MajorTickMark.Size = 1.5f;
                 ChartTunerTesting.Invalidate();
             }
         }
 
-        private void MeasurementSettingsDataChildForm_FormClosing()
+        public void UpdateMeasurementData(double MaxMeasure, double MinMeasure, double MaxSource, double MinSource, double Slope)
         {
+            try
+            {
+                TextboxMaxMeasureValue.Text = MaxMeasure.ToString("F6");
+                TextboxMinMeasureValue.Text = MinMeasure.ToString("F6");
+                TextboxMaxSourceValue.Text = MaxSource.ToString("F6");
+                TextboxMinSourceValue.Text = MinSource.ToString("F6");
+                TextboxSlopeValue.Text = Slope.ToString("F6");
 
+                if (GlobalSettings.SourceMode == "Voltage" && GlobalSettings.MeasureMode == "Voltage")
+                {
+                    LabelMaxMeasureUnit.Text = "V";
+                    LabelMinMeasureUnit.Text = "V";
+                    LabelMaxSourceUnit.Text = "V";
+                    LabelMinSourceUnit.Text = "V";
+                    LabelSlopeUnit.Text = "";
+                }
+
+                else if (GlobalSettings.SourceMode == "Voltage" && GlobalSettings.MeasureMode == "Current")
+                {
+                    LabelMaxMeasureUnit.Text = "A";
+                    LabelMinMeasureUnit.Text = "A";
+                    LabelMaxSourceUnit.Text = "V";
+                    LabelMinSourceUnit.Text = "V";
+                    LabelSlopeUnit.Text = "Ω⁻¹";
+                }
+
+                else if (GlobalSettings.SourceMode == "Current" && GlobalSettings.MeasureMode == "Voltage")
+                {
+                    LabelMaxMeasureUnit.Text = "V";
+                    LabelMinMeasureUnit.Text = "V";
+                    LabelMaxSourceUnit.Text = "A";
+                    LabelMinSourceUnit.Text = "A";
+                    LabelSlopeUnit.Text = "Ω";
+                }
+
+                else if (GlobalSettings.SourceMode == "Current" && GlobalSettings.MeasureMode == "Current")
+                {
+                    LabelMaxMeasureUnit.Text = "A";
+                    LabelMinMeasureUnit.Text = "A";
+                    LabelMaxSourceUnit.Text = "A";
+                    LabelMinSourceUnit.Text = "A";
+                    LabelSlopeUnit.Text = "";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
         }
     }
 }

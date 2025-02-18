@@ -14,7 +14,6 @@ namespace Program01
     {
         //Fields
         private DataTable RowsDataTable1;
-        private int Running;
 
         public VdPTotalVoltageChildForm()
         {

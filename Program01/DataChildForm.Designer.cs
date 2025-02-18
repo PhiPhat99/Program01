@@ -1,6 +1,6 @@
 ﻿namespace Program01
 {
-    partial class MeasurementSettingsDataChildForm
+    partial class DataChildForm
     {
         /// <summary>
         /// Required designer variable.

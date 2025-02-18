@@ -2,14 +2,14 @@
 
 namespace Program01
 {
-    partial class HelpChildForm
+    partial class HelpForm
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        public HelpChildForm(IContainer components)
+        public HelpForm(IContainer components)
         {
             this.components = components;
         }

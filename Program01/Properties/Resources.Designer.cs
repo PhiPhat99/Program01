@@ -73,9 +73,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap R1_VdP {
+        internal static System.Drawing.Bitmap Description {
             get {
-                object obj = ResourceManager.GetObject("R1_VdP", resourceCulture);
+                object obj = ResourceManager.GetObject("Description", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +83,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap R2_VdP {
+        internal static System.Drawing.Bitmap R_A1_VdP {
             get {
-                object obj = ResourceManager.GetObject("R2_VdP", resourceCulture);
+                object obj = ResourceManager.GetObject("R-A1_VdP", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +93,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap R3_VdP {
+        internal static System.Drawing.Bitmap R_A2_VdP {
             get {
-                object obj = ResourceManager.GetObject("R3_VdP", resourceCulture);
+                object obj = ResourceManager.GetObject("R-A2_VdP", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +103,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap R4_VdP {
+        internal static System.Drawing.Bitmap R_A3_VdP {
             get {
-                object obj = ResourceManager.GetObject("R4_VdP", resourceCulture);
+                object obj = ResourceManager.GetObject("R-A3_VdP", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +113,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap R5_VdP {
+        internal static System.Drawing.Bitmap R_A4_VdP {
             get {
-                object obj = ResourceManager.GetObject("R5_VdP", resourceCulture);
+                object obj = ResourceManager.GetObject("R-A4_VdP", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,9 +123,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap R6_VdP {
+        internal static System.Drawing.Bitmap R_B1_VdP {
             get {
-                object obj = ResourceManager.GetObject("R6_VdP", resourceCulture);
+                object obj = ResourceManager.GetObject("R-B1_VdP", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -133,9 +133,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap R7_VdP {
+        internal static System.Drawing.Bitmap R_B2_VdP {
             get {
-                object obj = ResourceManager.GetObject("R7_VdP", resourceCulture);
+                object obj = ResourceManager.GetObject("R-B2_VdP", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -143,9 +143,19 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap R8_VdP {
+        internal static System.Drawing.Bitmap R_B3_VdP {
             get {
-                object obj = ResourceManager.GetObject("R8_VdP", resourceCulture);
+                object obj = ResourceManager.GetObject("R-B3_VdP", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap R_B4_VdP {
+            get {
+                object obj = ResourceManager.GetObject("R-B4_VdP", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -163,9 +173,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Tuner_Description {
+        internal static System.Drawing.Bitmap V_1_Hall {
             get {
-                object obj = ResourceManager.GetObject("Tuner_Description", resourceCulture);
+                object obj = ResourceManager.GetObject("V-1_Hall", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -173,9 +183,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap V1_Hall {
+        internal static System.Drawing.Bitmap V_2_Hall {
             get {
-                object obj = ResourceManager.GetObject("V1_Hall", resourceCulture);
+                object obj = ResourceManager.GetObject("V-2_Hall", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -183,9 +193,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap V2_Hall {
+        internal static System.Drawing.Bitmap V_3_Hall {
             get {
-                object obj = ResourceManager.GetObject("V2_Hall", resourceCulture);
+                object obj = ResourceManager.GetObject("V-3_Hall", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -193,9 +203,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap V3_Hall {
+        internal static System.Drawing.Bitmap V_4_Hall {
             get {
-                object obj = ResourceManager.GetObject("V3_Hall", resourceCulture);
+                object obj = ResourceManager.GetObject("V-4_Hall", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -203,9 +213,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap V4_Hall {
+        internal static System.Drawing.Bitmap V_5_Hall {
             get {
-                object obj = ResourceManager.GetObject("V4_Hall", resourceCulture);
+                object obj = ResourceManager.GetObject("V-5_Hall", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -213,9 +223,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap V5_Hall {
+        internal static System.Drawing.Bitmap V_6_Hall {
             get {
-                object obj = ResourceManager.GetObject("V5_Hall", resourceCulture);
+                object obj = ResourceManager.GetObject("V-6_Hall", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -223,9 +233,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap V6_Hall {
+        internal static System.Drawing.Bitmap V_7_Hall {
             get {
-                object obj = ResourceManager.GetObject("V6_Hall", resourceCulture);
+                object obj = ResourceManager.GetObject("V-7_Hall", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -233,19 +243,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap V7_Hall {
+        internal static System.Drawing.Bitmap V_8_Hall {
             get {
-                object obj = ResourceManager.GetObject("V7_Hall", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap V8_Hall {
-            get {
-                object obj = ResourceManager.GetObject("V8_Hall", resourceCulture);
+                object obj = ResourceManager.GetObject("V-8_Hall", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

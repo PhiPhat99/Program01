@@ -13,14 +13,14 @@ using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Forms.VisualStyles;
 using System.Windows.Markup;
 using System.Xml.Linq;
-using static Program01.MeasurementSettingsChildForm;
+using static Program01.MeasurementSettingsForm;
 
 namespace Program01
 {
-    public partial class MeasurementSettingsDataChildForm : Form
+    public partial class DataChildForm : Form
     {
 
-        public MeasurementSettingsDataChildForm()
+        public DataChildForm()
         {
             InitializeComponent();
         }   

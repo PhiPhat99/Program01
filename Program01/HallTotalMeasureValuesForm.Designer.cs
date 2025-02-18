@@ -1,6 +1,6 @@
 ﻿namespace Program01
 {
-    partial class HallEffectTotalVoltageChildForm
+    partial class HallTotalMeasureValuesForm
     {
         /// <summary>
         /// Required designer variable.

@@ -14,7 +14,7 @@ using Ivi.Visa.Interop;
 
 namespace Program01
 {
-    public partial class MeasurementSettingsChildForm : Form
+    public partial class MeasurementSettingsForm : Form
     {
         //Fields
         public Ivi.Visa.Interop.FormattedIO488 SMU;
@@ -43,16 +43,17 @@ namespace Program01
         public bool isSMUConnected = false;
         public bool isSSConnected = false;
         public bool isModes = false;
-        private Form CurrentTunerandDataChildForm;
+        private Form CurrentChildForm;
         public event EventHandler ToggleChanged;
-        public MeasurementSettingsDataChildForm DataChildForm = null;
+        public DataChildForm DataChildForm = null;
+        public ChannelSettingsChildForm ChannelSettingsChildForm = null;
         public List<double> XDataBuffer = new List<double>();
         public List<double> YDataBuffer = new List<double>();
         private List<double> X = new List<double>();
         private List<double> Y = new List<double>();
         private double LatestSourceValue;
         private double LatestMeasuredValue;
-        public event Action<List<double>, List<double>> OnMeasurementDataUpdated = delegate { };
+        public event EventHandler<bool> ModeChanged;
 
         public bool IsOn
         {
@@ -64,7 +65,7 @@ namespace Program01
             }
         }
 
-        public MeasurementSettingsChildForm()
+        public MeasurementSettingsForm()
         {
             InitializeComponent();
             InitializeGPIB();
@@ -632,59 +633,13 @@ namespace Program01
             }
         }
 
-        private void PanelToggleSwitchBase_MouseClick(object sender, MouseEventArgs e)
+        public void PanelToggleSwitchBase_MouseClick(object sender, MouseEventArgs e)
         {
             try
             {
                 isModes = !isModes;
                 UpdateToggleState();
-
-                if (isModes == false)
-                {
-                    string Modes = "Van der Pauw";
-                    TextboxMagneticFields.Enabled = false;
-                    TextboxMagneticFields.Visible = false;
-                    LabelMagneticFields.Visible = false;
-                    LabelMagneticFieldsUnit.Visible = false;
-                    LabelToggleSwitchVdP.ForeColor = Color.FromArgb(144, 198, 101);
-                    LabelToggleSwitchHall.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-                    PanelToggleSwitchButton.BackColor = Color.FromArgb(253, 138, 114);
-                    ComboboxMagneticFieldsUnit.Visible = false;
-                    Debug.WriteLine($"You select: {Modes} measurement");
-
-                    PictureboxTuner1.Image = global::Program01.Properties.Resources.R1_VdP;
-                    PictureboxTuner2.Image = global::Program01.Properties.Resources.R2_VdP;
-                    PictureboxTuner3.Image = global::Program01.Properties.Resources.R3_VdP;
-                    PictureboxTuner4.Image = global::Program01.Properties.Resources.R4_VdP;
-                    PictureboxTuner5.Image = global::Program01.Properties.Resources.R5_VdP;
-                    PictureboxTuner6.Image = global::Program01.Properties.Resources.R6_VdP;
-                    PictureboxTuner7.Image = global::Program01.Properties.Resources.R7_VdP;
-                    PictureboxTuner8.Image = global::Program01.Properties.Resources.R8_VdP;
-                }
-
-                else if (isModes == true)
-                {
-                    string Modes = "Hall effect";
-                    TextboxMagneticFields.Enabled = true;
-                    TextboxMagneticFields.Visible = true;
-                    LabelMagneticFields.Visible = true;
-                    LabelMagneticFieldsUnit.Visible = true;
-                    LabelToggleSwitchVdP.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-                    LabelToggleSwitchHall.ForeColor = Color.FromArgb(144, 198, 101);
-                    PanelToggleSwitchButton.BackColor = Color.FromArgb(95, 77, 221);
-                    ComboboxMagneticFieldsUnit.Visible = true;
-                    Debug.WriteLine($"You select: {Modes} measurement");
-
-                    PictureboxTuner1.Image = global::Program01.Properties.Resources.V1_Hall;
-                    PictureboxTuner2.Image = global::Program01.Properties.Resources.V2_Hall;
-                    PictureboxTuner3.Image = global::Program01.Properties.Resources.V3_Hall;
-                    PictureboxTuner4.Image = global::Program01.Properties.Resources.V4_Hall;
-                    PictureboxTuner5.Image = global::Program01.Properties.Resources.V5_Hall;
-                    PictureboxTuner6.Image = global::Program01.Properties.Resources.V6_Hall;
-                    PictureboxTuner7.Image = global::Program01.Properties.Resources.V7_Hall;
-                    PictureboxTuner8.Image = global::Program01.Properties.Resources.V8_Hall;
-                }
-
+                UpdateMeasurementMode(isModes);
                 OnToggleChanged();
             }
             catch (Exception ex)
@@ -693,13 +648,7 @@ namespace Program01
             }
         }
 
-        protected virtual void OnToggleChanged()
-        {
-            ToggleChanged?.Invoke(this, EventArgs.Empty);
-            PanelToggleSwitchBase.BackColor = isModes ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
-        }
-
-        private void UpdateToggleState()
+        public void UpdateToggleState()
         {
             TargetPosition = isModes ? PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width - 1 : 1;
             PanelToggleSwitchButton.Location = new Point(TargetPosition, PanelToggleSwitchButton.Location.Y);
@@ -708,6 +657,58 @@ namespace Program01
             {
                 PanelToggleSwitchButton.Location = new Point(1, PanelToggleSwitchButton.Location.Y);
             }
+        }
+
+        private void UpdateMeasurementMode(bool isHallMode)
+        {
+            string ModeName = isHallMode ? "Hall effect" : "Van der Pauw";
+            Debug.WriteLine($"You select: {ModeName} measurement");
+
+            TextboxMagneticFields.Enabled = isHallMode;
+            TextboxMagneticFields.Visible = isHallMode;
+            ComboboxMagneticFieldsUnit.Visible = isHallMode;
+            LabelMagneticFields.Visible = isHallMode;
+            LabelMagneticFieldsUnit.Visible = isHallMode;
+
+            LabelToggleSwitchVdP.ForeColor = isHallMode ? System.Drawing.SystemColors.ActiveCaptionText : Color.FromArgb(144, 198, 101);
+            LabelToggleSwitchHall.ForeColor = isHallMode ? Color.FromArgb(144, 198, 101) : System.Drawing.SystemColors.ActiveCaptionText;
+            PanelToggleSwitchButton.BackColor = isHallMode ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
+
+            UpdateTunerImages(isHallMode);
+        }
+
+        private void UpdateTunerImages(bool isHallMode)
+        {
+            if (isHallMode)
+            {
+                PictureboxTuner1.Image = global::Program01.Properties.Resources.V_1_Hall;
+                PictureboxTuner2.Image = global::Program01.Properties.Resources.V_2_Hall;
+                PictureboxTuner3.Image = global::Program01.Properties.Resources.V_3_Hall;
+                PictureboxTuner4.Image = global::Program01.Properties.Resources.V_4_Hall;
+                PictureboxTuner5.Image = global::Program01.Properties.Resources.V_5_Hall;
+                PictureboxTuner6.Image = global::Program01.Properties.Resources.V_6_Hall;
+                PictureboxTuner7.Image = global::Program01.Properties.Resources.V_7_Hall;
+                PictureboxTuner8.Image = global::Program01.Properties.Resources.V_8_Hall;
+            }
+            else
+            {
+                PictureboxTuner1.Image = global::Program01.Properties.Resources.R_A1_VdP;
+                PictureboxTuner2.Image = global::Program01.Properties.Resources.R_A2_VdP;
+                PictureboxTuner3.Image = global::Program01.Properties.Resources.R_A3_VdP;
+                PictureboxTuner4.Image = global::Program01.Properties.Resources.R_A4_VdP;
+                PictureboxTuner5.Image = global::Program01.Properties.Resources.R_B1_VdP;
+                PictureboxTuner6.Image = global::Program01.Properties.Resources.R_B2_VdP;
+                PictureboxTuner7.Image = global::Program01.Properties.Resources.R_B3_VdP;
+                PictureboxTuner8.Image = global::Program01.Properties.Resources.R_B4_VdP;
+            }
+        }
+
+        protected virtual void OnToggleChanged()
+        {
+            ToggleChanged?.Invoke(this, EventArgs.Empty);
+            ModeChanged?.Invoke(this, isModes);
+
+            PanelToggleSwitchBase.BackColor = isModes ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
         }
 
         private void PictureboxTuner1_Click(object sender, EventArgs e)
@@ -1391,7 +1392,7 @@ namespace Program01
             {
                 if (DataChildForm == null || DataChildForm.IsDisposed)
                 {
-                    DataChildForm = new MeasurementSettingsDataChildForm();
+                    DataChildForm = new DataChildForm();
                     OpenChildForm(DataChildForm);
                 }
                 else
@@ -1414,23 +1415,47 @@ namespace Program01
             }
         }
 
-        private void OpenChildForm(Form childForm)
+        private void ButtonTunerSettings_Click(object sender, EventArgs e)
         {
             try
             {
-                if (CurrentTunerandDataChildForm != null && CurrentTunerandDataChildForm != childForm)
+                if (ChannelSettingsChildForm == null || ChannelSettingsChildForm.IsDisposed)
                 {
-                    CurrentTunerandDataChildForm.Hide();
+                    ChannelSettingsChildForm = new ChannelSettingsChildForm(this);
+                    OpenChildForm(ChannelSettingsChildForm);
+                }
+                else
+                {
+                    if (!ChannelSettingsChildForm.Visible)
+                    {
+                        ChannelSettingsChildForm.Show();
+                    }
+                    OpenChildForm(ChannelSettingsChildForm);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+
+        private void OpenChildForm(Form ChildForm)
+        {
+            try
+            {
+                if (CurrentChildForm != null && CurrentChildForm != ChildForm)
+                {
+                    CurrentChildForm.Hide();
                 }
 
-                CurrentTunerandDataChildForm = childForm;
-                childForm.TopLevel = false;
-                childForm.FormBorderStyle = FormBorderStyle.None;
-                childForm.Dock = DockStyle.Fill;
-                PanelTunerandData.Controls.Add(childForm);
-                PanelTunerandData.Tag = childForm;
-                childForm.BringToFront();
-                childForm.Show();
+                CurrentChildForm = ChildForm;
+                ChildForm.TopLevel = false;
+                ChildForm.FormBorderStyle = FormBorderStyle.None;
+                ChildForm.Dock = DockStyle.Fill;
+                PanelTunerandData.Controls.Add(ChildForm);
+                PanelTunerandData.Tag = ChildForm;
+                ChildForm.BringToFront();
+                ChildForm.Show();
             }
             catch (Exception ex)
             {
@@ -1442,7 +1467,7 @@ namespace Program01
         {
             try
             {
-                CurrentTunerandDataChildForm?.Hide();
+                CurrentChildForm?.Hide();
             }
             catch (Exception ex)
             {

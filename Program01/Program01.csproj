@@ -123,11 +123,17 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MeasurementSettingsDataChildForm.cs">
+    <Compile Include="DataChildForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MeasurementSettingsDataChildForm.Designer.cs">
-      <DependentUpon>MeasurementSettingsDataChildForm.cs</DependentUpon>
+    <Compile Include="DataChildForm.Designer.cs">
+      <DependentUpon>DataChildForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ChannelSettingsChildForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ChannelSettingsChildForm.Designer.cs">
+      <DependentUpon>ChannelSettingsChildForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -135,72 +141,75 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="HelpChildForm.cs">
+    <Compile Include="HelpForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="HelpChildForm.Designer.cs">
-      <DependentUpon>HelpChildForm.cs</DependentUpon>
+    <Compile Include="HelpForm.Designer.cs">
+      <DependentUpon>HelpForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MeasurementSettingsChildForm.cs">
+    <Compile Include="MeasurementSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MeasurementSettingsChildForm.Designer.cs">
-      <DependentUpon>MeasurementSettingsChildForm.cs</DependentUpon>
+    <Compile Include="MeasurementSettingsForm.Designer.cs">
+      <DependentUpon>MeasurementSettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="VdPMethodTotalVoltageChildForm.cs">
+    <Compile Include="VdPTotalMeasureValuesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="VdPMethodTotalVoltageChildForm.Designer.cs">
-      <DependentUpon>VdPMethodTotalVoltageChildForm.cs</DependentUpon>
+    <Compile Include="VdPTotalMeasureValuesForm.Designer.cs">
+      <DependentUpon>VdPTotalMeasureValuesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="VdPMethodMeasurementResultsChildForm.cs">
+    <Compile Include="VdPMeasurementResultsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="VdPMethodMeasurementResultsChildForm.Designer.cs">
-      <DependentUpon>VdPMethodMeasurementResultsChildForm.cs</DependentUpon>
+    <Compile Include="VdPMeasurementResultsForm.Designer.cs">
+      <DependentUpon>VdPMeasurementResultsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="HallEffectTotalVoltageChildForm.cs">
+    <Compile Include="HallTotalMeasureValuesForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="HallEffectTotalVoltageChildForm.Designer.cs">
-      <DependentUpon>HallEffectTotalVoltageChildForm.cs</DependentUpon>
+    <Compile Include="HallTotalMeasureValuesForm.Designer.cs">
+      <DependentUpon>HallTotalMeasureValuesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="HallEffectMeasurementResultsChildForm.cs">
+    <Compile Include="HallMeasurementResultsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="HallEffectMeasurementResultsChildForm.Designer.cs">
-      <DependentUpon>HallEffectMeasurementResultsChildForm.cs</DependentUpon>
+    <Compile Include="HallMeasurementResultsForm.Designer.cs">
+      <DependentUpon>HallMeasurementResultsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="MeasurementSettingsDataChildForm.resx">
-      <DependentUpon>MeasurementSettingsDataChildForm.cs</DependentUpon>
+    <EmbeddedResource Include="DataChildForm.resx">
+      <DependentUpon>DataChildForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ChannelSettingsChildForm.resx">
+      <DependentUpon>ChannelSettingsChildForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HelpChildForm.resx">
-      <DependentUpon>HelpChildForm.cs</DependentUpon>
+    <EmbeddedResource Include="HelpForm.resx">
+      <DependentUpon>HelpForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MeasurementSettingsChildForm.resx">
-      <DependentUpon>MeasurementSettingsChildForm.cs</DependentUpon>
+    <EmbeddedResource Include="MeasurementSettingsForm.resx">
+      <DependentUpon>MeasurementSettingsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="VdPMethodTotalVoltageChildForm.resx">
-      <DependentUpon>VdPMethodTotalVoltageChildForm.cs</DependentUpon>
+    <EmbeddedResource Include="VdPTotalMeasureValuesForm.resx">
+      <DependentUpon>VdPTotalMeasureValuesForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="VdPMethodMeasurementResultsChildForm.resx">
-      <DependentUpon>VdPMethodMeasurementResultsChildForm.cs</DependentUpon>
+    <EmbeddedResource Include="VdPMeasurementResultsForm.resx">
+      <DependentUpon>VdPMeasurementResultsForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HallEffectTotalVoltageChildForm.resx">
-      <DependentUpon>HallEffectTotalVoltageChildForm.cs</DependentUpon>
+    <EmbeddedResource Include="HallTotalMeasureValuesForm.resx">
+      <DependentUpon>HallTotalMeasureValuesForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HallEffectMeasurementResultsChildForm.resx">
-      <DependentUpon>HallEffectMeasurementResultsChildForm.cs</DependentUpon>
+    <EmbeddedResource Include="HallMeasurementResultsForm.resx">
+      <DependentUpon>HallMeasurementResultsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

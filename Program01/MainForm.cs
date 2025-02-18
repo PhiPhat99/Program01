@@ -245,7 +245,7 @@ namespace Program01
                 {
                     ActivateButton(sender, RGBColors.Color1);
                     UpdatePath("Help");
-                    OpenChildForm(new HelpChildForm());
+                    OpenChildForm(new HelpForm());
                     ToggleSubMenuVisibility(null);
                 }
             }
@@ -267,7 +267,7 @@ namespace Program01
                 //{
                     ActivateButton(sender, RGBColors.Color2);
                     UpdatePath("Measurement Settings");
-                    OpenChildForm(new MeasurementSettingsChildForm());
+                    OpenChildForm(new MeasurementSettingsForm());
                     ToggleSubMenuVisibility(null);
                 //}
             }
@@ -350,13 +350,13 @@ namespace Program01
         private void ButtonHallTotalVoltage_Click(object sender, EventArgs e)
         {
             UpdatePath("Hall Effect Measurement", "Total Voltage");
-            OpenChildForm(new HallEffectMeasurementResultsChildForm());
+            OpenChildForm(new HallMeasurementResultsForm());
         }
 
         private void ButtonHallMeasurementResults_Click(object sender, EventArgs e)
         {
             UpdatePath("Hall Effect Measurement", "Measurement Results");
-            OpenChildForm(new HallEffectMeasurementResultsChildForm());
+            OpenChildForm(new HallMeasurementResultsForm());
         }
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]

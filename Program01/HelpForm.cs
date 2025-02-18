@@ -10,12 +10,11 @@ using System.Windows.Forms;
 
 namespace Program01
 {
-    public partial class HallEffectTotalVoltageChildForm : Form
+    public partial class HelpForm : Form
     {
-        public HallEffectTotalVoltageChildForm()
+        public HelpForm()
         {
             InitializeComponent();
         }
-
     }
 }

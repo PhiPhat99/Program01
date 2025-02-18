@@ -10,11 +10,12 @@ using System.Windows.Forms;
 
 namespace Program01
 {
-    public partial class HallEffectMeasurementResultsChildForm : Form
+    public partial class HallTotalMeasureValuesForm : Form
     {
-        public HallEffectMeasurementResultsChildForm()
+        public HallTotalMeasureValuesForm()
         {
             InitializeComponent();
         }
+
     }
 }

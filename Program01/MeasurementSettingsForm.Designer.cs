@@ -1,6 +1,6 @@
 ﻿namespace Program01
 {
-    partial class MeasurementSettingsChildForm
+    partial class MeasurementSettingsForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MeasurementSettingsChildForm));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MeasurementSettingsForm));
             this.LabelSMUVISA = new System.Windows.Forms.Label();
             this.LabelSSVISA = new System.Windows.Forms.Label();
             this.LabelRsense = new System.Windows.Forms.Label();
@@ -71,6 +71,7 @@
             this.PictureboxTuner2 = new System.Windows.Forms.PictureBox();
             this.PictureboxTuner1 = new System.Windows.Forms.PictureBox();
             this.PanelButtonTabBar = new System.Windows.Forms.Panel();
+            this.ButtonTunerSettings = new System.Windows.Forms.Button();
             this.ButtonData = new System.Windows.Forms.Button();
             this.ButtonTuner = new System.Windows.Forms.Button();
             this.IconbuttonTunerTest = new FontAwesome.Sharp.IconButton();
@@ -544,6 +545,7 @@
             // 
             this.PanelButtonTabBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(248)))), ((int)(((byte)(231)))));
             this.PanelButtonTabBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.PanelButtonTabBar.Controls.Add(this.ButtonTunerSettings);
             this.PanelButtonTabBar.Controls.Add(this.ButtonData);
             this.PanelButtonTabBar.Controls.Add(this.ButtonTuner);
             this.PanelButtonTabBar.Dock = System.Windows.Forms.DockStyle.Top;
@@ -553,6 +555,23 @@
             this.PanelButtonTabBar.Size = new System.Drawing.Size(790, 30);
             this.PanelButtonTabBar.TabIndex = 0;
             // 
+            // ButtonTunerSettings
+            // 
+            this.ButtonTunerSettings.BackColor = System.Drawing.Color.Transparent;
+            this.ButtonTunerSettings.Dock = System.Windows.Forms.DockStyle.Left;
+            this.ButtonTunerSettings.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
+            this.ButtonTunerSettings.FlatAppearance.BorderSize = 0;
+            this.ButtonTunerSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonTunerSettings.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ButtonTunerSettings.Location = new System.Drawing.Point(180, 0);
+            this.ButtonTunerSettings.Margin = new System.Windows.Forms.Padding(0);
+            this.ButtonTunerSettings.Name = "ButtonTunerSettings";
+            this.ButtonTunerSettings.Size = new System.Drawing.Size(165, 28);
+            this.ButtonTunerSettings.TabIndex = 2;
+            this.ButtonTunerSettings.Text = "TUNER SETTINGS";
+            this.ButtonTunerSettings.UseVisualStyleBackColor = false;
+            this.ButtonTunerSettings.Click += new System.EventHandler(this.ButtonTunerSettings_Click);
+            // 
             // ButtonData
             // 
             this.ButtonData.BackColor = System.Drawing.Color.Transparent;
@@ -561,10 +580,10 @@
             this.ButtonData.FlatAppearance.BorderSize = 0;
             this.ButtonData.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ButtonData.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ButtonData.Location = new System.Drawing.Point(75, 0);
+            this.ButtonData.Location = new System.Drawing.Point(90, 0);
             this.ButtonData.Margin = new System.Windows.Forms.Padding(0);
             this.ButtonData.Name = "ButtonData";
-            this.ButtonData.Size = new System.Drawing.Size(75, 28);
+            this.ButtonData.Size = new System.Drawing.Size(90, 28);
             this.ButtonData.TabIndex = 1;
             this.ButtonData.Text = "DATA";
             this.ButtonData.UseVisualStyleBackColor = false;
@@ -581,7 +600,7 @@
             this.ButtonTuner.Location = new System.Drawing.Point(0, 0);
             this.ButtonTuner.Margin = new System.Windows.Forms.Padding(0);
             this.ButtonTuner.Name = "ButtonTuner";
-            this.ButtonTuner.Size = new System.Drawing.Size(75, 28);
+            this.ButtonTuner.Size = new System.Drawing.Size(90, 28);
             this.ButtonTuner.TabIndex = 0;
             this.ButtonTuner.Text = "TUNER";
             this.ButtonTuner.UseVisualStyleBackColor = false;
@@ -870,7 +889,7 @@
             this.LabelSourceDelay.TabIndex = 48;
             this.LabelSourceDelay.Text = "DELAY :";
             // 
-            // MeasurementSettingsChildForm
+            // MeasurementSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -931,7 +950,7 @@
             this.Controls.Add(this.IconbuttonSMUConnection);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.Name = "MeasurementSettingsChildForm";
+            this.Name = "MeasurementSettingsForm";
             this.Text = "2";
             this.Load += new System.EventHandler(this.MeasurementSettingsChildForm_Load);
             this.PanelTunerandData.ResumeLayout(false);
@@ -1021,5 +1040,6 @@
         private System.Windows.Forms.Label LabelSourceDelayUnit;
         private System.Windows.Forms.TextBox TextboxSourceDelay;
         private System.Windows.Forms.Label LabelSourceDelay;
+        private System.Windows.Forms.Button ButtonTunerSettings;
     }
 }

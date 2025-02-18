@@ -1,6 +1,6 @@
 ﻿namespace Program01
 {
-    partial class HallEffectMeasurementResultsChildForm
+    partial class HallMeasurementResultsForm
     {
         /// <summary>
         /// Required designer variable.

@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Program01
 {
-    public partial class HelpChildForm : Form
+    public partial class HallMeasurementResultsForm : Form
     {
-        public HelpChildForm()
+        public HallMeasurementResultsForm()
         {
             InitializeComponent();
         }

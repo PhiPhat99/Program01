@@ -1,6 +1,6 @@
 ﻿namespace Program01
 {
-    partial class Program01Form
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -63,11 +63,11 @@
             this.PanelSideMenu = new System.Windows.Forms.Panel();
             this.PanelHallMeasurementSubMenu = new System.Windows.Forms.Panel();
             this.ButtonHallMeasurementResults = new System.Windows.Forms.Button();
-            this.ButtonHallTotalVoltage = new System.Windows.Forms.Button();
+            this.ButtonHallTotalMeasure = new System.Windows.Forms.Button();
             this.IconbuttonHalleffectMeasurement = new FontAwesome.Sharp.IconButton();
             this.PanelVanderPauwSubMenu = new System.Windows.Forms.Panel();
             this.ButtonVdPMeasurementResults = new System.Windows.Forms.Button();
-            this.ButtonVdPTotalVoltage = new System.Windows.Forms.Button();
+            this.ButtonVdPTotalMeasure = new System.Windows.Forms.Button();
             this.IconbuttonVanderPauwMethod = new FontAwesome.Sharp.IconButton();
             this.IconbuttonMeasurementSettings = new FontAwesome.Sharp.IconButton();
             this.TimerCurrentDateandRealTime = new System.Windows.Forms.Timer(this.components);
@@ -231,11 +231,11 @@
             // 
             this.IconbuttonUserLogin.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
             this.IconbuttonUserLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonUserLogin.IconChar = FontAwesome.Sharp.IconChar.User;
+            this.IconbuttonUserLogin.IconChar = FontAwesome.Sharp.IconChar.SignIn;
             this.IconbuttonUserLogin.IconColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(161)))), ((int)(((byte)(251)))));
             this.IconbuttonUserLogin.IconFont = FontAwesome.Sharp.IconFont.Solid;
             this.IconbuttonUserLogin.IconSize = 24;
-            this.IconbuttonUserLogin.Location = new System.Drawing.Point(720, 190);
+            this.IconbuttonUserLogin.Location = new System.Drawing.Point(900, 240);
             this.IconbuttonUserLogin.Name = "IconbuttonUserLogin";
             this.IconbuttonUserLogin.Size = new System.Drawing.Size(100, 30);
             this.IconbuttonUserLogin.TabIndex = 19;
@@ -252,7 +252,7 @@
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.IconColor = System.Drawing.Color.Gold;
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.IconFont = FontAwesome.Sharp.IconFont.Solid;
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.IconSize = 24;
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.Location = new System.Drawing.Point(460, 498);
+            this.IconbuttonBrowseFileVdPandHallMeasurementPath.Location = new System.Drawing.Point(770, 558);
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.Name = "IconbuttonBrowseFileVdPandHallMeasurementPath";
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.Size = new System.Drawing.Size(110, 30);
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.TabIndex = 18;
@@ -269,7 +269,7 @@
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.IconColor = System.Drawing.Color.Gold;
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.IconFont = FontAwesome.Sharp.IconFont.Solid;
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.IconSize = 24;
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Location = new System.Drawing.Point(460, 398);
+            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Location = new System.Drawing.Point(770, 458);
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Name = "IconbuttonBrowseFileHallMeasurementDataPathOnly";
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Size = new System.Drawing.Size(110, 30);
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.TabIndex = 17;
@@ -286,7 +286,7 @@
             this.IconbuttonBrowseFileVdPDataPathOnly.IconColor = System.Drawing.Color.Gold;
             this.IconbuttonBrowseFileVdPDataPathOnly.IconFont = FontAwesome.Sharp.IconFont.Solid;
             this.IconbuttonBrowseFileVdPDataPathOnly.IconSize = 24;
-            this.IconbuttonBrowseFileVdPDataPathOnly.Location = new System.Drawing.Point(460, 300);
+            this.IconbuttonBrowseFileVdPDataPathOnly.Location = new System.Drawing.Point(770, 360);
             this.IconbuttonBrowseFileVdPDataPathOnly.Name = "IconbuttonBrowseFileVdPDataPathOnly";
             this.IconbuttonBrowseFileVdPDataPathOnly.Size = new System.Drawing.Size(110, 30);
             this.IconbuttonBrowseFileVdPDataPathOnly.TabIndex = 16;
@@ -303,7 +303,7 @@
             this.IconbuttonSaveFileVdPandHallMeasurementPath.IconColor = System.Drawing.Color.Green;
             this.IconbuttonSaveFileVdPandHallMeasurementPath.IconFont = FontAwesome.Sharp.IconFont.Solid;
             this.IconbuttonSaveFileVdPandHallMeasurementPath.IconSize = 24;
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.Location = new System.Drawing.Point(590, 498);
+            this.IconbuttonSaveFileVdPandHallMeasurementPath.Location = new System.Drawing.Point(900, 558);
             this.IconbuttonSaveFileVdPandHallMeasurementPath.Name = "IconbuttonSaveFileVdPandHallMeasurementPath";
             this.IconbuttonSaveFileVdPandHallMeasurementPath.Size = new System.Drawing.Size(90, 30);
             this.IconbuttonSaveFileVdPandHallMeasurementPath.TabIndex = 14;
@@ -320,7 +320,7 @@
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.IconColor = System.Drawing.Color.Green;
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.IconFont = FontAwesome.Sharp.IconFont.Solid;
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.IconSize = 24;
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.Location = new System.Drawing.Point(590, 398);
+            this.IconbuttonSaveFileHallMeasurementDataPathOnly.Location = new System.Drawing.Point(900, 458);
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.Name = "IconbuttonSaveFileHallMeasurementDataPathOnly";
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.Size = new System.Drawing.Size(90, 30);
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.TabIndex = 13;
@@ -337,7 +337,7 @@
             this.IconbuttonSaveFileVdPDataPathOnly.IconColor = System.Drawing.Color.Green;
             this.IconbuttonSaveFileVdPDataPathOnly.IconFont = FontAwesome.Sharp.IconFont.Solid;
             this.IconbuttonSaveFileVdPDataPathOnly.IconSize = 24;
-            this.IconbuttonSaveFileVdPDataPathOnly.Location = new System.Drawing.Point(590, 300);
+            this.IconbuttonSaveFileVdPDataPathOnly.Location = new System.Drawing.Point(900, 360);
             this.IconbuttonSaveFileVdPDataPathOnly.Name = "IconbuttonSaveFileVdPDataPathOnly";
             this.IconbuttonSaveFileVdPDataPathOnly.Size = new System.Drawing.Size(90, 30);
             this.IconbuttonSaveFileVdPDataPathOnly.TabIndex = 12;
@@ -348,36 +348,36 @@
             // 
             // TextboxFileVdPandHallMeasurementDataPath
             // 
-            this.TextboxFileVdPandHallMeasurementDataPath.Location = new System.Drawing.Point(85, 498);
+            this.TextboxFileVdPandHallMeasurementDataPath.Location = new System.Drawing.Point(85, 558);
             this.TextboxFileVdPandHallMeasurementDataPath.Multiline = true;
             this.TextboxFileVdPandHallMeasurementDataPath.Name = "TextboxFileVdPandHallMeasurementDataPath";
             this.TextboxFileVdPandHallMeasurementDataPath.ReadOnly = true;
-            this.TextboxFileVdPandHallMeasurementDataPath.Size = new System.Drawing.Size(360, 30);
+            this.TextboxFileVdPandHallMeasurementDataPath.Size = new System.Drawing.Size(640, 30);
             this.TextboxFileVdPandHallMeasurementDataPath.TabIndex = 11;
             // 
             // TextboxFileHallMeasurementDataPath
             // 
-            this.TextboxFileHallMeasurementDataPath.Location = new System.Drawing.Point(85, 398);
+            this.TextboxFileHallMeasurementDataPath.Location = new System.Drawing.Point(85, 458);
             this.TextboxFileHallMeasurementDataPath.Multiline = true;
             this.TextboxFileHallMeasurementDataPath.Name = "TextboxFileHallMeasurementDataPath";
             this.TextboxFileHallMeasurementDataPath.ReadOnly = true;
-            this.TextboxFileHallMeasurementDataPath.Size = new System.Drawing.Size(360, 30);
+            this.TextboxFileHallMeasurementDataPath.Size = new System.Drawing.Size(640, 30);
             this.TextboxFileHallMeasurementDataPath.TabIndex = 10;
             // 
             // TextboxFileVdPDataPath
             // 
-            this.TextboxFileVdPDataPath.Location = new System.Drawing.Point(85, 298);
+            this.TextboxFileVdPDataPath.Location = new System.Drawing.Point(85, 358);
             this.TextboxFileVdPDataPath.Multiline = true;
             this.TextboxFileVdPDataPath.Name = "TextboxFileVdPDataPath";
             this.TextboxFileVdPDataPath.ReadOnly = true;
-            this.TextboxFileVdPDataPath.Size = new System.Drawing.Size(360, 30);
+            this.TextboxFileVdPDataPath.Size = new System.Drawing.Size(640, 30);
             this.TextboxFileVdPDataPath.TabIndex = 9;
             // 
             // LabelUserLastname
             // 
             this.LabelUserLastname.AutoSize = true;
             this.LabelUserLastname.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelUserLastname.Location = new System.Drawing.Point(400, 190);
+            this.LabelUserLastname.Location = new System.Drawing.Point(480, 240);
             this.LabelUserLastname.Name = "LabelUserLastname";
             this.LabelUserLastname.Size = new System.Drawing.Size(104, 28);
             this.LabelUserLastname.TabIndex = 8;
@@ -385,10 +385,10 @@
             // 
             // TextboxUserLastname
             // 
-            this.TextboxUserLastname.Location = new System.Drawing.Point(510, 190);
+            this.TextboxUserLastname.Location = new System.Drawing.Point(600, 240);
             this.TextboxUserLastname.Multiline = true;
             this.TextboxUserLastname.Name = "TextboxUserLastname";
-            this.TextboxUserLastname.Size = new System.Drawing.Size(180, 30);
+            this.TextboxUserLastname.Size = new System.Drawing.Size(240, 30);
             this.TextboxUserLastname.TabIndex = 7;
             this.TextboxUserLastname.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextboxUserLastname_KeyPress);
             // 
@@ -396,7 +396,7 @@
             // 
             this.LabelUserFirstName.AutoSize = true;
             this.LabelUserFirstName.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelUserFirstName.Location = new System.Drawing.Point(80, 190);
+            this.LabelUserFirstName.Location = new System.Drawing.Point(80, 240);
             this.LabelUserFirstName.Name = "LabelUserFirstName";
             this.LabelUserFirstName.Size = new System.Drawing.Size(106, 28);
             this.LabelUserFirstName.TabIndex = 6;
@@ -404,10 +404,10 @@
             // 
             // TextboxUserFirstName
             // 
-            this.TextboxUserFirstName.Location = new System.Drawing.Point(190, 190);
+            this.TextboxUserFirstName.Location = new System.Drawing.Point(200, 240);
             this.TextboxUserFirstName.Multiline = true;
             this.TextboxUserFirstName.Name = "TextboxUserFirstName";
-            this.TextboxUserFirstName.Size = new System.Drawing.Size(180, 30);
+            this.TextboxUserFirstName.Size = new System.Drawing.Size(240, 30);
             this.TextboxUserFirstName.TabIndex = 5;
             this.TextboxUserFirstName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextboxUserName_KeyPress);
             // 
@@ -415,7 +415,7 @@
             // 
             this.LabelUserFirstNameLastname.AutoSize = true;
             this.LabelUserFirstNameLastname.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelUserFirstNameLastname.Location = new System.Drawing.Point(80, 150);
+            this.LabelUserFirstNameLastname.Location = new System.Drawing.Point(80, 190);
             this.LabelUserFirstNameLastname.Name = "LabelUserFirstNameLastname";
             this.LabelUserFirstNameLastname.Size = new System.Drawing.Size(211, 28);
             this.LabelUserFirstNameLastname.TabIndex = 4;
@@ -425,7 +425,7 @@
             // 
             this.LabelSaveVdPandHallMeasurementData.AutoSize = true;
             this.LabelSaveVdPandHallMeasurementData.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSaveVdPandHallMeasurementData.Location = new System.Drawing.Point(80, 450);
+            this.LabelSaveVdPandHallMeasurementData.Location = new System.Drawing.Point(80, 510);
             this.LabelSaveVdPandHallMeasurementData.Name = "LabelSaveVdPandHallMeasurementData";
             this.LabelSaveVdPandHallMeasurementData.Size = new System.Drawing.Size(637, 28);
             this.LabelSaveVdPandHallMeasurementData.TabIndex = 3;
@@ -435,7 +435,7 @@
             // 
             this.LabelSaveHallMeasurementDataOnly.AutoSize = true;
             this.LabelSaveHallMeasurementDataOnly.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSaveHallMeasurementDataOnly.Location = new System.Drawing.Point(80, 350);
+            this.LabelSaveHallMeasurementDataOnly.Location = new System.Drawing.Point(80, 410);
             this.LabelSaveHallMeasurementDataOnly.Name = "LabelSaveHallMeasurementDataOnly";
             this.LabelSaveHallMeasurementDataOnly.Size = new System.Drawing.Size(440, 28);
             this.LabelSaveHallMeasurementDataOnly.TabIndex = 2;
@@ -445,7 +445,7 @@
             // 
             this.LabelSaveVdPDataOnly.AutoSize = true;
             this.LabelSaveVdPDataOnly.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSaveVdPDataOnly.Location = new System.Drawing.Point(80, 250);
+            this.LabelSaveVdPDataOnly.Location = new System.Drawing.Point(80, 310);
             this.LabelSaveVdPDataOnly.Name = "LabelSaveVdPDataOnly";
             this.LabelSaveVdPDataOnly.Size = new System.Drawing.Size(417, 28);
             this.LabelSaveVdPDataOnly.TabIndex = 1;
@@ -453,11 +453,13 @@
             // 
             // LabelProgramTitle
             // 
-            this.LabelProgramTitle.Font = new System.Drawing.Font("Segoe UI", 21F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelProgramTitle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.LabelProgramTitle.Font = new System.Drawing.Font("Segoe UI", 22F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LabelProgramTitle.ForeColor = System.Drawing.SystemColors.ControlText;
             this.LabelProgramTitle.Location = new System.Drawing.Point(30, 30);
             this.LabelProgramTitle.Name = "LabelProgramTitle";
-            this.LabelProgramTitle.Size = new System.Drawing.Size(1200, 100);
+            this.LabelProgramTitle.Size = new System.Drawing.Size(1200, 120);
             this.LabelProgramTitle.TabIndex = 0;
             this.LabelProgramTitle.Text = "SOFTWARE PROGRAM FOR CONTROLLING INSTRUMENTS OF HALL EFFECT MEASUREMENT";
             // 
@@ -526,7 +528,7 @@
             // PanelHallMeasurementSubMenu
             // 
             this.PanelHallMeasurementSubMenu.Controls.Add(this.ButtonHallMeasurementResults);
-            this.PanelHallMeasurementSubMenu.Controls.Add(this.ButtonHallTotalVoltage);
+            this.PanelHallMeasurementSubMenu.Controls.Add(this.ButtonHallTotalMeasure);
             this.PanelHallMeasurementSubMenu.Dock = System.Windows.Forms.DockStyle.Top;
             this.PanelHallMeasurementSubMenu.ForeColor = System.Drawing.Color.Snow;
             this.PanelHallMeasurementSubMenu.Location = new System.Drawing.Point(0, 510);
@@ -551,21 +553,21 @@
             this.ButtonHallMeasurementResults.UseVisualStyleBackColor = true;
             this.ButtonHallMeasurementResults.Click += new System.EventHandler(this.ButtonHallMeasurementResults_Click);
             // 
-            // ButtonHallTotalVoltage
+            // ButtonHallTotalMeasure
             // 
-            this.ButtonHallTotalVoltage.Dock = System.Windows.Forms.DockStyle.Top;
-            this.ButtonHallTotalVoltage.FlatAppearance.BorderSize = 0;
-            this.ButtonHallTotalVoltage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonHallTotalVoltage.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ButtonHallTotalVoltage.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.ButtonHallTotalVoltage.Location = new System.Drawing.Point(0, 0);
-            this.ButtonHallTotalVoltage.Margin = new System.Windows.Forms.Padding(0);
-            this.ButtonHallTotalVoltage.Name = "ButtonHallTotalVoltage";
-            this.ButtonHallTotalVoltage.Size = new System.Drawing.Size(240, 45);
-            this.ButtonHallTotalVoltage.TabIndex = 3;
-            this.ButtonHallTotalVoltage.Text = "Total Voltage";
-            this.ButtonHallTotalVoltage.UseVisualStyleBackColor = true;
-            this.ButtonHallTotalVoltage.Click += new System.EventHandler(this.ButtonHallTotalVoltage_Click);
+            this.ButtonHallTotalMeasure.Dock = System.Windows.Forms.DockStyle.Top;
+            this.ButtonHallTotalMeasure.FlatAppearance.BorderSize = 0;
+            this.ButtonHallTotalMeasure.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonHallTotalMeasure.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ButtonHallTotalMeasure.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.ButtonHallTotalMeasure.Location = new System.Drawing.Point(0, 0);
+            this.ButtonHallTotalMeasure.Margin = new System.Windows.Forms.Padding(0);
+            this.ButtonHallTotalMeasure.Name = "ButtonHallTotalMeasure";
+            this.ButtonHallTotalMeasure.Size = new System.Drawing.Size(240, 45);
+            this.ButtonHallTotalMeasure.TabIndex = 3;
+            this.ButtonHallTotalMeasure.Text = "Total Measure";
+            this.ButtonHallTotalMeasure.UseVisualStyleBackColor = true;
+            this.ButtonHallTotalMeasure.Click += new System.EventHandler(this.ButtonHallTotalMeasure_Click);
             // 
             // IconbuttonHalleffectMeasurement
             // 
@@ -592,7 +594,7 @@
             // PanelVanderPauwSubMenu
             // 
             this.PanelVanderPauwSubMenu.Controls.Add(this.ButtonVdPMeasurementResults);
-            this.PanelVanderPauwSubMenu.Controls.Add(this.ButtonVdPTotalVoltage);
+            this.PanelVanderPauwSubMenu.Controls.Add(this.ButtonVdPTotalMeasure);
             this.PanelVanderPauwSubMenu.Dock = System.Windows.Forms.DockStyle.Top;
             this.PanelVanderPauwSubMenu.Location = new System.Drawing.Point(0, 360);
             this.PanelVanderPauwSubMenu.Name = "PanelVanderPauwSubMenu";
@@ -616,21 +618,21 @@
             this.ButtonVdPMeasurementResults.UseVisualStyleBackColor = true;
             this.ButtonVdPMeasurementResults.Click += new System.EventHandler(this.ButtonVdPMeasurementResults_Click);
             // 
-            // ButtonVdPTotalVoltage
+            // ButtonVdPTotalMeasure
             // 
-            this.ButtonVdPTotalVoltage.Dock = System.Windows.Forms.DockStyle.Top;
-            this.ButtonVdPTotalVoltage.FlatAppearance.BorderSize = 0;
-            this.ButtonVdPTotalVoltage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonVdPTotalVoltage.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ButtonVdPTotalVoltage.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.ButtonVdPTotalVoltage.Location = new System.Drawing.Point(0, 0);
-            this.ButtonVdPTotalVoltage.Margin = new System.Windows.Forms.Padding(0);
-            this.ButtonVdPTotalVoltage.Name = "ButtonVdPTotalVoltage";
-            this.ButtonVdPTotalVoltage.Size = new System.Drawing.Size(240, 45);
-            this.ButtonVdPTotalVoltage.TabIndex = 3;
-            this.ButtonVdPTotalVoltage.Text = "Total Voltage";
-            this.ButtonVdPTotalVoltage.UseVisualStyleBackColor = true;
-            this.ButtonVdPTotalVoltage.Click += new System.EventHandler(this.ButtonVdPTotalVoltage_Click);
+            this.ButtonVdPTotalMeasure.Dock = System.Windows.Forms.DockStyle.Top;
+            this.ButtonVdPTotalMeasure.FlatAppearance.BorderSize = 0;
+            this.ButtonVdPTotalMeasure.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonVdPTotalMeasure.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ButtonVdPTotalMeasure.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.ButtonVdPTotalMeasure.Location = new System.Drawing.Point(0, 0);
+            this.ButtonVdPTotalMeasure.Margin = new System.Windows.Forms.Padding(0);
+            this.ButtonVdPTotalMeasure.Name = "ButtonVdPTotalMeasure";
+            this.ButtonVdPTotalMeasure.Size = new System.Drawing.Size(240, 45);
+            this.ButtonVdPTotalMeasure.TabIndex = 3;
+            this.ButtonVdPTotalMeasure.Text = "Total Measure";
+            this.ButtonVdPTotalMeasure.UseVisualStyleBackColor = true;
+            this.ButtonVdPTotalMeasure.Click += new System.EventHandler(this.ButtonVdPTotalMeasure_Click);
             // 
             // IconbuttonVanderPauwMethod
             // 
@@ -682,7 +684,7 @@
             this.TimerCurrentDateandRealTime.Interval = 1000;
             this.TimerCurrentDateandRealTime.Tick += new System.EventHandler(this.TimerCurrentDateandRealTime_Tick);
             // 
-            // Program01Form
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -693,9 +695,8 @@
             this.Controls.Add(this.PanelTabBar);
             this.Controls.Add(this.PanelSideMenu);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "Program01Form";
+            this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Program01";
             this.PanelTabBar.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxMinimizeProgram)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxExitProgram)).EndInit();
@@ -728,11 +729,11 @@
         private FontAwesome.Sharp.IconButton IconbuttonMeasurementSettings;
         private System.Windows.Forms.Panel PanelHallMeasurementSubMenu;
         private System.Windows.Forms.Button ButtonHallMeasurementResults;
-        private System.Windows.Forms.Button ButtonHallTotalVoltage;
+        private System.Windows.Forms.Button ButtonHallTotalMeasure;
         private FontAwesome.Sharp.IconButton IconbuttonHalleffectMeasurement;
         private System.Windows.Forms.Panel PanelVanderPauwSubMenu;
         private System.Windows.Forms.Button ButtonVdPMeasurementResults;
-        private System.Windows.Forms.Button ButtonVdPTotalVoltage;
+        private System.Windows.Forms.Button ButtonVdPTotalMeasure;
         private FontAwesome.Sharp.IconButton IconbuttonVanderPauwMethod;
         private System.Windows.Forms.Label LabelProgramTitle;
         private System.Windows.Forms.Label LabelSaveVdPDataOnly;

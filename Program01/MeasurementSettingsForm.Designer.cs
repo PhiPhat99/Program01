@@ -71,9 +71,9 @@
             this.PictureboxTuner2 = new System.Windows.Forms.PictureBox();
             this.PictureboxTuner1 = new System.Windows.Forms.PictureBox();
             this.PanelButtonTabBar = new System.Windows.Forms.Panel();
-            this.ButtonTunerSettings = new System.Windows.Forms.Button();
+            this.ButtonChannelSettings = new System.Windows.Forms.Button();
             this.ButtonData = new System.Windows.Forms.Button();
-            this.ButtonTuner = new System.Windows.Forms.Button();
+            this.ButtonChannel = new System.Windows.Forms.Button();
             this.IconbuttonTunerTest = new FontAwesome.Sharp.IconButton();
             this.ComboboxVISASMUIOPort = new System.Windows.Forms.ComboBox();
             this.ComboboxVISASSIOPort = new System.Windows.Forms.ComboBox();
@@ -545,9 +545,9 @@
             // 
             this.PanelButtonTabBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(248)))), ((int)(((byte)(231)))));
             this.PanelButtonTabBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PanelButtonTabBar.Controls.Add(this.ButtonTunerSettings);
+            this.PanelButtonTabBar.Controls.Add(this.ButtonChannelSettings);
             this.PanelButtonTabBar.Controls.Add(this.ButtonData);
-            this.PanelButtonTabBar.Controls.Add(this.ButtonTuner);
+            this.PanelButtonTabBar.Controls.Add(this.ButtonChannel);
             this.PanelButtonTabBar.Dock = System.Windows.Forms.DockStyle.Top;
             this.PanelButtonTabBar.Location = new System.Drawing.Point(0, 0);
             this.PanelButtonTabBar.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -555,22 +555,22 @@
             this.PanelButtonTabBar.Size = new System.Drawing.Size(790, 30);
             this.PanelButtonTabBar.TabIndex = 0;
             // 
-            // ButtonTunerSettings
+            // ButtonChannelSettings
             // 
-            this.ButtonTunerSettings.BackColor = System.Drawing.Color.Transparent;
-            this.ButtonTunerSettings.Dock = System.Windows.Forms.DockStyle.Left;
-            this.ButtonTunerSettings.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.ButtonTunerSettings.FlatAppearance.BorderSize = 0;
-            this.ButtonTunerSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonTunerSettings.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ButtonTunerSettings.Location = new System.Drawing.Point(180, 0);
-            this.ButtonTunerSettings.Margin = new System.Windows.Forms.Padding(0);
-            this.ButtonTunerSettings.Name = "ButtonTunerSettings";
-            this.ButtonTunerSettings.Size = new System.Drawing.Size(165, 28);
-            this.ButtonTunerSettings.TabIndex = 2;
-            this.ButtonTunerSettings.Text = "TUNER SETTINGS";
-            this.ButtonTunerSettings.UseVisualStyleBackColor = false;
-            this.ButtonTunerSettings.Click += new System.EventHandler(this.ButtonTunerSettings_Click);
+            this.ButtonChannelSettings.BackColor = System.Drawing.Color.Transparent;
+            this.ButtonChannelSettings.Dock = System.Windows.Forms.DockStyle.Left;
+            this.ButtonChannelSettings.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
+            this.ButtonChannelSettings.FlatAppearance.BorderSize = 0;
+            this.ButtonChannelSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonChannelSettings.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ButtonChannelSettings.Location = new System.Drawing.Point(190, 0);
+            this.ButtonChannelSettings.Margin = new System.Windows.Forms.Padding(0);
+            this.ButtonChannelSettings.Name = "ButtonChannelSettings";
+            this.ButtonChannelSettings.Size = new System.Drawing.Size(175, 28);
+            this.ButtonChannelSettings.TabIndex = 2;
+            this.ButtonChannelSettings.Text = "CHANNEL SETTINGS";
+            this.ButtonChannelSettings.UseVisualStyleBackColor = false;
+            this.ButtonChannelSettings.Click += new System.EventHandler(this.ButtonTunerSettings_Click);
             // 
             // ButtonData
             // 
@@ -580,7 +580,7 @@
             this.ButtonData.FlatAppearance.BorderSize = 0;
             this.ButtonData.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ButtonData.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ButtonData.Location = new System.Drawing.Point(90, 0);
+            this.ButtonData.Location = new System.Drawing.Point(100, 0);
             this.ButtonData.Margin = new System.Windows.Forms.Padding(0);
             this.ButtonData.Name = "ButtonData";
             this.ButtonData.Size = new System.Drawing.Size(90, 28);
@@ -589,22 +589,22 @@
             this.ButtonData.UseVisualStyleBackColor = false;
             this.ButtonData.Click += new System.EventHandler(this.ButtonData_Click);
             // 
-            // ButtonTuner
+            // ButtonChannel
             // 
-            this.ButtonTuner.BackColor = System.Drawing.Color.Transparent;
-            this.ButtonTuner.Dock = System.Windows.Forms.DockStyle.Left;
-            this.ButtonTuner.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.ButtonTuner.FlatAppearance.BorderSize = 0;
-            this.ButtonTuner.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonTuner.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ButtonTuner.Location = new System.Drawing.Point(0, 0);
-            this.ButtonTuner.Margin = new System.Windows.Forms.Padding(0);
-            this.ButtonTuner.Name = "ButtonTuner";
-            this.ButtonTuner.Size = new System.Drawing.Size(90, 28);
-            this.ButtonTuner.TabIndex = 0;
-            this.ButtonTuner.Text = "TUNER";
-            this.ButtonTuner.UseVisualStyleBackColor = false;
-            this.ButtonTuner.Click += new System.EventHandler(this.ButtonTuner_Click);
+            this.ButtonChannel.BackColor = System.Drawing.Color.Transparent;
+            this.ButtonChannel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.ButtonChannel.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
+            this.ButtonChannel.FlatAppearance.BorderSize = 0;
+            this.ButtonChannel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonChannel.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ButtonChannel.Location = new System.Drawing.Point(0, 0);
+            this.ButtonChannel.Margin = new System.Windows.Forms.Padding(0);
+            this.ButtonChannel.Name = "ButtonChannel";
+            this.ButtonChannel.Size = new System.Drawing.Size(100, 28);
+            this.ButtonChannel.TabIndex = 0;
+            this.ButtonChannel.Text = "CHANNEL";
+            this.ButtonChannel.UseVisualStyleBackColor = false;
+            this.ButtonChannel.Click += new System.EventHandler(this.ButtonTuner_Click);
             // 
             // IconbuttonTunerTest
             // 
@@ -1009,7 +1009,7 @@
         private FontAwesome.Sharp.IconButton IconbuttonClearSettings;
         private FontAwesome.Sharp.IconButton IconbuttonRunMeasurement;
         private System.Windows.Forms.Panel PanelButtonTabBar;
-        private System.Windows.Forms.Button ButtonTuner;
+        private System.Windows.Forms.Button ButtonChannel;
         private System.Windows.Forms.Button ButtonData;
         private System.Windows.Forms.ComboBox ComboboxVISASMUIOPort;
         private System.Windows.Forms.ComboBox ComboboxVISASSIOPort;
@@ -1040,6 +1040,6 @@
         private System.Windows.Forms.Label LabelSourceDelayUnit;
         private System.Windows.Forms.TextBox TextboxSourceDelay;
         private System.Windows.Forms.Label LabelSourceDelay;
-        private System.Windows.Forms.Button ButtonTunerSettings;
+        private System.Windows.Forms.Button ButtonChannelSettings;
     }
 }

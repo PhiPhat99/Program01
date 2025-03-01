@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Program01
 {
-    public partial class VdPMeasurementResultsChildForm : Form
+    public partial class VdPMeasurementResultsForm : Form
     {
-        public VdPMeasurementResultsChildForm()
+        public VdPMeasurementResultsForm()
         {
             InitializeComponent();
         }

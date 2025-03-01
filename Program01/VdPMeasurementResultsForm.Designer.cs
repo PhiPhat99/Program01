@@ -1,6 +1,6 @@
 ﻿namespace Program01
 {
-    partial class VdPMeasurementResultsChildForm
+    partial class VdPMeasurementResultsForm
     {
         /// <summary>
         /// Required designer variable.

@@ -164,11 +164,11 @@ namespace Program01
         {
             try
             {
-                TextboxMaxMeasureValue.Text = MaxMeasure.ToString("F6");
-                TextboxMinMeasureValue.Text = MinMeasure.ToString("F6");
-                TextboxMaxSourceValue.Text = MaxSource.ToString("F6");
-                TextboxMinSourceValue.Text = MinSource.ToString("F6");
-                TextboxSlopeValue.Text = Slope.ToString("F6");
+                TextboxMaxMeasureValue.Text = MaxMeasure.ToString("F5");
+                TextboxMinMeasureValue.Text = MinMeasure.ToString("F5");
+                TextboxMaxSourceValue.Text = MaxSource.ToString("F5");
+                TextboxMinSourceValue.Text = MinSource.ToString("F5");
+                TextboxSlopeValue.Text = Slope.ToString("F5");
 
                 if (GlobalSettings.SourceMode == "Voltage" && GlobalSettings.MeasureMode == "Voltage")
                 {

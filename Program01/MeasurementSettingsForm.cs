@@ -1193,7 +1193,7 @@ namespace Program01
 
                 if(isModes)
                 {
-                    CollectVdPTotalMeasurementClass.Instance.AddMeasurement();
+                    //CollectVdPTotalMeasurementClass.Instance.AddMeasurement();
                 }
                 else
                 {

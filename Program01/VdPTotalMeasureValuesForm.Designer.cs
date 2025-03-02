@@ -209,11 +209,12 @@
             dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.DatagridviewVdPTotalMesure.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            this.DatagridviewVdPTotalMesure.RowHeadersVisible = false;
             this.DatagridviewVdPTotalMesure.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             this.DatagridviewVdPTotalMesure.RowTemplate.Height = 24;
-            this.DatagridviewVdPTotalMesure.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
             this.DatagridviewVdPTotalMesure.Size = new System.Drawing.Size(600, 600);
             this.DatagridviewVdPTotalMesure.TabIndex = 1;
+            this.DatagridviewVdPTotalMesure.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.DatagridviewVdPTotalMesure_CellFormatting);
             // 
             // TunerMeasure1
             // 
@@ -290,6 +291,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "VdPTotalMeasureValueForm";
             this.Text = "Van der Pauw Total Voltage Form";
+            this.Load += new System.EventHandler(this.VdPTotalMeasureValueForm_Load);
             this.tabControl1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DatagridviewVdPTotalMesure)).EndInit();
             this.ResumeLayout(false);

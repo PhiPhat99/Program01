@@ -152,11 +152,11 @@
             this.LabelUserLogin.AutoSize = true;
             this.LabelUserLogin.BackColor = System.Drawing.Color.Transparent;
             this.LabelUserLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.LabelUserLogin.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelUserLogin.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LabelUserLogin.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.LabelUserLogin.Location = new System.Drawing.Point(950, 90);
+            this.LabelUserLogin.Location = new System.Drawing.Point(930, 90);
             this.LabelUserLogin.Name = "LabelUserLogin";
-            this.LabelUserLogin.Size = new System.Drawing.Size(65, 28);
+            this.LabelUserLogin.Size = new System.Drawing.Size(66, 28);
             this.LabelUserLogin.TabIndex = 3;
             this.LabelUserLogin.Text = "Guest";
             // 
@@ -166,11 +166,11 @@
             this.LabelCurrentDateandRealTime.AutoSize = true;
             this.LabelCurrentDateandRealTime.BackColor = System.Drawing.Color.Transparent;
             this.LabelCurrentDateandRealTime.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.LabelCurrentDateandRealTime.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelCurrentDateandRealTime.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LabelCurrentDateandRealTime.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.LabelCurrentDateandRealTime.Location = new System.Drawing.Point(950, 50);
+            this.LabelCurrentDateandRealTime.Location = new System.Drawing.Point(930, 30);
             this.LabelCurrentDateandRealTime.Name = "LabelCurrentDateandRealTime";
-            this.LabelCurrentDateandRealTime.Size = new System.Drawing.Size(168, 28);
+            this.LabelCurrentDateandRealTime.Size = new System.Drawing.Size(170, 28);
             this.LabelCurrentDateandRealTime.TabIndex = 2;
             this.LabelCurrentDateandRealTime.Text = "--/--/----   --:--:--";
             // 
@@ -352,7 +352,7 @@
             this.TextboxFileVdPandHallMeasurementDataPath.Multiline = true;
             this.TextboxFileVdPandHallMeasurementDataPath.Name = "TextboxFileVdPandHallMeasurementDataPath";
             this.TextboxFileVdPandHallMeasurementDataPath.ReadOnly = true;
-            this.TextboxFileVdPandHallMeasurementDataPath.Size = new System.Drawing.Size(640, 30);
+            this.TextboxFileVdPandHallMeasurementDataPath.Size = new System.Drawing.Size(555, 30);
             this.TextboxFileVdPandHallMeasurementDataPath.TabIndex = 11;
             // 
             // TextboxFileHallMeasurementDataPath
@@ -361,7 +361,7 @@
             this.TextboxFileHallMeasurementDataPath.Multiline = true;
             this.TextboxFileHallMeasurementDataPath.Name = "TextboxFileHallMeasurementDataPath";
             this.TextboxFileHallMeasurementDataPath.ReadOnly = true;
-            this.TextboxFileHallMeasurementDataPath.Size = new System.Drawing.Size(640, 30);
+            this.TextboxFileHallMeasurementDataPath.Size = new System.Drawing.Size(555, 30);
             this.TextboxFileHallMeasurementDataPath.TabIndex = 10;
             // 
             // TextboxFileVdPDataPath
@@ -370,7 +370,7 @@
             this.TextboxFileVdPDataPath.Multiline = true;
             this.TextboxFileVdPDataPath.Name = "TextboxFileVdPDataPath";
             this.TextboxFileVdPDataPath.ReadOnly = true;
-            this.TextboxFileVdPDataPath.Size = new System.Drawing.Size(640, 30);
+            this.TextboxFileVdPDataPath.Size = new System.Drawing.Size(555, 30);
             this.TextboxFileVdPDataPath.TabIndex = 9;
             // 
             // LabelUserLastname

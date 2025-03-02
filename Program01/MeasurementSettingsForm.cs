@@ -220,13 +220,13 @@ namespace Program01
                 set { CMagneticFieldsValue = value; OnSettingsChanged?.Invoke(); }
             }
 
-  public static string StartUnit { get; set; }
-    public static string StopUnit { get; set; }
-    public static string StepUnit { get; set; }
-    public static string SourceDelayUnit { get; set; }
-    public static string SourceLimitLevelUnit { get; set; }
-    public static string ThicknessUnit { get; set; }
-    public static string MagneticFieldsUnit { get; set; }
+            public static string StartUnit { get; set; }
+            public static string StopUnit { get; set; }
+            public static string StepUnit { get; set; }
+            public static string SourceDelayUnit { get; set; }
+            public static string SourceLimitLevelUnit { get; set; }
+            public static string ThicknessUnit { get; set; }
+            public static string MagneticFieldsUnit { get; set; }
         }
 
         private void SaveToGlobal()
@@ -1112,7 +1112,7 @@ namespace Program01
                     }
                     else
                     {
-                        string allValues = $"Sense: {RsenseMode}, Measure: {MeasureMode}, Source: {SourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {SourceLimitMode}, Limit Level: {TextboxSourceLimitLevel .Text} {ComboboxSourceLimitLevelUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}";
+                        string allValues = $"Sense: {RsenseMode}, Measure: {MeasureMode}, Source: {SourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {SourceLimitMode}, Limit Level: {TextboxSourceLimitLevel.Text} {ComboboxSourceLimitLevelUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}";
                         Debug.WriteLine($"{allValues}.");
                     }
 
@@ -1188,7 +1188,17 @@ namespace Program01
                     return;
                 }
 
+                CollectVdPTotalMeasurementClass.Instance.ClearMeasurements();
                 RunMeasurement();
+
+                if(isModes)
+                {
+                    CollectVdPTotalMeasurementClass.Instance.AddMeasurement();
+                }
+                else
+                {
+
+                }
             }
             catch (Exception ex)
             {
@@ -1748,6 +1758,32 @@ namespace Program01
         private void MeasurementSettingsChildForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveToGlobal();
+        }
+
+        private void IconbuttonMeasure_Click(object sender, EventArgs e)
+        {
+            Random rand = new Random();
+            CollectVdPTotalMeasurementClass.Instance.ClearMeasurements();
+
+            // กำหนดจำนวนแถวที่ต้องการ
+            int NumberOfRows = rand.Next(5, 10);
+
+            // สร้างค่าการวัดสุ่ม
+            for (int i = 0; i < NumberOfRows; i++)
+            {
+                double RandomVoltage1 = rand.NextDouble() * 21;
+                double RandomVoltage2 = rand.NextDouble() * 21;
+                double RandomVoltage3 = rand.NextDouble() * 21;
+                double RandomVoltage4 = rand.NextDouble() * 21;
+                double RandomVoltage5 = rand.NextDouble() * 21;
+                double RandomVoltage6 = rand.NextDouble() * 21;
+                double RandomVoltage7 = rand.NextDouble() * 21;
+                double RandomVoltage8 = rand.NextDouble() * 21;
+
+                CollectVdPTotalMeasurementClass.Instance.AddMeasurement(RandomVoltage1, RandomVoltage2, RandomVoltage3, RandomVoltage4, RandomVoltage5, RandomVoltage6, RandomVoltage7, RandomVoltage8);
+            }
+
+            MessageBox.Show("บันทึกค่าการวัดเรียบร้อยแล้ว!");
         }
     }
 }

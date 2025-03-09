@@ -206,12 +206,12 @@ namespace Program01
                         IconbuttonUserLogin.IconColor = Color.Black;
                         IconbuttonUserLogin.TextImageRelation = TextImageRelation.TextBeforeImage;
                         IconbuttonUserLogin.Text = "Logout";
-                        MessageBox.Show("You have been logged in successfully", "Information", MessageBoxButtons.OK);
+                        MessageBox.Show("You have been logged in successfully", "Login Successful", MessageBoxButtons.OK);
 
                     }
                     else
                     {
-                        MessageBox.Show("Please fill in both the Firstname - Lastname before proceeding", "Warning", MessageBoxButtons.OK);
+                        MessageBox.Show("Please fill in both the Firstname - Lastname before proceeding", "Invalid Username", MessageBoxButtons.OK);
                     }
                 }
                 else
@@ -223,7 +223,7 @@ namespace Program01
                     IconbuttonUserLogin.IconColor = RGBColors.Color6;
                     IconbuttonUserLogin.TextImageRelation = TextImageRelation.ImageBeforeText;
                     IconbuttonUserLogin.Text = "Login";
-                    MessageBox.Show("You have been logged out successfully", "Information", MessageBoxButtons.OK);
+                    MessageBox.Show("You have been logged out successfully", "Logout Successful", MessageBoxButtons.OK);
 
                 }
             }
@@ -258,7 +258,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK);
+                    MessageBox.Show("Please log in before proceeding", "Accessibility Failed", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -280,7 +280,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK);
+                    MessageBox.Show("Please log in before proceeding", "Accessibility Failed", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -302,7 +302,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK);
+                    MessageBox.Show("Please log in before proceeding", "Accessibility Failed", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -343,7 +343,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK);
+                    MessageBox.Show("Please log in before proceeding", "Accessibility Failed", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -422,7 +422,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK);
+                    MessageBox.Show("Please log in before proceeding", "Browsing Failed", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -456,7 +456,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK);
+                    MessageBox.Show("Please log in before proceeding", "Saving Failed", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -465,7 +465,7 @@ namespace Program01
 
                     if (string.IsNullOrWhiteSpace(VdPFilePath))
                     {
-                        MessageBox.Show("Please enter the file path first!", "Warning", MessageBoxButtons.OK);
+                        MessageBox.Show("Please enter the file path first!", "Saving Failed", MessageBoxButtons.OK);
                         return;
                     }
 
@@ -505,7 +505,7 @@ namespace Program01
                         package.SaveAs(new FileInfo(newFilePath));
                     }
 
-                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "Success", MessageBoxButtons.OK);
+                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "Saving Successful", MessageBoxButtons.OK);
                 }
             }
             catch (Exception ex)
@@ -520,7 +520,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK);
+                    MessageBox.Show("Please log in before proceeding", "Browsing Failed", MessageBoxButtons.OK);
                 }
                 else 
                 {
@@ -554,7 +554,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK);
+                    MessageBox.Show("Please log in before proceeding", "Saving Failed", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -563,7 +563,7 @@ namespace Program01
 
                     if (string.IsNullOrWhiteSpace(HallFilePath))
                     {
-                        MessageBox.Show("Please enter the file path first!", "Warning", MessageBoxButtons.OK);
+                        MessageBox.Show("Please enter the file path first!", "Saving Failed", MessageBoxButtons.OK);
                         return;
                     }
 
@@ -602,7 +602,7 @@ namespace Program01
                         worksheet.Cells[2, 6].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                         package.SaveAs(new FileInfo(newFilePath));
                     }
-                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "Success", MessageBoxButtons.OK);
+                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "Saving Successful", MessageBoxButtons.OK);
                 }
             }
             catch (Exception ex)
@@ -617,7 +617,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK);
+                    MessageBox.Show("Please log in before proceeding", "Browsing Failed", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -651,7 +651,7 @@ namespace Program01
             {
                 if (!isLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Warning", MessageBoxButtons.OK);
+                    MessageBox.Show("Please log in before proceeding", "Saving Failed", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -660,7 +660,7 @@ namespace Program01
 
                     if (string.IsNullOrWhiteSpace(VdPandHallFilePath))
                     {
-                        MessageBox.Show("Please enter the file path first!", "Warning", MessageBoxButtons.OK);
+                        MessageBox.Show("Please enter the file path first!", "Saving Failed", MessageBoxButtons.OK);
                         return;
                     }
 
@@ -700,7 +700,7 @@ namespace Program01
                         package.SaveAs(new FileInfo(newFilePath));
                     }
 
-                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "Success", MessageBoxButtons.OK);
+                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "Saving Successful", MessageBoxButtons.OK);
                 }
             }
             catch (Exception ex)

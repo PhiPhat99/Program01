@@ -11,6 +11,7 @@ using System.Windows.Markup;
 using System.Xml.Linq;
 using FontAwesome.Sharp;
 using Ivi.Visa.Interop;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace Program01
 {
@@ -19,8 +20,8 @@ namespace Program01
         //Fields
         public Ivi.Visa.Interop.FormattedIO488 SMU;
         public Ivi.Visa.Interop.FormattedIO488 SS;
-        public ResourceManager resourcemanagerSMU;
-        public ResourceManager resourcemanagerSS;
+        public ResourceManager ResourcemanagerSMU;
+        public ResourceManager ResourcemanagerSS;
         public string RsenseMode;
         public string MeasureMode;
         public string SourceMode;
@@ -55,7 +56,7 @@ namespace Program01
         private double LatestMeasuredValue;
         public event EventHandler<bool> ModeChanged;
 
-        public bool IsOn
+        public bool isOn
         {
             get => isModes;
             set
@@ -75,20 +76,45 @@ namespace Program01
         {
             try
             {
-                resourcemanagerSMU = new Ivi.Visa.Interop.ResourceManager();
-                resourcemanagerSS = new Ivi.Visa.Interop.ResourceManager();
-                SMU = new Ivi.Visa.Interop.FormattedIO488();
-                SS = new Ivi.Visa.Interop.FormattedIO488();
+                if (ResourcemanagerSMU == null)
+                {
+                    SMU = new Ivi.Visa.Interop.FormattedIO488();
+                    ResourcemanagerSMU = new Ivi.Visa.Interop.ResourceManager();
+                }
 
-                string[] SMUgpibAddress = resourcemanagerSMU.FindRsrc("GPIB?*::?*::INSTR");
-                string[] SSgpibAddress = resourcemanagerSS.FindRsrc("GPIB?*::?*::INSTR");
+                if (ResourcemanagerSS == null)
+                {
+                    SS = new Ivi.Visa.Interop.FormattedIO488();
+                    ResourcemanagerSS = new Ivi.Visa.Interop.ResourceManager();
+                }
+
+                GPIBScanner Scanner = new GPIBScanner();
+                string[] AllGPIBAddresses = Scanner.ScanAllGPIBDevices();
+
+                InstrumentsGPIBPortDetector Detector = new InstrumentsGPIBPortDetector();
+                List<string> ValidAddresses = Detector.GetValidInstruments(AllGPIBAddresses);
+                
+                if (ValidAddresses.Count == 0)
+                {
+                    MessageBox.Show("No valid GPIB devices found.", "WARNING", MessageBoxButtons.OK);
+                }
 
                 ComboboxVISASMUIOPort.Items.Clear();
                 ComboboxVISASSIOPort.Items.Clear();
 
-                foreach (string SMUaddress in SMUgpibAddress)
+                foreach (string Address in ValidAddresses)
                 {
-                    ComboboxVISASMUIOPort.Items.Add(SMUaddress);
+                    if (Address.Contains("GPIB0::5::INSTR") || Address.Contains("GPIB1::5::INSTR") ||
+                        Address.Contains("GPIB2::5::INSTR") || Address.Contains("GPIB3::5::INSTR"))             // Model 2450 COM Ports
+                    {
+                        ComboboxVISASMUIOPort.Items.Add(Address);
+                    }
+
+                    if (Address.Contains("GPIB0::16::INSTR") || Address.Contains("GPIB1::16::INSTR") ||
+                       Address.Contains("GPIB2::16::INSTR") || Address.Contains("GPIB3::16::INSTR"))            // Model 7001 COM Ports
+                    {
+                        ComboboxVISASSIOPort.Items.Add(Address);
+                    }
                 }
 
                 if (ComboboxVISASMUIOPort.Items.Count > 0)
@@ -96,29 +122,16 @@ namespace Program01
                     ComboboxVISASMUIOPort.SelectedIndex = 0;
                 }
 
-                if (ComboboxVISASMUIOPort.Items.Count > 0)
-                {
-                    ComboboxVISASMUIOPort.SelectedIndex = 0;
-                }
-
-                foreach (string SSaddress in SSgpibAddress)
-                {
-                    ComboboxVISASSIOPort.Items.Add(SSaddress);
-                }
-
                 if (ComboboxVISASSIOPort.Items.Count > 0)
                 {
                     ComboboxVISASSIOPort.SelectedIndex = 0;
                 }
 
-                if (ComboboxVISASSIOPort.Items.Count > 0)
-                {
-                    ComboboxVISASSIOPort.SelectedIndex = 0;
-                }
+                Debug.WriteLine($"Found {ValidAddresses.Count} valid GPIB devices");
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error initializing GPIB: {ex.Message}", "Initialization Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error Initializing GPIB: {Ex.Message}", "ERROR", MessageBoxButtons.OK);
             }
         }
 
@@ -257,121 +270,146 @@ namespace Program01
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}", "ERROR");
             }
         }
 
-        private void IconbuttonSMUConnection_Click(object sender, EventArgs e)
+        private void UpdateUIAfterConnection(string Message, bool isConnected)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<string, bool>(UpdateUIAfterConnection), Message, isConnected);
+            }
+            else
+            {
+                MessageBox.Show(Message, isConnected ? "INFORMATION" : "ERROR", MessageBoxButtons.OK);
+                IconbuttonSMUConnection.BackColor = isConnected ? Color.Snow : Color.Gainsboro;
+                IconbuttonSMUConnection.IconColor = isConnected ? Color.GreenYellow : Color.Gainsboro;
+            }
+        }
+
+
+        private async void IconbuttonSMUConnection_Click(object sender, EventArgs e)
         {
             try
             {
                 if (ComboboxVISASMUIOPort.SelectedItem == null)
                 {
-                    MessageBox.Show("Please select a GPIB Address for Source Measure Unit.", "Address Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please select a GPIB Address for Source Measure Unit", "WARNING", MessageBoxButtons.OK);
                     return;
                 }
 
-                string selectedSMUAddress = ComboboxVISASMUIOPort.SelectedItem.ToString();
+                string SelectedSMUAddress = ComboboxVISASMUIOPort.SelectedItem.ToString();
 
                 if (!isSMUConnected)
                 {
-                    SMU.IO = (Ivi.Visa.Interop.IMessage)resourcemanagerSMU.Open(selectedSMUAddress);
-                    SMU.IO.Timeout = 5000;
-                    SMU.WriteString("*IDN?");
-                    string response = SMU.ReadString();
-                    SMU.WriteString("SYSTem:BEEPer 555, 0.3");
-                    Debug.WriteLine($"{response}");
+                    await Task.Run(() =>
+                    {
+                        try
+                        {
+                            SMU.IO = (Ivi.Visa.Interop.IMessage)ResourcemanagerSMU.Open(SelectedSMUAddress);
+                            SMU.IO.Timeout = 5000;
+                            SMU.WriteString("*IDN?");
+                            SMU.WriteString("SYSTem:BEEPer 1600, 0.3");
+                            string SMUResponse = SMU.ReadString();
+                            Debug.WriteLine($"Connected to: {SMUResponse}");
 
-                    isSMUConnected = true;
-                    IconbuttonSMUConnection.BackColor = Color.Snow;
-                    IconbuttonSMUConnection.IconColor = Color.GreenYellow;
-                    MessageBox.Show("Connected to Source Measure Unit", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            isSMUConnected = true;
+                            UpdateUIAfterConnection("Connected to Source Measure Unit", true);
+                        }
+                        catch (Exception ConnectionEx)
+                        {
+                            UpdateUIAfterConnection($"Error during connection: {ConnectionEx.Message}", false);
+                        }
+                    });
                 }
                 else
                 {
                     try
                     {
-                        if (SMU.IO != null)
+                        if (SMU != null && SMU.IO != null)
                         {
                             SMU.WriteString("*CLS");
                             SMU.WriteString("*RST");
-
                             SMU.IO.Close();
                             SMU.IO = null;
+                            SMU = null;
                         }
 
                         isSMUConnected = false;
-                        IconbuttonSMUConnection.BackColor = Color.Snow;
-                        IconbuttonSMUConnection.IconColor = Color.Gainsboro;
-                        MessageBox.Show("Disconnected from the Source Measure Unit.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        UpdateUIAfterConnection("Disconnected from Source Measure Unit", false);
                     }
-                    catch (Exception disconnectEx)
+                    catch (Exception DisconnectEx)
                     {
-                        MessageBox.Show($"Error during disconnection: {disconnectEx.Message}", "Disconnection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"Error during disconnection: {DisconnectEx.Message}", "ERROR", MessageBoxButtons.OK);
                     }
                 }
-
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error: {Ex.Message}", "ERROR", MessageBoxButtons.OK);
             }
         }
 
-        private void IconbuttonSSConnection_Click(object sender, EventArgs e)
+
+        private async void IconbuttonSSConnection_Click(object sender, EventArgs e)
         {
             try
             {
                 if (ComboboxVISASSIOPort.SelectedItem == null)
                 {
-                    MessageBox.Show("Please select a GPIB Address for Switch System.", "Address Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Please select a GPIB Address for Switch System", "WARNING", MessageBoxButtons.OK);
                     return;
                 }
 
-                string selectedSSAddress = ComboboxVISASSIOPort.SelectedItem.ToString();
+                string SelectedSSAddress = ComboboxVISASSIOPort.SelectedItem.ToString();
 
                 if (!isSSConnected)
                 {
-                    SS.IO = (Ivi.Visa.Interop.IMessage)resourcemanagerSS.Open(selectedSSAddress);
-                    SS.IO.Timeout = 5000;
+                    await Task.Run(() =>
+                    {
+                        try
+                        {
+                            SS.IO = (Ivi.Visa.Interop.IMessage)ResourcemanagerSS.Open(SelectedSSAddress);
+                            SS.IO.Timeout = 5000;
+                            SS.WriteString("*IDN?");
+                            string SSResponse = SS.ReadString();
+                            Debug.WriteLine($"Connected to: {SSResponse}");
 
-                    SS.WriteString("*CLS");
-                    SS.WriteString("*IDN?");
-                    string response = SS.ReadString();
-                    Debug.WriteLine($"{response}");
-
-                    isSSConnected = true;
-                    IconbuttonSSConnection.BackColor = Color.Snow;
-                    IconbuttonSSConnection.IconColor = Color.GreenYellow;
-                    MessageBox.Show("Connected to Switch System", "Connection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            isSSConnected = true;
+                            UpdateUIAfterConnection("Connected to Switch System", true);
+                        }
+                        catch (Exception ConnectionEx)
+                        {
+                            UpdateUIAfterConnection($"Error during connection: {ConnectionEx.Message}", false);
+                        }
+                    });
                 }
                 else
                 {
                     try
                     {
-                        if (SS.IO != null)
+                        if (SS != null && SS.IO != null)
                         {
                             SS.WriteString("*CLS");
                             SS.WriteString("*RST");
-
                             SS.IO.Close();
                             SS.IO = null;
+                            SS = null;
                         }
 
                         isSSConnected = false;
-                        IconbuttonSSConnection.BackColor = Color.Snow;
-                        IconbuttonSSConnection.IconColor = Color.Gainsboro;
-                        MessageBox.Show("Disconnected from the Switch System.", "Disconnection Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        UpdateUIAfterConnection("Disconnected from Switch System", false);
                     }
-                    catch (Exception disconnectEx)
+                    catch (Exception DisconnectEx)
                     {
-                        MessageBox.Show($"Error during disconnection: {disconnectEx.Message}", "Disconnection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show($"Error during disconnection: {DisconnectEx.Message}", "ERROR", MessageBoxButtons.OK);
                     }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "Connection Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error: {ex.Message}", "ERROR", MessageBoxButtons.OK);
             }
         }
 
@@ -590,7 +628,7 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -717,25 +755,25 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
                 if (isModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
                 else if (isModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!4)");
                 }
             }
             catch (Exception ex)
@@ -750,25 +788,25 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
                 if (isModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
                 else if (isModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!8)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!4)");
                 }
             }
             catch (Exception ex)
@@ -783,25 +821,25 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
                 if (isModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
                 }
                 else if (isModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
                 }
             }
             catch (Exception ex)
@@ -816,25 +854,25 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
                 if (isModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
                 }
                 else if (isModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!7)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!9)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
                 }
             }
             catch (Exception ex)
@@ -849,25 +887,25 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
                 if (isModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
                 else if (isModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
             }
             catch (Exception ex)
@@ -882,25 +920,25 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
                 if (isModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!7)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
                 else if (isModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!7)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!10)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
             }
             catch (Exception ex)
@@ -915,25 +953,25 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
                 if (isModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
                 }
                 else if (isModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
                 }
             }
             catch (Exception ex)
@@ -948,25 +986,25 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
                 if (isModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
                 }
                 else if (isModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!8)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!10)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!9)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!7)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
                 }
             }
             catch (Exception ex)
@@ -981,7 +1019,7 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -991,13 +1029,13 @@ namespace Program01
 
                 if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelevellimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
                 {
-                    MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "WARNING", MessageBoxButtons.OK);
                     return;
                 }
 
                 if (repetitionValue > 3)
                 {
-                    MessageBox.Show("Cannot set the repetition value greater than 3 in Tuner test", "Test Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Cannot set the repetition value greater than 3 in Tuner test", "WARNING", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1177,7 +1215,7 @@ namespace Program01
             {
                 if (!isSMUConnected && !isSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1379,7 +1417,7 @@ namespace Program01
             {
                 if (!isSMUConnected && isSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1613,6 +1651,8 @@ namespace Program01
         {
             try
             {
+                XDataBuffer?.Clear();
+                YDataBuffer?.Clear();
                 SMU.WriteString("TRACe:ACTual?");
                 string BufferCount = SMU.ReadString().Trim();
 

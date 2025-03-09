@@ -169,7 +169,7 @@ namespace Program01
                 TextboxMaxSourceValue.Text = MaxSource.ToString("F5");
                 TextboxMinSourceValue.Text = MinSource.ToString("F5");
                 TextboxSlopeValue.Text = Slope.ToString("F5");
-
+                
                 if (GlobalSettings.SourceMode == "Voltage" && GlobalSettings.MeasureMode == "Voltage")
                 {
                     LabelMaxMeasureUnit.Text = "V";

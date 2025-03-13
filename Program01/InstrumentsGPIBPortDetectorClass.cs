@@ -2,64 +2,84 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
+using System.Net;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Program01.Interfaces;
 
 namespace Program01
 {
-    public class InstrumentsGPIBPortDetector
+    public class InstrumentsGPIBPortDetector : IGPIBDetectorInterfaces, IDisposable
     {
-        private ResourceManager ResourceManager;
-        private Dictionary<string, string> InstrumentModels;
+        private ResourceManager RsrcMngr;
 
         public InstrumentsGPIBPortDetector()
         {
-            ResourceManager = new ResourceManager();
+            RsrcMngr = new ResourceManager();
         }
 
         public List<string> GetValidInstruments(string[] DetectedAddresses)
         {
             List<string> ValidAddresses = new List<string>();
-            var keithleyRegex = new Regex(@"KEITHLEY\s+Model\s+\d+", RegexOptions.IgnoreCase);
+            var KeithleyRegEx = new Regex(@"KEITHLEY\s+Model\s+\d+", RegexOptions.IgnoreCase);
 
             foreach (string Address in DetectedAddresses)
             {
-                string response = QueryDevice(Address);  // ✅ เรียกใช้ QueryDevice
+                if (!Address.StartsWith("GPIB"))
+                {
+                    continue;
+                }
 
-                if (!string.IsNullOrEmpty(response) && keithleyRegex.IsMatch(response))
+                string Response = QueryDevice(Address);
+
+                if (!string.IsNullOrEmpty(Response) && KeithleyRegEx.IsMatch(Response))
                 {
                     ValidAddresses.Add(Address);
-                    Debug.WriteLine($"[INFO] พบอุปกรณ์ Keithley ที่ {Address}: {response}");
+                    Debug.WriteLine($"[INFO] พบอุปกรณ์ Keithley ที่ {Address}: {Response}");
                 }
             }
 
             return ValidAddresses;
         }
 
-        private string QueryDevice(string address)  // ✅ ใส่ไว้ที่นี่
+        private string QueryDevice(string Address)
         {
-            FormattedIO488 device = new FormattedIO488();
-            try
+            /*using (GPIBDevice DeviceWrapper = new GPIBDevice())
             {
-                device.IO = (IMessage)ResourceManager.Open(address);
-                device.WriteString("*IDN?");
-                return device.ReadString();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"[ERROR] ไม่สามารถส่งคำสั่งไปยัง {address}: {ex.Message}");
-                return string.Empty;
-            }
-            finally
-            {
-                if (device.IO != null)
+                var Device = DeviceWrapper.Device;
+                try
                 {
-                    try { device.IO.Close(); } catch { }
+                    //Device.IO = (IMessage)RsrcMngr.Open(Address);
+                    //Device.WriteString("*IDN?");
+
+                    return Device.ReadString();
                 }
+                catch (Exception Ex)
+                {
+                    Debug.WriteLine($"[ERROR] ไม่สามารถส่งคำสั่งไปยัง {Address}: {Ex.Message}");
+
+                    return string.Empty;
+                }
+            }*/
+
+            if (Address == "GPIB0::5::INSTR" || Address == "GPIB1::5::INSTR" || Address == "GPIB2::5::INSTR" || Address == "GPIB3::5::INSTR")
+            {
+                return "KEITHLEY Model 2450 SourceMeter";
+            }
+            else if (Address == "GPIB0::16::INSTR" || Address == "GPIB1::16::INSTR" || Address == "GPIB2::16::INSTR" || Address == "GPIB3::16::INSTR")
+            {
+                return "KEITHLEY Model 7001 Switch System";
+            }
+
+            return string.Empty;
+        }
+
+        public void Dispose()
+        {
+            if (RsrcMngr != null)
+            {
+                RsrcMngr = null;
             }
         }
     }
-
 }
+

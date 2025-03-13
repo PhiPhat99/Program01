@@ -123,8 +123,11 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Interfaces\IGPIBScannerInterfaces.cs" />
+    <Compile Include="Interfaces\IGPIBDetectorInterfaces.cs" />
+    <Compile Include="PortScannerClass.cs" />
     <Compile Include="InstrumentsGPIBPortDetectorClass.cs" />
-    <Compile Include="GPIBPortScannerClass.cs" />
+    <Compile Include="GPIBDeviceClass.cs" />
     <Compile Include="CollectVdPTotalMeasurementClass.cs" />
     <Compile Include="DataChildForm.cs">
       <SubType>Form</SubType>
@@ -319,5 +322,6 @@
   <ItemGroup>
     <None Include="Resources\V8_Hall1.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

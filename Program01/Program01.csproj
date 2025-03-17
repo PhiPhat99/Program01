@@ -126,7 +126,6 @@
     <Compile Include="Interfaces\IGPIBScannerInterfaces.cs" />
     <Compile Include="Interfaces\IGPIBDetectorInterfaces.cs" />
     <Compile Include="PortScannerClass.cs" />
-    <Compile Include="InstrumentsGPIBPortDetectorClass.cs" />
     <Compile Include="GPIBDeviceClass.cs" />
     <Compile Include="CollectVdPTotalMeasurementClass.cs" />
     <Compile Include="DataChildForm.cs">

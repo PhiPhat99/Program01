@@ -19,7 +19,7 @@ namespace Program01
 
         private void LoadVdPTotalMeasurementData()
         {
-            var VdPData = CollectVdPTotalMeasurementClass.Instance;
+            var VdPData = CollectVdPVoltage.Instance;
             DatagridviewVdPTotalMesure.Rows.Clear();
 
             if (DatagridviewVdPTotalMesure.Columns.Count == 0)

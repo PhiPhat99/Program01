@@ -41,7 +41,7 @@ namespace Program01
         }
     }
 
-    public class CollectVdPTotalMeasurementClass
+    public class CollectVdPVoltage
     {
         public static VdPMeasurementData Instance => VdPMeasurementData.Instance;
     }

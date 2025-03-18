@@ -7,22 +7,22 @@ using System.Windows;
 
 namespace Program01
 {
-    public class GPIBDevice : IDisposable
+    public class VISAPorts : IDisposable
     {
-        public FormattedIO488 Device { get; private set; }
+        public FormattedIO488 VISAports { get; private set; }
 
-        public GPIBDevice()
+        public VISAPorts()
         {
-            Device = new FormattedIO488();
+            VISAports = new FormattedIO488();
         }
 
         public void Dispose()
         {
-            if (Device.IO != null)
+            if (VISAports.IO != null)
             {
                 try
                 {
-                    Device.IO.Close();
+                    VISAports.IO.Close();
                 }
                 catch { }
             }

@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Resources;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Ivi.Visa;
 using Ivi.Visa.Interop;
 
 namespace Program01
 {
     public partial class MeasurementSettingsForm : Form
     {
-        //Fields
-        public Ivi.Visa.Interop.FormattedIO488 SMU;
-        public Ivi.Visa.Interop.FormattedIO488 SS;
-        public ResourceManager ResourceManagerSMU;
-        public ResourceManager ResourceManagerSS;
+        // Fields
+        public FormattedIO488 SMU;
+        public FormattedIO488 SS;
+        public PortScanner SMUPort;
+        public PortScanner SSPort;
+
         public string RsenseMode;
         public string MeasureMode;
         public string SourceMode;
@@ -28,29 +31,41 @@ namespace Program01
         public string RepetitionValue;
         public string ThicknessValue;
         private string MagneticFieldsValue;
+
         public double MaxSource = double.MinValue;
         public double MinSource = double.MaxValue;
         public double MaxMeasure = double.MinValue;
         public double MinMeasure = double.MaxValue;
         public double Slope;
+
         private int TargetPosition;
         private int CurrentTuner;
-        public bool IsSMUConnected  = false;
-        public bool IsSSConnected  = false;
+
+        private static bool IsFirstRun = true;
+        public bool IsSMUConnected = false;
+        public bool IsSSConnected = false;
         public bool IsModes = false;
-        private Form CurrentChildForm;
+
         public event EventHandler ToggleChanged;
         public event EventHandler<bool> ModeChanged;
+        public event Action<string, bool> ConnectionStatusChanged;
+
+        private Form CurrentChildForm;
         public DataChildForm DataChildForm = null;
         public ChannelSettingsChildForm ChannelSettingsChildForm = null;
+
         public List<double> XDataBuffer = new List<double>();
         public List<double> YDataBuffer = new List<double>();
         private List<double> X = new List<double>();
         private List<double> Y = new List<double>();
+
         private double LatestSourceValue;
         private double LatestMeasuredValue;
-        private readonly PortScannerClass PortScanner;
-        
+
+        public PortScanner PortScanner;
+        public List<string> AllPorts = new List<string>();
+        public PortScanner AvailablePorts;
+
         public bool IsOn
         {
             get => IsModes;
@@ -64,70 +79,85 @@ namespace Program01
         public MeasurementSettingsForm()
         {
             InitializeComponent();
-
-            ResourceManager RsrcMngr = new ResourceManager();
-            PortScanner = new PortScannerClass(RsrcMngr);
-
             InitializeGPIB();
+
+            var SMUresourcemanager = ResourceManagers.GetResourceManager("SMU");
+            var SSresourcemanager = ResourceManagers.GetResourceManager("SS");
+
+            if (SMUresourcemanager == null || SSresourcemanager == null)
+            {
+                throw new InvalidOperationException("ResourceManager for SMU or SS is not available.");
+            }
+
+            //SMUPort = new PortScanner(SMUresourcemanager);
+            //SSPort = new PortScanner(SSresourcemanager);
+
+            SMUPort.ClearPorts();
+            SMUPort.ScanAllPorts();
+
+            SSPort.ClearPorts();
+            SSPort.ScanAllPorts();
         }
 
         public void InitializeGPIB()
         {
+            AllPorts.Clear();
+            Debug.WriteLine("[DEBUG] Cleared previous ports list.");
+
             try
             {
-                if (ResourceManagerSMU == null)
-                {
-                    SMU = new Ivi.Visa.Interop.FormattedIO488();
-                    ResourceManagerSMU = new Ivi.Visa.Interop.ResourceManager();
-                }
-
-                if (ResourceManagerSS == null)
-                {
-                    SS = new Ivi.Visa.Interop.FormattedIO488();
-                    ResourceManagerSS = new Ivi.Visa.Interop.ResourceManager();
-                }
-
-                // ค้นหาพอร์ตทั้งหมด
-                List<string> AllPorts = PortScanner.ScanAllPorts();
-
-                // กรองเฉพาะพอร์ตที่เป็น GPIB
-                List<string> GPIBPorts = AllPorts.Where(p => p.Contains("GPIB")).ToList();
+                List<string> DetectedPorts = PortScanner.ScanAllPorts();
+                List<string> GPIBPorts = DetectedPorts.Where(p => p.Contains("GPIB")).ToList();
 
                 if (GPIBPorts.Count == 0)
                 {
-                    MessageBox.Show("No GPIB devices detected.", "WARNING", MessageBoxButtons.OK);
+                    Debug.WriteLine("[WARNING] No GPIB devices detected.");
                     return;
                 }
 
-                ComboboxVISASMUIOPort.Items.Clear();
-                ComboboxVISASSIOPort.Items.Clear();
-
-                foreach (string Address in GPIBPorts)
+                if (ComboboxVISASMUIOPort.InvokeRequired)
                 {
-                    if (Address.Contains("GPIB0::5::INSTR") || Address.Contains("GPIB1::5::INSTR") || Address.Contains("GPIB2::5::INSTR"))
-                    {
-                        ComboboxVISASMUIOPort.Items.Add(Address);
-                    }
-                    else if (Address.Contains("GPIB0::16::INSTR") || Address.Contains("GPIB1::16::INSTR") || Address.Contains("GPIB2::16::INSTR"))
-                    {
-                        ComboboxVISASSIOPort.Items.Add(Address);
-                    }
+                    ComboboxVISASMUIOPort.Invoke((MethodInvoker)delegate { UpdateComboBoxes(GPIBPorts); });
+                }
+                else
+                {
+                    UpdateComboBoxes(GPIBPorts);
                 }
 
-                if (ComboboxVISASMUIOPort.Items.Count > 0)
-                {
-                    ComboboxVISASMUIOPort.SelectedIndex = 0;
-                }
-                if (ComboboxVISASSIOPort.Items.Count > 0)
-                {
-                    ComboboxVISASSIOPort.SelectedIndex = 0;
-                }
-
-                Debug.WriteLine($"Found {GPIBPorts.Count} GPIB devices.");
+                AllPorts.AddRange(GPIBPorts);
+                Debug.WriteLine($"[DEBUG] Found {GPIBPorts.Count} GPIB devices : {string.Join(", ", GPIBPorts)}");
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error Initializing GPIB: {Ex.Message}", "ERROR", MessageBoxButtons.OK);
+                Debug.WriteLine($"[ERROR] Error Initializing GPIB: {Ex.Message}");
+            }
+        }
+
+        private void UpdateComboBoxes(List<string> GPIBPorts)
+        {
+            ComboboxVISASMUIOPort.Items.Clear();
+            ComboboxVISASSIOPort.Items.Clear();
+
+            foreach (string address in GPIBPorts)
+            {
+                if (address.Contains("GPIB0::5::INSTR") || address.Contains("GPIB1::5::INSTR") || address.Contains("GPIB2::5::INSTR"))
+                {
+                    ComboboxVISASMUIOPort.Items.Add(address);
+                }
+                else if (address.Contains("GPIB0::16::INSTR") || address.Contains("GPIB1::16::INSTR") || address.Contains("GPIB2::16::INSTR"))
+                {
+                    ComboboxVISASSIOPort.Items.Add(address);
+                }
+            }
+
+            if (ComboboxVISASMUIOPort.Items.Count > 0)
+            {
+                ComboboxVISASMUIOPort.SelectedIndex = 0;
+            }
+
+            if (ComboboxVISASSIOPort.Items.Count > 0)
+            {
+                ComboboxVISASSIOPort.SelectedIndex = 0;
             }
         }
 
@@ -236,7 +266,6 @@ namespace Program01
         {
             try
             {
-                //GlobalSettings.IsSMUConnected = IconbuttonSSConnection.Enabled;
                 GlobalSettings.RsenseMode = ComboboxRsense.SelectedItem?.ToString() ?? "";
                 GlobalSettings.MeasureMode = ComboboxMeasure.SelectedItem?.ToString() ?? "";
                 GlobalSettings.SourceMode = ComboboxSource.SelectedItem?.ToString() ?? "";
@@ -265,25 +294,36 @@ namespace Program01
             }
         }
 
-        private void UpdateUIAfterConnection(string Message, bool IsConnected, bool IsSMU)
+        private void UpdateSMUUIAfterConnection(string Message, bool IsSMUConnected, bool IsSMU)
         {
             if (InvokeRequired)
             {
-                Invoke(new Action<string, bool, bool>(UpdateUIAfterConnection), Message, IsConnected, IsSMU);
+                ConnectionStatusChanged?.Invoke(Message, IsSMUConnected);
             }
             else
             {
-                if (IsSMU) // สำหรับ SMU
+                if (IsSMU)
                 {
-                    MessageBox.Show(Message, IsConnected ? "INFORMATION" : "ERROR", MessageBoxButtons.OK);
-                    IconbuttonSMUConnection.BackColor = IsConnected ? Color.Snow : Color.Snow;
-                    IconbuttonSMUConnection.IconColor = IsConnected ? Color.GreenYellow : Color.LightGray;
+                    MessageBox.Show(Message, IsSMUConnected ? "INFORMATION" : "ERROR", MessageBoxButtons.OK);
+                    IconbuttonSMUConnection.BackColor = IsSMUConnected ? Color.Snow : Color.Snow;
+                    IconbuttonSMUConnection.IconColor = IsSMUConnected ? Color.GreenYellow : Color.LightBlue;
                 }
-                else // สำหรับ SS
+            }
+        }
+
+        private void UpdateSSUIAfterConnection(string Message, bool IsSSConnected, bool IsSS)
+        {
+            if (InvokeRequired)
+            {
+                ConnectionStatusChanged?.Invoke(Message, IsSSConnected);
+            }
+            else
+            {
+                if (IsSS)
                 {
-                    MessageBox.Show(Message, IsConnected ? "INFORMATION" : "ERROR", MessageBoxButtons.OK);
-                    IconbuttonSSConnection.BackColor = IsConnected ? Color.Snow : Color.Snow;
-                    IconbuttonSSConnection.IconColor = IsConnected ? Color.GreenYellow : Color.LightGray;
+                    MessageBox.Show(Message, IsSSConnected ? "INFORMATION" : "ERROR", MessageBoxButtons.OK);
+                    IconbuttonSSConnection.BackColor = IsSSConnected ? Color.Snow : Color.Snow;
+                    IconbuttonSSConnection.IconColor = IsSSConnected ? Color.GreenYellow : Color.LightBlue;
                 }
             }
         }
@@ -306,7 +346,7 @@ namespace Program01
                     {
                         try
                         {
-                            SMU.IO = (Ivi.Visa.Interop.IMessage)ResourceManagerSMU.Open(SelectedSMUAddress);
+                            var smuResourceManager = ResourceManagers.GetResourceManager("SMU");
                             SMU.IO.Timeout = 5000;
                             SMU.WriteString("*IDN?");
                             SMU.WriteString("SYSTem:BEEPer 1600, 0.3");
@@ -314,11 +354,11 @@ namespace Program01
                             Debug.WriteLine($"Connected to: {SMUResponse}");
 
                             IsSMUConnected = true;
-                            UpdateUIAfterConnection("Connected to Source Measure Unit", true, true); // isSMU = true
+                            UpdateSMUUIAfterConnection("Connected to Source Measure Unit", true, true);
                         }
                         catch (Exception ConnectionEx)
                         {
-                            UpdateUIAfterConnection($"Error during connection: {ConnectionEx.Message}", false, true); // isSMU = true
+                            UpdateSMUUIAfterConnection($"Error during connection: {ConnectionEx.Message}", false, true);
                         }
                     });
                 }
@@ -336,7 +376,7 @@ namespace Program01
                         }
 
                         IsSMUConnected = false;
-                        UpdateUIAfterConnection("Disconnected from Source Measure Unit", false, true); // isSMU = true
+                        UpdateSMUUIAfterConnection("Disconnected from Source Measure Unit", false, true);
                     }
                     catch (Exception DisconnectEx)
                     {
@@ -368,18 +408,18 @@ namespace Program01
                     {
                         try
                         {
-                            SS.IO = (Ivi.Visa.Interop.IMessage)ResourceManagerSS.Open(SelectedSSAddress);
+                            var ssResourceManager = ResourceManagers.GetResourceManager("SS");
                             SS.IO.Timeout = 5000;
                             SS.WriteString("*IDN?");
                             string SSResponse = SS.ReadString();
                             Debug.WriteLine($"Connected to: {SSResponse}");
 
                             IsSSConnected = true;
-                            UpdateUIAfterConnection("Connected to Switch System", true, false); // isSMU = false for SS
+                            UpdateSSUIAfterConnection("Connected to Switch System", true, true);
                         }
                         catch (Exception ConnectionEx)
                         {
-                            UpdateUIAfterConnection($"Error during connection: {ConnectionEx.Message}", false, false); // isSMU = false for SS
+                            UpdateSSUIAfterConnection($"Error during connection: {ConnectionEx.Message}", false, true);
                         }
                     });
                 }
@@ -397,7 +437,7 @@ namespace Program01
                         }
 
                         IsSSConnected = false;
-                        UpdateUIAfterConnection("Disconnected from Switch System", false, false); // isSMU = false for SS
+                        UpdateSSUIAfterConnection("Disconnected from Switch System", false, true);
                     }
                     catch (Exception DisconnectEx)
                     {
@@ -1231,7 +1271,7 @@ namespace Program01
                 //CollectVdPTotalMeasurementClass.Instance.ClearMeasurements();
                 RunMeasurement();
 
-                if(IsModes)
+                if (IsModes)
                 {
                     //CollectVdPTotalMeasurementClass.Instance.AddMeasurement();
                 }
@@ -1805,7 +1845,7 @@ namespace Program01
         private void IconbuttonMeasure_Click(object sender, EventArgs e)
         {
             Random rand = new Random();
-            CollectVdPTotalMeasurementClass.Instance.ClearMeasurements();
+            CollectVdPVoltage.Instance.ClearMeasurements();
 
             // กำหนดจำนวนแถวที่ต้องการ
             int NumberOfRows = rand.Next(5, 10);
@@ -1822,11 +1862,10 @@ namespace Program01
                 double RandomVoltage7 = rand.NextDouble() * 21;
                 double RandomVoltage8 = rand.NextDouble() * 21;
 
-                CollectVdPTotalMeasurementClass.Instance.AddMeasurement(RandomVoltage1, RandomVoltage2, RandomVoltage3, RandomVoltage4, RandomVoltage5, RandomVoltage6, RandomVoltage7, RandomVoltage8);
+                CollectVdPVoltage.Instance.AddMeasurement(RandomVoltage1, RandomVoltage2, RandomVoltage3, RandomVoltage4, RandomVoltage5, RandomVoltage6, RandomVoltage7, RandomVoltage8);
             }
 
             MessageBox.Show("บันทึกค่าการวัดเรียบร้อยแล้ว!");
         }
-
     }
 }

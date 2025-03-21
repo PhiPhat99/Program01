@@ -4,11 +4,13 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Resources;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ivi.Visa;
 using Ivi.Visa.FormattedIO;
 using Ivi.Visa.Interop;
+using Keysight.Visa;
 
 namespace Program01
 {
@@ -16,8 +18,9 @@ namespace Program01
     {
         // Fields
         public FormattedIO488 SMU;
+        public Ivi.Visa.Interop.ResourceManager RsrcmngrSMU;
         public FormattedIO488 SS;
-        private GPIBManagerandScanner GPIBPortAddresses;
+        public Ivi.Visa.Interop.ResourceManager RsrcmngrSS;
 
         public string RsenseMode;
         public string MeasureMode;
@@ -41,15 +44,14 @@ namespace Program01
         private int TargetPosition;
         private int CurrentTuner;
 
-        private bool IsFirstRun = true;
         public bool IsSMUConnected = false;
         public bool IsSSConnected = false;
         public bool IsModes = false;
-        private bool HasScannedPorts = false; // ตัวแปรสถานะการสแกนพอร์ต
+        public bool IsFirstRun = true;
 
-        public event EventHandler ToggleChanged;
-        public event EventHandler<bool> ModeChanged;
         public event Action<string, bool> ConnectionStatusChanged;
+        public event EventHandler<bool> ModeChanged;
+        public event EventHandler ToggleChanged;
 
         private Form CurrentChildForm;
         public DataChildForm DataChildForm = null;
@@ -76,8 +78,145 @@ namespace Program01
         public MeasurementSettingsForm()
         {
             InitializeComponent();
-            GPIBPortAddresses = new GPIBManagerandScanner();
-            UpdateGPIBPortComboboxes();
+            RsrcmngrSMU = new Ivi.Visa.Interop.ResourceManager();
+            RsrcmngrSS = new Ivi.Visa.Interop.ResourceManager();
+            InitializeGPIB();
+        }
+
+        private void InitializeGPIB()
+        {
+            try
+            {
+                ComboboxVISASMUIOPort.Items.Clear();
+                ComboboxVISASSIOPort.Items.Clear();
+
+                // ค้นหาอุปกรณ์ที่เชื่อมต่อจริง พร้อมอ่าน Response
+                Dictionary<string, (string Address, string Response)> DeviceResponses = FindConnectedGPIBDevicesWithResponse();
+
+                // คำหลักสำหรับระบุอุปกรณ์
+                string SMUModelKeyword = "MODEL 2450";
+                string SSModelKeyword = "MODEL 7001";
+
+                // ค้นหาที่อยู่ของอุปกรณ์ที่ตรงกับ Model ที่ต้องการ
+                string[] SMUAddresses = DeviceResponses
+                    .Where(d => d.Value.Response.IndexOf(SMUModelKeyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Select(d => d.Value.Address)
+                    .ToArray();
+
+                string[] SSAddresses = DeviceResponses
+                    .Where(d => d.Value.Response.IndexOf(SSModelKeyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Select(d => d.Value.Address)
+                    .ToArray();
+
+                // Debug: ตรวจสอบว่าค่าถูกต้องก่อนอัปเดต ComboBox
+                Debug.WriteLine($"[DEBUG] SMU Addresses: {string.Join(", ", SMUAddresses)}");
+                Debug.WriteLine($"[DEBUG] SS Addresses: {string.Join(", ", SSAddresses)}");
+
+                // อัปเดต ComboBox สำหรับ SMU และ SS
+                UpdateGPIBComboBox(ComboboxVISASMUIOPort, SMUAddresses, ComboboxVISASSIOPort);
+                UpdateGPIBComboBox(ComboboxVISASSIOPort, SSAddresses, ComboboxVISASMUIOPort);
+
+                // ตรวจสอบและสร้าง SMU ถ้ายังไม่ถูกกำหนด
+                if (SMU == null && SMUAddresses.Length > 0)
+                {
+                    SMU = new FormattedIO488(); // สร้าง SMU ใหม่
+                    SMU.IO = (IMessage)RsrcmngrSMU.Open(SMUAddresses[0]); // เชื่อมต่อกับ SMU ที่พบ
+                }
+
+                if (SS == null && SSAddresses.Length > 0)
+                {
+                    SS = new FormattedIO488(); // สร้าง SS ใหม่
+                    SS.IO = (IMessage)RsrcmngrSS.Open(SSAddresses[0]); // เชื่อมต่อกับ SS ที่พบ
+                }
+            }
+            catch (Exception Ex)
+            {
+                Debug.WriteLine($"[ERROR] ไม่สามารถค้นหาอุปกรณ์ GPIB: {Ex.Message}");
+            }
+        }
+
+        // ค้นหาอุปกรณ์ GPIB และอ่าน Response
+        private Dictionary<string, (string Address, string Response)> FindConnectedGPIBDevicesWithResponse()
+        {
+            Dictionary<string, (string Address, string Response)> ConnectedDevices = new Dictionary<string, (string, string)>();
+
+            try
+            {
+                string[] AllDevices = RsrcmngrSMU.FindRsrc("GPIB?*::?*::INSTR");
+
+                foreach (string Device in AllDevices)
+                {
+                    FormattedIO488 Sessions = new FormattedIO488();
+
+                    try
+                    {
+                        Sessions.IO = (IMessage)RsrcmngrSMU.Open(Device);
+                        Sessions.WriteString("*IDN?", true); // ใช้ true เพื่อให้ส่ง Line Feed (\n)
+
+                        string Response = Sessions.ReadString().Trim();
+
+                        if (!string.IsNullOrEmpty(Response))
+                        {
+                            ConnectedDevices[Device] = (Device, Response);
+                            Debug.WriteLine($"[DEBUG] Instruments Model: {Response}");
+                            Debug.WriteLine($"[DEBUG] อุปกรณ์ที่ใช้งานอยู่: {Device}");
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Debug.WriteLine($"[ERROR] อุปกรณ์ {Device} ไม่ตอบสนอง");
+                    }
+                    finally
+                    {
+                        if (Sessions.IO != null)
+                        {
+                            Sessions.IO.Close();
+                            Marshal.FinalReleaseComObject(Sessions.IO);
+                        }
+                        Marshal.FinalReleaseComObject(Sessions);
+                    }
+                }
+            }
+            catch (Exception Ex)
+            {
+                Debug.WriteLine($"[ERROR] ไม่สามารถค้นหาอุปกรณ์ GPIB: {Ex.Message}");
+            }
+
+            return ConnectedDevices;
+        }
+
+        // อัปเดต ComboBox ด้วย Address ที่ค้นพบ
+        private void UpdateGPIBComboBox(ComboBox Combobox, string[] GpibAddresses, ComboBox OtherCombobox)
+        {
+            Combobox.Items.Clear();
+
+            if (GpibAddresses.Length == 0)
+            {
+                Debug.WriteLine($"[WARNING] ไม่มีที่อยู่ GPIB สำหรับ {Combobox.Name}");
+                return;
+            }
+
+            // ดึงค่าจาก ComboBox อื่นเพื่อหลีกเลี่ยง Address ซ้ำ
+            HashSet<string> OtherAddresses = new HashSet<string>(
+                OtherCombobox.Items.Cast<string>().DefaultIfEmpty()
+            );
+
+            foreach (string DeviceAddress in GpibAddresses)
+            {
+                // Debug เช็กค่าที่จะเพิ่ม
+                Debug.WriteLine($"[DEBUG] กำลังเพิ่ม {DeviceAddress} ไปที่ {Combobox.Name}");
+
+                if (!OtherAddresses.Contains(DeviceAddress) || Combobox == OtherCombobox)
+                {
+                    Combobox.Items.Add(DeviceAddress);
+                }
+            }
+
+            // เลือกอุปกรณ์แรกหากมี
+            if (Combobox.Items.Count > 0)
+            {
+                Combobox.SelectedIndex = 0;
+            }
         }
 
         public static class GlobalSettings
@@ -216,16 +355,15 @@ namespace Program01
         {
             if (InvokeRequired)
             {
-                ConnectionStatusChanged?.Invoke(Message, IsSMUConnected);
+                BeginInvoke(new Action(() => UpdateSMUUIAfterConnection(Message, IsSMUConnected, IsSMU)));
+                return;
             }
-            else
+
+            if (IsSMU)
             {
-                if (IsSMU)
-                {
-                    MessageBox.Show(Message, IsSMUConnected ? "INFORMATION" : "ERROR", MessageBoxButtons.OK);
-                    IconbuttonSMUConnection.BackColor = IsSMUConnected ? Color.Snow : Color.Snow;
-                    IconbuttonSMUConnection.IconColor = IsSMUConnected ? Color.GreenYellow : Color.LightBlue;
-                }
+                MessageBox.Show(Message, IsSMUConnected ? "INFORMATION" : "ERROR", MessageBoxButtons.OK);
+                IconbuttonSMUConnection.BackColor = IsSMUConnected ? Color.Snow : Color.Snow;
+                IconbuttonSMUConnection.IconColor = IsSMUConnected ? Color.GreenYellow : Color.Gainsboro;
             }
         }
 
@@ -233,7 +371,8 @@ namespace Program01
         {
             if (InvokeRequired)
             {
-                ConnectionStatusChanged?.Invoke(Message, IsSSConnected);
+                BeginInvoke(new Action(() => UpdateSSUIAfterConnection(Message, IsSSConnected, IsSS)));
+                return;
             }
             else
             {
@@ -241,19 +380,150 @@ namespace Program01
                 {
                     MessageBox.Show(Message, IsSSConnected ? "INFORMATION" : "ERROR", MessageBoxButtons.OK);
                     IconbuttonSSConnection.BackColor = IsSSConnected ? Color.Snow : Color.Snow;
-                    IconbuttonSSConnection.IconColor = IsSSConnected ? Color.GreenYellow : Color.LightBlue;
+                    IconbuttonSSConnection.IconColor = IsSSConnected ? Color.GreenYellow : Color.Gainsboro;
                 }
             }
         }
 
-        private async void IconbuttonSMUConnection_Click(object sender, EventArgs e)
+        private void IconbuttonSMUConnection_Click(object sender, EventArgs e)
         {
-            await ToggleInstrumentConnection(ComboboxVISASMUIOPort, "SMU", UpdateSMUUIAfterConnection);
+            try
+            {
+                if (SMU == null)
+                {
+                    MessageBox.Show("Error: SMU object is null.", "Connection Error", MessageBoxButtons.OK);
+                    return;
+                }
+
+                if (!IsSMUConnected)
+                {
+                    // ตรวจสอบว่า SMU.IO ปลอดภัยจากการค้างก่อน
+                    if (SMU.IO != null)
+                    {
+                        SMU.IO.Close();
+                        Marshal.FinalReleaseComObject(SMU.IO); // ปล่อยทรัพยากรที่เกี่ยวข้อง
+                        SMU.IO = null;
+                    }
+
+                    // สร้างออบเจ็กต์ SMU ใหม่ทุกครั้ง
+                    SMU = new FormattedIO488();
+                    SMU.IO = (IMessage)RsrcmngrSMU.Open(ComboboxVISASMUIOPort.SelectedItem.ToString()); // เชื่อมต่อใหม่
+
+                    // เชื่อมต่อ SMU ใหม่
+                    SMU.WriteString("*IDN?");
+                    SMU.IO.Timeout = 5000;
+                    string ConnectionResponse = SMU.ReadString();
+                    SMU.WriteString("SYSTem:BEEPer 555, 0.3");
+
+                    Debug.WriteLine($"{ConnectionResponse}");
+
+                    IsSMUConnected = true;
+                    UpdateSMUUIAfterConnection("Connected to SMU", true, true);
+                }
+                else
+                {
+                    // ตัดการเชื่อมต่อ SMU
+                    try
+                    {
+                        // ปิดการเชื่อมต่อ SMU และปล่อยทรัพยากร
+                        if (SMU.IO != null)
+                        {
+                            SMU.WriteString("*CLS");
+                            SMU.WriteString("*RST");
+
+                            SMU.IO.Close();
+                            Marshal.FinalReleaseComObject(SMU.IO);  // ปล่อยทรัพยากร
+                            SMU.IO = null;
+                        }
+
+                        // รีเซ็ตตัวแปรสถานะการเชื่อมต่อ
+                        IsSMUConnected = false;
+
+                        UpdateSMUUIAfterConnection("Disconnected from SMU", false, true);
+
+                        // ไม่ตั้งค่า SMU เป็น null ที่นี่
+                        // SMU = null; // ไม่ต้องทำการตั้งค่า SMU เป็น null
+                    }
+                    catch (Exception DisconnectEx)
+                    {
+                        MessageBox.Show($"Error during disconnection: {DisconnectEx.Message}", "Disconnection Error", MessageBoxButtons.OK);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Connection Error", MessageBoxButtons.OK);
+            }
         }
 
-        private async void IconbuttonSSConnection_Click(object sender, EventArgs e)
+        private void IconbuttonSSConnection_Click(object sender, EventArgs e)
         {
-            await ToggleInstrumentConnection(ComboboxVISASSIOPort, "SS", UpdateSSUIAfterConnection);
+            try
+            {
+                if (SS == null)
+                {
+                    MessageBox.Show("Error: SS object is null.", "Connection Error", MessageBoxButtons.OK);
+                    return;
+                }
+
+                if (!IsSSConnected)
+                {
+                    // ตรวจสอบว่า SMU.IO ปลอดภัยจากการค้างก่อน
+                    if (SS.IO != null)
+                    {
+                        SS.IO.Close();
+                        Marshal.FinalReleaseComObject(SS.IO); // ปล่อยทรัพยากรที่เกี่ยวข้อง
+                        SS.IO = null;
+                    }
+
+                    // สร้างออบเจ็กต์ SS ใหม่ทุกครั้ง
+                    SS = new FormattedIO488();
+                    SS.IO = (IMessage)RsrcmngrSS.Open(ComboboxVISASSIOPort.SelectedItem.ToString()); // เชื่อมต่อใหม่
+
+                    // เชื่อมต่อ SS ใหม่
+                    SS.WriteString("*IDN?");
+                    SS.IO.Timeout = 5000;
+                    string ConnectionResponse = SS.ReadString();
+
+                    Debug.WriteLine($"{ConnectionResponse}");
+
+                    IsSSConnected = true;
+                    UpdateSSUIAfterConnection("Connected to SS", true, true);
+                }
+                else
+                {
+                    // ตัดการเชื่อมต่อ SS
+                    try
+                    {
+                        // ปิดการเชื่อมต่อ SS และปล่อยทรัพยากร
+                        if (SS.IO != null)
+                        {
+                            SS.WriteString("*CLS");
+                            SS.WriteString("*RST");
+
+                            SS.IO.Close();
+                            Marshal.FinalReleaseComObject(SS.IO);  // ปล่อยทรัพยากร
+                            SS.IO = null;
+                        }
+
+                        // รีเซ็ตตัวแปรสถานะการเชื่อมต่อ
+                        IsSSConnected = false;
+
+                        UpdateSSUIAfterConnection("Disconnected from SS", false, true);
+
+                        // ไม่ตั้งค่า SMU เป็น null ที่นี่
+                        // SMU = null; // ไม่ต้องทำการตั้งค่า SMU เป็น null
+                    }
+                    catch (Exception DisconnectEx)
+                    {
+                        MessageBox.Show($"Error during disconnection: {DisconnectEx.Message}", "Disconnection Error", MessageBoxButtons.OK);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Connection Error", MessageBoxButtons.OK);
+            }
         }
 
         private void MeasurementSettingsChildForm_Load(object sender, EventArgs e)
@@ -1110,7 +1380,7 @@ namespace Program01
                     await ExecuteSweep();
                     TracingRunMeasurement();
                     FetchingData();
-                    await Task.Delay(points * repetitionValue * 200);
+                    await Task.Delay(points * repetitionValue * 300);
                     CurrentTuner++;
 
                     if (CurrentTuner > 8)
@@ -1244,7 +1514,7 @@ namespace Program01
             SMU.WriteString("INITiate");
             SMU.WriteString("*WAI");
             SMU.WriteString("OUTPut OFF");
-            await Task.Delay(points * repetitionValue * 100);
+            await Task.Delay(points * repetitionValue * (int)delayValue * 250);
         }
 
         private void UpdateMeasurementState()
@@ -1573,7 +1843,7 @@ namespace Program01
 
                 SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOURce, READing");
                 string MeasureRawData = SMU.ReadString();
-                Debug.WriteLine($"Buffer contains: {BufferPoints} readings.");
+                Debug.WriteLine($"Buffer contains: {BufferPoints} readings");
                 Debug.WriteLine($"Measured Raw Data: {MeasureRawData}");
 
                 string[] DataPairs = MeasureRawData.Split(',');
@@ -1671,135 +1941,6 @@ namespace Program01
             }
 
             MessageBox.Show("บันทึกค่าการวัดเรียบร้อยแล้ว!");
-        }
-
-        private void MeasurementSettingsForm_Shown(object sender, EventArgs e)
-        {
-            if (!HasScannedPorts)
-            {
-                ScanPorts(); // เรียกใช้ฟังก์ชันสแกนพอร์ต
-                HasScannedPorts = true; // บันทึกสถานะการสแกนพอร์ต
-            }
-        }
-
-        private void ScanPorts()
-        {
-            // เรียกใช้เมธอด ScanGPIBPorts จาก GPIBPortAddresses
-            List<string> AvailablePorts = GPIBPortAddresses.ScanGPIBPorts();
-
-            if (AvailablePorts != null && AvailablePorts.Count > 0)
-            {
-                UpdateGPIBPortComboboxes();
-                MessageBox.Show("พบพอร์ต GPIB ที่เชื่อมต่อแล้ว!");
-            }
-            else
-            {
-                MessageBox.Show("ไม่พบพอร์ต GPIB ที่เชื่อมต่อ!");
-            }
-        }
-
-        private void UpdateGPIBPortComboboxes()
-        {
-            // ตรวจสอบว่าอ็อบเจกต์ของคลาส GPIB มีอยู่หรือไม่
-            if (GPIBPortAddresses == null)
-                GPIBPortAddresses = new GPIBManagerandScanner();
-
-            // ค้นหาอุปกรณ์ GPIB ที่เชื่อมต่อ
-            List<string> GPIBPorts = GPIBPortAddresses.ScanGPIBPorts()
-                .Where(p => p.Contains("GPIB")) // กรองเฉพาะพอร์ตที่เป็น GPIB
-                .Distinct() // ป้องกันค่าซ้ำ
-                .ToList();
-
-            Debug.WriteLine($"[DEBUG] พบพอร์ต GPIB: {string.Join(", ", GPIBPorts)}");
-
-            if (GPIBPorts.Count > 0)
-            {
-                Debug.WriteLine("[INFO] พบอุปกรณ์ GPIB ที่เชื่อมต่อ");
-            }
-            else
-            {
-                Debug.WriteLine("[WARNING] ไม่พบพอร์ต GPIB ใด ๆ");
-            }
-
-            // เติมข้อมูลลงใน ComboBox
-            FillCombobox(ComboboxVISASMUIOPort, GPIBPorts, "SMU");
-            FillCombobox(ComboboxVISASSIOPort, GPIBPorts, "SS");
-        }
-
-        // ฟังก์ชันช่วยเติมข้อมูลใน ComboBox และกรอง Address ตามประเภทอุปกรณ์
-        private void FillCombobox(ComboBox Combobox, List<string> Items, string DeviceTypes)
-        {
-            if (Combobox == null) return;
-
-            Combobox.Items.Clear();
-
-            // กรองพอร์ต GPIB ตามประเภทอุปกรณ์ (สมมติว่ามีฟังก์ชันแยกประเภทพอร์ต)
-            var FilteredItems = Items
-                .Where(Address => IsDeviceType(Address, DeviceTypes)) // ตรวจสอบประเภทอุปกรณ์
-                .ToList();
-
-            foreach (var Item in FilteredItems)
-            {
-                Combobox.Items.Add(Item);
-            }
-
-            // ตั้งค่าค่าเริ่มต้นเป็นตัวแรกถ้ามีข้อมูล
-            if (Combobox.Items.Count > 0)
-            {
-                Combobox.SelectedIndex = 0;
-            }
-        }
-
-        // ฟังก์ชันตรวจสอบประเภทอุปกรณ์จาก Address
-        private bool IsDeviceType(string Addresses, string DeviceTypes)
-        {
-            // กำหนดเงื่อนไขการแยกประเภทอุปกรณ์ตาม GPIB Address หรือพอร์ตที่เชื่อมต่อ
-            if (DeviceTypes == "SMU")
-            {
-                // กรณีเชื่อมต่อกับ SMU อุปกรณ์
-                return Addresses.StartsWith("GPIB0::5::INSTR") || Addresses.StartsWith("GPIB1::5::INSTR") || Addresses.StartsWith("GPIB2::5::INSTR");
-            }
-            else if (DeviceTypes == "SS")
-            {
-                // กรณีเชื่อมต่อกับ SS อุปกรณ์
-                return Addresses.StartsWith("GPIB0::16::INSTR") || Addresses.StartsWith("GPIB1::16::INSTR") || Addresses.StartsWith("GPIB2::16::INSTR");
-            }
-
-            // หากไม่ตรงกับประเภทที่กำหนด ให้ส่งกลับ false
-            return false;
-        }
-
-        private async Task ToggleInstrumentConnection(ComboBox comboBox, string deviceType, Action<string, bool, bool> updateUI)
-        {
-            try
-            {
-                if (comboBox.SelectedItem == null)
-                {
-                    MessageBox.Show($"Please select a GPIB Address for {deviceType}", "WARNING", MessageBoxButtons.OK);
-                    return;
-                }
-
-                string selectedAddress = comboBox.SelectedItem.ToString();
-                var gpibManager = new GPIBManagerandScanner();
-
-                if (!gpibManager.IsConnected(selectedAddress))
-                {
-                    await Task.Run(() =>
-                    {
-                        bool isConnected = gpibManager.ConnectInstrument(selectedAddress);
-                        updateUI(isConnected ? $"Connected to {deviceType}" : $"Failed to connect to {deviceType}", isConnected, true);
-                    });
-                }
-                else
-                {
-                    bool isDisconnected = gpibManager.DisconnectInstrument(selectedAddress);
-                    updateUI(isDisconnected ? $"Disconnected from {deviceType}" : $"Failed to disconnect from {deviceType}", !isDisconnected, true);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}", "ERROR", MessageBoxButtons.OK);
-            }
         }
     }
 }

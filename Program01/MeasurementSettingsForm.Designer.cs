@@ -976,6 +976,7 @@
             this.Name = "MeasurementSettingsForm";
             this.Text = "2";
             this.Load += new System.EventHandler(this.MeasurementSettingsChildForm_Load);
+            this.Shown += new System.EventHandler(this.MeasurementSettingsForm_Shown);
             this.PanelTunerandData.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxSample)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTunerDescription)).EndInit();

@@ -7,6 +7,7 @@ using System.Resources;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Ivi.Visa;
+using Ivi.Visa.FormattedIO;
 using Ivi.Visa.Interop;
 
 namespace Program01
@@ -16,8 +17,7 @@ namespace Program01
         // Fields
         public FormattedIO488 SMU;
         public FormattedIO488 SS;
-        public PortScanner SMUPort;
-        public PortScanner SSPort;
+        private GPIBManagerandScanner GPIBPortAddresses;
 
         public string RsenseMode;
         public string MeasureMode;
@@ -41,10 +41,11 @@ namespace Program01
         private int TargetPosition;
         private int CurrentTuner;
 
-        private static bool IsFirstRun = true;
+        private bool IsFirstRun = true;
         public bool IsSMUConnected = false;
         public bool IsSSConnected = false;
         public bool IsModes = false;
+        private bool HasScannedPorts = false; // ตัวแปรสถานะการสแกนพอร์ต
 
         public event EventHandler ToggleChanged;
         public event EventHandler<bool> ModeChanged;
@@ -62,10 +63,6 @@ namespace Program01
         private double LatestSourceValue;
         private double LatestMeasuredValue;
 
-        public PortScanner PortScanner;
-        public List<string> AllPorts = new List<string>();
-        public PortScanner AvailablePorts;
-
         public bool IsOn
         {
             get => IsModes;
@@ -79,86 +76,8 @@ namespace Program01
         public MeasurementSettingsForm()
         {
             InitializeComponent();
-            InitializeGPIB();
-
-            var SMUresourcemanager = ResourceManagers.GetResourceManager("SMU");
-            var SSresourcemanager = ResourceManagers.GetResourceManager("SS");
-
-            if (SMUresourcemanager == null || SSresourcemanager == null)
-            {
-                throw new InvalidOperationException("ResourceManager for SMU or SS is not available.");
-            }
-
-            //SMUPort = new PortScanner(SMUresourcemanager);
-            //SSPort = new PortScanner(SSresourcemanager);
-
-            SMUPort.ClearPorts();
-            SMUPort.ScanAllPorts();
-
-            SSPort.ClearPorts();
-            SSPort.ScanAllPorts();
-        }
-
-        public void InitializeGPIB()
-        {
-            AllPorts.Clear();
-            Debug.WriteLine("[DEBUG] Cleared previous ports list.");
-
-            try
-            {
-                List<string> DetectedPorts = PortScanner.ScanAllPorts();
-                List<string> GPIBPorts = DetectedPorts.Where(p => p.Contains("GPIB")).ToList();
-
-                if (GPIBPorts.Count == 0)
-                {
-                    Debug.WriteLine("[WARNING] No GPIB devices detected.");
-                    return;
-                }
-
-                if (ComboboxVISASMUIOPort.InvokeRequired)
-                {
-                    ComboboxVISASMUIOPort.Invoke((MethodInvoker)delegate { UpdateComboBoxes(GPIBPorts); });
-                }
-                else
-                {
-                    UpdateComboBoxes(GPIBPorts);
-                }
-
-                AllPorts.AddRange(GPIBPorts);
-                Debug.WriteLine($"[DEBUG] Found {GPIBPorts.Count} GPIB devices : {string.Join(", ", GPIBPorts)}");
-            }
-            catch (Exception Ex)
-            {
-                Debug.WriteLine($"[ERROR] Error Initializing GPIB: {Ex.Message}");
-            }
-        }
-
-        private void UpdateComboBoxes(List<string> GPIBPorts)
-        {
-            ComboboxVISASMUIOPort.Items.Clear();
-            ComboboxVISASSIOPort.Items.Clear();
-
-            foreach (string address in GPIBPorts)
-            {
-                if (address.Contains("GPIB0::5::INSTR") || address.Contains("GPIB1::5::INSTR") || address.Contains("GPIB2::5::INSTR"))
-                {
-                    ComboboxVISASMUIOPort.Items.Add(address);
-                }
-                else if (address.Contains("GPIB0::16::INSTR") || address.Contains("GPIB1::16::INSTR") || address.Contains("GPIB2::16::INSTR"))
-                {
-                    ComboboxVISASSIOPort.Items.Add(address);
-                }
-            }
-
-            if (ComboboxVISASMUIOPort.Items.Count > 0)
-            {
-                ComboboxVISASMUIOPort.SelectedIndex = 0;
-            }
-
-            if (ComboboxVISASSIOPort.Items.Count > 0)
-            {
-                ComboboxVISASSIOPort.SelectedIndex = 0;
-            }
+            GPIBPortAddresses = new GPIBManagerandScanner();
+            UpdateGPIBPortComboboxes();
         }
 
         public static class GlobalSettings
@@ -259,7 +178,6 @@ namespace Program01
             public static bool IsSMUConnected { get; private set; }
             public static bool IsSSConnected { get; private set; }
             public static bool IsModes { get; private set; }
-
         }
 
         private void SaveToGlobal()
@@ -330,125 +248,12 @@ namespace Program01
 
         private async void IconbuttonSMUConnection_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (ComboboxVISASMUIOPort.SelectedItem == null)
-                {
-                    MessageBox.Show("Please select a GPIB Address for Source Measure Unit", "WARNING", MessageBoxButtons.OK);
-                    return;
-                }
-
-                string SelectedSMUAddress = ComboboxVISASMUIOPort.SelectedItem.ToString();
-
-                if (!IsSMUConnected)
-                {
-                    await Task.Run(() =>
-                    {
-                        try
-                        {
-                            var smuResourceManager = ResourceManagers.GetResourceManager("SMU");
-                            SMU.IO.Timeout = 5000;
-                            SMU.WriteString("*IDN?");
-                            SMU.WriteString("SYSTem:BEEPer 1600, 0.3");
-                            string SMUResponse = SMU.ReadString();
-                            Debug.WriteLine($"Connected to: {SMUResponse}");
-
-                            IsSMUConnected = true;
-                            UpdateSMUUIAfterConnection("Connected to Source Measure Unit", true, true);
-                        }
-                        catch (Exception ConnectionEx)
-                        {
-                            UpdateSMUUIAfterConnection($"Error during connection: {ConnectionEx.Message}", false, true);
-                        }
-                    });
-                }
-                else
-                {
-                    try
-                    {
-                        if (SMU != null && SMU.IO != null)
-                        {
-                            SMU.WriteString("*CLS");
-                            SMU.WriteString("*RST");
-                            SMU.IO.Close();
-                            SMU.IO = null;
-                            SMU = null;
-                        }
-
-                        IsSMUConnected = false;
-                        UpdateSMUUIAfterConnection("Disconnected from Source Measure Unit", false, true);
-                    }
-                    catch (Exception DisconnectEx)
-                    {
-                        MessageBox.Show($"Error during disconnection: {DisconnectEx.Message}", "ERROR", MessageBoxButtons.OK);
-                    }
-                }
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show($"Error: {Ex.Message}", "ERROR", MessageBoxButtons.OK);
-            }
+            await ToggleInstrumentConnection(ComboboxVISASMUIOPort, "SMU", UpdateSMUUIAfterConnection);
         }
 
         private async void IconbuttonSSConnection_Click(object sender, EventArgs e)
         {
-            try
-            {
-                if (ComboboxVISASSIOPort.SelectedItem == null)
-                {
-                    MessageBox.Show("Please select a GPIB Address for Switch System", "WARNING", MessageBoxButtons.OK);
-                    return;
-                }
-
-                string SelectedSSAddress = ComboboxVISASSIOPort.SelectedItem.ToString();
-
-                if (!IsSSConnected)
-                {
-                    await Task.Run(() =>
-                    {
-                        try
-                        {
-                            var ssResourceManager = ResourceManagers.GetResourceManager("SS");
-                            SS.IO.Timeout = 5000;
-                            SS.WriteString("*IDN?");
-                            string SSResponse = SS.ReadString();
-                            Debug.WriteLine($"Connected to: {SSResponse}");
-
-                            IsSSConnected = true;
-                            UpdateSSUIAfterConnection("Connected to Switch System", true, true);
-                        }
-                        catch (Exception ConnectionEx)
-                        {
-                            UpdateSSUIAfterConnection($"Error during connection: {ConnectionEx.Message}", false, true);
-                        }
-                    });
-                }
-                else
-                {
-                    try
-                    {
-                        if (SS != null && SS.IO != null)
-                        {
-                            SS.WriteString("*CLS");
-                            SS.WriteString("*RST");
-                            SS.IO.Close();
-                            SS.IO = null;
-                            SS = null;
-                        }
-
-                        IsSSConnected = false;
-                        UpdateSSUIAfterConnection("Disconnected from Switch System", false, true);
-                    }
-                    catch (Exception DisconnectEx)
-                    {
-                        MessageBox.Show($"Error during disconnection: {DisconnectEx.Message}", "ERROR", MessageBoxButtons.OK);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}", "ERROR", MessageBoxButtons.OK);
-            }
+            await ToggleInstrumentConnection(ComboboxVISASSIOPort, "SS", UpdateSSUIAfterConnection);
         }
 
         private void MeasurementSettingsChildForm_Load(object sender, EventArgs e)
@@ -1866,6 +1671,135 @@ namespace Program01
             }
 
             MessageBox.Show("บันทึกค่าการวัดเรียบร้อยแล้ว!");
+        }
+
+        private void MeasurementSettingsForm_Shown(object sender, EventArgs e)
+        {
+            if (!HasScannedPorts)
+            {
+                ScanPorts(); // เรียกใช้ฟังก์ชันสแกนพอร์ต
+                HasScannedPorts = true; // บันทึกสถานะการสแกนพอร์ต
+            }
+        }
+
+        private void ScanPorts()
+        {
+            // เรียกใช้เมธอด ScanGPIBPorts จาก GPIBPortAddresses
+            List<string> AvailablePorts = GPIBPortAddresses.ScanGPIBPorts();
+
+            if (AvailablePorts != null && AvailablePorts.Count > 0)
+            {
+                UpdateGPIBPortComboboxes();
+                MessageBox.Show("พบพอร์ต GPIB ที่เชื่อมต่อแล้ว!");
+            }
+            else
+            {
+                MessageBox.Show("ไม่พบพอร์ต GPIB ที่เชื่อมต่อ!");
+            }
+        }
+
+        private void UpdateGPIBPortComboboxes()
+        {
+            // ตรวจสอบว่าอ็อบเจกต์ของคลาส GPIB มีอยู่หรือไม่
+            if (GPIBPortAddresses == null)
+                GPIBPortAddresses = new GPIBManagerandScanner();
+
+            // ค้นหาอุปกรณ์ GPIB ที่เชื่อมต่อ
+            List<string> GPIBPorts = GPIBPortAddresses.ScanGPIBPorts()
+                .Where(p => p.Contains("GPIB")) // กรองเฉพาะพอร์ตที่เป็น GPIB
+                .Distinct() // ป้องกันค่าซ้ำ
+                .ToList();
+
+            Debug.WriteLine($"[DEBUG] พบพอร์ต GPIB: {string.Join(", ", GPIBPorts)}");
+
+            if (GPIBPorts.Count > 0)
+            {
+                Debug.WriteLine("[INFO] พบอุปกรณ์ GPIB ที่เชื่อมต่อ");
+            }
+            else
+            {
+                Debug.WriteLine("[WARNING] ไม่พบพอร์ต GPIB ใด ๆ");
+            }
+
+            // เติมข้อมูลลงใน ComboBox
+            FillCombobox(ComboboxVISASMUIOPort, GPIBPorts, "SMU");
+            FillCombobox(ComboboxVISASSIOPort, GPIBPorts, "SS");
+        }
+
+        // ฟังก์ชันช่วยเติมข้อมูลใน ComboBox และกรอง Address ตามประเภทอุปกรณ์
+        private void FillCombobox(ComboBox Combobox, List<string> Items, string DeviceTypes)
+        {
+            if (Combobox == null) return;
+
+            Combobox.Items.Clear();
+
+            // กรองพอร์ต GPIB ตามประเภทอุปกรณ์ (สมมติว่ามีฟังก์ชันแยกประเภทพอร์ต)
+            var FilteredItems = Items
+                .Where(Address => IsDeviceType(Address, DeviceTypes)) // ตรวจสอบประเภทอุปกรณ์
+                .ToList();
+
+            foreach (var Item in FilteredItems)
+            {
+                Combobox.Items.Add(Item);
+            }
+
+            // ตั้งค่าค่าเริ่มต้นเป็นตัวแรกถ้ามีข้อมูล
+            if (Combobox.Items.Count > 0)
+            {
+                Combobox.SelectedIndex = 0;
+            }
+        }
+
+        // ฟังก์ชันตรวจสอบประเภทอุปกรณ์จาก Address
+        private bool IsDeviceType(string Addresses, string DeviceTypes)
+        {
+            // กำหนดเงื่อนไขการแยกประเภทอุปกรณ์ตาม GPIB Address หรือพอร์ตที่เชื่อมต่อ
+            if (DeviceTypes == "SMU")
+            {
+                // กรณีเชื่อมต่อกับ SMU อุปกรณ์
+                return Addresses.StartsWith("GPIB0::5::INSTR") || Addresses.StartsWith("GPIB1::5::INSTR") || Addresses.StartsWith("GPIB2::5::INSTR");
+            }
+            else if (DeviceTypes == "SS")
+            {
+                // กรณีเชื่อมต่อกับ SS อุปกรณ์
+                return Addresses.StartsWith("GPIB0::16::INSTR") || Addresses.StartsWith("GPIB1::16::INSTR") || Addresses.StartsWith("GPIB2::16::INSTR");
+            }
+
+            // หากไม่ตรงกับประเภทที่กำหนด ให้ส่งกลับ false
+            return false;
+        }
+
+        private async Task ToggleInstrumentConnection(ComboBox comboBox, string deviceType, Action<string, bool, bool> updateUI)
+        {
+            try
+            {
+                if (comboBox.SelectedItem == null)
+                {
+                    MessageBox.Show($"Please select a GPIB Address for {deviceType}", "WARNING", MessageBoxButtons.OK);
+                    return;
+                }
+
+                string selectedAddress = comboBox.SelectedItem.ToString();
+                var gpibManager = new GPIBManagerandScanner();
+
+                if (!gpibManager.IsConnected(selectedAddress))
+                {
+                    await Task.Run(() =>
+                    {
+                        bool isConnected = gpibManager.ConnectInstrument(selectedAddress);
+                        updateUI(isConnected ? $"Connected to {deviceType}" : $"Failed to connect to {deviceType}", isConnected, true);
+                    });
+                }
+                else
+                {
+                    bool isDisconnected = gpibManager.DisconnectInstrument(selectedAddress);
+                    updateUI(isDisconnected ? $"Disconnected from {deviceType}" : $"Failed to disconnect from {deviceType}", !isDisconnected, true);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "ERROR", MessageBoxButtons.OK);
+            }
         }
     }
 }

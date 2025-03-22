@@ -18,9 +18,8 @@ namespace Program01
     {
         // Fields
         public FormattedIO488 SMU;
-        public Ivi.Visa.Interop.ResourceManager RsrcmngrSMU;
         public FormattedIO488 SS;
-        public Ivi.Visa.Interop.ResourceManager RsrcmngrSS;
+        public Ivi.Visa.Interop.ResourceManager Rsrcmngr;
 
         public string RsenseMode;
         public string MeasureMode;
@@ -78,8 +77,7 @@ namespace Program01
         public MeasurementSettingsForm()
         {
             InitializeComponent();
-            RsrcmngrSMU = new Ivi.Visa.Interop.ResourceManager();
-            RsrcmngrSS = new Ivi.Visa.Interop.ResourceManager();
+            Rsrcmngr = new Ivi.Visa.Interop.ResourceManager();
             InitializeGPIB();
         }
 
@@ -109,8 +107,8 @@ namespace Program01
                     .ToArray();
 
                 // Debug: ตรวจสอบว่าค่าถูกต้องก่อนอัปเดต ComboBox
-                Debug.WriteLine($"[DEBUG] SMU Addresses: {string.Join(", ", SMUAddresses)}");
-                Debug.WriteLine($"[DEBUG] SS Addresses: {string.Join(", ", SSAddresses)}");
+                Debug.WriteLine($"[DEBUG] Source Measure Unit Addresses: {string.Join(", ", SMUAddresses)}");
+                Debug.WriteLine($"[DEBUG] Switch System Addresses: {string.Join(", ", SSAddresses)}");
 
                 // อัปเดต ComboBox สำหรับ SMU และ SS
                 UpdateGPIBComboBox(ComboboxVISASMUIOPort, SMUAddresses, ComboboxVISASSIOPort);
@@ -120,13 +118,13 @@ namespace Program01
                 if (SMU == null && SMUAddresses.Length > 0)
                 {
                     SMU = new FormattedIO488(); // สร้าง SMU ใหม่
-                    SMU.IO = (IMessage)RsrcmngrSMU.Open(SMUAddresses[0]); // เชื่อมต่อกับ SMU ที่พบ
+                    SMU.IO = (IMessage)Rsrcmngr.Open(SMUAddresses[0]); // เชื่อมต่อกับ SMU ที่พบ
                 }
 
                 if (SS == null && SSAddresses.Length > 0)
                 {
                     SS = new FormattedIO488(); // สร้าง SS ใหม่
-                    SS.IO = (IMessage)RsrcmngrSS.Open(SSAddresses[0]); // เชื่อมต่อกับ SS ที่พบ
+                    SS.IO = (IMessage)Rsrcmngr.Open(SSAddresses[0]); // เชื่อมต่อกับ SS ที่พบ
                 }
             }
             catch (Exception Ex)
@@ -142,7 +140,7 @@ namespace Program01
 
             try
             {
-                string[] AllDevices = RsrcmngrSMU.FindRsrc("GPIB?*::?*::INSTR");
+                string[] AllDevices = Rsrcmngr.FindRsrc("GPIB?*::?*::INSTR");
 
                 foreach (string Device in AllDevices)
                 {
@@ -150,10 +148,11 @@ namespace Program01
 
                     try
                     {
-                        Sessions.IO = (IMessage)RsrcmngrSMU.Open(Device);
+                        Sessions.IO = (IMessage)Rsrcmngr.Open(Device);
                         Sessions.WriteString("*IDN?", true); // ใช้ true เพื่อให้ส่ง Line Feed (\n)
-
-                        string Response = Sessions.ReadString().Trim();
+                        Sessions.IO.Timeout = 3000; // ตั้ง Timeout 3 วินาที
+                        string Response = Sessions.ReadString();
+                        Response = Response?.Trim() ?? "Unknown Device";
 
                         if (!string.IsNullOrEmpty(Response))
                         {
@@ -172,8 +171,11 @@ namespace Program01
                         {
                             Sessions.IO.Close();
                             Marshal.FinalReleaseComObject(Sessions.IO);
+                            Sessions.IO = null;
                         }
-                        Marshal.FinalReleaseComObject(Sessions);
+
+                        Marshal.FinalReleaseComObject(Sessions); // เพิ่มการปล่อย Sessions
+                        Sessions = null;
                     }
                 }
             }
@@ -387,142 +389,60 @@ namespace Program01
 
         private void IconbuttonSMUConnection_Click(object sender, EventArgs e)
         {
-            try
+            if (!InstrumentsConnectionManager.Instance.IsSMUConnected)
             {
-                if (SMU == null)
+                string Address = ComboboxVISASMUIOPort.SelectedItem?.ToString();
+
+                if (string.IsNullOrEmpty(Address))
                 {
-                    MessageBox.Show("Error: SMU object is null.", "Connection Error", MessageBoxButtons.OK);
+                    MessageBox.Show("Please select a valid GPIB address.", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (!IsSMUConnected)
+                bool Success = InstrumentsConnectionManager.Instance.ConnectSMU(Address);
+                if (Success)
                 {
-                    // ตรวจสอบว่า SMU.IO ปลอดภัยจากการค้างก่อน
-                    if (SMU.IO != null)
-                    {
-                        SMU.IO.Close();
-                        Marshal.FinalReleaseComObject(SMU.IO); // ปล่อยทรัพยากรที่เกี่ยวข้อง
-                        SMU.IO = null;
-                    }
-
-                    // สร้างออบเจ็กต์ SMU ใหม่ทุกครั้ง
-                    SMU = new FormattedIO488();
-                    SMU.IO = (IMessage)RsrcmngrSMU.Open(ComboboxVISASMUIOPort.SelectedItem.ToString()); // เชื่อมต่อใหม่
-
-                    // เชื่อมต่อ SMU ใหม่
-                    SMU.WriteString("*IDN?");
-                    SMU.IO.Timeout = 5000;
-                    string ConnectionResponse = SMU.ReadString();
-                    SMU.WriteString("SYSTem:BEEPer 555, 0.3");
-
-                    Debug.WriteLine($"{ConnectionResponse}");
-
-                    IsSMUConnected = true;
-                    UpdateSMUUIAfterConnection("Connected to SMU", true, true);
+                    UpdateSMUUIAfterConnection("Connected to Source Measure Unit", true, true);
                 }
                 else
                 {
-                    // ตัดการเชื่อมต่อ SMU
-                    try
-                    {
-                        // ปิดการเชื่อมต่อ SMU และปล่อยทรัพยากร
-                        if (SMU.IO != null)
-                        {
-                            SMU.WriteString("*CLS");
-                            SMU.WriteString("*RST");
-
-                            SMU.IO.Close();
-                            Marshal.FinalReleaseComObject(SMU.IO);  // ปล่อยทรัพยากร
-                            SMU.IO = null;
-                        }
-
-                        // รีเซ็ตตัวแปรสถานะการเชื่อมต่อ
-                        IsSMUConnected = false;
-
-                        UpdateSMUUIAfterConnection("Disconnected from SMU", false, true);
-
-                        // ไม่ตั้งค่า SMU เป็น null ที่นี่
-                        // SMU = null; // ไม่ต้องทำการตั้งค่า SMU เป็น null
-                    }
-                    catch (Exception DisconnectEx)
-                    {
-                        MessageBox.Show($"Error during disconnection: {DisconnectEx.Message}", "Disconnection Error", MessageBoxButtons.OK);
-                    }
+                    MessageBox.Show("Failed to connect to SMU.", "Error", MessageBoxButtons.OK);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Error: {ex.Message}", "Connection Error", MessageBoxButtons.OK);
+                InstrumentsConnectionManager.Instance.DisconnectSMU();
+                UpdateSMUUIAfterConnection("Disconnected from Source Measure Unit", false, true);
             }
         }
 
         private void IconbuttonSSConnection_Click(object sender, EventArgs e)
         {
-            try
+            if (!InstrumentsConnectionManager.Instance.IsSSConnected)
             {
-                if (SS == null)
+                string Address = ComboboxVISASSIOPort.SelectedItem?.ToString();
+
+                if (string.IsNullOrEmpty(Address))
                 {
-                    MessageBox.Show("Error: SS object is null.", "Connection Error", MessageBoxButtons.OK);
+                    MessageBox.Show("Please select a valid GPIB address.", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (!IsSSConnected)
+                bool Success = InstrumentsConnectionManager.Instance.ConnectSS(Address);
+
+                if (Success)
                 {
-                    // ตรวจสอบว่า SMU.IO ปลอดภัยจากการค้างก่อน
-                    if (SS.IO != null)
-                    {
-                        SS.IO.Close();
-                        Marshal.FinalReleaseComObject(SS.IO); // ปล่อยทรัพยากรที่เกี่ยวข้อง
-                        SS.IO = null;
-                    }
-
-                    // สร้างออบเจ็กต์ SS ใหม่ทุกครั้ง
-                    SS = new FormattedIO488();
-                    SS.IO = (IMessage)RsrcmngrSS.Open(ComboboxVISASSIOPort.SelectedItem.ToString()); // เชื่อมต่อใหม่
-
-                    // เชื่อมต่อ SS ใหม่
-                    SS.WriteString("*IDN?");
-                    SS.IO.Timeout = 5000;
-                    string ConnectionResponse = SS.ReadString();
-
-                    Debug.WriteLine($"{ConnectionResponse}");
-
-                    IsSSConnected = true;
-                    UpdateSSUIAfterConnection("Connected to SS", true, true);
+                    UpdateSSUIAfterConnection("Connected to Switch System", true, true);
                 }
                 else
                 {
-                    // ตัดการเชื่อมต่อ SS
-                    try
-                    {
-                        // ปิดการเชื่อมต่อ SS และปล่อยทรัพยากร
-                        if (SS.IO != null)
-                        {
-                            SS.WriteString("*CLS");
-                            SS.WriteString("*RST");
-
-                            SS.IO.Close();
-                            Marshal.FinalReleaseComObject(SS.IO);  // ปล่อยทรัพยากร
-                            SS.IO = null;
-                        }
-
-                        // รีเซ็ตตัวแปรสถานะการเชื่อมต่อ
-                        IsSSConnected = false;
-
-                        UpdateSSUIAfterConnection("Disconnected from SS", false, true);
-
-                        // ไม่ตั้งค่า SMU เป็น null ที่นี่
-                        // SMU = null; // ไม่ต้องทำการตั้งค่า SMU เป็น null
-                    }
-                    catch (Exception DisconnectEx)
-                    {
-                        MessageBox.Show($"Error during disconnection: {DisconnectEx.Message}", "Disconnection Error", MessageBoxButtons.OK);
-                    }
+                    MessageBox.Show("Failed to connect to SS.", "Error", MessageBoxButtons.OK);
                 }
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Error: {ex.Message}", "Connection Error", MessageBoxButtons.OK);
+                InstrumentsConnectionManager.Instance.DisconnectSS();
+                UpdateSSUIAfterConnection("Disconnected from Switch System", false, true);
             }
         }
 
@@ -1355,9 +1275,9 @@ namespace Program01
 
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1393,9 +1313,9 @@ namespace Program01
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1545,9 +1465,9 @@ namespace Program01
                 Debug.WriteLine($"There is SMU error : {SMUrespones}");
                 Debug.WriteLine($"There is SS error : {SSresponse}");
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1566,7 +1486,6 @@ namespace Program01
                     {
                         DataChildForm.Show();
                     }
-                    OpenChildForm(DataChildForm);
                 }
 
                 if (XDataBuffer.Count > 0 && YDataBuffer.Count > 0)
@@ -1574,9 +1493,9 @@ namespace Program01
                     DataChildForm.UpdateChart(XDataBuffer, YDataBuffer);
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1598,9 +1517,9 @@ namespace Program01
                     OpenChildForm(ChannelSettingsChildForm);
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1622,9 +1541,9 @@ namespace Program01
                 ChildForm.BringToFront();
                 ChildForm.Show();
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1634,9 +1553,9 @@ namespace Program01
             {
                 CurrentChildForm?.Hide();
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1697,9 +1616,9 @@ namespace Program01
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Validation Error: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Validation Error: {Ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
@@ -1770,6 +1689,12 @@ namespace Program01
             {
                 XDataBuffer?.Clear();
                 YDataBuffer?.Clear();
+                MaxMeasure = double.NegativeInfinity;
+                MinMeasure = double.PositiveInfinity;
+                MaxSource = double.NegativeInfinity;
+                MinSource = double.PositiveInfinity;
+                Slope = double.NaN;
+
                 SMU.WriteString("TRACe:ACTual?");
                 string BufferCount = SMU.ReadString().Trim();
 
@@ -1806,10 +1731,19 @@ namespace Program01
                         MaxMeasure = Math.Max(MaxMeasure, MeasuredValue);
                         MinMeasure = Math.Min(MinMeasure, MeasuredValue);
 
-                        if (MaxSource != MinSource)
+                        // คำนวณความชัน (Slope) หากมีข้อมูลเพียงพอ
+                        if (MaxSource != MinSource)  // ป้องกันหารด้วยศูนย์
                         {
                             Slope = (MaxMeasure - MinMeasure) / (MaxSource - MinSource);
                         }
+                        else
+                        {
+                            Slope = double.NaN;
+                        }
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Error parsing data at index {i}: {DataPairs[i]}");
                     }
                 }
 
@@ -1822,9 +1756,9 @@ namespace Program01
                     DataChildForm.UpdateMeasurementData(MaxMeasure, MinMeasure, MaxSource, MinSource, Slope);
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1868,9 +1802,9 @@ namespace Program01
                 XDataBuffer = new List<double>(XData);
                 YDataBuffer = new List<double>(YData);
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1906,9 +1840,9 @@ namespace Program01
 
                 Debug.WriteLine($"Source Value at Tuner {CurrentTuner}: {LatestSourceValue}, Measure Value at Tuner {CurrentTuner}: {LatestMeasuredValue}");
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 

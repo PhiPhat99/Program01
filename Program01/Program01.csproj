@@ -121,6 +121,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InstrumentsConnectionManager.cs" />
     <Compile Include="Interfaces\IGPIBScannerInterfaces.cs" />
     <Compile Include="Interfaces\IGPIBDetectorInterfaces.cs" />
     <Compile Include="CollectVdPVoltage.cs" />

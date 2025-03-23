@@ -909,7 +909,6 @@
             this.IconbuttonMeasure.TabIndex = 52;
             this.IconbuttonMeasure.Text = "MEASURE";
             this.IconbuttonMeasure.UseVisualStyleBackColor = false;
-            this.IconbuttonMeasure.Click += new System.EventHandler(this.IconbuttonMeasure_Click);
             // 
             // MeasurementSettingsForm
             // 

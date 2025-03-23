@@ -8,7 +8,7 @@ namespace Program01
     {
         private static VdPMeasurementData instance;
 
-        public List<double> Voltages { get; set; } = new List<double>();
+        public List<double> VdPMeasured { get; set; } = new List<double>();
 
         private VdPMeasurementData() { }
 
@@ -17,31 +17,30 @@ namespace Program01
             get
             {
                 if (instance == null)
+                {
                     instance = new VdPMeasurementData();
+                }
+
                 return instance;
             }
         }
 
 
-        public void AddMeasurement(double voltage1, double voltage2, double voltage3, double voltage4, double voltage5, double voltage6, double voltage7, double voltage8)
+        public void AddMeasurement(List<double> measurements)
         {
-            Voltages.Add(voltage1);
-            Voltages.Add(voltage2);
-            Voltages.Add(voltage3);
-            Voltages.Add(voltage4);
-            Voltages.Add(voltage5);
-            Voltages.Add(voltage6);
-            Voltages.Add(voltage7);
-            Voltages.Add(voltage8);
+            foreach (var measurement in measurements)
+            {
+                VdPMeasured.Add(measurement);
+            }
         }
 
         public void ClearMeasurements()
         {
-            Voltages.Clear();
+            VdPMeasured.Clear();
         }
     }
 
-    public class CollectVdPVoltage
+    public class CollectVdPMeasuredValue
     {
         public static VdPMeasurementData Instance => VdPMeasurementData.Instance;
     }

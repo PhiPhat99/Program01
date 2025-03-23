@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace Program01
 {
@@ -17,35 +18,70 @@ namespace Program01
             InitializeComponent();
         }
 
+        // ฟังก์ชันสำหรับการอัปเดต Chart และ DataGridView
+        public void UpdateChartAndDataGridView(List<double> XData, List<double> YData)
+        {
+            // อัปเดตข้อมูลใน Chart
+            foreach (TabPage tabPage in TabcontrolVdPTotalCharts.TabPages)
+            {
+                if (tabPage.Controls.ContainsKey("chartVdP"))
+                {
+                    var chart = tabPage.Controls["chartVdP"] as Chart;
+                    if (chart != null)
+                    {
+                        var series = chart.Series[0];
+                        series.Points.Clear();
+
+                        for (int i = 0; i < XData.Count; i++)
+                        {
+                            series.Points.AddXY(XData[i], YData[i]);
+                        }
+                    }
+                }
+            }
+
+            // อัปเดตข้อมูลใน DataGridView
+            DatagridviewVdPTotalMesure.Rows.Clear();
+            foreach (var Readings in YData)
+            {
+                int rowsIndex = DatagridviewVdPTotalMesure.Rows.Add();
+                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue1"].Value = Readings;
+                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue2"].Value = Readings;
+                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue3"].Value = Readings;
+                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue4"].Value = Readings;
+                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue5"].Value = Readings;
+                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue6"].Value = Readings;
+                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue7"].Value = Readings;
+                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue8"].Value = Readings;
+            }
+        }
+
+        // ฟังก์ชันในการแสดงผลข้อมูลในการโหลด
         private void LoadVdPTotalMeasurementData()
         {
-            var VdPData = CollectVdPVoltage.Instance;
+            var VdPData = CollectVdPMeasuredValue.Instance;
             DatagridviewVdPTotalMesure.Rows.Clear();
 
             if (DatagridviewVdPTotalMesure.Columns.Count == 0)
             {
-                DatagridviewVdPTotalMesure.Columns.Add("TunerMeasure1", "TunerMeasure1");
-                DatagridviewVdPTotalMesure.Columns.Add("TunerMeasure2", "TunerMeasure2");
-                DatagridviewVdPTotalMesure.Columns.Add("TunerMeasure3", "TunerMeasure3");
-                DatagridviewVdPTotalMesure.Columns.Add("TunerMeasure4", "TunerMeasure4");
-                DatagridviewVdPTotalMesure.Columns.Add("TunerMeasure5", "TunerMeasure5");
-                DatagridviewVdPTotalMesure.Columns.Add("TunerMeasure6", "TunerMeasure6");
-                DatagridviewVdPTotalMesure.Columns.Add("TunerMeasure7", "TunerMeasure7");
-                DatagridviewVdPTotalMesure.Columns.Add("TunerMeasure8", "TunerMeasure8");
+                DatagridviewVdPTotalMesure.Columns.Add("MeasuredValue1", "Measured 1");
+                DatagridviewVdPTotalMesure.Columns.Add("MeasuredValue2", "Measured 2");
+                DatagridviewVdPTotalMesure.Columns.Add("MeasuredValue3", "Measured 3");
+                DatagridviewVdPTotalMesure.Columns.Add("MeasuredValue4", "Measured 4");
+                DatagridviewVdPTotalMesure.Columns.Add("MeasuredValue5", "Measured 5");
+                DatagridviewVdPTotalMesure.Columns.Add("MeasuredValue6", "Measured 6");
+                DatagridviewVdPTotalMesure.Columns.Add("MeasuredValue7", "Measured 7");
+                DatagridviewVdPTotalMesure.Columns.Add("MeasuredValue8", "Measured 8");
             }
 
-            for (int i = 0; i < VdPData.Voltages.Count; i++)
+            // เพิ่มค่าลงใน DataGridView
+            foreach (var reading in VdPData.VdPMeasured)
             {
-                int RowsIndex = DatagridviewVdPTotalMesure.Rows.Add();
-
-                DatagridviewVdPTotalMesure.Rows[RowsIndex].Cells["TunerMeasure1"].Value = VdPData.Voltages[i];
-                DatagridviewVdPTotalMesure.Rows[RowsIndex].Cells["TunerMeasure2"].Value = VdPData.Voltages[i];
-                DatagridviewVdPTotalMesure.Rows[RowsIndex].Cells["TunerMeasure3"].Value = VdPData.Voltages[i];
-                DatagridviewVdPTotalMesure.Rows[RowsIndex].Cells["TunerMeasure4"].Value = VdPData.Voltages[i];
-                DatagridviewVdPTotalMesure.Rows[RowsIndex].Cells["TunerMeasure5"].Value = VdPData.Voltages[i];
-                DatagridviewVdPTotalMesure.Rows[RowsIndex].Cells["TunerMeasure6"].Value = VdPData.Voltages[i];
-                DatagridviewVdPTotalMesure.Rows[RowsIndex].Cells["TunerMeasure7"].Value = VdPData.Voltages[i];
-                DatagridviewVdPTotalMesure.Rows[RowsIndex].Cells["TunerMeasure8"].Value = VdPData.Voltages[i];
+                int rowIndex = DatagridviewVdPTotalMesure.Rows.Add();
+                for (int col = 0; col < DatagridviewVdPTotalMesure.Columns.Count; col++)
+                {
+                    DatagridviewVdPTotalMesure.Rows[rowIndex].Cells[col].Value = reading;
+                }
             }
         }
 
@@ -56,11 +92,13 @@ namespace Program01
 
         private void DatagridviewVdPTotalMesure_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "TunerMeasure1" || DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "TunerMeasure2" || DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "TunerMeasure3" || DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "TunerMeasure4" || DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "TunerMeasure5" || DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "TunerMeasure6" || DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "TunerMeasure7" || DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "TunerMeasure8")
+            if (DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "MeasuredValue1" || DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "MeasuredValue2" || DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "MeasuredValue3" || 
+                DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "MeasuredValue4" || DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "MeasuredValue5" || DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "MeasuredValue6" || 
+                DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "MeasuredValue7" || DatagridviewVdPTotalMesure.Columns[e.ColumnIndex].Name == "MeasuredValue8")
             {
-                if (e.Value != null && double.TryParse(e.Value.ToString(), out double result))
+                if (e.Value != null && double.TryParse(e.Value.ToString(), out double results))
                 {
-                    e.Value = result.ToString("F5");
+                    e.Value = results.ToString("F5");
                 }
             }
         }

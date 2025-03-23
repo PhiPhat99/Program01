@@ -7,6 +7,8 @@ using System.Resources;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
+using FontAwesome.Sharp;
 using Ivi.Visa;
 using Ivi.Visa.FormattedIO;
 using Ivi.Visa.Interop;
@@ -43,12 +45,6 @@ namespace Program01
         private int TargetPosition;
         private int CurrentTuner;
 
-        public bool IsSMUConnected = false;
-        public bool IsSSConnected = false;
-        public bool IsModes = false;
-        public bool IsFirstRun = true;
-
-        public event Action<string, bool> ConnectionStatusChanged;
         public event EventHandler<bool> ModeChanged;
         public event EventHandler ToggleChanged;
 
@@ -64,12 +60,14 @@ namespace Program01
         private double LatestSourceValue;
         private double LatestMeasuredValue;
 
+        public VdPTotalMeasureValueForm VdPTotalMeasureForm;
+
         public bool IsOn
         {
-            get => IsModes;
+            get => GlobalSettings.IsModes;
             set
             {
-                IsModes = value;
+                GlobalSettings.IsModes = value;
                 UpdateToggleState();
             }
         }
@@ -225,6 +223,76 @@ namespace Program01
         {
             public static event Action OnSettingsChanged;
 
+            private static bool CIsSMUConnected;
+            public static bool IsSMUConnected
+            {
+                get => CIsSMUConnected;
+                set
+                {
+                    if (CIsSMUConnected != value)
+                    {
+                        CIsSMUConnected = value;
+                        OnSettingsChanged?.Invoke();
+                    }
+                }
+            }
+
+            public static bool CIsSSConnected;
+            public static bool IsSSConnected
+            {
+                get => CIsSSConnected;
+                set
+                {
+                    if (CIsSSConnected != value)
+                    {
+                        CIsSSConnected = value;
+                        OnSettingsChanged?.Invoke();
+                    }
+                }
+            }
+
+            public static bool CIsModes;
+            public static bool IsModes
+            {
+                get => CIsModes;
+                set
+                {
+                    if (CIsModes != value)
+                    {
+                        CIsModes = value;
+                        OnSettingsChanged?.Invoke();
+                    }
+                }
+            }
+
+            private static bool CIsHallMode;
+            public static bool IsHallMode
+            {
+                get => CIsHallMode;
+                set
+                {
+                    if (CIsHallMode != value)
+                    {
+                        CIsHallMode = value;
+                        OnSettingsChanged?.Invoke();
+                    }
+                }
+            }
+
+            private static bool CIsVanDerPauwMode;
+            public static bool IsVanDerPauwMode
+            {
+                get => CIsVanDerPauwMode;
+                set
+                {
+                    if (CIsVanDerPauwMode != value)
+                    {
+                        CIsVanDerPauwMode = value;
+                        OnSettingsChanged?.Invoke();
+                    }
+                }
+            }
+
             private static string CRsenseMode;
             public static string RsenseMode
             {
@@ -316,9 +384,6 @@ namespace Program01
             public static string SourceLimitLevelUnit { get; set; }
             public static string ThicknessUnit { get; set; }
             public static string MagneticFieldsUnit { get; set; }
-            public static bool IsSMUConnected { get; private set; }
-            public static bool IsSSConnected { get; private set; }
-            public static bool IsModes { get; private set; }
         }
 
         private void SaveToGlobal()
@@ -347,110 +412,171 @@ namespace Program01
                 GlobalSettings.RepetitionValue = TextboxRepetition.Text;
                 GlobalSettings.MagneticFieldsValue = TextboxMagneticFields.Text;
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "ERROR");
+                MessageBox.Show($"Error: {Ex.Message}", "ERROR");
             }
         }
 
-        private void UpdateSMUUIAfterConnection(string Message, bool IsSMUConnected, bool IsSMU)
+        private bool ConnectDevice(ref FormattedIO488 Devices, string Ports)
         {
-            if (InvokeRequired)
+            try
             {
-                BeginInvoke(new Action(() => UpdateSMUUIAfterConnection(Message, IsSMUConnected, IsSMU)));
-                return;
-            }
-
-            if (IsSMU)
-            {
-                MessageBox.Show(Message, IsSMUConnected ? "INFORMATION" : "ERROR", MessageBoxButtons.OK);
-                IconbuttonSMUConnection.BackColor = IsSMUConnected ? Color.Snow : Color.Snow;
-                IconbuttonSMUConnection.IconColor = IsSMUConnected ? Color.GreenYellow : Color.Gainsboro;
-            }
-        }
-
-        private void UpdateSSUIAfterConnection(string Message, bool IsSSConnected, bool IsSS)
-        {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action(() => UpdateSSUIAfterConnection(Message, IsSSConnected, IsSS)));
-                return;
-            }
-            else
-            {
-                if (IsSS)
+                if (Devices != null && Devices.IO != null)
                 {
-                    MessageBox.Show(Message, IsSSConnected ? "INFORMATION" : "ERROR", MessageBoxButtons.OK);
-                    IconbuttonSSConnection.BackColor = IsSSConnected ? Color.Snow : Color.Snow;
-                    IconbuttonSSConnection.IconColor = IsSSConnected ? Color.GreenYellow : Color.Gainsboro;
+                    Devices.IO.Close();
+                    Marshal.FinalReleaseComObject(Devices.IO);
                 }
+
+                Devices = new FormattedIO488();
+                Devices.IO = (IMessage)Rsrcmngr.Open(Ports);
+                Devices.IO.Timeout = 5000;
+
+                Devices.WriteString("*IDN?");
+                string ConnectedResponse = Devices.ReadString();
+                Debug.WriteLine($"Device Connected: {ConnectedResponse}");
+
+                return true;
             }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"Error connecting to device: {Ex.Message}", "Connection Error", MessageBoxButtons.OK);
+                return false;
+            }
+        }
+
+        private bool DisconnectDevice(ref FormattedIO488 Device)
+        {
+            try
+            {
+                if (Device != null)
+                {
+                    if (Device.IO != null)
+                    {
+                        Device.WriteString("*CLS");
+                        Device.IO.Close();
+                        Marshal.FinalReleaseComObject(Device.IO);
+                        Device.IO = null;
+                    }
+                    Marshal.FinalReleaseComObject(Device);
+                    Device = null;
+                }
+                return true;
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"Error disconnecting device: {Ex.Message}", "Disconnection Error", MessageBoxButtons.OK);
+                return false;
+            }
+        }
+
+        private void UpdateUIAfterConnection(string Message, bool IsConnected, IconButton Buttons)
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() => UpdateUIAfterConnection(Message, IsConnected, Buttons)));
+                return;
+            }
+
+            Debug.WriteLine(IsConnected ? "[INFORMATION]" : "[ERROR]");
+            Debug.WriteLine(Message);
+
+            // *** อัปเดตเฉพาะ UI เท่านั้น ไม่แก้ไขค่า GlobalSettings ***
+            Buttons.BackColor = IsConnected ? Color.Gray : Color.Snow;
+            Buttons.IconColor = IsConnected ? Color.GreenYellow : Color.Gainsboro;
+
+            Debug.WriteLine(Buttons == IconbuttonSMUConnection ? $"SMU Connected: {GlobalSettings.IsSMUConnected}" : $"SS Connected: {GlobalSettings.IsSSConnected}");
         }
 
         private void IconbuttonSMUConnection_Click(object sender, EventArgs e)
         {
-            if (!InstrumentsConnectionManager.Instance.IsSMUConnected)
+            try
             {
-                string Address = ComboboxVISASMUIOPort.SelectedItem?.ToString();
+                bool Success = false;
 
-                if (string.IsNullOrEmpty(Address))
+                if (!GlobalSettings.IsSMUConnected)
                 {
-                    MessageBox.Show("Please select a valid GPIB address.", "Error", MessageBoxButtons.OK);
-                    return;
-                }
+                    // ตรวจสอบว่ามีอ็อบเจ็กต์ SMU หรือยัง
+                    if (SMU == null)
+                    {
+                        SMU = new FormattedIO488(); // สร้างอ็อบเจ็กต์ใหม่
+                    }
 
-                bool Success = InstrumentsConnectionManager.Instance.ConnectSMU(Address);
-                if (Success)
-                {
-                    UpdateSMUUIAfterConnection("Connected to Source Measure Unit", true, true);
+                    // ดำเนินการเชื่อมต่อ
+                    Success = ConnectDevice(ref SMU, ComboboxVISASMUIOPort.SelectedItem?.ToString());
+                    
+                    if (Success)
+                    {
+                        GlobalSettings.IsSMUConnected = true;
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Failed to connect to SMU.", "Error", MessageBoxButtons.OK);
+                    // ตัดการเชื่อมต่อ
+                    Success = DisconnectDevice(ref SMU);
+
+                    if (Success)
+                    {
+                        GlobalSettings.IsSMUConnected = false;
+                        SMU = null; // กำหนดให้ SMU เป็น null เพื่อให้สามารถสร้างใหม่ได้
+                    }
                 }
+
+                // อัปเดต UI ตามสถานะการเชื่อมต่อ
+                UpdateUIAfterConnection(GlobalSettings.IsSMUConnected ? "Connected to Source Measure Unit" : "Disconnected from Source Measure Unit", GlobalSettings.IsSMUConnected, IconbuttonSMUConnection);
+                MessageBox.Show(GlobalSettings.IsSMUConnected ? "Connected to Source Measure Unit" : "Disconnected from Source Measure Unit", "Informationc");
             }
-            else
+            catch (Exception Ex)
             {
-                InstrumentsConnectionManager.Instance.DisconnectSMU();
-                UpdateSMUUIAfterConnection("Disconnected from Source Measure Unit", false, true);
+                MessageBox.Show($"Error: {Ex.Message}", "Connection Error", MessageBoxButtons.OK);
             }
         }
 
         private void IconbuttonSSConnection_Click(object sender, EventArgs e)
         {
-            if (!InstrumentsConnectionManager.Instance.IsSSConnected)
+            try
             {
-                string Address = ComboboxVISASSIOPort.SelectedItem?.ToString();
+                bool Success = false;
 
-                if (string.IsNullOrEmpty(Address))
+                if (!GlobalSettings.IsSSConnected)
                 {
-                    MessageBox.Show("Please select a valid GPIB address.", "Error", MessageBoxButtons.OK);
-                    return;
-                }
+                    if (SS == null)
+                    {
+                        SS = new FormattedIO488(); // สร้างอ็อบเจ็กต์ใหม่
+                    }
 
-                bool Success = InstrumentsConnectionManager.Instance.ConnectSS(Address);
-
-                if (Success)
-                {
-                    UpdateSSUIAfterConnection("Connected to Switch System", true, true);
+                    Success = ConnectDevice(ref SS, ComboboxVISASSIOPort.SelectedItem?.ToString());
+                    if (Success)
+                    {
+                        GlobalSettings.IsSSConnected = true;
+                    }
                 }
                 else
                 {
-                    MessageBox.Show("Failed to connect to SS.", "Error", MessageBoxButtons.OK);
+                    Success = DisconnectDevice(ref SS);
+                    if (Success)
+                    {
+                        GlobalSettings.IsSSConnected = false;
+                        SS = null;
+                    }
                 }
+
+                UpdateUIAfterConnection(GlobalSettings.IsSSConnected ? "Connected to Switch System" : "Disconnected from Switch System", GlobalSettings.IsSSConnected, IconbuttonSSConnection);
+                MessageBox.Show(GlobalSettings.IsSSConnected ? "Connected to Switch System" : "Disconnected from Switch System", "Information");
             }
-            else
+            catch (Exception Ex)
             {
-                InstrumentsConnectionManager.Instance.DisconnectSS();
-                UpdateSSUIAfterConnection("Disconnected from Switch System", false, true);
+                MessageBox.Show($"Error: {Ex.Message}", "Connection Error", MessageBoxButtons.OK);
             }
         }
 
         private void MeasurementSettingsChildForm_Load(object sender, EventArgs e)
         {
-            /*IconbuttonSMUConnection.Enabled = !IsSMUConnected;
-            IconbuttonSSConnection.Enabled = !IsSSConnected;
-            PanelToggleSwitchButton.Enabled = !IsModes;*/
+            // เมื่อฟอร์มโหลดใหม่ จะดึงสถานะการเชื่อมต่อจาก GlobalSettings
+            UpdateUIAfterConnection("Restoring SMU Connection Status", GlobalSettings.IsSMUConnected, IconbuttonSMUConnection);
+            UpdateUIAfterConnection("Restoring SS Connection Status", GlobalSettings.IsSSConnected, IconbuttonSSConnection);
+            UpdateMeasurementMode();
+            UpdateToggleState();
 
             ComboboxRsense.Items.Add("2-Wires");
             ComboboxRsense.Items.Add("4-Wires");
@@ -519,9 +645,9 @@ namespace Program01
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -543,9 +669,9 @@ namespace Program01
                         break;
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -569,9 +695,9 @@ namespace Program01
                         break;
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -581,9 +707,9 @@ namespace Program01
             {
                 SourceLimitMode = ComboboxSourceLimitMode.SelectedItem?.ToString();
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -648,9 +774,9 @@ namespace Program01
                 ComboboxMagneticFieldsUnit.Items.AddRange(new string[] { "T", "G" });
                 ComboboxMagneticFieldsUnit.SelectedIndex = 0;
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -663,7 +789,7 @@ namespace Program01
         {
             try
             {
-                if (!IsSMUConnected && !IsSSConnected)
+                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
@@ -702,9 +828,9 @@ namespace Program01
 
                 SS.WriteString("ROUTe:OPEN ALL");
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -712,9 +838,12 @@ namespace Program01
         {
             try
             {
-                IsModes = !IsModes;
+                GlobalSettings.IsModes = !GlobalSettings.IsModes;
+                GlobalSettings.IsHallMode = GlobalSettings.IsModes;
+                GlobalSettings.IsVanDerPauwMode = !GlobalSettings.IsModes;
+
                 UpdateToggleState();
-                UpdateMeasurementMode(IsModes);
+                UpdateMeasurementMode();
                 OnToggleChanged();
             }
             catch (Exception Ex)
@@ -725,7 +854,7 @@ namespace Program01
 
         public void UpdateToggleState()
         {
-            TargetPosition = IsModes ? PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width - 1 : 1;
+            TargetPosition = GlobalSettings.IsModes ? PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width - 1 : 1;
             PanelToggleSwitchButton.Location = new Point(TargetPosition, PanelToggleSwitchButton.Location.Y);
 
             if (PanelToggleSwitchButton.Location.X < 0 || PanelToggleSwitchButton.Location.X > PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width)
@@ -734,8 +863,9 @@ namespace Program01
             }
         }
 
-        private void UpdateMeasurementMode(bool isHallMode)
+        private void UpdateMeasurementMode()
         {
+            bool isHallMode = GlobalSettings.IsHallMode;
             string ModeName = isHallMode ? "Hall effect" : "Van der Pauw";
             Debug.WriteLine($"You select: {ModeName} measurement");
 
@@ -748,6 +878,7 @@ namespace Program01
             LabelToggleSwitchVdP.ForeColor = isHallMode ? System.Drawing.SystemColors.ActiveCaptionText : Color.FromArgb(144, 198, 101);
             LabelToggleSwitchHall.ForeColor = isHallMode ? Color.FromArgb(144, 198, 101) : System.Drawing.SystemColors.ActiveCaptionText;
             PanelToggleSwitchButton.BackColor = isHallMode ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
+            PanelToggleSwitchBase.BackColor = isHallMode ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
 
             UpdateTunerImages(isHallMode);
         }
@@ -781,22 +912,22 @@ namespace Program01
         protected virtual void OnToggleChanged()
         {
             ToggleChanged?.Invoke(this, EventArgs.Empty);
-            ModeChanged?.Invoke(this, IsModes);
+            ModeChanged?.Invoke(this, GlobalSettings.IsModes);
 
-            PanelToggleSwitchBase.BackColor = IsModes ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
+            PanelToggleSwitchBase.BackColor = GlobalSettings.IsModes ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
         }
 
         private void PictureboxTuner1_Click(object sender, EventArgs e)
         {
             try
             {
-                if (!IsSMUConnected && !IsSSConnected)
+                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (IsModes == false)
+                if (GlobalSettings.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
@@ -804,7 +935,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
-                else if (IsModes == true)
+                else if (GlobalSettings.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
@@ -813,9 +944,9 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!4)");
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -823,13 +954,13 @@ namespace Program01
         {
             try
             {
-                if (!IsSMUConnected && !IsSSConnected)
+                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (IsModes == false)
+                if (GlobalSettings.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
@@ -837,7 +968,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
-                else if (IsModes == true)
+                else if (GlobalSettings.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
@@ -856,13 +987,13 @@ namespace Program01
         {
             try
             {
-                if (!IsSMUConnected && !IsSSConnected)
+                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (IsModes == false)
+                if (GlobalSettings.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
@@ -870,7 +1001,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
                 }
-                else if (IsModes == true)
+                else if (GlobalSettings.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
@@ -889,13 +1020,13 @@ namespace Program01
         {
             try
             {
-                if (!IsSMUConnected && !IsSSConnected)
+                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (IsModes == false)
+                if (GlobalSettings.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
@@ -903,7 +1034,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
                 }
-                else if (IsModes == true)
+                else if (GlobalSettings.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
@@ -922,13 +1053,13 @@ namespace Program01
         {
             try
             {
-                if (!IsSMUConnected && !IsSSConnected)
+                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (IsModes == false)
+                if (GlobalSettings.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
@@ -936,7 +1067,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
-                else if (IsModes == true)
+                else if (GlobalSettings.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
@@ -955,13 +1086,13 @@ namespace Program01
         {
             try
             {
-                if (!IsSMUConnected && !IsSSConnected)
+                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (IsModes == false)
+                if (GlobalSettings.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
@@ -969,7 +1100,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
-                else if (IsModes == true)
+                else if (GlobalSettings.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
@@ -988,13 +1119,13 @@ namespace Program01
         {
             try
             {
-                if (!IsSMUConnected && !IsSSConnected)
+                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (IsModes == false)
+                if (GlobalSettings.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
@@ -1002,7 +1133,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
                 }
-                else if (IsModes == true)
+                else if (GlobalSettings.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
@@ -1021,13 +1152,13 @@ namespace Program01
         {
             try
             {
-                if (!IsSMUConnected && !IsSSConnected)
+                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (IsModes == false)
+                if (GlobalSettings.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
@@ -1035,7 +1166,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
                 }
-                else if (IsModes == true)
+                else if (GlobalSettings.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
@@ -1054,7 +1185,7 @@ namespace Program01
         {
             try
             {
-                if (!IsSMUConnected && !IsSSConnected)
+                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
@@ -1098,7 +1229,7 @@ namespace Program01
                     string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
 
-                    if (IsModes == true)
+                    if (GlobalSettings.IsModes == true)
                     {
                         string allValues = $"Sense: {RsenseMode}, Measure: {MeasureMode}, Source: {SourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {SourceLimitMode}, Limit Level: {TextboxSourceLimitLevel.Text} {ComboboxSourceLimitLevelUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
                         Debug.WriteLine($"{allValues}.");
@@ -1139,7 +1270,7 @@ namespace Program01
                     string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
 
-                    if (IsModes == true)
+                    if (GlobalSettings.IsModes == true)
                     {
                         string allValues = $"Sense: {RsenseMode}, Measure: {MeasureMode}, Source: {SourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {SourceLimitMode}, Limit Level: {TextboxSourceLimitLevel.Text} {ComboboxSourceLimitLevelUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
                         Debug.WriteLine($"{allValues}.");
@@ -1180,7 +1311,7 @@ namespace Program01
                     string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
 
-                    if (IsModes == true)
+                    if (GlobalSettings.IsModes == true)
                     {
                         string allValues = $"Sense: {RsenseMode}, Measure: {MeasureMode}, Source: {SourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {SourceLimitMode}, Limit Level: {TextboxSourceLimitLevel.Text} {ComboboxSourceLimitLevelUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
                         Debug.WriteLine($"{allValues}.");
@@ -1221,7 +1352,7 @@ namespace Program01
                     string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue},  {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
 
-                    if (IsModes == true)
+                    if (GlobalSettings.IsModes == true)
                     {
                         string allValues = $"Sense: {RsenseMode}, Measure: {MeasureMode}, Source: {SourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {SourceLimitMode}, Limit Level: {TextboxSourceLimitLevel.Text} {ComboboxSourceLimitLevelUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
                         Debug.WriteLine($"{allValues}.");
@@ -1250,7 +1381,7 @@ namespace Program01
         {
             try
             {
-                if (!IsSMUConnected && !IsSSConnected)
+                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
@@ -1263,17 +1394,8 @@ namespace Program01
                     return;
                 }
 
-                //CollectVdPTotalMeasurementClass.Instance.ClearMeasurements();
+                CollectVdPMeasuredValue.Instance.ClearMeasurements();
                 RunMeasurement();
-
-                if (IsModes)
-                {
-                    //CollectVdPTotalMeasurementClass.Instance.AddMeasurement();
-                }
-                else
-                {
-
-                }
             }
             catch (Exception Ex)
             {
@@ -1299,14 +1421,13 @@ namespace Program01
                     ConfigureSourceMeasureUnit();
                     await ExecuteSweep();
                     TracingRunMeasurement();
-                    FetchingData();
                     await Task.Delay(points * repetitionValue * 300);
                     CurrentTuner++;
 
                     if (CurrentTuner > 8)
                     {
                         Debug.WriteLine("All tuners completed.");
-                        MessageBox.Show("Measurement completed", "Measurement Successfully", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show("Measurement completed", "Measurement Successfully", MessageBoxButtons.OK);
                         SMU.WriteString("OUTPut OFF");
                         SS.WriteString("*CLS");
                         break;
@@ -1322,7 +1443,7 @@ namespace Program01
         private void ConfigureSwitchSystem()
         {
             SS.WriteString("ROUTe:OPEN ALL");
-            var channels = GetChannelConfiguration(CurrentTuner, IsModes);
+            var channels = GetChannelConfiguration(CurrentTuner, GlobalSettings.IsModes);
 
             foreach (var channel in channels)
             {
@@ -1406,7 +1527,7 @@ namespace Program01
                 return;
             }
 
-            if (IsModes == true)
+            if (GlobalSettings.IsModes == true)
             {
                 string allValues = $"Sense: {RsenseMode}, Measure: {MeasureMode}, Source: {SourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {SourceLimitMode}, Limit Level: {TextboxSourceLimitLevel.Text} {ComboboxSourceLimitLevelUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
                 Debug.WriteLine($"{allValues}.");
@@ -1441,7 +1562,7 @@ namespace Program01
         {
             if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelevellimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
             {
-                MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK);
                 return;
             }
 
@@ -1452,7 +1573,7 @@ namespace Program01
         {
             try
             {
-                if (!IsSMUConnected && IsSSConnected)
+                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
@@ -1576,7 +1697,7 @@ namespace Program01
                     return false;
                 }
 
-                if (IsModes)
+                if (GlobalSettings.IsModes)
                 {
                     if (!ValidateInputConvert(TextboxMagneticFields.Text, ComboboxMagneticFieldsUnit.SelectedItem, out magneticfields))
                     {
@@ -1618,7 +1739,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Validation Error: {Ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Validation Error: {Ex.Message}", "Error", MessageBoxButtons.OK);
                 return false;
             }
         }
@@ -1700,22 +1821,22 @@ namespace Program01
 
                 if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
                 {
-                    MessageBox.Show("No data in buffer!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("No data in buffer!", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
                 SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOURce, READing");
                 string MeasureRawData = SMU.ReadString().Trim();
-                Debug.WriteLine($"Buffer contains: {BufferPoints} readings.");
+                Debug.WriteLine($"Buffer contains: {BufferPoints} readings");
                 Debug.WriteLine($"Measured Raw Data: {MeasureRawData}");
-
+                
                 string[] DataPairs = MeasureRawData.Split(',');
                 List<double> XData = new List<double>();
                 List<double> YData = new List<double>();
 
                 if (DataPairs.Length % 2 != 0)
                 {
-                    MessageBox.Show("Invalid buffer data format!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Invalid buffer data format!", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1764,6 +1885,12 @@ namespace Program01
 
         private void TracingRunMeasurement()
         {
+            if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelevellimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
+            {
+                MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK);
+                return;
+            }
+
             try
             {
                 SMU.WriteString("TRACe:ACTual?");
@@ -1771,7 +1898,7 @@ namespace Program01
 
                 if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
                 {
-                    MessageBox.Show("No data in buffer!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("No data in buffer!", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1786,7 +1913,7 @@ namespace Program01
 
                 if (DataPairs.Length % 2 != 0)
                 {
-                    MessageBox.Show("Invalid buffer data format!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Invalid buffer data format!", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1799,6 +1926,18 @@ namespace Program01
                     }
                 }
 
+                if (GlobalSettings.IsModes)
+                {
+                    VdPTotalMeasureForm.UpdateChartAndDataGridView(XData, YData);
+                    CollectVdPMeasuredValue.Instance.AddMeasurement(XData.Concat(YData).ToList());
+                }
+                else
+                {
+                    // ปรับฟังก์ชันสำหรับ CollectHallMeasuredValue
+                    // CollectHallMeasuredValue.Instance.AddMeasurement(XData, YData);
+                }
+
+                // เก็บข้อมูลลงใน XDataBuffer และ YDataBuffer สำหรับการใช้งานอื่นๆ
                 XDataBuffer = new List<double>(XData);
                 YDataBuffer = new List<double>(YData);
             }
@@ -1808,7 +1947,7 @@ namespace Program01
             }
         }
 
-        private void FetchingData()
+        /*private void FetchingData()
         {
             try
             {
@@ -1844,17 +1983,17 @@ namespace Program01
             {
                 MessageBox.Show($"Error: {Ex.Message}");
             }
-        }
+        }*/
 
         private void MeasurementSettingsChildForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveToGlobal();
         }
 
-        private void IconbuttonMeasure_Click(object sender, EventArgs e)
+        /*private void IconbuttonMeasure_Click(object sender, EventArgs e)
         {
             Random rand = new Random();
-            CollectVdPVoltage.Instance.ClearMeasurements();
+            CollectVdPMeasuredValue.Instance.ClearMeasurements();
 
             // กำหนดจำนวนแถวที่ต้องการ
             int NumberOfRows = rand.Next(5, 10);
@@ -1871,10 +2010,10 @@ namespace Program01
                 double RandomVoltage7 = rand.NextDouble() * 21;
                 double RandomVoltage8 = rand.NextDouble() * 21;
 
-                CollectVdPVoltage.Instance.AddMeasurement(RandomVoltage1, RandomVoltage2, RandomVoltage3, RandomVoltage4, RandomVoltage5, RandomVoltage6, RandomVoltage7, RandomVoltage8);
+                CollectVdPMeasuredValue.Instance.AddMeasurement(RandomVoltage1, RandomVoltage2, RandomVoltage3, RandomVoltage4, RandomVoltage5, RandomVoltage6, RandomVoltage7, RandomVoltage8);
             }
 
             MessageBox.Show("บันทึกค่าการวัดเรียบร้อยแล้ว!");
-        }
+        }*/
     }
 }

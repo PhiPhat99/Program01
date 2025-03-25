@@ -47,6 +47,7 @@ namespace Program01
 
         public event EventHandler<bool> ModeChanged;
         public event EventHandler ToggleChanged;
+        public event Action<List<double>, List<double>> OnMeasurementCompleted;
 
         private Form CurrentChildForm;
         public DataChildForm DataChildForm = null;
@@ -1420,8 +1421,8 @@ namespace Program01
                     UpdateMeasurementState();
                     ConfigureSourceMeasureUnit();
                     await ExecuteSweep();
-                    TracingRunMeasurement();
                     await Task.Delay(points * repetitionValue * 300);
+                    TracingRunMeasurement();
                     CurrentTuner++;
 
                     if (CurrentTuner > 8)
@@ -1483,6 +1484,10 @@ namespace Program01
                 return;
             }
 
+            SMU.IO.Timeout = 1000000;
+            SMU.WriteString("TRACe:CLEar");
+            SMU.WriteString("TRACe:POINts 3000000, 'defbuffer1'");
+
             if (SourceMode == "Current")
             {
                 SMU.WriteString($"SOURce:FUNCtion CURRent");
@@ -1515,9 +1520,6 @@ namespace Program01
             {
                 SMU.WriteString($"SENSe:{MeasureMode}:RSENse OFF");
             }
-
-            SMU.WriteString("TRACe:CLEar");
-            SMU.WriteString("TRACe:POINts 3000000, 'defbuffer1'");
         }
 
         private async Task ExecuteSweep()
@@ -1556,6 +1558,7 @@ namespace Program01
             SMU.WriteString("*WAI");
             SMU.WriteString("OUTPut OFF");
             await Task.Delay(points * repetitionValue * (int)delayValue * 250);
+
         }
 
         private void UpdateMeasurementState()
@@ -1885,16 +1888,11 @@ namespace Program01
 
         private void TracingRunMeasurement()
         {
-            if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelevellimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
-            {
-                MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK);
-                return;
-            }
-
             try
             {
                 SMU.WriteString("TRACe:ACTual?");
                 string BufferCount = SMU.ReadString().Trim();
+                Debug.WriteLine($"Buffer count: {BufferCount}");
 
                 if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
                 {
@@ -1903,7 +1901,7 @@ namespace Program01
                 }
 
                 SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOURce, READing");
-                string MeasureRawData = SMU.ReadString();
+                string MeasureRawData = SMU.ReadString().Trim();
                 Debug.WriteLine($"Buffer contains: {BufferPoints} readings");
                 Debug.WriteLine($"Measured Raw Data: {MeasureRawData}");
 
@@ -1926,20 +1924,7 @@ namespace Program01
                     }
                 }
 
-                if (GlobalSettings.IsModes)
-                {
-                    VdPTotalMeasureForm.UpdateChartAndDataGridView(XData, YData);
-                    CollectVdPMeasuredValue.Instance.AddMeasurement(XData.Concat(YData).ToList());
-                }
-                else
-                {
-                    // ปรับฟังก์ชันสำหรับ CollectHallMeasuredValue
-                    // CollectHallMeasuredValue.Instance.AddMeasurement(XData, YData);
-                }
-
-                // เก็บข้อมูลลงใน XDataBuffer และ YDataBuffer สำหรับการใช้งานอื่นๆ
-                XDataBuffer = new List<double>(XData);
-                YDataBuffer = new List<double>(YData);
+                OnMeasurementCompleted?.Invoke(XData, YData);
             }
             catch (Exception Ex)
             {
@@ -1947,73 +1932,22 @@ namespace Program01
             }
         }
 
-        /*private void FetchingData()
+        public void OpenVdPTotalMeasureForm()
         {
-            try
+            if (VdPTotalMeasureForm == null || VdPTotalMeasureForm.IsDisposed)
             {
-                X.Clear();
-                Y.Clear();
-                SMU.WriteString("FETCh? 'defbuffer1', SOURce, READing");
-                string LatestRawData = SMU.ReadString().Trim();
-                string[] DataPairs = LatestRawData.Split(',');
-
-                if (DataPairs.Length >= 2)
-                {
-                    if (double.TryParse(DataPairs[0], out double SourceValue) && double.TryParse(DataPairs[1], out double MeasuredValue))
-                    {
-                        LatestSourceValue = SourceValue;
-                        LatestMeasuredValue = MeasuredValue;
-                        X.Add(SourceValue);
-                        Y.Add(MeasuredValue);
-                    }
-
-                    else
-                    {
-                        Debug.WriteLine("Error: Unable to parse values.");
-                    }
-                }
-                else
-                {
-                    Debug.WriteLine("Error: Insufficient data.");
-                }
-
-                Debug.WriteLine($"Source Value at Tuner {CurrentTuner}: {LatestSourceValue}, Measure Value at Tuner {CurrentTuner}: {LatestMeasuredValue}");
+                VdPTotalMeasureForm = new VdPTotalMeasureValueForm();
+                VdPTotalMeasureForm.Show();
             }
-            catch (Exception Ex)
+            else
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                VdPTotalMeasureForm.BringToFront();
             }
-        }*/
+        }
 
         private void MeasurementSettingsChildForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveToGlobal();
         }
-
-        /*private void IconbuttonMeasure_Click(object sender, EventArgs e)
-        {
-            Random rand = new Random();
-            CollectVdPMeasuredValue.Instance.ClearMeasurements();
-
-            // กำหนดจำนวนแถวที่ต้องการ
-            int NumberOfRows = rand.Next(5, 10);
-
-            // สร้างค่าการวัดสุ่ม
-            for (int i = 0; i < NumberOfRows; i++)
-            {
-                double RandomVoltage1 = rand.NextDouble() * 21;
-                double RandomVoltage2 = rand.NextDouble() * 21;
-                double RandomVoltage3 = rand.NextDouble() * 21;
-                double RandomVoltage4 = rand.NextDouble() * 21;
-                double RandomVoltage5 = rand.NextDouble() * 21;
-                double RandomVoltage6 = rand.NextDouble() * 21;
-                double RandomVoltage7 = rand.NextDouble() * 21;
-                double RandomVoltage8 = rand.NextDouble() * 21;
-
-                CollectVdPMeasuredValue.Instance.AddMeasurement(RandomVoltage1, RandomVoltage2, RandomVoltage3, RandomVoltage4, RandomVoltage5, RandomVoltage6, RandomVoltage7, RandomVoltage8);
-            }
-
-            MessageBox.Show("บันทึกค่าการวัดเรียบร้อยแล้ว!");
-        }*/
     }
 }

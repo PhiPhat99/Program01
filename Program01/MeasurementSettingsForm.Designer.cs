@@ -97,7 +97,6 @@
             this.LabelSourceDelayUnit = new System.Windows.Forms.Label();
             this.TextboxSourceDelay = new System.Windows.Forms.TextBox();
             this.LabelSourceDelay = new System.Windows.Forms.Label();
-            this.IconbuttonMeasure = new FontAwesome.Sharp.IconButton();
             this.PanelTunerandData.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxSample)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTunerDescription)).BeginInit();
@@ -893,30 +892,12 @@
             this.LabelSourceDelay.TabIndex = 48;
             this.LabelSourceDelay.Text = "DELAY :";
             // 
-            // IconbuttonMeasure
-            // 
-            this.IconbuttonMeasure.BackColor = System.Drawing.Color.Brown;
-            this.IconbuttonMeasure.FlatAppearance.BorderSize = 0;
-            this.IconbuttonMeasure.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.IconbuttonMeasure.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IconbuttonMeasure.IconChar = FontAwesome.Sharp.IconChar.None;
-            this.IconbuttonMeasure.IconColor = System.Drawing.Color.Black;
-            this.IconbuttonMeasure.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonMeasure.Location = new System.Drawing.Point(171, 757);
-            this.IconbuttonMeasure.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.IconbuttonMeasure.Name = "IconbuttonMeasure";
-            this.IconbuttonMeasure.Size = new System.Drawing.Size(120, 30);
-            this.IconbuttonMeasure.TabIndex = 52;
-            this.IconbuttonMeasure.Text = "MEASURE";
-            this.IconbuttonMeasure.UseVisualStyleBackColor = false;
-            // 
             // MeasurementSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(234)))), ((int)(((byte)(213)))));
             this.ClientSize = new System.Drawing.Size(1260, 820);
-            this.Controls.Add(this.IconbuttonMeasure);
             this.Controls.Add(this.ComboboxSourceDelayUnit);
             this.Controls.Add(this.LabelSourceDelayUnit);
             this.Controls.Add(this.IconbuttonTunerTest);
@@ -1063,6 +1044,5 @@
         private System.Windows.Forms.TextBox TextboxSourceDelay;
         private System.Windows.Forms.Label LabelSourceDelay;
         private System.Windows.Forms.Button ButtonTunerSettings;
-        private FontAwesome.Sharp.IconButton IconbuttonMeasure;
     }
 }

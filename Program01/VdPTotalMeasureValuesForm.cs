@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -18,9 +12,14 @@ namespace Program01
             InitializeComponent();
         }
 
-        // ฟังก์ชันสำหรับการอัปเดต Chart และ DataGridView
         public void UpdateChartAndDataGridView(List<double> XData, List<double> YData)
         {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(() => UpdateChartAndDataGridView(XData, YData)));
+                return;
+            }
+
             // อัปเดตข้อมูลใน Chart
             foreach (TabPage tabPage in TabcontrolVdPTotalCharts.TabPages)
             {
@@ -42,21 +41,13 @@ namespace Program01
 
             // อัปเดตข้อมูลใน DataGridView
             DatagridviewVdPTotalMesure.Rows.Clear();
-            foreach (var Readings in YData)
+            for (int i = 0; i < YData.Count; i++)
             {
-                int rowsIndex = DatagridviewVdPTotalMesure.Rows.Add();
-                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue1"].Value = Readings;
-                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue2"].Value = Readings;
-                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue3"].Value = Readings;
-                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue4"].Value = Readings;
-                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue5"].Value = Readings;
-                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue6"].Value = Readings;
-                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue7"].Value = Readings;
-                DatagridviewVdPTotalMesure.Rows[rowsIndex].Cells["MeasuredValue8"].Value = Readings;
+                int rowIndex = DatagridviewVdPTotalMesure.Rows.Add();
+                DatagridviewVdPTotalMesure.Rows[rowIndex].Cells["MeasuredValue1"].Value = YData[i];
             }
         }
 
-        // ฟังก์ชันในการแสดงผลข้อมูลในการโหลด
         private void LoadVdPTotalMeasurementData()
         {
             var VdPData = CollectVdPMeasuredValue.Instance;
@@ -74,13 +65,13 @@ namespace Program01
                 DatagridviewVdPTotalMesure.Columns.Add("MeasuredValue8", "Measured 8");
             }
 
-            // เพิ่มค่าลงใน DataGridView
-            foreach (var reading in VdPData.VdPMeasured)
+            foreach (var readings in VdPData.VdPMeasured)
             {
                 int rowIndex = DatagridviewVdPTotalMesure.Rows.Add();
-                for (int col = 0; col < DatagridviewVdPTotalMesure.Columns.Count; col++)
+
+                for (int Cols = 0; Cols < DatagridviewVdPTotalMesure.Columns.Count; Cols++)
                 {
-                    DatagridviewVdPTotalMesure.Rows[rowIndex].Cells[col].Value = reading;
+                    DatagridviewVdPTotalMesure.Rows[rowIndex].Cells[Cols].Value = readings;
                 }
             }
         }
@@ -102,5 +93,11 @@ namespace Program01
                 }
             }
         }
+
+        public void SubscribeToMeasurement(MeasurementSettingsForm SettingsForm)
+        {
+            SettingsForm.OnMeasurementCompleted += UpdateChartAndDataGridView;
+        }
+
     }
 }

@@ -22,16 +22,18 @@ namespace Program01
         public DataChildForm()
         {
             InitializeComponent();
+            GlobalSettings.OnSettingsChanged += UpdateFromGlobalSettings;
         }
 
         private void DataChildForm_Load(object sender, EventArgs e)
         {
-            // ตั้งค่าค่าเริ่มต้นของ TextBox ให้ว่างเปล่า
-            TextboxMaxMeasureValue.Text = "";
-            TextboxMinMeasureValue.Text = "";
-            TextboxMaxSourceValue.Text = "";
-            TextboxMinSourceValue.Text = "";
-            TextboxSlopeValue.Text = "";
+            UpdateFromGlobalSettings();
+        }
+
+        private void UpdateFromGlobalSettings()
+        {
+            UpdateChart(GlobalSettings.XDataBuffer, GlobalSettings.YDataBuffer);
+            UpdateMeasurementData(GlobalSettings.MaxMeasure, GlobalSettings.MinMeasure, GlobalSettings.MaxSource, GlobalSettings.MinSource, GlobalSettings.Slope);
         }
 
         public void UpdateChart(List<double> XData, List<double> YData)
@@ -42,7 +44,7 @@ namespace Program01
             }
             else
             {
-                ChartTunerTesting.Series["MeasurementData"].Points.Clear();
+                ChartTunerTesting.Series["MeasurementData"].Points.Clear();  //*** เกิด Runtime Error
 
                 var chartArea = ChartTunerTesting.ChartAreas[0];
 

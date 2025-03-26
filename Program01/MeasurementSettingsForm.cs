@@ -58,9 +58,6 @@ namespace Program01
         private List<double> X = new List<double>();
         private List<double> Y = new List<double>();
 
-        private double LatestSourceValue;
-        private double LatestMeasuredValue;
-
         public VdPTotalMeasureValueForm VdPTotalMeasureForm;
 
         public bool IsOn
@@ -87,43 +84,35 @@ namespace Program01
                 ComboboxVISASMUIOPort.Items.Clear();
                 ComboboxVISASSIOPort.Items.Clear();
 
-                // ค้นหาอุปกรณ์ที่เชื่อมต่อจริง พร้อมอ่าน Response
                 Dictionary<string, (string Address, string Response)> DeviceResponses = FindConnectedGPIBDevicesWithResponse();
 
-                // คำหลักสำหรับระบุอุปกรณ์
                 string SMUModelKeyword = "MODEL 2450";
                 string SSModelKeyword = "MODEL 7001";
-
-                // ค้นหาที่อยู่ของอุปกรณ์ที่ตรงกับ Model ที่ต้องการ
                 string[] SMUAddresses = DeviceResponses
                     .Where(d => d.Value.Response.IndexOf(SMUModelKeyword, StringComparison.OrdinalIgnoreCase) >= 0)
                     .Select(d => d.Value.Address)
                     .ToArray();
-
                 string[] SSAddresses = DeviceResponses
                     .Where(d => d.Value.Response.IndexOf(SSModelKeyword, StringComparison.OrdinalIgnoreCase) >= 0)
                     .Select(d => d.Value.Address)
                     .ToArray();
 
-                // Debug: ตรวจสอบว่าค่าถูกต้องก่อนอัปเดต ComboBox
                 Debug.WriteLine($"[DEBUG] Source Measure Unit Addresses: {string.Join(", ", SMUAddresses)}");
                 Debug.WriteLine($"[DEBUG] Switch System Addresses: {string.Join(", ", SSAddresses)}");
 
-                // อัปเดต ComboBox สำหรับ SMU และ SS
                 UpdateGPIBComboBox(ComboboxVISASMUIOPort, SMUAddresses, ComboboxVISASSIOPort);
                 UpdateGPIBComboBox(ComboboxVISASSIOPort, SSAddresses, ComboboxVISASMUIOPort);
 
-                // ตรวจสอบและสร้าง SMU ถ้ายังไม่ถูกกำหนด
                 if (SMU == null && SMUAddresses.Length > 0)
                 {
-                    SMU = new FormattedIO488(); // สร้าง SMU ใหม่
-                    SMU.IO = (IMessage)Rsrcmngr.Open(SMUAddresses[0]); // เชื่อมต่อกับ SMU ที่พบ
+                    SMU = new FormattedIO488();
+                    SMU.IO = (IMessage)Rsrcmngr.Open(SMUAddresses[0]);
                 }
 
                 if (SS == null && SSAddresses.Length > 0)
                 {
-                    SS = new FormattedIO488(); // สร้าง SS ใหม่
-                    SS.IO = (IMessage)Rsrcmngr.Open(SSAddresses[0]); // เชื่อมต่อกับ SS ที่พบ
+                    SS = new FormattedIO488();
+                    SS.IO = (IMessage)Rsrcmngr.Open(SSAddresses[0]);
                 }
             }
             catch (Exception Ex)
@@ -132,7 +121,6 @@ namespace Program01
             }
         }
 
-        // ค้นหาอุปกรณ์ GPIB และอ่าน Response
         private Dictionary<string, (string Address, string Response)> FindConnectedGPIBDevicesWithResponse()
         {
             Dictionary<string, (string Address, string Response)> ConnectedDevices = new Dictionary<string, (string, string)>();
@@ -148,8 +136,8 @@ namespace Program01
                     try
                     {
                         Sessions.IO = (IMessage)Rsrcmngr.Open(Device);
-                        Sessions.WriteString("*IDN?", true); // ใช้ true เพื่อให้ส่ง Line Feed (\n)
-                        Sessions.IO.Timeout = 3000; // ตั้ง Timeout 3 วินาที
+                        Sessions.WriteString("*IDN?", true);
+                        Sessions.IO.Timeout = 3000;
                         string Response = Sessions.ReadString();
                         Response = Response?.Trim() ?? "Unknown Device";
 
@@ -173,7 +161,7 @@ namespace Program01
                             Sessions.IO = null;
                         }
 
-                        Marshal.FinalReleaseComObject(Sessions); // เพิ่มการปล่อย Sessions
+                        Marshal.FinalReleaseComObject(Sessions);
                         Sessions = null;
                     }
                 }
@@ -186,7 +174,6 @@ namespace Program01
             return ConnectedDevices;
         }
 
-        // อัปเดต ComboBox ด้วย Address ที่ค้นพบ
         private void UpdateGPIBComboBox(ComboBox Combobox, string[] GpibAddresses, ComboBox OtherCombobox)
         {
             Combobox.Items.Clear();
@@ -197,14 +184,12 @@ namespace Program01
                 return;
             }
 
-            // ดึงค่าจาก ComboBox อื่นเพื่อหลีกเลี่ยง Address ซ้ำ
             HashSet<string> OtherAddresses = new HashSet<string>(
                 OtherCombobox.Items.Cast<string>().DefaultIfEmpty()
             );
 
             foreach (string DeviceAddress in GpibAddresses)
             {
-                // Debug เช็กค่าที่จะเพิ่ม
                 Debug.WriteLine($"[DEBUG] กำลังเพิ่ม {DeviceAddress} ไปที่ {Combobox.Name}");
 
                 if (!OtherAddresses.Contains(DeviceAddress) || Combobox == OtherCombobox)
@@ -213,7 +198,6 @@ namespace Program01
                 }
             }
 
-            // เลือกอุปกรณ์แรกหากมี
             if (Combobox.Items.Count > 0)
             {
                 Combobox.SelectedIndex = 0;
@@ -223,6 +207,20 @@ namespace Program01
         public static class GlobalSettings
         {
             public static event Action OnSettingsChanged;
+
+            private static bool CIsFirstRunProgram;
+            public static bool IsFirstRunProgram
+            {
+                get => CIsFirstRunProgram;
+                set
+                {
+                    if (CIsFirstRunProgram != value)
+                    {
+                        CIsFirstRunProgram = value;
+                        OnSettingsChanged?.Invoke();
+                    }
+                }
+            }
 
             private static bool CIsSMUConnected;
             public static bool IsSMUConnected
@@ -385,6 +383,29 @@ namespace Program01
             public static string SourceLimitLevelUnit { get; set; }
             public static string ThicknessUnit { get; set; }
             public static string MagneticFieldsUnit { get; set; }
+
+            // Buffer Data สำหรับเก็บค่าที่ใช้ใน DataChildForm
+            public static List<double> XDataBuffer { get; private set; } = new List<double>();
+            public static List<double> YDataBuffer { get; private set; } = new List<double>();
+
+            public static double MaxMeasure { get; private set; } = double.NegativeInfinity;
+            public static double MinMeasure { get; private set; } = double.PositiveInfinity;
+            public static double MaxSource { get; private set; } = double.NegativeInfinity;
+            public static double MinSource { get; private set; } = double.PositiveInfinity;
+            public static double Slope { get; private set; } = double.NaN;
+
+            public static void UpdateDataBuffer(List<double> Xdata, List<double> Ydata, double maxMeasure, double minMeasure, double maxSource, double minSource, double slope)
+            {
+                XDataBuffer = new List<double>(Xdata);
+                YDataBuffer = new List<double>(Ydata);
+                MaxMeasure = maxMeasure;
+                MinMeasure = minMeasure;
+                MaxSource = maxSource;
+                MinSource = minSource;
+                Slope = slope;
+
+                OnSettingsChanged?.Invoke();
+            }
         }
 
         private void SaveToGlobal()
@@ -519,7 +540,7 @@ namespace Program01
                     if (Success)
                     {
                         GlobalSettings.IsSMUConnected = false;
-                        SMU = null; // กำหนดให้ SMU เป็น null เพื่อให้สามารถสร้างใหม่ได้
+                        SMU = null;
                     }
                 }
 
@@ -543,7 +564,7 @@ namespace Program01
                 {
                     if (SS == null)
                     {
-                        SS = new FormattedIO488(); // สร้างอ็อบเจ็กต์ใหม่
+                        SS = new FormattedIO488();
                     }
 
                     Success = ConnectDevice(ref SS, ComboboxVISASSIOPort.SelectedItem?.ToString());
@@ -573,32 +594,33 @@ namespace Program01
 
         private void MeasurementSettingsChildForm_Load(object sender, EventArgs e)
         {
-            // เมื่อฟอร์มโหลดใหม่ จะดึงสถานะการเชื่อมต่อจาก GlobalSettings
             UpdateUIAfterConnection("Restoring SMU Connection Status", GlobalSettings.IsSMUConnected, IconbuttonSMUConnection);
             UpdateUIAfterConnection("Restoring SS Connection Status", GlobalSettings.IsSSConnected, IconbuttonSSConnection);
             UpdateMeasurementMode();
             UpdateToggleState();
 
-            ComboboxRsense.Items.Add("2-Wires");
-            ComboboxRsense.Items.Add("4-Wires");
+            ComboboxRsense.Items.Clear();
+            ComboboxRsense.Items.AddRange(new string[] { "2-Wires", "4-Wires" });
 
-            ComboboxMeasure.Items.Add("Voltage");
-            ComboboxMeasure.Items.Add("Current");
+            ComboboxMeasure.Items.Clear();
+            ComboboxMeasure.Items.AddRange(new string[] { "Voltage", "Current" });
 
-            ComboboxSource.Items.Add("Voltage");
-            ComboboxSource.Items.Add("Current");
+            ComboboxSource.Items.Clear();
+            ComboboxSource.Items.AddRange(new string[] { "Voltage", "Current" });
 
-            ComboboxRsense.SelectedItem = GlobalSettings.RsenseMode;
-            ComboboxMeasure.SelectedItem = GlobalSettings.MeasureMode;
-            ComboboxSource.SelectedItem = GlobalSettings.SourceMode;
-            ComboboxSourceLimitMode.SelectedItem = GlobalSettings.SourceLimitType;
-            ComboboxStartUnit.SelectedItem = GlobalSettings.StartUnit;
-            ComboboxStepUnit.SelectedItem = GlobalSettings.StepUnit;
-            ComboboxStopUnit.SelectedItem = GlobalSettings.StopUnit;
-            ComboboxSourceDelayUnit.SelectedItem = GlobalSettings.SourceDelayUnit;
-            ComboboxSourceLimitLevelUnit.SelectedItem = GlobalSettings.SourceLimitLevelUnit;
-            ComboboxThicknessUnit.SelectedItem = GlobalSettings.ThicknessUnit;
-            ComboboxMagneticFieldsUnit.SelectedItem = GlobalSettings.MagneticFieldsUnit;
+            LoadFromGlobal();
+
+            SetComboBoxSelectedItem(ComboboxRsense, GlobalSettings.RsenseMode);
+            SetComboBoxSelectedItem(ComboboxMeasure, GlobalSettings.MeasureMode);
+            SetComboBoxSelectedItem(ComboboxSource, GlobalSettings.SourceMode);
+            SetComboBoxSelectedItem(ComboboxSourceLimitMode, GlobalSettings.SourceLimitType);
+            SetComboBoxSelectedItem(ComboboxStartUnit, GlobalSettings.StartUnit);
+            SetComboBoxSelectedItem(ComboboxStepUnit, GlobalSettings.StepUnit);
+            SetComboBoxSelectedItem(ComboboxStopUnit, GlobalSettings.StopUnit);
+            SetComboBoxSelectedItem(ComboboxSourceDelayUnit, GlobalSettings.SourceDelayUnit);
+            SetComboBoxSelectedItem(ComboboxSourceLimitLevelUnit, GlobalSettings.SourceLimitLevelUnit);
+            SetComboBoxSelectedItem(ComboboxThicknessUnit, GlobalSettings.ThicknessUnit);
+            SetComboBoxSelectedItem(ComboboxMagneticFieldsUnit, GlobalSettings.MagneticFieldsUnit);
 
             TextboxStart.Text = GlobalSettings.StartValue;
             TextboxStop.Text = GlobalSettings.StopValue;
@@ -608,6 +630,50 @@ namespace Program01
             TextboxThickness.Text = GlobalSettings.ThicknessValue;
             TextboxRepetition.Text = GlobalSettings.RepetitionValue;
             TextboxMagneticFields.Text = GlobalSettings.MagneticFieldsValue;
+        }
+
+        private void LoadFromGlobal()
+        {
+            try
+            {
+                TextboxStart.Text = GlobalSettings.StartValue;
+                TextboxStop.Text = GlobalSettings.StopValue;
+                TextboxStep.Text = GlobalSettings.StepValue;
+                TextboxSourceDelay.Text = GlobalSettings.SourceDelayValue;
+                TextboxSourceLimitLevel.Text = GlobalSettings.SourceLimitLevelValue;
+                TextboxThickness.Text = GlobalSettings.ThicknessValue;
+                TextboxRepetition.Text = GlobalSettings.RepetitionValue;
+                TextboxMagneticFields.Text = GlobalSettings.MagneticFieldsValue;
+
+                SetComboBoxSelectedItem(ComboboxRsense, GlobalSettings.RsenseMode);
+                SetComboBoxSelectedItem(ComboboxMeasure, GlobalSettings.MeasureMode);
+                SetComboBoxSelectedItem(ComboboxSource, GlobalSettings.SourceMode);
+                SetComboBoxSelectedItem(ComboboxSourceLimitMode, GlobalSettings.SourceLimitType);
+
+                SetComboBoxSelectedItem(ComboboxStartUnit, GlobalSettings.StartUnit);
+                SetComboBoxSelectedItem(ComboboxStepUnit, GlobalSettings.StepUnit);
+                SetComboBoxSelectedItem(ComboboxStopUnit, GlobalSettings.StopUnit);
+                SetComboBoxSelectedItem(ComboboxSourceDelayUnit, GlobalSettings.SourceDelayUnit);
+                SetComboBoxSelectedItem(ComboboxSourceLimitLevelUnit, GlobalSettings.SourceLimitLevelUnit);
+                SetComboBoxSelectedItem(ComboboxThicknessUnit, GlobalSettings.ThicknessUnit);
+                SetComboBoxSelectedItem(ComboboxMagneticFieldsUnit, GlobalSettings.MagneticFieldsUnit);
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"Error: {Ex.Message}", "ERROR");
+            }
+        }
+
+        private void SetComboBoxSelectedItem(ComboBox Comboboxs, string Value)
+        {
+            if (!string.IsNullOrEmpty(Value) && Comboboxs.Items.Contains(Value))
+            {
+                Comboboxs.SelectedItem = Value;
+            }
+            else
+            {
+                Comboboxs.SelectedIndex = -1;
+            }
         }
 
         private void ComboboxRsense_SelectedIndexChanged(object sender, EventArgs e)
@@ -796,6 +862,11 @@ namespace Program01
                     return;
                 }
 
+                SMU.WriteString("*CLS");
+                SMU.WriteString("*RST");
+                SS.WriteString("*CLS");
+                SS.WriteString("ROUTe:OPEN ALL");
+
                 ComboboxRsense.SelectedIndex = -1;
                 ComboboxMeasure.SelectedIndex = -1;
                 ComboboxSource.SelectedIndex = -1;
@@ -826,8 +897,6 @@ namespace Program01
                 ThicknessValue = "";
                 RepetitionValue = "";
                 MagneticFieldsValue = "";
-
-                SS.WriteString("ROUTe:OPEN ALL");
             }
             catch (Exception Ex)
             {
@@ -1813,78 +1882,80 @@ namespace Program01
             {
                 XDataBuffer?.Clear();
                 YDataBuffer?.Clear();
-                MaxMeasure = double.NegativeInfinity;
-                MinMeasure = double.PositiveInfinity;
-                MaxSource = double.NegativeInfinity;
-                MinSource = double.PositiveInfinity;
-                Slope = double.NaN;
+                double maxMeasure = double.NegativeInfinity;
+                double minMeasure = double.PositiveInfinity;
+                double maxSource = double.NegativeInfinity;
+                double minSource = double.PositiveInfinity;
+                double slope = double.NaN;
 
                 SMU.WriteString("TRACe:ACTual?");
-                string BufferCount = SMU.ReadString().Trim();
+                string bufferCount = SMU.ReadString().Trim();
 
-                if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
+                if (!int.TryParse(bufferCount, out int bufferPoints) || bufferPoints == 0)
                 {
                     MessageBox.Show("No data in buffer!", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOURce, READing");
-                string MeasureRawData = SMU.ReadString().Trim();
-                Debug.WriteLine($"Buffer contains: {BufferPoints} readings");
-                Debug.WriteLine($"Measured Raw Data: {MeasureRawData}");
-                
-                string[] DataPairs = MeasureRawData.Split(',');
-                List<double> XData = new List<double>();
-                List<double> YData = new List<double>();
+                SMU.WriteString($"TRACe:DATA? 1, {bufferPoints}, 'defbuffer1', SOURce, READing");
+                string measureRawData = SMU.ReadString().Trim();
 
-                if (DataPairs.Length % 2 != 0)
+                string[] dataPairs = measureRawData.Split(',');
+                List<double> xData = new List<double>();
+                List<double> yData = new List<double>();
+
+                if (dataPairs.Length % 2 != 0)
                 {
                     MessageBox.Show("Invalid buffer data format!", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                for (int i = 0; i < DataPairs.Length; i += 2)
+                for (int i = 0; i < dataPairs.Length; i += 2)
                 {
-                    if (double.TryParse(DataPairs[i], out double SourceValue) && double.TryParse(DataPairs[i + 1], out double MeasuredValue))
+                    if (double.TryParse(dataPairs[i], out double sourceValue) && double.TryParse(dataPairs[i + 1], out double measuredValue))
                     {
-                        XData.Add(SourceValue);
-                        YData.Add(MeasuredValue);
+                        xData.Add(sourceValue);
+                        yData.Add(measuredValue);
 
-                        MaxSource = Math.Max(MaxSource, SourceValue);
-                        MinSource = Math.Min(MinSource, SourceValue);
-                        MaxMeasure = Math.Max(MaxMeasure, MeasuredValue);
-                        MinMeasure = Math.Min(MinMeasure, MeasuredValue);
+                        maxSource = Math.Max(maxSource, sourceValue);
+                        minSource = Math.Min(minSource, sourceValue);
+                        maxMeasure = Math.Max(maxMeasure, measuredValue);
+                        minMeasure = Math.Min(minMeasure, measuredValue);
 
-                        // คำนวณความชัน (Slope) หากมีข้อมูลเพียงพอ
-                        if (MaxSource != MinSource)  // ป้องกันหารด้วยศูนย์
+                        if (maxSource != minSource)
                         {
-                            Slope = (MaxMeasure - MinMeasure) / (MaxSource - MinSource);
+                            slope = (maxMeasure - minMeasure) / (maxSource - minSource);
                         }
                         else
                         {
-                            Slope = double.NaN;
+                            slope = double.NaN;
                         }
                     }
-                    else
-                    {
-                        Debug.WriteLine($"Error parsing data at index {i}: {DataPairs[i]}");
-                    }
                 }
 
-                XDataBuffer = new List<double>(XData);
-                YDataBuffer = new List<double>(YData);
-
-                if (DataChildForm != null && !DataChildForm.IsDisposed)
-                {
-                    DataChildForm.UpdateChart(XDataBuffer, YDataBuffer);
-                    DataChildForm.UpdateMeasurementData(MaxMeasure, MinMeasure, MaxSource, MinSource, Slope);
-                }
+                // อัปเดตข้อมูลลง GlobalSettings
+                GlobalSettings.UpdateDataBuffer(xData, yData, maxMeasure, minMeasure, maxSource, minSource, slope);
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
+
+        private void UpdateDataChildForm()
+        {
+            if (DataChildForm != null && !DataChildForm.IsDisposed)
+            {
+                DataChildForm.UpdateChart(XDataBuffer, YDataBuffer);
+                DataChildForm.UpdateMeasurementData(
+                    GlobalSettings.MaxMeasure,
+                    GlobalSettings.MinMeasure,
+                    GlobalSettings.MaxSource,
+                    GlobalSettings.MinSource,
+                    GlobalSettings.Slope);
+            }
+        }
+
 
         private void TracingRunMeasurement()
         {

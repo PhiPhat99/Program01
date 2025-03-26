@@ -123,8 +123,6 @@
   <ItemGroup>
     <Compile Include="CollectHallMeasuredValue.cs" />
     <Compile Include="InstrumentsConnectionManager.cs" />
-    <Compile Include="Interfaces\IGPIBScannerInterfaces.cs" />
-    <Compile Include="Interfaces\IGPIBDetectorInterfaces.cs" />
     <Compile Include="CollectVdPMeasuredValue.cs" />
     <Compile Include="DataChildForm.cs">
       <SubType>Form</SubType>

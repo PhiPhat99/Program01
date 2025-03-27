@@ -71,7 +71,6 @@
             this.PictureboxTuner2 = new System.Windows.Forms.PictureBox();
             this.PictureboxTuner1 = new System.Windows.Forms.PictureBox();
             this.PanelButtonTabBar = new System.Windows.Forms.Panel();
-            this.ButtonTunerSettings = new System.Windows.Forms.Button();
             this.ButtonData = new System.Windows.Forms.Button();
             this.ButtonTuner = new System.Windows.Forms.Button();
             this.IconbuttonTunerTest = new FontAwesome.Sharp.IconButton();
@@ -545,7 +544,6 @@
             // 
             this.PanelButtonTabBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(248)))), ((int)(((byte)(231)))));
             this.PanelButtonTabBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PanelButtonTabBar.Controls.Add(this.ButtonTunerSettings);
             this.PanelButtonTabBar.Controls.Add(this.ButtonData);
             this.PanelButtonTabBar.Controls.Add(this.ButtonTuner);
             this.PanelButtonTabBar.Dock = System.Windows.Forms.DockStyle.Top;
@@ -554,23 +552,6 @@
             this.PanelButtonTabBar.Name = "PanelButtonTabBar";
             this.PanelButtonTabBar.Size = new System.Drawing.Size(790, 30);
             this.PanelButtonTabBar.TabIndex = 0;
-            // 
-            // ButtonTunerSettings
-            // 
-            this.ButtonTunerSettings.BackColor = System.Drawing.Color.Transparent;
-            this.ButtonTunerSettings.Dock = System.Windows.Forms.DockStyle.Left;
-            this.ButtonTunerSettings.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.ButtonTunerSettings.FlatAppearance.BorderSize = 0;
-            this.ButtonTunerSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonTunerSettings.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ButtonTunerSettings.Location = new System.Drawing.Point(180, 0);
-            this.ButtonTunerSettings.Margin = new System.Windows.Forms.Padding(0);
-            this.ButtonTunerSettings.Name = "ButtonTunerSettings";
-            this.ButtonTunerSettings.Size = new System.Drawing.Size(160, 28);
-            this.ButtonTunerSettings.TabIndex = 2;
-            this.ButtonTunerSettings.Text = "TUNER SETTINGS";
-            this.ButtonTunerSettings.UseVisualStyleBackColor = false;
-            this.ButtonTunerSettings.Click += new System.EventHandler(this.ButtonTunerSettings_Click);
             // 
             // ButtonData
             // 
@@ -1043,6 +1024,5 @@
         private System.Windows.Forms.Label LabelSourceDelayUnit;
         private System.Windows.Forms.TextBox TextboxSourceDelay;
         private System.Windows.Forms.Label LabelSourceDelay;
-        private System.Windows.Forms.Button ButtonTunerSettings;
     }
 }

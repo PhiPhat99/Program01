@@ -410,9 +410,9 @@ namespace Program01
                 IconpictureboxCurrentForm.IconChar = IconChar.HomeUser;
                 IconpictureboxCurrentForm.IconColor = Color.Snow;
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -444,9 +444,9 @@ namespace Program01
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -508,9 +508,9 @@ namespace Program01
                     MessageBox.Show($"File has been created successfully at: {newFilePath}", "Saving Successful", MessageBoxButtons.OK);
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 

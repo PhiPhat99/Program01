@@ -8,11 +8,9 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Windows.Markup;
 using FontAwesome.Sharp;
-using Ivi.Visa;
-using Ivi.Visa.FormattedIO;
 using Ivi.Visa.Interop;
-using Keysight.Visa;
 
 namespace Program01
 {
@@ -59,6 +57,7 @@ namespace Program01
         private List<double> Y = new List<double>();
 
         public VdPTotalMeasureValueForm VdPTotalMeasureForm;
+        public event Action<List<double>, List<double>, double, double, double, double, double> DataUpdated;
 
         public bool IsOn
         {
@@ -503,7 +502,6 @@ namespace Program01
             Debug.WriteLine(IsConnected ? "[INFORMATION]" : "[ERROR]");
             Debug.WriteLine(Message);
 
-            // *** อัปเดตเฉพาะ UI เท่านั้น ไม่แก้ไขค่า GlobalSettings ***
             Buttons.BackColor = IsConnected ? Color.Gray : Color.Snow;
             Buttons.IconColor = IsConnected ? Color.GreenYellow : Color.Gainsboro;
 
@@ -1654,61 +1652,9 @@ namespace Program01
                 SMU.WriteString("SYSTem:ERRor?");
                 SS.WriteString("SYSTem:ERRor?");
                 string SMUrespones = SMU.ReadString();
-                string SSresponse = SS.ReadString();
-                Debug.WriteLine($"There is SMU error : {SMUrespones}");
-                Debug.WriteLine($"There is SS error : {SSresponse}");
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show($"Error: {Ex.Message}");
-            }
-        }
-
-        private void ButtonData_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (DataChildForm == null || DataChildForm.IsDisposed)
-                {
-                    DataChildForm = new DataChildForm();
-                    OpenChildForm(DataChildForm);
-                }
-                else
-                {
-                    if (!DataChildForm.Visible)
-                    {
-                        DataChildForm.Show();
-                    }
-                }
-
-                if (XDataBuffer.Count > 0 && YDataBuffer.Count > 0)
-                {
-                    DataChildForm.UpdateChart(XDataBuffer, YDataBuffer);
-                }
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show($"Error: {Ex.Message}");
-            }
-        }
-
-        private void ButtonTunerSettings_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (ChannelSettingsChildForm == null || ChannelSettingsChildForm.IsDisposed)
-                {
-                    ChannelSettingsChildForm = new ChannelSettingsChildForm(this);
-                    OpenChildForm(ChannelSettingsChildForm);
-                }
-                else
-                {
-                    if (!ChannelSettingsChildForm.Visible)
-                    {
-                        ChannelSettingsChildForm.Show();
-                    }
-                    OpenChildForm(ChannelSettingsChildForm);
-                }
+                string SSresponses = SS.ReadString();
+                Debug.WriteLine($"There is Source Measure Unit error : {SMUrespones}");
+                Debug.WriteLine($"There is Switch System error : {SSresponses}");
             }
             catch (Exception Ex)
             {
@@ -1733,6 +1679,35 @@ namespace Program01
                 PanelTunerandData.Tag = ChildForm;
                 ChildForm.BringToFront();
                 ChildForm.Show();
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"Error: {Ex.Message}");
+            }
+        }
+
+        private void ButtonData_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (DataChildForm == null || DataChildForm.IsDisposed)
+                {
+                    DataChildForm = new DataChildForm();
+                    OpenChildForm(DataChildForm);
+                }
+                else
+                {
+                    if (!DataChildForm.Visible)
+                    {
+                        DataChildForm.Show();
+                    }
+                }
+
+                if (GlobalSettings.XDataBuffer.Count > 0 && GlobalSettings.YDataBuffer.Count > 0)
+                {
+                    DataChildForm.UpdateChart(GlobalSettings.XDataBuffer, GlobalSettings.YDataBuffer);
+                    DataChildForm.UpdateMeasurementData(GlobalSettings.MaxMeasure, GlobalSettings.MinMeasure, GlobalSettings.MaxSource, GlobalSettings.MinSource, GlobalSettings.Slope);
+                }
             }
             catch (Exception Ex)
             {
@@ -1880,8 +1855,8 @@ namespace Program01
         {
             try
             {
-                XDataBuffer?.Clear();
-                YDataBuffer?.Clear();
+                List<double> xData = new List<double>();
+                List<double> yData = new List<double>();
                 double maxMeasure = double.NegativeInfinity;
                 double minMeasure = double.PositiveInfinity;
                 double maxSource = double.NegativeInfinity;
@@ -1889,7 +1864,7 @@ namespace Program01
                 double slope = double.NaN;
 
                 SMU.WriteString("TRACe:ACTual?");
-                string bufferCount = SMU.ReadString().Trim();
+                string bufferCount = SMU.ReadString()?.Trim();
 
                 if (!int.TryParse(bufferCount, out int bufferPoints) || bufferPoints == 0)
                 {
@@ -1898,11 +1873,9 @@ namespace Program01
                 }
 
                 SMU.WriteString($"TRACe:DATA? 1, {bufferPoints}, 'defbuffer1', SOURce, READing");
-                string measureRawData = SMU.ReadString().Trim();
-
+                string measureRawData = SMU.ReadString()?.Trim();
                 string[] dataPairs = measureRawData.Split(',');
-                List<double> xData = new List<double>();
-                List<double> yData = new List<double>();
+                Debug.WriteLine($" There are {bufferCount} readings is: {measureRawData}");
 
                 if (dataPairs.Length % 2 != 0)
                 {
@@ -1912,50 +1885,54 @@ namespace Program01
 
                 for (int i = 0; i < dataPairs.Length; i += 2)
                 {
-                    if (double.TryParse(dataPairs[i], out double sourceValue) && double.TryParse(dataPairs[i + 1], out double measuredValue))
+                    if (double.TryParse(dataPairs[i], out double sourceValue) &&
+                        double.TryParse(dataPairs[i + 1], out double measuredValue))
                     {
                         xData.Add(sourceValue);
                         yData.Add(measuredValue);
+
+                        Debug.Write($" Source Values: {sourceValue}" + Environment.NewLine);
+                        Debug.Write($"Measured Values: {measuredValue}" + Environment.NewLine);
 
                         maxSource = Math.Max(maxSource, sourceValue);
                         minSource = Math.Min(minSource, sourceValue);
                         maxMeasure = Math.Max(maxMeasure, measuredValue);
                         minMeasure = Math.Min(minMeasure, measuredValue);
-
-                        if (maxSource != minSource)
-                        {
-                            slope = (maxMeasure - minMeasure) / (maxSource - minSource);
-                        }
-                        else
-                        {
-                            slope = double.NaN;
-                        }
                     }
                 }
 
-                // อัปเดตข้อมูลลง GlobalSettings
+                if (maxSource != minSource)
+                {
+                    slope = (maxMeasure - minMeasure) / (maxSource - minSource);
+                }
+
+                Debug.Write($"Minimum Source Values: {minSource}" + Environment.NewLine);
+                Debug.Write($"Maximum Source Values: {maxSource}" + Environment.NewLine);
+
+                Debug.Write($"Minimum Measured Values: {minMeasure}" + Environment.NewLine);
+                Debug.Write($"Maximum Measured Values: {maxMeasure}" + Environment.NewLine);
+
+                Debug.Write($"Slope Values: {slope}" + Environment.NewLine);
+
                 GlobalSettings.UpdateDataBuffer(xData, yData, maxMeasure, minMeasure, maxSource, minSource, slope);
+                UpdateDataChildForm();
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
         private void UpdateDataChildForm()
         {
-            if (DataChildForm != null && !DataChildForm.IsDisposed)
+            var dataChildForm = Application.OpenForms.OfType<DataChildForm>().FirstOrDefault();
+
+            if (dataChildForm != null && !dataChildForm.IsDisposed)
             {
-                DataChildForm.UpdateChart(XDataBuffer, YDataBuffer);
-                DataChildForm.UpdateMeasurementData(
-                    GlobalSettings.MaxMeasure,
-                    GlobalSettings.MinMeasure,
-                    GlobalSettings.MaxSource,
-                    GlobalSettings.MinSource,
-                    GlobalSettings.Slope);
+                dataChildForm.UpdateChart(XDataBuffer, YDataBuffer);
+                dataChildForm.UpdateMeasurementData(GlobalSettings.MaxMeasure, GlobalSettings.MinMeasure, GlobalSettings.MaxSource, GlobalSettings.MinSource, GlobalSettings.Slope);
             }
         }
-
 
         private void TracingRunMeasurement()
         {

@@ -79,9 +79,9 @@ namespace Program01
                     IconpictureboxCurrentForm.IconColor = color;
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -99,9 +99,9 @@ namespace Program01
                     CurrentButton.ImageAlign = ContentAlignment.MiddleLeft;
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -119,9 +119,9 @@ namespace Program01
                 childForm.BringToFront();
                 childForm.Show();
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -137,9 +137,9 @@ namespace Program01
                     activeSubMenu.Visible = true;
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -154,9 +154,9 @@ namespace Program01
                     ? primary
                     : $"{primary} > {sub}";
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 

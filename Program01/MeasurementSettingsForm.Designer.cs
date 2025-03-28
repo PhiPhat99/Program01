@@ -214,6 +214,7 @@
             this.TextboxStart.Name = "TextboxStart";
             this.TextboxStart.Size = new System.Drawing.Size(100, 30);
             this.TextboxStart.TabIndex = 12;
+            this.TextboxStart.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextboxStart_KeyPress);
             // 
             // LabelStart
             // 
@@ -253,6 +254,7 @@
             this.TextboxStop.Name = "TextboxStop";
             this.TextboxStop.Size = new System.Drawing.Size(100, 30);
             this.TextboxStop.TabIndex = 14;
+            this.TextboxStop.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextboxStop_KeyPress);
             // 
             // LabelStop
             // 
@@ -272,6 +274,7 @@
             this.TextboxStep.Name = "TextboxStep";
             this.TextboxStep.Size = new System.Drawing.Size(100, 30);
             this.TextboxStep.TabIndex = 14;
+            this.TextboxStep.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextboxStep_KeyPress);
             // 
             // LabelStep
             // 
@@ -322,6 +325,7 @@
             this.TextboxSourceLimitLevel.Name = "TextboxSourceLimitLevel";
             this.TextboxSourceLimitLevel.Size = new System.Drawing.Size(80, 30);
             this.TextboxSourceLimitLevel.TabIndex = 19;
+            this.TextboxSourceLimitLevel.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextboxSourceLimitLevel_KeyPress);
             // 
             // LabelSourceLimitLevel
             // 
@@ -361,6 +365,7 @@
             this.TextboxThickness.Name = "TextboxThickness";
             this.TextboxThickness.Size = new System.Drawing.Size(80, 30);
             this.TextboxThickness.TabIndex = 21;
+            this.TextboxThickness.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextboxThickness_KeyPress);
             // 
             // LabelRepetition
             // 
@@ -380,6 +385,7 @@
             this.TextboxRepetition.Name = "TextboxRepetition";
             this.TextboxRepetition.Size = new System.Drawing.Size(79, 30);
             this.TextboxRepetition.TabIndex = 24;
+            this.TextboxRepetition.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextboxRepetition_KeyPress);
             // 
             // LabelMagneticFields
             // 
@@ -399,6 +405,7 @@
             this.TextboxMagneticFields.Name = "TextboxMagneticFields";
             this.TextboxMagneticFields.Size = new System.Drawing.Size(80, 30);
             this.TextboxMagneticFields.TabIndex = 26;
+            this.TextboxMagneticFields.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextboxMagneticFields_KeyPress);
             // 
             // LabelMagneticFieldsUnit
             // 
@@ -862,6 +869,7 @@
             this.TextboxSourceDelay.Name = "TextboxSourceDelay";
             this.TextboxSourceDelay.Size = new System.Drawing.Size(100, 30);
             this.TextboxSourceDelay.TabIndex = 49;
+            this.TextboxSourceDelay.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextboxSourceDelay_KeyPress);
             // 
             // LabelSourceDelay
             // 

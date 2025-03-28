@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Resources;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Channels;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -45,7 +46,7 @@ namespace Program01
 
         public event EventHandler<bool> ModeChanged;
         public event EventHandler ToggleChanged;
-        public event Action<List<double>, List<double>> OnMeasurementCompleted;
+        public event Action<List<double>, List<double>> MeasurementCompleted;
 
         private Form CurrentChildForm;
         public DataChildForm DataChildForm = null;
@@ -1485,6 +1486,7 @@ namespace Program01
                 while (CurrentTuner <= 8)
                 {
                     ConfigureSwitchSystem();
+                    await Task.Delay(200);
                     UpdateMeasurementState();
                     ConfigureSourceMeasureUnit();
                     await ExecuteSweep();
@@ -1512,34 +1514,59 @@ namespace Program01
         {
             SS.WriteString("ROUTe:OPEN ALL");
             var channels = GetChannelConfiguration(CurrentTuner, GlobalSettings.IsModes);
+            /*List<string> Combined4Channels = new List<string>();
+            int memoryNumber = 1;  // เพิ่มการนับหน่วยความจำ*/
 
             foreach (var channel in channels)
             {
                 SS.WriteString($"ROUTe:CLOSe (@ {channel})");
+                /*Combined4Channels.Add(channel);  // เพิ่มช่องสัญญาณเข้าใน List
+
+                // เมื่อครบ 4 ช่อง ให้บันทึกลงในหน่วยความจำ
+                if (Combined4Channels.Count == 4)
+                {
+                    // สร้างคำสั่ง ROUTe:MEMory:SAVE M<number> และบันทึกค่า
+                    string combinedChannelsStr = string.Join(",", Combined4Channels);
+                    SS.WriteString($"ROUTe:MEMory:SAVE M{memoryNumber}");
+
+                    // ตรวจสอบผ่าน Debug
+                    Debug.WriteLine($"Saving to M{memoryNumber}: (@{combinedChannelsStr})");
+
+                    // รีเซ็ต List สำหรับช่องสัญญาณ
+                    Combined4Channels.Clear();
+                    memoryNumber++;  // เพิ่มหมายเลขหน่วยความจำ
+                }*/
             }
         }
 
         private List<string> GetChannelConfiguration(int Tuner, bool IsModes)
         {
             var configurations = new Dictionary<int, List<string>>
+    {
+        { 1, IsModes == false ? new List<string> { "1!1!4", "1!2!5", "1!3!3", "1!4!6" } :
+                        new List<string> { "1!1!3", "1!2!5", "1!3!6", "1!4!4" }},
+        { 2, IsModes == false ? new List<string> { "1!1!5", "1!2!4", "1!3!3", "1!4!6" } :
+                        new List<string> { "1!1!5", "1!2!3", "1!3!6", "1!4!4" }},
+        { 3, IsModes == false ? new List<string> { "1!1!3", "1!2!6", "1!3!4", "1!4!5" } :
+                        new List<string> { "1!1!6", "1!2!4", "1!3!3", "1!4!5" }},
+        { 4, IsModes == false ? new List<string> { "1!1!6", "1!2!3", "1!3!4", "1!4!5" } :
+                        new List<string> { "1!1!4", "1!2!6", "1!3!3", "1!4!5" }},
+        { 5, IsModes == false ? new List<string> { "1!1!4", "1!2!3", "1!3!5", "1!4!6" } :
+                        new List<string> { "1!1!3", "1!2!5", "1!3!4", "1!4!6" }},
+        { 6, IsModes == false ? new List<string> { "1!1!3", "1!2!4", "1!3!5", "1!4!6" } :
+                        new List<string> { "1!1!5", "1!2!3", "1!3!4", "1!4!6" }},
+        { 7, IsModes == false ? new List<string> { "1!1!5", "1!2!6", "1!3!4", "1!4!3" } :
+                        new List<string> { "1!1!6", "1!2!4", "1!3!5", "1!4!3" }},
+        { 8, IsModes == false ? new List<string> { "1!1!6", "1!2!5", "1!3!4", "1!4!3" } :
+                        new List<string> { "1!1!4", "1!2!6", "1!3!5", "1!4!3" }}
+    };
+
+            Debug.WriteLine($"Tuner: {Tuner}, IsModes: {IsModes}");
+
+            foreach (var channel in configurations[Tuner])
             {
-                { 1, IsModes == false ? new List<string> { "1!1!4", "1!2!5", "1!3!3", "1!4!6" } :
-                                        new List<string> { "1!1!3", "1!2!5", "1!3!6", "1!4!4" }},
-                { 2, IsModes == false ? new List<string> { "1!1!5", "1!2!4", "1!3!3", "1!4!6" } :
-                                        new List<string> { "1!1!5", "1!2!3", "1!3!6", "1!4!4" }},
-                { 3, IsModes == false ? new List<string> { "1!1!3", "1!2!6", "1!3!4", "1!4!5" } :
-                                        new List<string> { "1!1!6", "1!2!4", "1!3!3", "1!4!5" }},
-                { 4, IsModes == false ? new List<string> { "1!1!6", "1!2!3", "1!3!4", "1!4!5" } :
-                                        new List<string> { "1!1!4", "1!2!6", "1!3!3", "1!4!5" }},
-                { 5, IsModes == false ? new List<string> { "1!1!4", "1!2!3", "1!3!5", "1!4!6" } :
-                                        new List<string> { "1!1!3", "1!2!5", "1!3!4", "1!4!6" }},
-                { 6, IsModes == false ? new List<string> { "1!1!3", "1!2!4", "1!3!5", "1!4!6" } :
-                                        new List<string> { "1!1!5", "1!2!3", "1!3!4", "1!4!6" }},
-                { 7, IsModes == false ? new List<string> { "1!1!5", "1!2!6", "1!3!4", "1!4!3" } :
-                                        new List<string> { "1!1!6", "1!2!4", "1!3!5", "1!4!3" }},
-                { 8, IsModes == false ? new List<string> { "1!1!6", "1!2!5", "1!3!4", "1!4!3" } :
-                                        new List<string> { "1!1!4", "1!2!6", "1!3!5", "1!4!3" }}
-            };
+                Debug.WriteLine($"Channel: {channel}");
+            }
 
             return configurations.ContainsKey(Tuner) ? configurations[Tuner] : new List<string>();
         }
@@ -1625,7 +1652,6 @@ namespace Program01
             SMU.WriteString("*WAI");
             SMU.WriteString("OUTPut OFF");
             await Task.Delay(points * repetitionValue * (int)delayValue * 250);
-
         }
 
         private void UpdateMeasurementState()
@@ -1734,19 +1760,19 @@ namespace Program01
 
             try
             {
-                if (!ValidateInputConvert(TextboxStart.Text, ComboboxStartUnit.SelectedItem, out start) ||
-                    !ValidateInputConvert(TextboxStop.Text, ComboboxStopUnit.SelectedItem, out stop) ||
-                    !ValidateInputConvert(TextboxStep.Text, ComboboxStepUnit.SelectedItem, out step) ||
-                    !ValidateInputConvert(TextboxSourceDelay.Text, ComboboxSourceDelayUnit.SelectedItem, out delay) ||
-                    !ValidateInputConvert(TextboxSourceLimitLevel.Text, ComboboxSourceLimitLevelUnit.SelectedItem, out sourcelevellimit) ||
-                    !ValidateInputConvert(TextboxThickness.Text, ComboboxThicknessUnit.SelectedItem, out thickness))
+                if (!IsValidNumber(TextboxStart.Text, ComboboxStartUnit.SelectedItem, out start) ||
+                    !IsValidNumber(TextboxStop.Text, ComboboxStopUnit.SelectedItem, out stop) ||
+                    !IsValidNumber(TextboxStep.Text, ComboboxStepUnit.SelectedItem, out step) ||
+                    !IsValidNumber(TextboxSourceDelay.Text, ComboboxSourceDelayUnit.SelectedItem, out delay) ||
+                    !IsValidNumber(TextboxSourceLimitLevel.Text, ComboboxSourceLimitLevelUnit.SelectedItem, out sourcelevellimit) ||
+                    !IsValidNumber(TextboxThickness.Text, ComboboxThicknessUnit.SelectedItem, out thickness))
                 {
                     return false;
                 }
 
                 if (GlobalSettings.IsModes)
                 {
-                    if (!ValidateInputConvert(TextboxMagneticFields.Text, ComboboxMagneticFieldsUnit.SelectedItem, out magneticfields))
+                    if (!IsValidNumber(TextboxMagneticFields.Text, ComboboxMagneticFieldsUnit.SelectedItem, out magneticfields))
                     {
                         return false;
                     }
@@ -1789,6 +1815,25 @@ namespace Program01
                 MessageBox.Show($"Validation Error: {Ex.Message}", "Error", MessageBoxButtons.OK);
                 return false;
             }
+        }
+
+        private bool IsValidNumber(string textValue, object unit, out double result)
+        {
+            result = 0;
+
+            if (string.IsNullOrWhiteSpace(textValue) || unit == null)
+            {
+                return false;
+            }
+
+            // ตรวจสอบให้แน่ใจว่าค่าที่ป้อนเป็นตัวเลข
+            if (double.TryParse(textValue, out double value))
+            {
+                result = ConvertValueBasedOnUnit(unit.ToString(), value);
+                return true;
+            }
+
+            return false;
         }
 
         private double ConvertValueBasedOnUnit(string unit, double value)  //  Method สำหรับการแปลงหน่วยของค่าที่ป้อนมาใน Textbox ผ่านการเลือก Combobox
@@ -1938,16 +1983,19 @@ namespace Program01
         {
             try
             {
+                // ส่งคำสั่งไปยังเครื่องมือเพื่อขอข้อมูล
                 SMU.WriteString("TRACe:ACTual?");
                 string BufferCount = SMU.ReadString().Trim();
                 Debug.WriteLine($"Buffer count: {BufferCount}");
 
+                // ตรวจสอบว่า buffer มีข้อมูลหรือไม่
                 if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
                 {
                     MessageBox.Show("No data in buffer!", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
+                // ขอข้อมูลการวัดจากเครื่องมือ
                 SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOURce, READing");
                 string MeasureRawData = SMU.ReadString().Trim();
                 Debug.WriteLine($"Buffer contains: {BufferPoints} readings");
@@ -1957,12 +2005,14 @@ namespace Program01
                 List<double> XData = new List<double>();
                 List<double> YData = new List<double>();
 
+                // ตรวจสอบว่า ข้อมูลใน buffer มีรูปแบบที่ถูกต้องหรือไม่
                 if (DataPairs.Length % 2 != 0)
                 {
                     MessageBox.Show("Invalid buffer data format!", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
+                // แปลงข้อมูลและเก็บลงในรายการ XData และ YData
                 for (int i = 0; i < DataPairs.Length; i += 2)
                 {
                     if (double.TryParse(DataPairs[i], out double SourceValue) && double.TryParse(DataPairs[i + 1], out double MeasuredValue))
@@ -1972,7 +2022,11 @@ namespace Program01
                     }
                 }
 
-                OnMeasurementCompleted?.Invoke(XData, YData);
+                // แจ้งให้ฟอร์มอื่นทราบเมื่อการวัดเสร็จสิ้น
+                MeasurementCompleted?.Invoke(XData, YData);
+
+                // ถ้าคุณต้องการเรียกเมธอดของฟอร์มที่แสดงผลโดยตรง:
+                //VdPTotalMeasureValuesForm.UpdateMeasurementData(XData, YData);
             }
             catch (Exception Ex)
             {
@@ -1980,22 +2034,108 @@ namespace Program01
             }
         }
 
-        public void OpenVdPTotalMeasureForm()
-        {
-            if (VdPTotalMeasureForm == null || VdPTotalMeasureForm.IsDisposed)
-            {
-                VdPTotalMeasureForm = new VdPTotalMeasureValueForm();
-                VdPTotalMeasureForm.Show();
-            }
-            else
-            {
-                VdPTotalMeasureForm.BringToFront();
-            }
-        }
-
         private void MeasurementSettingsChildForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveToGlobal();
+        }
+
+        private void TextboxStart_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true;
+            }
+
+            if (e.KeyChar == '.' && ((TextBox)sender).Text.Contains("."))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TextboxStop_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true;
+            }
+
+            if (e.KeyChar == '.' && ((TextBox)sender).Text.Contains("."))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TextboxStep_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true;
+            }
+
+            if (e.KeyChar == '.' && ((TextBox)sender).Text.Contains("."))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TextboxSourceDelay_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true;
+            }
+
+            if (e.KeyChar == '.' && ((TextBox)sender).Text.Contains("."))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TextboxSourceLimitLevel_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true;
+            }
+
+            if (e.KeyChar == '.' && ((TextBox)sender).Text.Contains("."))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TextboxThickness_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true;
+            }
+
+            if (e.KeyChar == '.' && ((TextBox)sender).Text.Contains("."))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TextboxRepetition_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void TextboxMagneticFields_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != (char)Keys.Back)
+            {
+                e.Handled = true;
+            }
+
+            if (e.KeyChar == '.' && ((TextBox)sender).Text.Contains("."))
+            {
+                e.Handled = true;
+            }
         }
     }
 }

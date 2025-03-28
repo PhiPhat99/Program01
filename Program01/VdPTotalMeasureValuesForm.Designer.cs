@@ -57,7 +57,7 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea9 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend9 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.PanelMeasuredValues = new System.Windows.Forms.Panel();
             this.DatagridviewVdPTotalMesure = new System.Windows.Forms.DataGridView();
             this.MeasuredValue1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -67,7 +67,7 @@
             this.MeasuredValue6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MeasuredValue8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panel2 = new System.Windows.Forms.Panel();
+            this.PanelMeasuedValueChart = new System.Windows.Forms.Panel();
             this.TabcontrolVdPTotalCharts = new System.Windows.Forms.TabControl();
             this.TotalMeasuredPage = new System.Windows.Forms.TabPage();
             this.ChartTotalValues = new System.Windows.Forms.DataVisualization.Charting.Chart();
@@ -87,9 +87,9 @@
             this.ChartMeasured7 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.Measured8Page = new System.Windows.Forms.TabPage();
             this.ChartMeasured8 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.panel1.SuspendLayout();
+            this.PanelMeasuredValues.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DatagridviewVdPTotalMesure)).BeginInit();
-            this.panel2.SuspendLayout();
+            this.PanelMeasuedValueChart.SuspendLayout();
             this.TabcontrolVdPTotalCharts.SuspendLayout();
             this.TotalMeasuredPage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ChartTotalValues)).BeginInit();
@@ -111,15 +111,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.ChartMeasured8)).BeginInit();
             this.SuspendLayout();
             // 
-            // panel1
+            // PanelMeasuredValues
             // 
-            this.panel1.BackColor = System.Drawing.Color.Transparent;
-            this.panel1.Controls.Add(this.DatagridviewVdPTotalMesure);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(630, 820);
-            this.panel1.TabIndex = 1;
+            this.PanelMeasuredValues.BackColor = System.Drawing.Color.Transparent;
+            this.PanelMeasuredValues.Controls.Add(this.DatagridviewVdPTotalMesure);
+            this.PanelMeasuredValues.Dock = System.Windows.Forms.DockStyle.Left;
+            this.PanelMeasuredValues.Location = new System.Drawing.Point(0, 0);
+            this.PanelMeasuredValues.Name = "PanelMeasuredValues";
+            this.PanelMeasuredValues.Size = new System.Drawing.Size(630, 820);
+            this.PanelMeasuredValues.TabIndex = 1;
             // 
             // DatagridviewVdPTotalMesure
             // 
@@ -231,15 +231,15 @@
             this.MeasuredValue8.ReadOnly = true;
             this.MeasuredValue8.Width = 125;
             // 
-            // panel2
+            // PanelMeasuedValueChart
             // 
-            this.panel2.BackColor = System.Drawing.Color.Transparent;
-            this.panel2.Controls.Add(this.TabcontrolVdPTotalCharts);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(630, 0);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(630, 820);
-            this.panel2.TabIndex = 2;
+            this.PanelMeasuedValueChart.BackColor = System.Drawing.Color.Transparent;
+            this.PanelMeasuedValueChart.Controls.Add(this.TabcontrolVdPTotalCharts);
+            this.PanelMeasuedValueChart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.PanelMeasuedValueChart.Location = new System.Drawing.Point(630, 0);
+            this.PanelMeasuedValueChart.Name = "PanelMeasuedValueChart";
+            this.PanelMeasuedValueChart.Size = new System.Drawing.Size(630, 820);
+            this.PanelMeasuedValueChart.TabIndex = 2;
             // 
             // TabcontrolVdPTotalCharts
             // 
@@ -292,7 +292,7 @@
             this.Measured1Page.Location = new System.Drawing.Point(4, 25);
             this.Measured1Page.Margin = new System.Windows.Forms.Padding(0);
             this.Measured1Page.Name = "Measured1Page";
-            this.Measured1Page.Size = new System.Drawing.Size(592, 571);
+            this.Measured1Page.Size = new System.Drawing.Size(592, 691);
             this.Measured1Page.TabIndex = 1;
             this.Measured1Page.Text = "1";
             this.Measured1Page.UseVisualStyleBackColor = true;
@@ -319,7 +319,7 @@
             this.Measured2Page.Location = new System.Drawing.Point(4, 25);
             this.Measured2Page.Margin = new System.Windows.Forms.Padding(0);
             this.Measured2Page.Name = "Measured2Page";
-            this.Measured2Page.Size = new System.Drawing.Size(592, 571);
+            this.Measured2Page.Size = new System.Drawing.Size(592, 691);
             this.Measured2Page.TabIndex = 2;
             this.Measured2Page.Text = "2";
             this.Measured2Page.UseVisualStyleBackColor = true;
@@ -346,7 +346,7 @@
             this.Measured3Page.Location = new System.Drawing.Point(4, 25);
             this.Measured3Page.Margin = new System.Windows.Forms.Padding(0);
             this.Measured3Page.Name = "Measured3Page";
-            this.Measured3Page.Size = new System.Drawing.Size(592, 571);
+            this.Measured3Page.Size = new System.Drawing.Size(592, 691);
             this.Measured3Page.TabIndex = 3;
             this.Measured3Page.Text = "3";
             this.Measured3Page.UseVisualStyleBackColor = true;
@@ -373,7 +373,7 @@
             this.Measured4Page.Location = new System.Drawing.Point(4, 25);
             this.Measured4Page.Margin = new System.Windows.Forms.Padding(0);
             this.Measured4Page.Name = "Measured4Page";
-            this.Measured4Page.Size = new System.Drawing.Size(592, 571);
+            this.Measured4Page.Size = new System.Drawing.Size(592, 691);
             this.Measured4Page.TabIndex = 4;
             this.Measured4Page.Text = "4";
             this.Measured4Page.UseVisualStyleBackColor = true;
@@ -400,7 +400,7 @@
             this.Measured5Page.Location = new System.Drawing.Point(4, 25);
             this.Measured5Page.Margin = new System.Windows.Forms.Padding(0);
             this.Measured5Page.Name = "Measured5Page";
-            this.Measured5Page.Size = new System.Drawing.Size(592, 571);
+            this.Measured5Page.Size = new System.Drawing.Size(592, 691);
             this.Measured5Page.TabIndex = 5;
             this.Measured5Page.Text = "5";
             this.Measured5Page.UseVisualStyleBackColor = true;
@@ -427,7 +427,7 @@
             this.Measured6Page.Location = new System.Drawing.Point(4, 25);
             this.Measured6Page.Margin = new System.Windows.Forms.Padding(0);
             this.Measured6Page.Name = "Measured6Page";
-            this.Measured6Page.Size = new System.Drawing.Size(592, 571);
+            this.Measured6Page.Size = new System.Drawing.Size(592, 691);
             this.Measured6Page.TabIndex = 6;
             this.Measured6Page.Text = "6";
             this.Measured6Page.UseVisualStyleBackColor = true;
@@ -454,7 +454,7 @@
             this.Measured7Page.Location = new System.Drawing.Point(4, 25);
             this.Measured7Page.Margin = new System.Windows.Forms.Padding(0);
             this.Measured7Page.Name = "Measured7Page";
-            this.Measured7Page.Size = new System.Drawing.Size(592, 571);
+            this.Measured7Page.Size = new System.Drawing.Size(592, 691);
             this.Measured7Page.TabIndex = 7;
             this.Measured7Page.Text = "7";
             this.Measured7Page.UseVisualStyleBackColor = true;
@@ -481,7 +481,7 @@
             this.Measured8Page.Location = new System.Drawing.Point(4, 25);
             this.Measured8Page.Margin = new System.Windows.Forms.Padding(0);
             this.Measured8Page.Name = "Measured8Page";
-            this.Measured8Page.Size = new System.Drawing.Size(592, 571);
+            this.Measured8Page.Size = new System.Drawing.Size(592, 691);
             this.Measured8Page.TabIndex = 8;
             this.Measured8Page.Text = "8";
             this.Measured8Page.UseVisualStyleBackColor = true;
@@ -507,15 +507,15 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(138)))), ((int)(((byte)(114)))));
             this.ClientSize = new System.Drawing.Size(1260, 820);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.PanelMeasuedValueChart);
+            this.Controls.Add(this.PanelMeasuredValues);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "VdPTotalMeasureValueForm";
             this.Text = "Van der Pauw Total Voltage Form";
             this.Load += new System.EventHandler(this.VdPTotalMeasureValueForm_Load);
-            this.panel1.ResumeLayout(false);
+            this.PanelMeasuredValues.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DatagridviewVdPTotalMesure)).EndInit();
-            this.panel2.ResumeLayout(false);
+            this.PanelMeasuedValueChart.ResumeLayout(false);
             this.TabcontrolVdPTotalCharts.ResumeLayout(false);
             this.TotalMeasuredPage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ChartTotalValues)).EndInit();
@@ -541,7 +541,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel PanelMeasuredValues;
         private System.Windows.Forms.DataGridView DatagridviewVdPTotalMesure;
         private System.Windows.Forms.DataGridViewTextBoxColumn MeasuredValue1;
         private System.Windows.Forms.DataGridViewTextBoxColumn MeasuredValue2;
@@ -551,7 +551,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn MeasuredValue6;
         private System.Windows.Forms.DataGridViewTextBoxColumn MeasuredValue7;
         private System.Windows.Forms.DataGridViewTextBoxColumn MeasuredValue8;
-        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel PanelMeasuedValueChart;
         private System.Windows.Forms.TabControl TabcontrolVdPTotalCharts;
         private System.Windows.Forms.TabPage TotalMeasuredPage;
         private System.Windows.Forms.DataVisualization.Charting.Chart ChartTotalValues;

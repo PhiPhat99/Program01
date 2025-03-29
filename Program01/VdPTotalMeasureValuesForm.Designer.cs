@@ -1,6 +1,6 @@
 ﻿namespace Program01
 {
-    partial class VdPTotalMeasureValueForm
+    partial class VdPTotalMeasureValuesForm
     {
         /// <summary>
         /// Required designer variable.
@@ -512,7 +512,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "VdPTotalMeasureValueForm";
             this.Text = "Van der Pauw Total Voltage Form";
-            this.Load += new System.EventHandler(this.VdPTotalMeasureValueForm_Load);
             this.PanelMeasuredValues.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DatagridviewVdPTotalMesure)).EndInit();
             this.PanelMeasuedValueChart.ResumeLayout(false);

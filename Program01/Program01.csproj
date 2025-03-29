@@ -148,6 +148,7 @@
     <Compile Include="HelpForm.Designer.cs">
       <DependentUpon>HelpForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MeasurementController.cs" />
     <Compile Include="MeasurementSettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>

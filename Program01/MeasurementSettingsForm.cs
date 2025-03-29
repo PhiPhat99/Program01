@@ -57,7 +57,7 @@ namespace Program01
         private List<double> X = new List<double>();
         private List<double> Y = new List<double>();
 
-        public VdPTotalMeasureValueForm VdPTotalMeasureForm;
+        private MeasurementController measurementController;
         public event Action<List<double>, List<double>, double, double, double, double, double> DataUpdated;
 
         public bool IsOn
@@ -70,11 +70,13 @@ namespace Program01
             }
         }
 
-        public MeasurementSettingsForm()
+        public MeasurementSettingsForm(MeasurementController measurementController)
         {
             InitializeComponent();
             Rsrcmngr = new Ivi.Visa.Interop.ResourceManager();
             InitializeGPIB();
+            this.measurementController = measurementController;
+
         }
 
         private void InitializeGPIB()
@@ -1463,7 +1465,6 @@ namespace Program01
                     return;
                 }
 
-                CollectVdPMeasuredValue.Instance.ClearMeasurements();
                 RunMeasurement();
             }
             catch (Exception Ex)
@@ -2022,11 +2023,12 @@ namespace Program01
                     }
                 }
 
+                // ส่งข้อมูลไปยัง MeasurementController
+                measurementController.TracingRunMeasurement(XData, YData);
+
                 // แจ้งให้ฟอร์มอื่นทราบเมื่อการวัดเสร็จสิ้น
                 MeasurementCompleted?.Invoke(XData, YData);
 
-                // ถ้าคุณต้องการเรียกเมธอดของฟอร์มที่แสดงผลโดยตรง:
-                //VdPTotalMeasureValuesForm.UpdateMeasurementData(XData, YData);
             }
             catch (Exception Ex)
             {

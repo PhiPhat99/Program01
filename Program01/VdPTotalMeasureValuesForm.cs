@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -7,78 +8,50 @@ namespace Program01
 {
     public partial class VdPTotalMeasureValuesForm : Form
     {
-        private DataGridView dataGridView;
-        private TabControl tabControl;
-        private BindingSource bindingSource;
-        private CollectVdPMeasuredValue measuredValues;
-
-        public VdPTotalMeasureValuesForm(CollectVdPMeasuredValue measuredValues)
+        public VdPTotalMeasureValuesForm()
         {
             InitializeComponent();
-            this.measuredValues = measuredValues;
-            bindingSource = new BindingSource();
-            bindingSource.DataSource = measuredValues.GetData(); // ใช้ GetData() จาก CollectVdPMeasuredValue
-
             InitializeDataGridView();
-            InitializeTabControl();
         }
 
         private void InitializeDataGridView()
         {
-            dataGridView = new DataGridView
-            {
-                Dock = DockStyle.Top,
-                DataSource = bindingSource,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill
-            };
-
+            // ตั้งค่าตารางข้อมูล
+            DatagridviewVdPTotalMesure.Columns.Clear();
             for (int i = 1; i <= 8; i++)
             {
-                dataGridView.Columns.Add($"Measured {i}", $"Measured {i}");
-                dataGridView.Columns[$"Measured {i}"].DefaultCellStyle.Format = "F5";
+                DatagridviewVdPTotalMesure.Columns.Add($"Measured{i}", $"Measured {i}");
+            }
+        }
+
+        public void UpdateMeasurementData(List<double[]> measuredValues)
+        {
+            // อัปเดต DataGridView
+            DatagridviewVdPTotalMesure.Rows.Clear();
+            foreach (var row in measuredValues)
+            {
+                DatagridviewVdPTotalMesure.Rows.Add(row.Cast<object>().ToArray());
             }
 
-            Controls.Add(dataGridView);
+            // อัปเดต Chart
+            //UpdateChart(measuredValues);
         }
 
-        private void InitializeTabControl()
+        /*private void UpdateChart(List<double[]> measuredValues)
         {
-            tabControl = new TabControl { Dock = DockStyle.Fill };
-
-            for (int i = 0; i <= 8; i++)
+            .Series.Clear();
+            for (int i = 0; i < 8; i++) // 8 ชุดข้อมูล
             {
-                var tabPage = new TabPage(i == 0 ? "Total" : i.ToString());
-                var chart = new Chart { Dock = DockStyle.Fill };
-                var chartArea = new ChartArea();
-                chart.ChartAreas.Add(chartArea);
-                chart.Series.Add(new Series { ChartType = SeriesChartType.Line });
-                tabPage.Controls.Add(chart);
-                tabControl.TabPages.Add(tabPage);
-            }
+                var series = new Series($"Measured {i + 1}");
+                series.ChartType = SeriesChartType.Line;
 
-            Controls.Add(tabControl);
-        }
-
-        public void UpdateData()
-        {
-            bindingSource.ResetBindings(false);
-            UpdateCharts();
-        }
-
-        private void UpdateCharts()
-        {
-            // การอัปเดตกราฟ
-            for (int i = 0; i <= 8; i++)
-            {
-                var chart = (Chart)tabControl.TabPages[i].Controls[0];
-                chart.Series[0].Points.Clear();
-                var data = measuredValues.GetIVCurveData(i);
-                
-                foreach (var point in data)
+                for (int j = 0; j < measuredValues.Count; j++)
                 {
-                    chart.Series[0].Points.AddXY(point.Source, point.Reading);
+                    series.Points.AddXY(j + 1, measuredValues[j][i]);
                 }
+
+                chart.Series.Add(series);
             }
-        }
+        }*/
     }
 }

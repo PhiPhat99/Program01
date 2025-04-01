@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Resources;
 using System.Runtime.InteropServices;
-using System.Runtime.Remoting.Channels;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization.Charting;
-using System.Windows.Markup;
 using FontAwesome.Sharp;
 using Ivi.Visa.Interop;
 
@@ -20,7 +17,7 @@ namespace Program01
         // Fields
         public FormattedIO488 SMU;
         public FormattedIO488 SS;
-        public Ivi.Visa.Interop.ResourceManager Rsrcmngr;
+        public ResourceManager Rsrcmngr;
 
         public string RsenseMode;
         public string MeasureMode;
@@ -35,12 +32,6 @@ namespace Program01
         public string ThicknessValue;
         private string MagneticFieldsValue;
 
-        public double MaxSource = double.MinValue;
-        public double MinSource = double.MaxValue;
-        public double MaxMeasure = double.MinValue;
-        public double MinMeasure = double.MaxValue;
-        public double Slope;
-
         private int TargetPosition;
         private int CurrentTuner;
 
@@ -50,32 +41,27 @@ namespace Program01
 
         private Form CurrentChildForm;
         public DataChildForm DataChildForm = null;
-        public ChannelSettingsChildForm ChannelSettingsChildForm = null;
 
         public List<double> XDataBuffer = new List<double>();
         public List<double> YDataBuffer = new List<double>();
-        private List<double> X = new List<double>();
-        private List<double> Y = new List<double>();
 
-        private MeasurementController measurementController;
-        public event Action<List<double>, List<double>, double, double, double, double, double> DataUpdated;
 
         public bool IsOn
         {
-            get => GlobalSettings.IsModes;
+            get => GlobalSettings.Instance.IsModes;
             set
             {
-                GlobalSettings.IsModes = value;
+                GlobalSettings.Instance.IsModes = value;
                 UpdateToggleState();
             }
         }
 
-        public MeasurementSettingsForm(MeasurementController measurementController)
+        public MeasurementSettingsForm()
         {
             InitializeComponent();
-            Rsrcmngr = new Ivi.Visa.Interop.ResourceManager();
+            Rsrcmngr = new ResourceManager();
             InitializeGPIB();
-            this.measurementController = measurementController;
+            SaveToGlobalSettings();
 
         }
 
@@ -206,235 +192,85 @@ namespace Program01
             }
         }
 
-        public static class GlobalSettings
-        {
-            public static event Action OnSettingsChanged;
-
-            private static bool CIsFirstRunProgram;
-            public static bool IsFirstRunProgram
-            {
-                get => CIsFirstRunProgram;
-                set
-                {
-                    if (CIsFirstRunProgram != value)
-                    {
-                        CIsFirstRunProgram = value;
-                        OnSettingsChanged?.Invoke();
-                    }
-                }
-            }
-
-            private static bool CIsSMUConnected;
-            public static bool IsSMUConnected
-            {
-                get => CIsSMUConnected;
-                set
-                {
-                    if (CIsSMUConnected != value)
-                    {
-                        CIsSMUConnected = value;
-                        OnSettingsChanged?.Invoke();
-                    }
-                }
-            }
-
-            public static bool CIsSSConnected;
-            public static bool IsSSConnected
-            {
-                get => CIsSSConnected;
-                set
-                {
-                    if (CIsSSConnected != value)
-                    {
-                        CIsSSConnected = value;
-                        OnSettingsChanged?.Invoke();
-                    }
-                }
-            }
-
-            public static bool CIsModes;
-            public static bool IsModes
-            {
-                get => CIsModes;
-                set
-                {
-                    if (CIsModes != value)
-                    {
-                        CIsModes = value;
-                        OnSettingsChanged?.Invoke();
-                    }
-                }
-            }
-
-            private static bool CIsHallMode;
-            public static bool IsHallMode
-            {
-                get => CIsHallMode;
-                set
-                {
-                    if (CIsHallMode != value)
-                    {
-                        CIsHallMode = value;
-                        OnSettingsChanged?.Invoke();
-                    }
-                }
-            }
-
-            private static bool CIsVanDerPauwMode;
-            public static bool IsVanDerPauwMode
-            {
-                get => CIsVanDerPauwMode;
-                set
-                {
-                    if (CIsVanDerPauwMode != value)
-                    {
-                        CIsVanDerPauwMode = value;
-                        OnSettingsChanged?.Invoke();
-                    }
-                }
-            }
-
-            private static string CRsenseMode;
-            public static string RsenseMode
-            {
-                get => CRsenseMode;
-                set { CRsenseMode = value; OnSettingsChanged?.Invoke(); }
-            }
-
-            private static string CMeasureMode;
-            public static string MeasureMode
-            {
-                get => CMeasureMode;
-                set { CMeasureMode = value; OnSettingsChanged?.Invoke(); }
-            }
-
-            private static string CSourceMode;
-            public static string SourceMode
-            {
-                get => CSourceMode;
-                set { CSourceMode = value; OnSettingsChanged?.Invoke(); }
-            }
-
-            private static string CSourceLimitType;
-            public static string SourceLimitType
-            {
-                get => CSourceLimitType;
-                set { CSourceLimitType = value; OnSettingsChanged?.Invoke(); }
-            }
-
-            private static string CStartValue;
-            public static string StartValue
-            {
-                get => CStartValue;
-                set { CStartValue = value; OnSettingsChanged?.Invoke(); }
-            }
-
-            private static string CStopValue;
-            public static string StopValue
-            {
-                get => CStopValue;
-                set { CStopValue = value; OnSettingsChanged?.Invoke(); }
-            }
-
-            private static string CStepValue;
-            public static string StepValue
-            {
-                get => CStepValue;
-                set { CStepValue = value; OnSettingsChanged?.Invoke(); }
-            }
-
-            private static string CSourceDelayValue;
-            public static string SourceDelayValue
-            {
-                get => CSourceDelayValue;
-                set { CSourceDelayValue = value; OnSettingsChanged?.Invoke(); }
-            }
-
-            private static string CSourceLimitLevelValue;
-            public static string SourceLimitLevelValue
-            {
-                get => CSourceLimitLevelValue;
-                set { CSourceLimitLevelValue = value; OnSettingsChanged?.Invoke(); }
-            }
-
-            private static string CThicknessValue;
-            public static string ThicknessValue
-            {
-                get => CThicknessValue;
-                set { CThicknessValue = value; OnSettingsChanged?.Invoke(); }
-            }
-
-            private static string CRepetitionValue;
-            public static string RepetitionValue
-            {
-                get => CRepetitionValue;
-                set { CRepetitionValue = value; OnSettingsChanged?.Invoke(); }
-            }
-
-            private static string CMagneticFieldsValue;
-            public static string MagneticFieldsValue
-            {
-                get => CMagneticFieldsValue;
-                set { CMagneticFieldsValue = value; OnSettingsChanged?.Invoke(); }
-            }
-
-            public static string StartUnit { get; set; }
-            public static string StopUnit { get; set; }
-            public static string StepUnit { get; set; }
-            public static string SourceDelayUnit { get; set; }
-            public static string SourceLimitLevelUnit { get; set; }
-            public static string ThicknessUnit { get; set; }
-            public static string MagneticFieldsUnit { get; set; }
-
-            // Buffer Data สำหรับเก็บค่าที่ใช้ใน DataChildForm
-            public static List<double> XDataBuffer { get; private set; } = new List<double>();
-            public static List<double> YDataBuffer { get; private set; } = new List<double>();
-
-            public static double MaxMeasure { get; private set; } = double.NegativeInfinity;
-            public static double MinMeasure { get; private set; } = double.PositiveInfinity;
-            public static double MaxSource { get; private set; } = double.NegativeInfinity;
-            public static double MinSource { get; private set; } = double.PositiveInfinity;
-            public static double Slope { get; private set; } = double.NaN;
-
-            public static void UpdateDataBuffer(List<double> Xdata, List<double> Ydata, double maxMeasure, double minMeasure, double maxSource, double minSource, double slope)
-            {
-                XDataBuffer = new List<double>(Xdata);
-                YDataBuffer = new List<double>(Ydata);
-                MaxMeasure = maxMeasure;
-                MinMeasure = minMeasure;
-                MaxSource = maxSource;
-                MinSource = minSource;
-                Slope = slope;
-
-                OnSettingsChanged?.Invoke();
-            }
-        }
-
-        private void SaveToGlobal()
+        private void LoadSettings()
         {
             try
             {
-                GlobalSettings.RsenseMode = ComboboxRsense.SelectedItem?.ToString() ?? "";
-                GlobalSettings.MeasureMode = ComboboxMeasure.SelectedItem?.ToString() ?? "";
-                GlobalSettings.SourceMode = ComboboxSource.SelectedItem?.ToString() ?? "";
-                GlobalSettings.SourceLimitType = ComboboxSourceLimitMode.SelectedItem?.ToString() ?? "";
+                SetComboBoxSelectedItem(ComboboxMeasure, GlobalSettings.Instance.MeasureMode);
+                SetComboBoxSelectedItem(ComboboxRsense, GlobalSettings.Instance.RsenseMode);
+                SetComboBoxSelectedItem(ComboboxSource, GlobalSettings.Instance.SourceMode);
+                SetComboBoxSelectedItem(ComboboxSourceLimitMode, GlobalSettings.Instance.SourceLimitType);
 
-                GlobalSettings.StartUnit = ComboboxStartUnit.SelectedItem?.ToString() ?? "";
-                GlobalSettings.StepUnit = ComboboxStepUnit.SelectedItem?.ToString() ?? "";
-                GlobalSettings.StopUnit = ComboboxStopUnit.SelectedItem?.ToString() ?? "";
-                GlobalSettings.SourceDelayUnit = ComboboxSourceDelayUnit.SelectedItem?.ToString() ?? "";
-                GlobalSettings.SourceLimitLevelUnit = ComboboxSourceLimitLevelUnit.SelectedItem?.ToString() ?? "";
-                GlobalSettings.ThicknessUnit = ComboboxThicknessUnit.SelectedItem?.ToString() ?? "";
-                GlobalSettings.MagneticFieldsUnit = ComboboxMagneticFieldsUnit.SelectedItem?.ToString() ?? "";
+                SetComboBoxSelectedItem(ComboboxStartUnit, GlobalSettings.Instance.StartUnit);
+                SetComboBoxSelectedItem(ComboboxStepUnit, GlobalSettings.Instance.StepUnit);
+                SetComboBoxSelectedItem(ComboboxStopUnit, GlobalSettings.Instance.StopUnit);
+                SetComboBoxSelectedItem(ComboboxSourceDelayUnit, GlobalSettings.Instance.SourceDelayUnit);
+                SetComboBoxSelectedItem(ComboboxSourceLimitLevelUnit, GlobalSettings.Instance.SourceLimitLevelUnit);
+                SetComboBoxSelectedItem(ComboboxThicknessUnit, GlobalSettings.Instance.ThicknessUnit);
+                SetComboBoxSelectedItem(ComboboxMagneticFieldsUnit, GlobalSettings.Instance.MagneticFieldsUnit);
 
-                GlobalSettings.StartValue = TextboxStart.Text;
-                GlobalSettings.StopValue = TextboxStop.Text;
-                GlobalSettings.StepValue = TextboxStep.Text;
-                GlobalSettings.SourceDelayValue = TextboxSourceDelay.Text;
-                GlobalSettings.SourceLimitLevelValue = TextboxSourceLimitLevel.Text;
-                GlobalSettings.ThicknessValue = TextboxThickness.Text;
-                GlobalSettings.RepetitionValue = TextboxRepetition.Text;
-                GlobalSettings.MagneticFieldsValue = TextboxMagneticFields.Text;
+                SetTextboxValue(TextboxStart, GlobalSettings.Instance.StartValue);
+                SetTextboxValue(TextboxStop, GlobalSettings.Instance.StopValue);
+                SetTextboxValue(TextboxStep, GlobalSettings.Instance.StepValue);
+                SetTextboxValue(TextboxSourceDelay, GlobalSettings.Instance.SourceDelayValue);
+                SetTextboxValue(TextboxSourceLimitLevel, GlobalSettings.Instance.SourceLimitLevelValue);
+                SetTextboxValue(TextboxThickness, GlobalSettings.Instance.ThicknessValue);
+                SetTextboxValue(TextboxRepetition, GlobalSettings.Instance.RepetitionValue);
+                SetTextboxValue(TextboxMagneticFields, GlobalSettings.Instance.MagneticFieldsValue);
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"Error: {Ex.Message}", "ERROR");
+            }
+        }
+
+        private string GetComboBoxSelectedItem(ComboBox combobox)
+        {
+            return combobox.SelectedItem?.ToString() ?? "";
+        }
+
+        private void SetComboBoxSelectedItem(ComboBox combobox, string value)
+        {
+            if (combobox.Items.Contains(value))
+            {
+                combobox.SelectedItem = value;
+            }
+            else
+            {
+                combobox.SelectedIndex = -1;
+            }
+        }
+
+        private void SetTextboxValue(TextBox textbox, string value)
+        {
+            textbox.Text = value ?? "";
+        }
+
+        private void SaveToGlobalSettings()
+        {
+            try
+            {
+                GlobalSettings.Instance.MeasureMode = ComboboxMeasure.SelectedItem?.ToString() ?? "";
+                GlobalSettings.Instance.RsenseMode = ComboboxRsense.SelectedItem?.ToString() ?? "";
+                GlobalSettings.Instance.SourceMode = ComboboxSource.SelectedItem?.ToString() ?? "";
+                GlobalSettings.Instance.SourceLimitType = ComboboxSourceLimitMode.SelectedItem?.ToString() ?? "";
+
+                GlobalSettings.Instance.StartUnit = ComboboxStartUnit.SelectedItem?.ToString() ?? "";
+                GlobalSettings.Instance.StepUnit = ComboboxStepUnit.SelectedItem?.ToString() ?? "";
+                GlobalSettings.Instance.StopUnit = ComboboxStopUnit.SelectedItem?.ToString() ?? "";
+                GlobalSettings.Instance.SourceDelayUnit = ComboboxSourceDelayUnit.SelectedItem?.ToString() ?? "";
+                GlobalSettings.Instance.SourceLimitLevelUnit = ComboboxSourceLimitLevelUnit.SelectedItem?.ToString() ?? "";
+                GlobalSettings.Instance.ThicknessUnit = ComboboxThicknessUnit.SelectedItem?.ToString() ?? "";
+                GlobalSettings.Instance.MagneticFieldsUnit = ComboboxMagneticFieldsUnit.SelectedItem?.ToString() ?? "";
+
+                GlobalSettings.Instance.StartValue = TextboxStart.Text;
+                GlobalSettings.Instance.StopValue = TextboxStop.Text;
+                GlobalSettings.Instance.StepValue = TextboxStep.Text;
+                GlobalSettings.Instance.SourceDelayValue = TextboxSourceDelay.Text;
+                GlobalSettings.Instance.SourceLimitLevelValue = TextboxSourceLimitLevel.Text;
+                GlobalSettings.Instance.ThicknessValue = TextboxThickness.Text;
+                GlobalSettings.Instance.RepetitionValue = TextboxRepetition.Text;
+                GlobalSettings.Instance.MagneticFieldsValue = TextboxMagneticFields.Text;
             }
             catch (Exception Ex)
             {
@@ -508,7 +344,7 @@ namespace Program01
             Buttons.BackColor = IsConnected ? Color.Gray : Color.Snow;
             Buttons.IconColor = IsConnected ? Color.GreenYellow : Color.Gainsboro;
 
-            Debug.WriteLine(Buttons == IconbuttonSMUConnection ? $"SMU Connected: {GlobalSettings.IsSMUConnected}" : $"SS Connected: {GlobalSettings.IsSSConnected}");
+            Debug.WriteLine(Buttons == IconbuttonSMUConnection ? $"SMU Connected: {GlobalSettings.Instance.IsSMUConnected}" : $"SS Connected: {GlobalSettings.Instance.IsSSConnected}");
         }
 
         private void IconbuttonSMUConnection_Click(object sender, EventArgs e)
@@ -517,37 +353,33 @@ namespace Program01
             {
                 bool Success = false;
 
-                if (!GlobalSettings.IsSMUConnected)
+                if (!GlobalSettings.Instance.IsSMUConnected)
                 {
-                    // ตรวจสอบว่ามีอ็อบเจ็กต์ SMU หรือยัง
                     if (SMU == null)
                     {
-                        SMU = new FormattedIO488(); // สร้างอ็อบเจ็กต์ใหม่
+                        SMU = new FormattedIO488();
                     }
 
-                    // ดำเนินการเชื่อมต่อ
                     Success = ConnectDevice(ref SMU, ComboboxVISASMUIOPort.SelectedItem?.ToString());
                     
                     if (Success)
                     {
-                        GlobalSettings.IsSMUConnected = true;
+                        GlobalSettings.Instance.IsSMUConnected = true;
                     }
                 }
                 else
                 {
-                    // ตัดการเชื่อมต่อ
                     Success = DisconnectDevice(ref SMU);
 
                     if (Success)
                     {
-                        GlobalSettings.IsSMUConnected = false;
+                        GlobalSettings.Instance.IsSMUConnected = false;
                         SMU = null;
                     }
                 }
 
-                // อัปเดต UI ตามสถานะการเชื่อมต่อ
-                UpdateUIAfterConnection(GlobalSettings.IsSMUConnected ? "Connected to Source Measure Unit" : "Disconnected from Source Measure Unit", GlobalSettings.IsSMUConnected, IconbuttonSMUConnection);
-                MessageBox.Show(GlobalSettings.IsSMUConnected ? "Connected to Source Measure Unit" : "Disconnected from Source Measure Unit", "Informationc");
+                UpdateUIAfterConnection(GlobalSettings.Instance.IsSMUConnected ? "Connected to Source Measure Unit" : "Disconnected from Source Measure Unit", GlobalSettings.Instance.IsSMUConnected, IconbuttonSMUConnection);
+                MessageBox.Show(GlobalSettings.Instance.IsSMUConnected ? "Connected to Source Measure Unit" : "Disconnected from Source Measure Unit", "Informationc");
             }
             catch (Exception Ex)
             {
@@ -561,7 +393,7 @@ namespace Program01
             {
                 bool Success = false;
 
-                if (!GlobalSettings.IsSSConnected)
+                if (!GlobalSettings.Instance.IsSSConnected)
                 {
                     if (SS == null)
                     {
@@ -569,9 +401,10 @@ namespace Program01
                     }
 
                     Success = ConnectDevice(ref SS, ComboboxVISASSIOPort.SelectedItem?.ToString());
+
                     if (Success)
                     {
-                        GlobalSettings.IsSSConnected = true;
+                        GlobalSettings.Instance.IsSSConnected = true;
                     }
                 }
                 else
@@ -579,13 +412,13 @@ namespace Program01
                     Success = DisconnectDevice(ref SS);
                     if (Success)
                     {
-                        GlobalSettings.IsSSConnected = false;
+                        GlobalSettings.Instance.IsSSConnected = false;
                         SS = null;
                     }
                 }
 
-                UpdateUIAfterConnection(GlobalSettings.IsSSConnected ? "Connected to Switch System" : "Disconnected from Switch System", GlobalSettings.IsSSConnected, IconbuttonSSConnection);
-                MessageBox.Show(GlobalSettings.IsSSConnected ? "Connected to Switch System" : "Disconnected from Switch System", "Information");
+                UpdateUIAfterConnection(GlobalSettings.Instance.IsSSConnected ? "Connected to Switch System" : "Disconnected from Switch System", GlobalSettings.Instance.IsSSConnected, IconbuttonSSConnection);
+                MessageBox.Show(GlobalSettings.Instance.IsSSConnected ? "Connected to Switch System" : "Disconnected from Switch System", "Information");
             }
             catch (Exception Ex)
             {
@@ -595,10 +428,13 @@ namespace Program01
 
         private void MeasurementSettingsChildForm_Load(object sender, EventArgs e)
         {
-            UpdateUIAfterConnection("Restoring SMU Connection Status", GlobalSettings.IsSMUConnected, IconbuttonSMUConnection);
-            UpdateUIAfterConnection("Restoring SS Connection Status", GlobalSettings.IsSSConnected, IconbuttonSSConnection);
+            GlobalSettings.Instance.OnSettingsChanged += LoadSettings;
+
+            UpdateUIAfterConnection("Restoring SMU Connection Status", GlobalSettings.Instance.IsSMUConnected, IconbuttonSMUConnection);
+            UpdateUIAfterConnection("Restoring SS Connection Status", GlobalSettings.Instance.IsSSConnected, IconbuttonSSConnection);
             UpdateMeasurementMode();
             UpdateToggleState();
+            LoadSettings();
 
             ComboboxRsense.Items.Clear();
             ComboboxRsense.Items.AddRange(new string[] { "2-Wires", "4-Wires" });
@@ -608,73 +444,6 @@ namespace Program01
 
             ComboboxSource.Items.Clear();
             ComboboxSource.Items.AddRange(new string[] { "Voltage", "Current" });
-
-            LoadFromGlobal();
-
-            SetComboBoxSelectedItem(ComboboxRsense, GlobalSettings.RsenseMode);
-            SetComboBoxSelectedItem(ComboboxMeasure, GlobalSettings.MeasureMode);
-            SetComboBoxSelectedItem(ComboboxSource, GlobalSettings.SourceMode);
-            SetComboBoxSelectedItem(ComboboxSourceLimitMode, GlobalSettings.SourceLimitType);
-            SetComboBoxSelectedItem(ComboboxStartUnit, GlobalSettings.StartUnit);
-            SetComboBoxSelectedItem(ComboboxStepUnit, GlobalSettings.StepUnit);
-            SetComboBoxSelectedItem(ComboboxStopUnit, GlobalSettings.StopUnit);
-            SetComboBoxSelectedItem(ComboboxSourceDelayUnit, GlobalSettings.SourceDelayUnit);
-            SetComboBoxSelectedItem(ComboboxSourceLimitLevelUnit, GlobalSettings.SourceLimitLevelUnit);
-            SetComboBoxSelectedItem(ComboboxThicknessUnit, GlobalSettings.ThicknessUnit);
-            SetComboBoxSelectedItem(ComboboxMagneticFieldsUnit, GlobalSettings.MagneticFieldsUnit);
-
-            TextboxStart.Text = GlobalSettings.StartValue;
-            TextboxStop.Text = GlobalSettings.StopValue;
-            TextboxStep.Text = GlobalSettings.StepValue;
-            TextboxSourceDelay.Text = GlobalSettings.SourceDelayValue;
-            TextboxSourceLimitLevel.Text = GlobalSettings.SourceLimitLevelValue;
-            TextboxThickness.Text = GlobalSettings.ThicknessValue;
-            TextboxRepetition.Text = GlobalSettings.RepetitionValue;
-            TextboxMagneticFields.Text = GlobalSettings.MagneticFieldsValue;
-        }
-
-        private void LoadFromGlobal()
-        {
-            try
-            {
-                TextboxStart.Text = GlobalSettings.StartValue;
-                TextboxStop.Text = GlobalSettings.StopValue;
-                TextboxStep.Text = GlobalSettings.StepValue;
-                TextboxSourceDelay.Text = GlobalSettings.SourceDelayValue;
-                TextboxSourceLimitLevel.Text = GlobalSettings.SourceLimitLevelValue;
-                TextboxThickness.Text = GlobalSettings.ThicknessValue;
-                TextboxRepetition.Text = GlobalSettings.RepetitionValue;
-                TextboxMagneticFields.Text = GlobalSettings.MagneticFieldsValue;
-
-                SetComboBoxSelectedItem(ComboboxRsense, GlobalSettings.RsenseMode);
-                SetComboBoxSelectedItem(ComboboxMeasure, GlobalSettings.MeasureMode);
-                SetComboBoxSelectedItem(ComboboxSource, GlobalSettings.SourceMode);
-                SetComboBoxSelectedItem(ComboboxSourceLimitMode, GlobalSettings.SourceLimitType);
-
-                SetComboBoxSelectedItem(ComboboxStartUnit, GlobalSettings.StartUnit);
-                SetComboBoxSelectedItem(ComboboxStepUnit, GlobalSettings.StepUnit);
-                SetComboBoxSelectedItem(ComboboxStopUnit, GlobalSettings.StopUnit);
-                SetComboBoxSelectedItem(ComboboxSourceDelayUnit, GlobalSettings.SourceDelayUnit);
-                SetComboBoxSelectedItem(ComboboxSourceLimitLevelUnit, GlobalSettings.SourceLimitLevelUnit);
-                SetComboBoxSelectedItem(ComboboxThicknessUnit, GlobalSettings.ThicknessUnit);
-                SetComboBoxSelectedItem(ComboboxMagneticFieldsUnit, GlobalSettings.MagneticFieldsUnit);
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show($"Error: {Ex.Message}", "ERROR");
-            }
-        }
-
-        private void SetComboBoxSelectedItem(ComboBox Comboboxs, string Value)
-        {
-            if (!string.IsNullOrEmpty(Value) && Comboboxs.Items.Contains(Value))
-            {
-                Comboboxs.SelectedItem = Value;
-            }
-            else
-            {
-                Comboboxs.SelectedIndex = -1;
-            }
         }
 
         private void ComboboxRsense_SelectedIndexChanged(object sender, EventArgs e)
@@ -830,22 +599,27 @@ namespace Program01
                     ComboboxSourceLimitLevelUnit.SelectedIndex = 0;
                 }
 
-                ComboboxSourceDelayUnit.Items.Clear();
-                ComboboxSourceDelayUnit.Items.AddRange(new string[] { "µs", "ms", "s", "ks" });
-                ComboboxSourceDelayUnit.SelectedIndex = 0;
-
-                ComboboxThicknessUnit.Items.Clear();
-                ComboboxThicknessUnit.Items.AddRange(new string[] { "nm", "µm", "mm", "cm", "m" });
-                ComboboxThicknessUnit.SelectedIndex = 0;
-
-                ComboboxMagneticFieldsUnit.Items.Clear();
-                ComboboxMagneticFieldsUnit.Items.AddRange(new string[] { "T", "G" });
-                ComboboxMagneticFieldsUnit.SelectedIndex = 0;
+                UpdateOtherUnits();
             }
             catch (Exception Ex)
             {
                 MessageBox.Show($"Error: {Ex.Message}");
             }
+        }
+
+        private void UpdateOtherUnits()
+        {
+            ComboboxSourceDelayUnit.Items.Clear();
+            ComboboxSourceDelayUnit.Items.AddRange(new string[] { "µs", "ms", "s", "ks" });
+            ComboboxSourceDelayUnit.SelectedIndex = 0;
+
+            ComboboxThicknessUnit.Items.Clear();
+            ComboboxThicknessUnit.Items.AddRange(new string[] { "nm", "µm", "mm", "cm", "m" });
+            ComboboxThicknessUnit.SelectedIndex = 0;
+
+            ComboboxMagneticFieldsUnit.Items.Clear();
+            ComboboxMagneticFieldsUnit.Items.AddRange(new string[] { "T", "G" });
+            ComboboxMagneticFieldsUnit.SelectedIndex = 0;
         }
 
         private void IconbuttonClearSettings_Click(object sender, EventArgs e)
@@ -857,7 +631,7 @@ namespace Program01
         {
             try
             {
-                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
@@ -909,9 +683,9 @@ namespace Program01
         {
             try
             {
-                GlobalSettings.IsModes = !GlobalSettings.IsModes;
-                GlobalSettings.IsHallMode = GlobalSettings.IsModes;
-                GlobalSettings.IsVanDerPauwMode = !GlobalSettings.IsModes;
+                GlobalSettings.Instance.IsModes = !GlobalSettings.Instance.IsModes;
+                GlobalSettings.Instance.IsHallMode = GlobalSettings.Instance.IsModes;
+                GlobalSettings.Instance.IsVanDerPauwMode = !GlobalSettings.Instance.IsModes;
 
                 UpdateToggleState();
                 UpdateMeasurementMode();
@@ -925,7 +699,7 @@ namespace Program01
 
         public void UpdateToggleState()
         {
-            TargetPosition = GlobalSettings.IsModes ? PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width - 1 : 1;
+            TargetPosition = GlobalSettings.Instance.IsModes ? PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width - 1 : 1;
             PanelToggleSwitchButton.Location = new Point(TargetPosition, PanelToggleSwitchButton.Location.Y);
 
             if (PanelToggleSwitchButton.Location.X < 0 || PanelToggleSwitchButton.Location.X > PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width)
@@ -936,7 +710,7 @@ namespace Program01
 
         private void UpdateMeasurementMode()
         {
-            bool isHallMode = GlobalSettings.IsHallMode;
+            bool isHallMode = GlobalSettings.Instance.IsHallMode;
             string ModeName = isHallMode ? "Hall effect" : "Van der Pauw";
             Debug.WriteLine($"You select: {ModeName} measurement");
 
@@ -958,47 +732,47 @@ namespace Program01
         {
             if (isHallMode)
             {
-                PictureboxTuner1.Image = global::Program01.Properties.Resources.V_1_Hall;
-                PictureboxTuner2.Image = global::Program01.Properties.Resources.V_2_Hall;
-                PictureboxTuner3.Image = global::Program01.Properties.Resources.V_3_Hall;
-                PictureboxTuner4.Image = global::Program01.Properties.Resources.V_4_Hall;
-                PictureboxTuner5.Image = global::Program01.Properties.Resources.V_5_Hall;
-                PictureboxTuner6.Image = global::Program01.Properties.Resources.V_6_Hall;
-                PictureboxTuner7.Image = global::Program01.Properties.Resources.V_7_Hall;
-                PictureboxTuner8.Image = global::Program01.Properties.Resources.V_8_Hall;
+                PictureboxTuner1.Image = Properties.Resources.V_1_Hall;
+                PictureboxTuner2.Image = Properties.Resources.V_2_Hall;
+                PictureboxTuner3.Image = Properties.Resources.V_3_Hall;
+                PictureboxTuner4.Image = Properties.Resources.V_4_Hall;
+                PictureboxTuner5.Image = Properties.Resources.V_5_Hall;
+                PictureboxTuner6.Image = Properties.Resources.V_6_Hall;
+                PictureboxTuner7.Image = Properties.Resources.V_7_Hall;
+                PictureboxTuner8.Image = Properties.Resources.V_8_Hall;
             }
             else
             {
-                PictureboxTuner1.Image = global::Program01.Properties.Resources.R_A1_VdP;
-                PictureboxTuner2.Image = global::Program01.Properties.Resources.R_A2_VdP;
-                PictureboxTuner3.Image = global::Program01.Properties.Resources.R_A3_VdP;
-                PictureboxTuner4.Image = global::Program01.Properties.Resources.R_A4_VdP;
-                PictureboxTuner5.Image = global::Program01.Properties.Resources.R_B1_VdP;
-                PictureboxTuner6.Image = global::Program01.Properties.Resources.R_B2_VdP;
-                PictureboxTuner7.Image = global::Program01.Properties.Resources.R_B3_VdP;
-                PictureboxTuner8.Image = global::Program01.Properties.Resources.R_B4_VdP;
+                PictureboxTuner1.Image = Properties.Resources.R_A1_VdP;
+                PictureboxTuner2.Image = Properties.Resources.R_A2_VdP;
+                PictureboxTuner3.Image = Properties.Resources.R_A3_VdP;
+                PictureboxTuner4.Image = Properties.Resources.R_A4_VdP;
+                PictureboxTuner5.Image = Properties.Resources.R_B1_VdP;
+                PictureboxTuner6.Image = Properties.Resources.R_B2_VdP;
+                PictureboxTuner7.Image = Properties.Resources.R_B3_VdP;
+                PictureboxTuner8.Image = Properties.Resources.R_B4_VdP;
             }
         }
 
         protected virtual void OnToggleChanged()
         {
             ToggleChanged?.Invoke(this, EventArgs.Empty);
-            ModeChanged?.Invoke(this, GlobalSettings.IsModes);
+            ModeChanged?.Invoke(this, GlobalSettings.Instance.IsModes);
 
-            PanelToggleSwitchBase.BackColor = GlobalSettings.IsModes ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
+            PanelToggleSwitchBase.BackColor = GlobalSettings.Instance.IsModes ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
         }
 
         private void PictureboxTuner1_Click(object sender, EventArgs e)
         {
             try
             {
-                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (GlobalSettings.IsModes == false)
+                if (GlobalSettings.Instance.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
@@ -1006,7 +780,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
-                else if (GlobalSettings.IsModes == true)
+                else if (GlobalSettings.Instance.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
@@ -1025,13 +799,13 @@ namespace Program01
         {
             try
             {
-                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (GlobalSettings.IsModes == false)
+                if (GlobalSettings.Instance.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
@@ -1039,7 +813,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
-                else if (GlobalSettings.IsModes == true)
+                else if (GlobalSettings.Instance.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
@@ -1048,9 +822,9 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!4)");
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1058,13 +832,13 @@ namespace Program01
         {
             try
             {
-                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (GlobalSettings.IsModes == false)
+                if (GlobalSettings.Instance.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
@@ -1072,7 +846,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
                 }
-                else if (GlobalSettings.IsModes == true)
+                else if (GlobalSettings.Instance.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
@@ -1081,9 +855,9 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1091,13 +865,13 @@ namespace Program01
         {
             try
             {
-                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (GlobalSettings.IsModes == false)
+                if (GlobalSettings.Instance.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
@@ -1105,7 +879,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
                 }
-                else if (GlobalSettings.IsModes == true)
+                else if (GlobalSettings.Instance.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
@@ -1114,9 +888,9 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1124,13 +898,13 @@ namespace Program01
         {
             try
             {
-                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (GlobalSettings.IsModes == false)
+                if (GlobalSettings.Instance.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
@@ -1138,7 +912,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
-                else if (GlobalSettings.IsModes == true)
+                else if (GlobalSettings.Instance.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
@@ -1147,9 +921,9 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1157,13 +931,13 @@ namespace Program01
         {
             try
             {
-                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (GlobalSettings.IsModes == false)
+                if (GlobalSettings.Instance.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
@@ -1171,7 +945,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
-                else if (GlobalSettings.IsModes == true)
+                else if (GlobalSettings.Instance.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
@@ -1180,9 +954,9 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1190,13 +964,13 @@ namespace Program01
         {
             try
             {
-                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (GlobalSettings.IsModes == false)
+                if (GlobalSettings.Instance.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
@@ -1204,7 +978,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
                 }
-                else if (GlobalSettings.IsModes == true)
+                else if (GlobalSettings.Instance.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
@@ -1213,9 +987,9 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1223,13 +997,13 @@ namespace Program01
         {
             try
             {
-                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                if (GlobalSettings.IsModes == false)
+                if (GlobalSettings.Instance.IsModes == false)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
@@ -1237,7 +1011,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
                 }
-                else if (GlobalSettings.IsModes == true)
+                else if (GlobalSettings.Instance.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
@@ -1246,9 +1020,9 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1256,13 +1030,12 @@ namespace Program01
         {
             try
             {
-                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                SaveToGlobal();
                 SMU.IO.Timeout = 1000000;
                 SMU.WriteString("OUTPut OFF");
 
@@ -1300,7 +1073,7 @@ namespace Program01
                     string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
 
-                    if (GlobalSettings.IsModes == true)
+                    if (GlobalSettings.Instance.IsModes == true)
                     {
                         string allValues = $"Sense: {RsenseMode}, Measure: {MeasureMode}, Source: {SourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {SourceLimitMode}, Limit Level: {TextboxSourceLimitLevel.Text} {ComboboxSourceLimitLevelUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
                         Debug.WriteLine($"{allValues}.");
@@ -1341,7 +1114,7 @@ namespace Program01
                     string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
 
-                    if (GlobalSettings.IsModes == true)
+                    if (GlobalSettings.Instance.IsModes == true)
                     {
                         string allValues = $"Sense: {RsenseMode}, Measure: {MeasureMode}, Source: {SourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {SourceLimitMode}, Limit Level: {TextboxSourceLimitLevel.Text} {ComboboxSourceLimitLevelUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
                         Debug.WriteLine($"{allValues}.");
@@ -1382,7 +1155,7 @@ namespace Program01
                     string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
 
-                    if (GlobalSettings.IsModes == true)
+                    if (GlobalSettings.Instance.IsModes == true)
                     {
                         string allValues = $"Sense: {RsenseMode}, Measure: {MeasureMode}, Source: {SourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {SourceLimitMode}, Limit Level: {TextboxSourceLimitLevel.Text} {ComboboxSourceLimitLevelUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
                         Debug.WriteLine($"{allValues}.");
@@ -1423,7 +1196,7 @@ namespace Program01
                     string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue},  {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
 
-                    if (GlobalSettings.IsModes == true)
+                    if (GlobalSettings.Instance.IsModes == true)
                     {
                         string allValues = $"Sense: {RsenseMode}, Measure: {MeasureMode}, Source: {SourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {SourceLimitMode}, Limit Level: {TextboxSourceLimitLevel.Text} {ComboboxSourceLimitLevelUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
                         Debug.WriteLine($"{allValues}.");
@@ -1442,9 +1215,9 @@ namespace Program01
                     SMU.WriteString("OUTPut OFF");
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -1452,7 +1225,7 @@ namespace Program01
         {
             try
             {
-                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
@@ -1491,6 +1264,7 @@ namespace Program01
                     UpdateMeasurementState();
                     ConfigureSourceMeasureUnit();
                     await ExecuteSweep();
+                    DisableEditRun();
                     await Task.Delay(points * repetitionValue * 300);
                     TracingRunMeasurement();
                     CurrentTuner++;
@@ -1504,6 +1278,9 @@ namespace Program01
                         break;
                     }
                 }
+
+                GlobalSettings.Instance.IsRun = false;
+
             }
             catch (Exception Ex)
             {
@@ -1514,29 +1291,11 @@ namespace Program01
         private void ConfigureSwitchSystem()
         {
             SS.WriteString("ROUTe:OPEN ALL");
-            var channels = GetChannelConfiguration(CurrentTuner, GlobalSettings.IsModes);
-            /*List<string> Combined4Channels = new List<string>();
-            int memoryNumber = 1;  // เพิ่มการนับหน่วยความจำ*/
+            var channels = GetChannelConfiguration(CurrentTuner, GlobalSettings.Instance.IsModes);
 
             foreach (var channel in channels)
             {
                 SS.WriteString($"ROUTe:CLOSe (@ {channel})");
-                /*Combined4Channels.Add(channel);  // เพิ่มช่องสัญญาณเข้าใน List
-
-                // เมื่อครบ 4 ช่อง ให้บันทึกลงในหน่วยความจำ
-                if (Combined4Channels.Count == 4)
-                {
-                    // สร้างคำสั่ง ROUTe:MEMory:SAVE M<number> และบันทึกค่า
-                    string combinedChannelsStr = string.Join(",", Combined4Channels);
-                    SS.WriteString($"ROUTe:MEMory:SAVE M{memoryNumber}");
-
-                    // ตรวจสอบผ่าน Debug
-                    Debug.WriteLine($"Saving to M{memoryNumber}: (@{combinedChannelsStr})");
-
-                    // รีเซ็ต List สำหรับช่องสัญญาณ
-                    Combined4Channels.Clear();
-                    memoryNumber++;  // เพิ่มหมายเลขหน่วยความจำ
-                }*/
             }
         }
 
@@ -1624,7 +1383,7 @@ namespace Program01
                 return;
             }
 
-            if (GlobalSettings.IsModes == true)
+            if (GlobalSettings.Instance.IsModes == true)
             {
                 string allValues = $"Sense: {RsenseMode}, Measure: {MeasureMode}, Source: {SourceMode}, Start: {TextboxStart.Text} {ComboboxStartUnit.SelectedItem}, Step: {TextboxStep.Text} {ComboboxStepUnit.SelectedItem}, Source Delay: {TextboxSourceDelay.Text} {ComboboxSourceDelayUnit.SelectedItem}, Stop: {TextboxStop.Text} {ComboboxStopUnit.SelectedItem}, Source Limit: {SourceLimitMode}, Limit Level: {TextboxSourceLimitLevel.Text} {ComboboxSourceLimitLevelUnit.SelectedItem}, Repetition: {TextboxRepetition.Text}, Thickness: {TextboxThickness.Text} {ComboboxThicknessUnit.SelectedItem}, Magnetic Fields: {TextboxMagneticFields.Text} {ComboboxMagneticFieldsUnit.SelectedItem}";
                 Debug.WriteLine($"{allValues}.");
@@ -1648,6 +1407,7 @@ namespace Program01
                 Debug.WriteLine($"Sending command: {sweepCommand}");
             }
 
+            SaveToGlobalSettings();
             SMU.WriteString("OUTPut ON");
             SMU.WriteString("INITiate");
             SMU.WriteString("*WAI");
@@ -1670,7 +1430,7 @@ namespace Program01
         {
             try
             {
-                if (!GlobalSettings.IsSMUConnected || !GlobalSettings.IsSSConnected)
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
                     MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
                     return;
@@ -1730,10 +1490,10 @@ namespace Program01
                     }
                 }
 
-                if (GlobalSettings.XDataBuffer.Count > 0 && GlobalSettings.YDataBuffer.Count > 0)
+                if (GlobalSettings.Instance.XDataBuffer.Count > 0 && GlobalSettings.Instance.YDataBuffer.Count > 0)
                 {
-                    DataChildForm.UpdateChart(GlobalSettings.XDataBuffer, GlobalSettings.YDataBuffer);
-                    DataChildForm.UpdateMeasurementData(GlobalSettings.MaxMeasure, GlobalSettings.MinMeasure, GlobalSettings.MaxSource, GlobalSettings.MinSource, GlobalSettings.Slope);
+                    DataChildForm.UpdateChart(GlobalSettings.Instance.XDataBuffer, GlobalSettings.Instance.YDataBuffer);
+                    DataChildForm.UpdateMeasurementData(GlobalSettings.Instance.MaxMeasure, GlobalSettings.Instance.MinMeasure, GlobalSettings.Instance.MaxSource, GlobalSettings.Instance.MinSource, GlobalSettings.Instance.Slope);
                 }
             }
             catch (Exception Ex)
@@ -1771,7 +1531,7 @@ namespace Program01
                     return false;
                 }
 
-                if (GlobalSettings.IsModes)
+                if (GlobalSettings.Instance.IsModes)
                 {
                     if (!IsValidNumber(TextboxMagneticFields.Text, ComboboxMagneticFieldsUnit.SelectedItem, out magneticfields))
                     {
@@ -1960,7 +1720,7 @@ namespace Program01
 
                 Debug.Write($"Slope Values: {slope}" + Environment.NewLine);
 
-                GlobalSettings.UpdateDataBuffer(xData, yData, maxMeasure, minMeasure, maxSource, minSource, slope);
+                GlobalSettings.Instance.UpdateDataBuffer(xData, yData, maxMeasure, minMeasure, maxSource, minSource, slope);
                 UpdateDataChildForm();
             }
             catch (Exception Ex)
@@ -1976,7 +1736,7 @@ namespace Program01
             if (dataChildForm != null && !dataChildForm.IsDisposed)
             {
                 dataChildForm.UpdateChart(XDataBuffer, YDataBuffer);
-                dataChildForm.UpdateMeasurementData(GlobalSettings.MaxMeasure, GlobalSettings.MinMeasure, GlobalSettings.MaxSource, GlobalSettings.MinSource, GlobalSettings.Slope);
+                dataChildForm.UpdateMeasurementData(GlobalSettings.Instance.MaxMeasure, GlobalSettings.Instance.MinMeasure, GlobalSettings.Instance.MaxSource, GlobalSettings.Instance.MinSource, GlobalSettings.Instance.Slope);
             }
         }
 
@@ -1984,36 +1744,32 @@ namespace Program01
         {
             try
             {
-                // ส่งคำสั่งไปยังเครื่องมือเพื่อขอข้อมูล
                 SMU.WriteString("TRACe:ACTual?");
                 string BufferCount = SMU.ReadString().Trim();
                 Debug.WriteLine($"Buffer count: {BufferCount}");
 
-                // ตรวจสอบว่า buffer มีข้อมูลหรือไม่
                 if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
                 {
                     MessageBox.Show("No data in buffer!", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                // ขอข้อมูลการวัดจากเครื่องมือ
                 SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOURce, READing");
-                string MeasureRawData = SMU.ReadString().Trim();
+                string RawData = SMU.ReadString().Trim();
                 Debug.WriteLine($"Buffer contains: {BufferPoints} readings");
-                Debug.WriteLine($"Measured Raw Data: {MeasureRawData}");
+                Debug.WriteLine($"Raw Data: {RawData}");
 
-                string[] DataPairs = MeasureRawData.Split(',');
+                string[] DataPairs = RawData.Split(',');
                 List<double> XData = new List<double>();
                 List<double> YData = new List<double>();
+                Debug.WriteLine($"Number of data pairs: {DataPairs.Length}");
 
-                // ตรวจสอบว่า ข้อมูลใน buffer มีรูปแบบที่ถูกต้องหรือไม่
                 if (DataPairs.Length % 2 != 0)
                 {
                     MessageBox.Show("Invalid buffer data format!", "Error", MessageBoxButtons.OK);
                     return;
                 }
 
-                // แปลงข้อมูลและเก็บลงในรายการ XData และ YData
                 for (int i = 0; i < DataPairs.Length; i += 2)
                 {
                     if (double.TryParse(DataPairs[i], out double SourceValue) && double.TryParse(DataPairs[i + 1], out double MeasuredValue))
@@ -2023,12 +1779,19 @@ namespace Program01
                     }
                 }
 
-                // ส่งข้อมูลไปยัง MeasurementController
-                measurementController.TracingRunMeasurement(XData, YData);
+                Debug.WriteLine("XData values:");
+                foreach (var Xvalue in XData)
+                {
+                    Debug.WriteLine($"{Xvalue} {GlobalSettings.Instance.StepUnit}");
+                }
 
-                // แจ้งให้ฟอร์มอื่นทราบเมื่อการวัดเสร็จสิ้น
+                Debug.WriteLine("YData values:");
+                foreach (var Yvalue in YData)
+                {
+                    Debug.WriteLine($"{Yvalue} {GlobalSettings.Instance.SourceLimitLevelUnit}");
+                }
+
                 MeasurementCompleted?.Invoke(XData, YData);
-
             }
             catch (Exception Ex)
             {
@@ -2038,7 +1801,7 @@ namespace Program01
 
         private void MeasurementSettingsChildForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SaveToGlobal();
+            GlobalSettings.Instance.OnSettingsChanged -= LoadSettings;
         }
 
         private void TextboxStart_KeyPress(object sender, KeyPressEventArgs e)
@@ -2137,6 +1900,64 @@ namespace Program01
             if (e.KeyChar == '.' && ((TextBox)sender).Text.Contains("."))
             {
                 e.Handled = true;
+            }
+        }
+
+        private void DisableEditRun(bool IsRun = false)
+        {
+            if (!IsRun)
+            {
+                IsRun = true;
+                GlobalSettings.Instance.IsRun = IsRun;
+
+                ComboboxMeasure.Enabled = false;
+                ComboboxRsense.Enabled = false;
+                ComboboxSource.Enabled = false;
+                ComboboxSourceLimitMode.Enabled = false;
+                ComboboxStartUnit.Enabled = false;
+                ComboboxStopUnit.Enabled = false;
+                ComboboxStepUnit.Enabled = false;
+                ComboboxSourceDelayUnit.Enabled = false;
+                ComboboxSourceLimitLevelUnit.Enabled = false;
+                ComboboxThicknessUnit.Enabled = false;
+                ComboboxMagneticFieldsUnit.Enabled = false;
+
+                TextboxStart.Enabled = false;
+                TextboxStop.Enabled = false;
+                TextboxStep.Enabled = false;
+                TextboxSourceDelay.Enabled = false;
+                TextboxSourceDelay.Enabled = false;
+                TextboxSourceLimitLevel.Enabled = false;
+                TextboxThickness.Enabled = false;
+                TextboxRepetition.Enabled = false;
+                TextboxMagneticFields.Enabled = false;
+            }
+            else
+            {
+                IsRun = false;
+                GlobalSettings.Instance.IsRun = IsRun;
+
+                ComboboxMeasure.Enabled = true;
+                ComboboxRsense.Enabled = true;
+                ComboboxSource.Enabled = true;
+                ComboboxSourceLimitMode.Enabled = true;
+                ComboboxStartUnit.Enabled = true;
+                ComboboxStopUnit.Enabled = true;
+                ComboboxStepUnit.Enabled = true;
+                ComboboxSourceDelayUnit.Enabled = true;
+                ComboboxSourceLimitLevelUnit.Enabled = true;
+                ComboboxThicknessUnit.Enabled = true;
+                ComboboxMagneticFieldsUnit.Enabled = true;
+
+                TextboxStart.Enabled = true;
+                TextboxStop.Enabled = true;
+                TextboxStep.Enabled = true;
+                TextboxSourceDelay.Enabled = true;
+                TextboxSourceDelay.Enabled = true;
+                TextboxSourceLimitLevel.Enabled = true;
+                TextboxThickness.Enabled = true;
+                TextboxRepetition.Enabled = true;
+                TextboxMagneticFields.Enabled = true;
             }
         }
     }

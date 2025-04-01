@@ -122,6 +122,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CollectHallMeasuredValue.cs" />
+    <Compile Include="GlobalSettings.cs" />
     <Compile Include="InstrumentsConnectionManager.cs" />
     <Compile Include="CollectVdPMeasuredValue.cs" />
     <Compile Include="DataChildForm.cs">

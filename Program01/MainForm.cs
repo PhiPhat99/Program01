@@ -328,7 +328,7 @@ namespace Program01
         private void ButtonVdPTotalMeasure_Click(object sender, EventArgs e)
         {
             UpdatePath("Van der Pauw Method", "Total Measure");
-            OpenChildForm(new VdPTotalMeasureValueForm());
+            OpenChildForm(new VdPTotalMeasureValuesForm());
         }
 
         private void ButtonVdPMeasurementResults_Click(object sender, EventArgs e)

@@ -1,339 +1,345 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace Program01
+public class GlobalSettings
 {
-    public class GlobalSettings
+    private static GlobalSettings _instance;
+    private static readonly object _lock = new object();
+
+    public static GlobalSettings Instance
     {
-        private static GlobalSettings _instance;
-        private static readonly object _lock = new object();
-
-        private GlobalSettings() { }
-
-        public static GlobalSettings Instance
+        get
         {
-            get
+            if (_instance == null)
             {
-                if (_instance == null)
+                lock (_lock)
                 {
-                    lock (_lock)
+                    if (_instance == null)
                     {
-                        if (_instance == null)
+                        _instance = new GlobalSettings
                         {
-                            _instance = new GlobalSettings();
-                        }
+                            _rsenseMode = "",
+                            _measureMode = "",
+                            _sourceMode = "",
+                            _sourceLimitType = "",
+                            _startValue = "",
+                            _stopValue = "",
+                            _stepValue = "",
+                            _sourceDelayValue = "",
+                            _sourceLimitLevelValue = "",
+                            _thicknessValue = "",
+                            _repetitionValue = "",
+                            _magneticFieldsValue = "",
+                            StartUnit = "",
+                            StopUnit = "",
+                            StepUnit = "",
+                            SourceDelayUnit = "",
+                            SourceLimitLevelUnit = "",
+                            ThicknessUnit = "",
+                            MagneticFieldsUnit = ""
+                        };
                     }
                 }
-
-                return _instance;
             }
-        }
 
-        public event Action OnSettingsChanged;
-        
-        private bool _isSMUConnected;
-        public bool IsSMUConnected
+            return _instance;
+        }
+    }
+
+    public event Action OnSettingsChanged;
+
+    private bool _isSMUConnected;
+    public bool IsSMUConnected
+    {
+        get => _isSMUConnected;
+        set
         {
-            get => _isSMUConnected;
-            set
+            if (_isSMUConnected != value)
             {
-                if (_isSMUConnected != value)
-                {
-                    _isSMUConnected = value;
-                    OnSettingsChanged?.Invoke();
-                }
+                _isSMUConnected = value;
+                OnSettingsChanged?.Invoke();
             }
         }
+    }
 
-        private bool _isSSConnected;
-        public bool IsSSConnected
+    private bool _isSSConnected;
+    public bool IsSSConnected
+    {
+        get => _isSSConnected;
+        set
         {
-            get => _isSSConnected;
-            set
+            if (_isSSConnected != value)
             {
-                if (_isSSConnected != value)
-                {
-                    _isSSConnected = value;
-                    OnSettingsChanged?.Invoke();
-                }
+                _isSSConnected = value;
+                OnSettingsChanged?.Invoke();
             }
         }
+    }
 
-        private bool _isModes;
-        public bool IsModes
+    private bool _isModes;
+    public bool IsModes
+    {
+        get => _isModes;
+        set
         {
-            get => _isModes;
-            set
+            if (_isModes != value)
             {
-                if (_isModes != value)
-                {
-                    _isModes = value;
-                    OnSettingsChanged?.Invoke();
-                }
+                _isModes = value;
+                OnSettingsChanged?.Invoke();
             }
         }
+    }
 
-        private bool _isHallMode;
-        public bool IsHallMode
+    private bool _isHallMode;
+    public bool IsHallMode
+    {
+        get => _isHallMode;
+        set
         {
-            get => _isHallMode;
-            set
+            if (_isHallMode != value)
             {
-                if (_isHallMode != value)
-                {
-                    _isHallMode = value;
-                    OnSettingsChanged?.Invoke();
-                }
+                _isHallMode = value;
+                OnSettingsChanged?.Invoke();
             }
         }
+    }
 
-        private bool _isVanDerPauwMode;
-        public bool IsVanDerPauwMode
+    private bool _isVanDerPauwMode;
+    public bool IsVanDerPauwMode
+    {
+        get => _isVanDerPauwMode;
+        set
         {
-            get => _isVanDerPauwMode;
-            set
+            if (_isVanDerPauwMode != value)
             {
-                if (_isVanDerPauwMode != value)
-                {
-                    _isVanDerPauwMode = value;
-                    OnSettingsChanged?.Invoke();
-                }
+                _isVanDerPauwMode = value;
+                OnSettingsChanged?.Invoke();
             }
         }
+    }
 
-        private bool _isRun;
-        public bool IsRun
+    private bool _isRun;
+    public bool IsRun
+    {
+        get => _isRun;
+        set
         {
-            get => _isRun;
-            set
+            if (_isRun != value)
             {
-                if (_isRun != value)
-                {
-                    _isRun = value;
-                    OnSettingsChanged?.Invoke();
-                }
+                _isRun = value;
+                OnSettingsChanged?.Invoke();
             }
         }
+    }
 
-        private string _rsenseMode;
-        public string RsenseMode
+    private string _rsenseMode;
+    public string RsenseMode
+    {
+        get => _rsenseMode;
+        set
         {
-            get => _rsenseMode;
-            set
+            if (_rsenseMode != value)
             {
-                if (_rsenseMode != value)
-                {
-                    _rsenseMode = value;
-                    OnSettingsChanged?.Invoke();
-                    Debug.WriteLine($"[DEBUG] Sense-Wires Mode updated to: {_rsenseMode}");
-
-                }
+                _rsenseMode = value;
+                OnSettingsChanged?.Invoke();
+                //Debug.WriteLine($"[DEBUG] Sense-Wires Mode updated to: {_rsenseMode}");
             }
         }
+    }
 
-        private string _measureMode;
-        public string MeasureMode
+    private string _measureMode;
+    public string MeasureMode
+    {
+        get => _measureMode;
+        set
         {
-            get => _measureMode;
-            set
+            if (_measureMode != value)
             {
-                if (_measureMode != value)
-                {
-                    _measureMode = value;
-                    OnSettingsChanged?.Invoke();
-                    Debug.WriteLine($"[DEBUG] Measure Mode updated to: {_measureMode}");
-                }
+                _measureMode = value;
+                OnSettingsChanged?.Invoke();
+                //Debug.WriteLine($"[DEBUG] Measure Mode updated to: {_measureMode}");
             }
         }
+    }
 
-        private string _sourceMode;
-        public string SourceMode
+    private string _sourceMode;
+    public string SourceMode
+    {
+        get => _sourceMode;
+        set
         {
-            get => _sourceMode;
-            set
+            if (_sourceMode != value)
             {
-                if (_sourceMode != value)
-                {
-                    _sourceMode = value;
-                    OnSettingsChanged?.Invoke();
-                    Debug.WriteLine($"[DEBUG] Source Mode updated to: {_sourceMode}");
-                }
+                _sourceMode = value;
+                OnSettingsChanged?.Invoke();
+                //Debug.WriteLine($"[DEBUG] Source Mode updated to: {_sourceMode}");
             }
         }
+    }
 
-        private string _sourceLimitType;
-        public string SourceLimitType
+    private string _sourceLimitType;
+    public string SourceLimitType
+    {
+        get => _sourceLimitType;
+        set
         {
-            get => _sourceLimitType;
-            set
+            if (_sourceLimitType != value)
             {
-                if (_sourceLimitType != value)
-                {
-                    _sourceLimitType = value;
-                    OnSettingsChanged?.Invoke();
-                    Debug.WriteLine($"[DEBUG] Source Limit Mode updated to: {_sourceLimitType}");
-                }
+                _sourceLimitType = value;
+                OnSettingsChanged?.Invoke();
+                //Debug.WriteLine($"[DEBUG] Source Limit Mode updated to: {_sourceLimitType}");
             }
         }
+    }
 
-        private string _startValue;
-        public string StartValue
+    private string _startValue;
+    public string StartValue
+    {
+        get => _startValue;
+        set
         {
-            get => _startValue;
-            set
+            if (_startValue != value)
             {
-                if (_startValue != value)
-                {
-                    _startValue = value;
-                    OnSettingsChanged?.Invoke();
-                    Debug.WriteLine($"[DEBUG] Start Value updated to: {_startValue}");
-                }
+                _startValue = value;
+                OnSettingsChanged?.Invoke();
+                //Debug.WriteLine($"[DEBUG] Start Value updated to: {_startValue}");
             }
         }
+    }
 
-        private string _stopValue;
-        public string StopValue
+    private string _stopValue;
+    public string StopValue
+    {
+        get => _stopValue;
+        set
         {
-            get => _stopValue;
-            set
+            if (_stopValue != value)
             {
-                if (_stopValue != value)
-                {
-                    _stopValue = value;
-                    OnSettingsChanged?.Invoke();
-                    Debug.WriteLine($"[DEBUG] Stop Value updated to: {_stopValue}");
-
-                }
+                _stopValue = value;
+                OnSettingsChanged?.Invoke();
+                //Debug.WriteLine($"[DEBUG] Stop Value updated to: {_stopValue}");
             }
         }
+    }
 
-        private string _stepValue;
-        public string StepValue
+    private string _stepValue;
+    public string StepValue
+    {
+        get => _stepValue;
+        set
         {
-            get => _stepValue;
-            set
+            if (_stepValue != value)
             {
-                if (_stepValue != value)
-                {
-                    _stepValue = value;
-                    OnSettingsChanged?.Invoke();
-                    Debug.WriteLine($"[DEBUG] Step Value updated to: {_stepValue}");
-                }
+                _stepValue = value;
+                OnSettingsChanged?.Invoke();
+                //Debug.WriteLine($"[DEBUG] Step Value updated to: {_stepValue}");
             }
         }
+    }
 
-        private string _sourceDelayValue;
-        public string SourceDelayValue
+    private string _sourceDelayValue;
+    public string SourceDelayValue
+    {
+        get => _sourceDelayValue;
+        set
         {
-            get => _sourceDelayValue;
-            set
+            if (_sourceDelayValue != value)
             {
-                if (_sourceDelayValue != value)
-                {
-                    _sourceDelayValue = value;
-                    OnSettingsChanged?.Invoke();
-                    Debug.WriteLine($"[DEBUG] Source Delay Value updated to: {_sourceDelayValue}");
-
-                }
+                _sourceDelayValue = value;
+                OnSettingsChanged?.Invoke();
+                //Debug.WriteLine($"[DEBUG] Source Delay Value updated to: {_sourceDelayValue}");
             }
         }
+    }
 
-        private string _sourceLimitLevelValue;
-        public string SourceLimitLevelValue
+    private string _sourceLimitLevelValue;
+    public string SourceLimitLevelValue
+    {
+        get => _sourceLimitLevelValue;
+        set
         {
-            get => _sourceLimitLevelValue;
-            set
+            if (_sourceLimitLevelValue != value)
             {
-                if (_sourceLimitLevelValue != value)
-                {
-                    _sourceLimitLevelValue = value;
-                    OnSettingsChanged?.Invoke();
-                    Debug.WriteLine($"[DEBUG] Source Limit Level Value updated to: {_sourceLimitLevelValue}");
-
-                }
+                _sourceLimitLevelValue = value;
+                OnSettingsChanged?.Invoke();
+                //Debug.WriteLine($"[DEBUG] Source Limit Level Value updated to: {_sourceLimitLevelValue}");
             }
         }
+    }
 
-        private string _thicknessValue;
-        public string ThicknessValue
+    private string _thicknessValue;
+    public string ThicknessValue
+    {
+        get => _thicknessValue;
+        set
         {
-            get => _thicknessValue;
-            set
+            if (_thicknessValue != value)
             {
-                if (_thicknessValue != value)
-                {
-                    _thicknessValue = value;
-                    OnSettingsChanged?.Invoke();
-                    Debug.WriteLine($"[DEBUG] Thickness Value updated to: {_thicknessValue}");
-
-                }
+                _thicknessValue = value;
+                OnSettingsChanged?.Invoke();
+                //Debug.WriteLine($"[DEBUG] Thickness Value updated to: {_thicknessValue}");
             }
         }
+    }
 
-        private string _repetitionValue;
-        public string RepetitionValue
+    private string _repetitionValue;
+    public string RepetitionValue
+    {
+        get => _repetitionValue;
+        set
         {
-            get => _repetitionValue;
-            set
+            if (_repetitionValue != value)
             {
-                if (_repetitionValue != value)
-                {
-                    _repetitionValue = value;
-                    OnSettingsChanged?.Invoke();
-                    Debug.WriteLine($"[DEBUG] Repetition Value updated to: {_repetitionValue}");
-                }
+                _repetitionValue = value;
+                OnSettingsChanged?.Invoke();
+                //Debug.WriteLine($"[DEBUG] Repetition Value updated to: {_repetitionValue}");
             }
         }
+    }
 
-        private string _magneticFieldsValue;
-        public string MagneticFieldsValue
+    private string _magneticFieldsValue;
+    public string MagneticFieldsValue
+    {
+        get => _magneticFieldsValue;
+        set
         {
-            get => _magneticFieldsValue;
-            set
+            if (_magneticFieldsValue != value)
             {
-                if (_magneticFieldsValue != value)
-                {
-                    _magneticFieldsValue = value;
-                    OnSettingsChanged?.Invoke();
-                    Debug.WriteLine($"[DEBUG] Magnetic Fields Value updated to: {_magneticFieldsValue}");
-
-                }
+                _magneticFieldsValue = value;
+                OnSettingsChanged?.Invoke();
+                //Debug.WriteLine($"[DEBUG] Magnetic Fields Value updated to: {_magneticFieldsValue}");
             }
         }
+    }
 
-        public string StartUnit { get; set; }
-        public string StopUnit { get; set; }
-        public string StepUnit { get; set; }
-        public string SourceDelayUnit { get; set; }
-        public string SourceLimitLevelUnit { get; set; }
-        public string ThicknessUnit { get; set; }
-        public string MagneticFieldsUnit { get; set; }
+    public string StartUnit { get; set; } = "";
+    public string StopUnit { get; set; } = "";
+    public string StepUnit { get; set; } = "";
+    public string SourceDelayUnit { get; set; } = "";
+    public string SourceLimitLevelUnit { get; set; } = "";
+    public string ThicknessUnit { get; set; } = "";
+    public string MagneticFieldsUnit { get; set; } = "";
 
-        public List<double> XDataBuffer { get; private set; } = new List<double>();
-        public List<double> YDataBuffer { get; private set; } = new List<double>();
+    public List<double> XDataBuffer { get; private set; } = new List<double>();
+    public List<double> YDataBuffer { get; private set; } = new List<double>();
 
-        public double MaxMeasure { get; private set; } = double.NegativeInfinity;
-        public double MinMeasure { get; private set; } = double.PositiveInfinity;
-        public double MaxSource { get; private set; } = double.NegativeInfinity;
-        public double MinSource { get; private set; } = double.PositiveInfinity;
-        public double Slope { get; private set; } = double.NaN;
+    public double MaxMeasure { get; private set; } = double.NegativeInfinity;
+    public double MinMeasure { get; private set; } = double.PositiveInfinity;
+    public double MaxSource { get; private set; } = double.NegativeInfinity;
+    public double MinSource { get; private set; } = double.PositiveInfinity;
+    public double Slope { get; private set; } = double.NaN;
 
-        public void UpdateDataBuffer(List<double> Xdata, List<double> Ydata, double maxMeasure, double minMeasure, double maxSource, double minSource, double slope)
-        {
-            XDataBuffer = new List<double>(Xdata);
-            YDataBuffer = new List<double>(Ydata);
-            MaxMeasure = maxMeasure;
-            MinMeasure = minMeasure;
-            MaxSource = maxSource;
-            MinSource = minSource;
-            Slope = slope;
+    public void UpdateDataBuffer(List<double> Xdata, List<double> Ydata, double maxMeasure, double minMeasure, double maxSource, double minSource, double slope)
+    {
+        XDataBuffer = new List<double>(Xdata);
+        YDataBuffer = new List<double>(Ydata);
+        MaxMeasure = maxMeasure;
+        MinMeasure = minMeasure;
+        MaxSource = maxSource;
+        MinSource = minSource;
+        Slope = slope;
 
-            OnSettingsChanged?.Invoke();
-        }
+        OnSettingsChanged?.Invoke();
     }
 }

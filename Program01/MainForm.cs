@@ -1,18 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
-using System.Drawing.Text;
 using System.IO;
-using System.Linq;
-using System.Resources;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 using System.Windows.Forms;
 using FontAwesome.Sharp;
 using OfficeOpenXml;
@@ -23,7 +12,7 @@ namespace Program01
     {
         private IconButton CurrentButton;
         private Form CurrentChildForm;
-        private bool isLoggedIn = false;
+        private bool IsLoggedIn = false;
 
         public MainForm()
         {
@@ -109,7 +98,7 @@ namespace Program01
         {
             try
             {
-                CurrentChildForm?.Close();
+                CurrentChildForm?.Hide();
                 CurrentChildForm = childForm;
                 childForm.TopLevel = false;
                 childForm.FormBorderStyle = FormBorderStyle.None;
@@ -191,14 +180,14 @@ namespace Program01
         {
             try
             {
-                if (!isLoggedIn)
+                if (!IsLoggedIn)
                 {
                     string FirstName = TextboxUserFirstName.Text.Trim();
                     string LastName = TextboxUserLastname.Text.Trim();
 
                     if (!string.IsNullOrEmpty(FirstName) && !string.IsNullOrEmpty(LastName))
                     {
-                        isLoggedIn = true;
+                        IsLoggedIn = true;
                         LabelUserLogin.Text = $"{FirstName} {LastName}";
                         TextboxUserFirstName.Enabled = false;
                         TextboxUserLastname.Enabled = false;
@@ -216,7 +205,7 @@ namespace Program01
                 }
                 else
                 {
-                    isLoggedIn = false;
+                    IsLoggedIn = false;
                     LabelUserLogin.Text = "Guest";
                     TextboxUserFirstName.Enabled = true;
                     TextboxUserLastname.Enabled = true;
@@ -256,7 +245,7 @@ namespace Program01
         {
             try
             {
-                if (!isLoggedIn)
+                if (!IsLoggedIn)
                 {
                     MessageBox.Show("Please log in before proceeding", "Accessibility Failed", MessageBoxButtons.OK);
                 }
@@ -278,7 +267,7 @@ namespace Program01
         {
             try
             {
-                if (!isLoggedIn)
+                if (!IsLoggedIn)
                 {
                     MessageBox.Show("Please log in before proceeding", "Accessibility Failed", MessageBoxButtons.OK);
                 }
@@ -290,9 +279,9 @@ namespace Program01
                     ToggleSubMenuVisibility(null);
                 }
             }
-            catch (Exception ex)
+            catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 
@@ -300,7 +289,7 @@ namespace Program01
         {
             try
             {
-                if (!isLoggedIn)
+                if (!IsLoggedIn)
                 {
                     MessageBox.Show("Please log in before proceeding", "Accessibility Failed", MessageBoxButtons.OK);
                 }
@@ -329,6 +318,7 @@ namespace Program01
         {
             UpdatePath("Van der Pauw Method", "Total Measure");
             OpenChildForm(new VdPTotalMeasureValuesForm());
+
         }
 
         private void ButtonVdPMeasurementResults_Click(object sender, EventArgs e)
@@ -341,7 +331,7 @@ namespace Program01
         {
             try
             {
-                if (!isLoggedIn)
+                if (!IsLoggedIn)
                 {
                     MessageBox.Show("Please log in before proceeding", "Accessibility Failed", MessageBoxButtons.OK);
                 }
@@ -420,7 +410,7 @@ namespace Program01
         {
             try
             {
-                if (!isLoggedIn)
+                if (!IsLoggedIn)
                 {
                     MessageBox.Show("Please log in before proceeding", "Browsing Failed", MessageBoxButtons.OK);
                 }
@@ -454,7 +444,7 @@ namespace Program01
         {
             try
             {
-                if (!isLoggedIn)
+                if (!IsLoggedIn)
                 {
                     MessageBox.Show("Please log in before proceeding", "Saving Failed", MessageBoxButtons.OK);
                 }
@@ -518,7 +508,7 @@ namespace Program01
         {
             try
             {
-                if (!isLoggedIn)
+                if (!IsLoggedIn)
                 {
                     MessageBox.Show("Please log in before proceeding", "Browsing Failed", MessageBoxButtons.OK);
                 }
@@ -552,7 +542,7 @@ namespace Program01
         {
             try
             {
-                if (!isLoggedIn)
+                if (!IsLoggedIn)
                 {
                     MessageBox.Show("Please log in before proceeding", "Saving Failed", MessageBoxButtons.OK);
                 }
@@ -615,7 +605,7 @@ namespace Program01
         {
             try
             {
-                if (!isLoggedIn)
+                if (!IsLoggedIn)
                 {
                     MessageBox.Show("Please log in before proceeding", "Browsing Failed", MessageBoxButtons.OK);
                 }
@@ -649,7 +639,7 @@ namespace Program01
         {
             try
             {
-                if (!isLoggedIn)
+                if (!IsLoggedIn)
                 {
                     MessageBox.Show("Please log in before proceeding", "Saving Failed", MessageBoxButtons.OK);
                 }

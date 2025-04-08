@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Diagnostics;
+using System.Drawing;
 
 namespace Program01
 {
@@ -10,93 +14,288 @@ namespace Program01
         public VdPTotalMeasureValuesForm()
         {
             InitializeComponent();
+            InitializeDataGridViewColumns();
+            InitializeChartsInTabControl();
+
+            CollectAndCalculateVdPMeasured.Instance.DataUpdated += CollectAndCalculateVdPMeasured_DataUpdated;
+            this.Load += VdPTotalMeasureValuesForm_Load;
         }
 
-        public void UpdateMeasurementData(List<double[]> MeasuredValue)
+        #region Initialization
+
+        private void InitializeDataGridViewColumns()
         {
-            UpdateDataGridView(MeasuredValue);
-            UpdateChartsInTabs(MeasuredValue);
+            if (DatagridviewVdPTotalMesure.Columns.Count == 0)
+            {
+                for (int i = 1; i <= 8; i++)
+                {
+                    DatagridviewVdPTotalMesure.Columns.Add($"SourceValue{i - 1}", $"Source {i}");
+                    DatagridviewVdPTotalMesure.Columns.Add($"MeasuredValue{i - 1}", $"Measured {i}");
+                }
+            }
         }
 
-        private void UpdateDataGridView(List<double[]> MeasuredValue)
+        private void InitializeChartsInTabControl()
+        {
+            if (TabcontrolVdPTotalCharts.TabPages.ContainsKey("TotalMeasuredValuesTabPage") &&
+                TabcontrolVdPTotalCharts.TabPages["TotalMeasuredValuesTabPage"].Controls.ContainsKey("ChartTotalPositions"))
+            {
+                Chart totalChart = (Chart)TabcontrolVdPTotalCharts.TabPages["TotalMeasuredValuesTabPage"].Controls["ChartTotalPositions"];
+                SetupIVChart(totalChart, "I-V Graph of Total Positions"); // ตั้งค่า Title แบบไดนามิก
+            }
+            else
+            {
+                Debug.WriteLine("[WARNING] InitializeChartsInTabControl - ChartTotalPositions not found in TotalMeasuredValuesTabPage!");
+            }
+
+            for (int i = 1; i <= 8; i++)
+            {
+                string tabPageName = $"MeasuredValueP{i}TabPage";
+                string chartName = $"ChartPosition{i}";
+
+                if (TabcontrolVdPTotalCharts.TabPages.ContainsKey(tabPageName) &&
+                    TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls.ContainsKey(chartName))
+                {
+                    Chart measuredChart = (Chart)TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls[chartName];
+                    SetupIVChart(measuredChart, $"I-V Graph of Position {i}");
+                }
+                else
+                {
+                    Debug.WriteLine($"[WARNING] InitializeChartsInTabControl - {chartName} not found in {tabPageName}!");
+                }
+            }
+
+            Debug.WriteLine("[DEBUG] InitializeChartsInTabControl() - Charts in TabControl initialized (using Designer settings).");
+        }
+
+        private void SetupIVChart(Chart chart, string title)
+        {
+            if (chart != null && chart.ChartAreas.Count > 0)
+            {
+                chart.Titles.Clear();
+                chart.Titles.Add(title);
+
+                if (GlobalSettings.Instance.SourceMode == "Voltage")
+                {
+                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceMode} (V)";
+                }
+                else
+                {
+                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceMode} (A)";
+                }
+
+                chart.ChartAreas[0].AxisX.LabelStyle.Angle = 90;
+                chart.ChartAreas[0].AxisX.IsLabelAutoFit = false;
+                chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.FixedCount;
+
+                if (GlobalSettings.Instance.MeasureMode == "Voltage")
+                {
+                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureMode} (V)";
+                }
+                else
+                {
+                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureMode} (A)";
+                }
+
+                chart.ChartAreas[0].AxisY.LabelStyle.Angle = 0;
+                chart.ChartAreas[0].AxisY.IsLabelAutoFit= false;
+                chart.ChartAreas[0].AxisY.IntervalAutoMode = IntervalAutoMode.FixedCount;
+
+                chart.ChartAreas[0].AxisX.LabelStyle.Format = "0.#####";
+                chart.ChartAreas[0].AxisY.LabelStyle.Format = "0.#####";
+
+                chart.Invalidate();
+            }
+            else
+            {
+                Debug.WriteLine($"[WARNING] SetupIVChart - Chart or ChartArea is null for {title}!");
+            }
+        }
+
+        private void VdPTotalMeasureValuesForm_Load(object sender, EventArgs e)
+        {
+            Debug.WriteLine("[DEBUG] VdPTotalMeasureValuesForm_Load called");
+            LoadMeasurementData();
+            LoadMeasurementDataForCharts();
+        }
+
+        #endregion
+
+        #region Data Loading and Display
+
+        public void LoadMeasurementData()
+        {
+            LoadMeasurementData(null);
+        }
+
+        public void LoadMeasurementData(CollectAndCalculateVdPMeasured measurementData = null)
         {
             DatagridviewVdPTotalMesure.Rows.Clear();
-            DatagridviewVdPTotalMesure.Columns.Clear();
 
-            if (MeasuredValue != null && MeasuredValue.Count > 0 && MeasuredValue[0].Length == 2)
+            Dictionary<int, List<(double Source, double Reading)>> dataToDisplay = CollectAndCalculateVdPMeasured.Instance.GetAllMeasurementsByTuner();
+
+            Debug.WriteLine("[DEBUG] LoadMeasurementData - Data from CollectVdPMeasured:");
+            foreach (var kvp in dataToDisplay)
             {
-                // เพิ่ม Columns แบบไดนามิก
-                for (int i = 0; i < MeasuredValue[0].Length; i++)
+                Debug.WriteLine($"[DEBUG]    Tuner {kvp.Key}: {kvp.Value.Count} measurements");
+            }
+
+            int maxSteps = 0;
+            if (dataToDisplay != null && dataToDisplay.Count > 0)
+            {
+                for (int i = 1; i <= 8; i++)
                 {
-                    DatagridviewVdPTotalMesure.Columns.Add($"Column{i}", $"Column {i}");
+                    maxSteps = Math.Max(maxSteps, dataToDisplay.ContainsKey(i) ? dataToDisplay[i].Count : 0);
                 }
 
-                // เพิ่ม Rows โดยสลับ X และ Y
-                for (int i = 0; i < MeasuredValue.Count; i++)
+                Debug.WriteLine($"[DEBUG] LoadMeasurementData - maxSteps: {maxSteps}");
+
+                DatagridviewVdPTotalMesure.ColumnCount = 16; // กำหนดจำนวน Column เป็น 16 (Source + Measured สำหรับ 8 Tuner)
+
+                for (int i = 0; i < maxSteps; i++)
                 {
-                    DatagridviewVdPTotalMesure.Rows.Add(MeasuredValue[i]);
+                    DataGridViewRow row = new DataGridViewRow();
+                    row.CreateCells(DatagridviewVdPTotalMesure);
+
+                    for (int tunerIndex = 1; tunerIndex <= 8; tunerIndex++)
+                    {
+                        if (dataToDisplay.ContainsKey(tunerIndex) && dataToDisplay[tunerIndex].Count > i)
+                        {
+                            row.Cells[(tunerIndex - 1) * 2].Value = dataToDisplay[tunerIndex][i].Source;
+                            row.Cells[(tunerIndex - 1) * 2 + 1].Value = dataToDisplay[tunerIndex][i].Reading;
+                        }
+                        else
+                        {
+                            row.Cells[(tunerIndex - 1) * 2].Value = "";
+                            row.Cells[(tunerIndex - 1) * 2 + 1].Value = "";
+                        }
+                    }
+                    DatagridviewVdPTotalMesure.Rows.Add(row);
                 }
             }
             else
             {
-                MessageBox.Show("ไม่มีข้อมูลการวัด หรือข้อมูลไม่ถูกต้อง!", "Warning", MessageBoxButtons.OK);
+                Debug.WriteLine("[DEBUG] LoadMeasurementData - No data to display in DataGridView.");
             }
         }
 
-        private void UpdateChartsInTabs(List<double[]> MeasuredValue)
+        private void LoadMeasurementDataForCharts()
         {
-            ChartTotalMeasured.Series.Clear();
-            TabcontrolVdPTotalCharts.TabPages.Clear();
+            Debug.WriteLine("[DEBUG] LoadMeasurementDataForCharts called");
+            Dictionary<int, List<(double Source, double Reading)>> AllMeasurements = CollectAndCalculateVdPMeasured.Instance.GetAllMeasurementsByTuner();
+            Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - Total Measurements Count: {AllMeasurements.Count}");
 
-            if (MeasuredValue != null && MeasuredValue.Count > 0 && MeasuredValue[0].Length == 2)
+            if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey("TotalMeasuredValuesTabPage"))
             {
-                // เพิ่ม Tabs แบบไดนามิก
-                TabcontrolVdPTotalCharts.TabPages.Add("Total");
-
-                // เพิ่ม Chart "Total"
-                ChartTotalMeasured.Titles.Clear();
-                ChartTotalMeasured.Titles.Add("All Positions - I-V Curve");
-                ChartTotalMeasured.ChartAreas[0].AxisX.Title = GlobalSettings.Instance.StepUnit;
-                ChartTotalMeasured.ChartAreas[0].AxisY.Title = GlobalSettings.Instance.SourceLimitLevelUnit;
-
-                for (int i = 0; i < MeasuredValue.Count; i++)
+                TabPage totalTabPage = TabcontrolVdPTotalCharts.TabPages["TotalMeasuredValuesTabPage"];
+                if (totalTabPage != null && totalTabPage.Controls.ContainsKey("ChartTotalPositions"))
                 {
-                    var series = new Series($"Position {i + 1}");
-                    series.ChartType = SeriesChartType.Line;
-                    series.XValueType = ChartValueType.Double;
-                    series.YValueType = ChartValueType.Double;
+                    Chart TotalChart = (Chart)totalTabPage.Controls["ChartTotalPositions"];
 
-                    series.Points.AddXY(MeasuredValue[i][1], MeasuredValue[i][0]); // สลับ X และ Y
-                    ChartTotalMeasured.Series.Add(series);
+                    if (TotalChart != null && TotalChart.Series != null)
+                    {
+                        for (int i = 1; i <= 8; i++)
+                        {
+                            string seriesName = $"Position {i}";
+
+                            if (AllMeasurements.ContainsKey(i) && AllMeasurements[i] != null && AllMeasurements[i].Count > 0)
+                            {
+                                Series series = TotalChart.Series[seriesName];
+                                if (series != null)
+                                {
+                                    series.XValueMember = "Source";
+                                    series.YValueMembers = "Reading";
+                                    series.Points.DataBind(AllMeasurements[i].Select(data => new { Source = data.Source, Reading = data.Reading }).ToList(), "Source", "Reading", null);
+                                }
+                                else
+                                {
+                                    Debug.WriteLine($"[WARNING] LoadMeasurementDataForCharts - Series '{seriesName}' is null.");
+                                }
+                            }
+                            else
+                            {
+                                // เพิ่ม Debug Log เพื่อตรวจสอบกรณีที่ไม่มีข้อมูลหรือ Series
+                                Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - No data or Series key not found for Position {i}. AllMeasurements.ContainsKey({i}) = {AllMeasurements.ContainsKey(i)}");
+                            }
+                        }
+
+                        // ตรวจสอบและเปิดใช้งาน Legend
+                        if (TotalChart.Legends.Count > 0)
+                        {
+                            TotalChart.Legends[0].Enabled = true;
+                        }
+                    }
+                    else
+                    {
+                        Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - TotalChart or TotalChart.Series is null.");
+                    }
                 }
-
-                // เพิ่ม Charts ในแต่ละ Tab
-                for (int i = 0; i < MeasuredValue.Count; i++)
+                else
                 {
-                    TabcontrolVdPTotalCharts.TabPages.Add($"Position {i + 1}");
-                    var chart = new Chart();
-                    chart.Dock = DockStyle.Fill;
-                    TabcontrolVdPTotalCharts.TabPages[i + 1].Controls.Add(chart);
-
-                    chart.Series.Clear();
-                    var series = new Series("I-V Curve");
-                    series.ChartType = SeriesChartType.Line;
-                    series.XValueType = ChartValueType.Double;
-                    series.YValueType = ChartValueType.Double;
-
-                    series.Points.AddXY(MeasuredValue[i][1], MeasuredValue[i][0]); // สลับ X และ Y
-                    chart.Series.Add(series);
-
-                    chart.Titles.Clear();
-                    chart.Titles.Add($"I-V Curve - Position {i + 1}");
-                    chart.ChartAreas[0].AxisX.Title = GlobalSettings.Instance.StepUnit;
-                    chart.ChartAreas[0].AxisY.Title = GlobalSettings.Instance.SourceLimitLevelUnit;
+                    Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - ChartTotalPositions not found.");
                 }
             }
             else
             {
-                MessageBox.Show("ไม่มีข้อมูลการวัด หรือข้อมูลไม่ถูกต้อง!", "Warning", MessageBoxButtons.OK);
+                Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - TotalMeasuredValuesTabPage not found.");
+            }
+
+            // ส่วนการแสดงกราฟใน Tabs แยกตามตำแหน่ง (เพิ่มการตรวจสอบ AllMeasurements.ContainsKey(i))
+            for (int i = 1; i <= 8; i++)
+            {
+                string tabPageName = $"MeasuredValueP{i}TabPage";
+                string chartName = $"ChartPosition{i}";
+
+                if (TabPageExists(TabcontrolVdPTotalCharts, tabPageName) && TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls.ContainsKey(chartName) && AllMeasurements.ContainsKey(i))
+                {
+                    Chart measuredChart = (Chart)TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls[chartName];
+                    if (measuredChart != null && measuredChart.Series.Count > 0 && AllMeasurements[i] != null && AllMeasurements[i].Count > 0)
+                    {
+                        Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - Binding data for Position {i} to {chartName}");
+                        measuredChart.DataSource = AllMeasurements[i].Select(data => new { Source = data.Source, Reading = data.Reading }).ToList();
+                        measuredChart.DataBind();
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - No data or Chart/Series issue for Position {i} in individual chart.");
+                        if (measuredChart != null && measuredChart.Series.Count > 0)
+                        {
+                            measuredChart.Series[0].Points.Clear();
+                        }
+                    }
+                }
             }
         }
+
+        // ฟังก์ชัน TabPageExists (ถ้ายังไม่ได้เพิ่ม)
+        private bool TabPageExists(TabControl tabControl, string tabPageName)
+        {
+            foreach (TabPage tabPage in tabControl.TabPages)
+            {
+                if (tabPage.Name == tabPageName)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region Event Handlers
+
+        private void CollectAndCalculateVdPMeasured_DataUpdated(object sender, EventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                Invoke((MethodInvoker)LoadMeasurementDataForCharts); // เรียกเมธอดแยกสำหรับโหลด Chart
+            }
+            else
+            {
+                LoadMeasurementDataForCharts(); // เรียกเมธอดแยกสำหรับโหลด Chart
+            }
+        }
+
+        #endregion
     }
 }

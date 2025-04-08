@@ -15,6 +15,21 @@ namespace Program01
         public VdPMeasurementResultsForm()
         {
             InitializeComponent();
+            LoadMeasurementResults();
+            LoadTotalResistancesChart();
+        }
+
+        public void LoadMeasurementResults ()
+        {
+            TextboxMeasureMode.Text = $"{GlobalSettings.Instance.MeasureMode}";
+            TextboxSourceMode.Text = $"{GlobalSettings.Instance.SourceMode}";
+
+
+        }
+
+        public void LoadTotalResistancesChart()
+        {
+
         }
     }
 }

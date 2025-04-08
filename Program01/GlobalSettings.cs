@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Program01;
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 public class GlobalSettings
 {
     private static GlobalSettings _instance;
     private static readonly object _lock = new object();
+    public CollectAndCalculateVdPMeasured CollectedMeasurements { get; private set; } = CollectAndCalculateVdPMeasured.Instance;
 
     public static GlobalSettings Instance
     {
@@ -17,32 +19,10 @@ public class GlobalSettings
                 {
                     if (_instance == null)
                     {
-                        _instance = new GlobalSettings
-                        {
-                            _rsenseMode = "",
-                            _measureMode = "",
-                            _sourceMode = "",
-                            _sourceLimitType = "",
-                            _startValue = "",
-                            _stopValue = "",
-                            _stepValue = "",
-                            _sourceDelayValue = "",
-                            _sourceLimitLevelValue = "",
-                            _thicknessValue = "",
-                            _repetitionValue = "",
-                            _magneticFieldsValue = "",
-                            StartUnit = "",
-                            StopUnit = "",
-                            StepUnit = "",
-                            SourceDelayUnit = "",
-                            SourceLimitLevelUnit = "",
-                            ThicknessUnit = "",
-                            MagneticFieldsUnit = ""
-                        };
+                        _instance = new GlobalSettings();
                     }
                 }
             }
-
             return _instance;
         }
     }
@@ -133,184 +113,98 @@ public class GlobalSettings
         }
     }
 
-    private string _rsenseMode;
+    private string _rsenseMode = "";
     public string RsenseMode
     {
         get => _rsenseMode;
-        set
-        {
-            if (_rsenseMode != value)
-            {
-                _rsenseMode = value;
-                OnSettingsChanged?.Invoke();
-                //Debug.WriteLine($"[DEBUG] Sense-Wires Mode updated to: {_rsenseMode}");
-            }
-        }
+        set => SetProperty(ref _rsenseMode, value);
     }
 
-    private string _measureMode;
+    private string _measureMode = "";
     public string MeasureMode
     {
         get => _measureMode;
-        set
-        {
-            if (_measureMode != value)
-            {
-                _measureMode = value;
-                OnSettingsChanged?.Invoke();
-                //Debug.WriteLine($"[DEBUG] Measure Mode updated to: {_measureMode}");
-            }
-        }
+        set => SetProperty(ref _measureMode, value);
     }
 
-    private string _sourceMode;
+    private string _sourceMode = "";
     public string SourceMode
     {
         get => _sourceMode;
-        set
-        {
-            if (_sourceMode != value)
-            {
-                _sourceMode = value;
-                OnSettingsChanged?.Invoke();
-                //Debug.WriteLine($"[DEBUG] Source Mode updated to: {_sourceMode}");
-            }
-        }
+        set => SetProperty(ref _sourceMode, value);
+
     }
 
-    private string _sourceLimitType;
+    private string _sourceLimitType = "";
     public string SourceLimitType
     {
         get => _sourceLimitType;
-        set
-        {
-            if (_sourceLimitType != value)
-            {
-                _sourceLimitType = value;
-                OnSettingsChanged?.Invoke();
-                //Debug.WriteLine($"[DEBUG] Source Limit Mode updated to: {_sourceLimitType}");
-            }
-        }
+        set => SetProperty(ref _sourceLimitType, value);
+
     }
 
-    private string _startValue;
+    private string _startValue = "";
     public string StartValue
     {
         get => _startValue;
-        set
-        {
-            if (_startValue != value)
-            {
-                _startValue = value;
-                OnSettingsChanged?.Invoke();
-                //Debug.WriteLine($"[DEBUG] Start Value updated to: {_startValue}");
-            }
-        }
+        set => SetProperty(ref _startValue, value);
+
     }
 
-    private string _stopValue;
+    private string _stopValue = "";
     public string StopValue
     {
         get => _stopValue;
-        set
-        {
-            if (_stopValue != value)
-            {
-                _stopValue = value;
-                OnSettingsChanged?.Invoke();
-                //Debug.WriteLine($"[DEBUG] Stop Value updated to: {_stopValue}");
-            }
-        }
+        set => SetProperty(ref _stopValue, value);
+
     }
 
-    private string _stepValue;
+    private string _stepValue = "";
     public string StepValue
     {
         get => _stepValue;
-        set
-        {
-            if (_stepValue != value)
-            {
-                _stepValue = value;
-                OnSettingsChanged?.Invoke();
-                //Debug.WriteLine($"[DEBUG] Step Value updated to: {_stepValue}");
-            }
-        }
+        set => SetProperty(ref _stepValue, value);
+
     }
 
-    private string _sourceDelayValue;
+    private string _sourceDelayValue = "";
     public string SourceDelayValue
     {
         get => _sourceDelayValue;
-        set
-        {
-            if (_sourceDelayValue != value)
-            {
-                _sourceDelayValue = value;
-                OnSettingsChanged?.Invoke();
-                //Debug.WriteLine($"[DEBUG] Source Delay Value updated to: {_sourceDelayValue}");
-            }
-        }
+        set => SetProperty(ref _sourceDelayValue, value);
+
     }
 
-    private string _sourceLimitLevelValue;
+    private string _sourceLimitLevelValue = "";
     public string SourceLimitLevelValue
     {
         get => _sourceLimitLevelValue;
-        set
-        {
-            if (_sourceLimitLevelValue != value)
-            {
-                _sourceLimitLevelValue = value;
-                OnSettingsChanged?.Invoke();
-                //Debug.WriteLine($"[DEBUG] Source Limit Level Value updated to: {_sourceLimitLevelValue}");
-            }
-        }
+        set => SetProperty(ref _sourceLimitLevelValue, value);
+
     }
 
-    private string _thicknessValue;
+    private string _thicknessValue = "";
     public string ThicknessValue
     {
         get => _thicknessValue;
-        set
-        {
-            if (_thicknessValue != value)
-            {
-                _thicknessValue = value;
-                OnSettingsChanged?.Invoke();
-                //Debug.WriteLine($"[DEBUG] Thickness Value updated to: {_thicknessValue}");
-            }
-        }
+        set => SetProperty(ref _thicknessValue, value);
+
     }
 
-    private string _repetitionValue;
+    private string _repetitionValue = "1";
     public string RepetitionValue
     {
         get => _repetitionValue;
-        set
-        {
-            if (_repetitionValue != value)
-            {
-                _repetitionValue = value;
-                OnSettingsChanged?.Invoke();
-                //Debug.WriteLine($"[DEBUG] Repetition Value updated to: {_repetitionValue}");
-            }
-        }
+        set => SetProperty(ref _repetitionValue, value);
+
     }
 
-    private string _magneticFieldsValue;
+    private string _magneticFieldsValue = "";
     public string MagneticFieldsValue
     {
         get => _magneticFieldsValue;
-        set
-        {
-            if (_magneticFieldsValue != value)
-            {
-                _magneticFieldsValue = value;
-                OnSettingsChanged?.Invoke();
-                //Debug.WriteLine($"[DEBUG] Magnetic Fields Value updated to: {_magneticFieldsValue}");
-            }
-        }
+        set => SetProperty(ref _magneticFieldsValue, value);
+
     }
 
     public string StartUnit { get; set; } = "";
@@ -321,25 +215,68 @@ public class GlobalSettings
     public string ThicknessUnit { get; set; } = "";
     public string MagneticFieldsUnit { get; set; } = "";
 
-    public List<double> XDataBuffer { get; private set; } = new List<double>();
-    public List<double> YDataBuffer { get; private set; } = new List<double>();
+    private readonly List<List<double[]>> _allMeasuredValues = new List<List<double[]>>();
+    public List<List<double[]>> AllMeasuredValues => _allMeasuredValues;
 
-    public double MaxMeasure { get; private set; } = double.NegativeInfinity;
-    public double MinMeasure { get; private set; } = double.PositiveInfinity;
-    public double MaxSource { get; private set; } = double.NegativeInfinity;
-    public double MinSource { get; private set; } = double.PositiveInfinity;
-    public double Slope { get; private set; } = double.NaN;
+    private readonly List<double> _xDataBuffer = new List<double>();
+    public List<double> XDataBuffer => _xDataBuffer;
+
+    private readonly List<double> _yDataBuffer = new List<double>();
+    public List<double> YDataBuffer => _yDataBuffer;
+
+    private double _maxMeasure = double.NegativeInfinity;
+    public double MaxMeasure => _maxMeasure;
+
+    private double _minMeasure = double.PositiveInfinity;
+    public double MinMeasure => _minMeasure;
+
+    private double _maxSource = double.NegativeInfinity;
+    public double MaxSource => _maxSource;
+
+    private double _minSource = double.PositiveInfinity;
+    public double MinSource => _minSource;
+
+    private double _slope = double.NaN;
+    public double Slope => _slope;
+
+    private GlobalSettings()
+    {
+        _allMeasuredValues = new List<List<double[]>>();
+    }
+
+    public void AddMeasuredValues(List<double[]> values, int position)
+    {
+        while (_allMeasuredValues.Count < position)
+        {
+            _allMeasuredValues.Add(null);
+        }
+        _allMeasuredValues[position - 1] = values;
+    }
 
     public void UpdateDataBuffer(List<double> Xdata, List<double> Ydata, double maxMeasure, double minMeasure, double maxSource, double minSource, double slope)
     {
-        XDataBuffer = new List<double>(Xdata);
-        YDataBuffer = new List<double>(Ydata);
-        MaxMeasure = maxMeasure;
-        MinMeasure = minMeasure;
-        MaxSource = maxSource;
-        MinSource = minSource;
-        Slope = slope;
+        _xDataBuffer.Clear();
+        _xDataBuffer.AddRange(Xdata);
+        _yDataBuffer.Clear();
+        _yDataBuffer.AddRange(Ydata);
+        _maxMeasure = maxMeasure;
+        _minMeasure = minMeasure;
+        _maxSource = maxSource;
+        _minSource = minSource;
+        _slope = slope;
 
         OnSettingsChanged?.Invoke();
+    }
+
+    protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string PropertyName = null)
+    {
+        if (EqualityComparer<T>.Default.Equals(storage, value))
+        {
+            return false;
+        }
+
+        storage = value;
+        OnSettingsChanged?.Invoke();
+        return true;
     }
 }

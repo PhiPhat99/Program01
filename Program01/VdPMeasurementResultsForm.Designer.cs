@@ -31,6 +31,13 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.TextboxRes1 = new System.Windows.Forms.TextBox();
             this.LabelResistance1 = new System.Windows.Forms.Label();
             this.TextboxRes2 = new System.Windows.Forms.TextBox();
@@ -80,16 +87,16 @@
             this.TextboxConductivityUnit = new System.Windows.Forms.TextBox();
             this.PanelResults = new System.Windows.Forms.Panel();
             this.PanelMeasureAndSource = new System.Windows.Forms.Panel();
+            this.TextboxSourceMode = new System.Windows.Forms.TextBox();
+            this.TextboxMeasureMode = new System.Windows.Forms.TextBox();
             this.LabelMeasureMode = new System.Windows.Forms.Label();
             this.LabelSourceMode = new System.Windows.Forms.Label();
             this.PanelResultsChart = new System.Windows.Forms.Panel();
-            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.TextboxMeasureMode = new System.Windows.Forms.TextBox();
-            this.TextboxSourceMode = new System.Windows.Forms.TextBox();
+            this.ChartTotalResistances = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.PanelResults.SuspendLayout();
             this.PanelMeasureAndSource.SuspendLayout();
             this.PanelResultsChart.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ChartTotalResistances)).BeginInit();
             this.SuspendLayout();
             // 
             // TextboxRes1
@@ -647,6 +654,26 @@
             this.PanelMeasureAndSource.Size = new System.Drawing.Size(840, 80);
             this.PanelMeasureAndSource.TabIndex = 125;
             // 
+            // TextboxSourceMode
+            // 
+            this.TextboxSourceMode.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TextboxSourceMode.Location = new System.Drawing.Point(536, 26);
+            this.TextboxSourceMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.TextboxSourceMode.Name = "TextboxSourceMode";
+            this.TextboxSourceMode.ReadOnly = true;
+            this.TextboxSourceMode.Size = new System.Drawing.Size(150, 30);
+            this.TextboxSourceMode.TabIndex = 61;
+            // 
+            // TextboxMeasureMode
+            // 
+            this.TextboxMeasureMode.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TextboxMeasureMode.Location = new System.Drawing.Point(190, 26);
+            this.TextboxMeasureMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.TextboxMeasureMode.Name = "TextboxMeasureMode";
+            this.TextboxMeasureMode.ReadOnly = true;
+            this.TextboxMeasureMode.Size = new System.Drawing.Size(150, 30);
+            this.TextboxMeasureMode.TabIndex = 60;
+            // 
             // LabelMeasureMode
             // 
             this.LabelMeasureMode.AutoSize = true;
@@ -670,48 +697,89 @@
             // PanelResultsChart
             // 
             this.PanelResultsChart.BackColor = System.Drawing.Color.Transparent;
-            this.PanelResultsChart.Controls.Add(this.chart1);
+            this.PanelResultsChart.Controls.Add(this.ChartTotalResistances);
             this.PanelResultsChart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PanelResultsChart.Location = new System.Drawing.Point(0, 80);
             this.PanelResultsChart.Name = "PanelResultsChart";
             this.PanelResultsChart.Size = new System.Drawing.Size(840, 740);
             this.PanelResultsChart.TabIndex = 126;
             // 
-            // chart1
+            // ChartTotalResistances
             // 
-            chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(60, 50);
-            this.chart1.Name = "chart1";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(720, 640);
-            this.chart1.TabIndex = 124;
-            this.chart1.Text = "chart1";
-            // 
-            // TextboxMeasureMode
-            // 
-            this.TextboxMeasureMode.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxMeasureMode.Location = new System.Drawing.Point(190, 26);
-            this.TextboxMeasureMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxMeasureMode.Name = "TextboxMeasureMode";
-            this.TextboxMeasureMode.ReadOnly = true;
-            this.TextboxMeasureMode.Size = new System.Drawing.Size(150, 30);
-            this.TextboxMeasureMode.TabIndex = 60;
-            // 
-            // TextboxSourceMode
-            // 
-            this.TextboxSourceMode.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxSourceMode.Location = new System.Drawing.Point(536, 26);
-            this.TextboxSourceMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxSourceMode.Name = "TextboxSourceMode";
-            this.TextboxSourceMode.ReadOnly = true;
-            this.TextboxSourceMode.Size = new System.Drawing.Size(150, 30);
-            this.TextboxSourceMode.TabIndex = 61;
+            this.ChartTotalResistances.BackColor = System.Drawing.Color.Transparent;
+            this.ChartTotalResistances.BorderlineColor = System.Drawing.Color.Transparent;
+            chartArea1.AxisX.MajorGrid.LineWidth = 2;
+            chartArea1.AxisX.MinorGrid.Enabled = true;
+            chartArea1.AxisX.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+            chartArea1.AxisX.Title = "Position (n)";
+            chartArea1.AxisX.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisY.MajorGrid.LineWidth = 2;
+            chartArea1.AxisY.MinorGrid.Enabled = true;
+            chartArea1.AxisY.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+            chartArea1.AxisY.Title = "Resistances (Ω)";
+            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.BackColor = System.Drawing.Color.Black;
+            chartArea1.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
+            chartArea1.BackSecondaryColor = System.Drawing.Color.DarkGray;
+            chartArea1.BorderColor = System.Drawing.Color.Transparent;
+            chartArea1.Name = "ChartAreaTotalResistances";
+            this.ChartTotalResistances.ChartAreas.Add(chartArea1);
+            legend1.Enabled = false;
+            legend1.Name = "LegendTotalResistances";
+            this.ChartTotalResistances.Legends.Add(legend1);
+            this.ChartTotalResistances.Location = new System.Drawing.Point(60, 50);
+            this.ChartTotalResistances.Name = "ChartTotalResistances";
+            series1.BorderWidth = 3;
+            series1.ChartArea = "ChartAreaTotalResistances";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series1.Legend = "LegendTotalResistances";
+            series1.Name = "SeriesResPosition 1";
+            series1.YValuesPerPoint = 2;
+            series2.BorderWidth = 3;
+            series2.ChartArea = "ChartAreaTotalResistances";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series2.Legend = "LegendTotalResistances";
+            series2.Name = "SeriesResPosition 2";
+            series3.BorderWidth = 3;
+            series3.ChartArea = "ChartAreaTotalResistances";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series3.Legend = "LegendTotalResistances";
+            series3.Name = "SeriesResPosition 3";
+            series4.BorderWidth = 3;
+            series4.ChartArea = "ChartAreaTotalResistances";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series4.Legend = "LegendTotalResistances";
+            series4.Name = "SeriesResPosition 4";
+            series5.BorderWidth = 3;
+            series5.ChartArea = "ChartAreaTotalResistances";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series5.Legend = "LegendTotalResistances";
+            series5.Name = "SeriesResPosition 5";
+            series6.BorderWidth = 3;
+            series6.ChartArea = "ChartAreaTotalResistances";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series6.Legend = "LegendTotalResistances";
+            series6.Name = "SeriesResPosition 6";
+            series7.BorderWidth = 3;
+            series7.ChartArea = "ChartAreaTotalResistances";
+            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series7.Legend = "LegendTotalResistances";
+            series7.Name = "SeriesResPosition 7";
+            series8.BorderWidth = 3;
+            series8.ChartArea = "ChartAreaTotalResistances";
+            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+            series8.Legend = "LegendTotalResistances";
+            series8.Name = "SeriesResPosition 8";
+            this.ChartTotalResistances.Series.Add(series1);
+            this.ChartTotalResistances.Series.Add(series2);
+            this.ChartTotalResistances.Series.Add(series3);
+            this.ChartTotalResistances.Series.Add(series4);
+            this.ChartTotalResistances.Series.Add(series5);
+            this.ChartTotalResistances.Series.Add(series6);
+            this.ChartTotalResistances.Series.Add(series7);
+            this.ChartTotalResistances.Series.Add(series8);
+            this.ChartTotalResistances.Size = new System.Drawing.Size(720, 640);
+            this.ChartTotalResistances.TabIndex = 124;
             // 
             // VdPMeasurementResultsForm
             // 
@@ -730,7 +798,7 @@
             this.PanelMeasureAndSource.ResumeLayout(false);
             this.PanelMeasureAndSource.PerformLayout();
             this.PanelResultsChart.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ChartTotalResistances)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -788,7 +856,7 @@
         private System.Windows.Forms.Label LabelMeasureMode;
         private System.Windows.Forms.Label LabelSourceMode;
         private System.Windows.Forms.Panel PanelResultsChart;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart ChartTotalResistances;
         private System.Windows.Forms.TextBox TextboxSourceMode;
         private System.Windows.Forms.TextBox TextboxMeasureMode;
     }

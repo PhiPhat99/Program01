@@ -1384,24 +1384,32 @@ namespace Program01
                 }
 
                 CurrentTuner = 1;
+                CollectAndCalculateVdPMeasured.Instance.ClearAllData();
 
                 while (CurrentTuner <= 8)
                 {
                     ConfigureSwitchSystem();
-                    await Task.Delay(200);
+                    await Task.Delay(600);
                     UpdateMeasurementState();
                     ConfigureSourceMeasureUnit();
                     await ExecuteSweep();
-                    await Task.Delay(points * repetitionValue * 300);
                     TracingRunMeasurement();
+                    await Task.Delay(1000);
+
                     CurrentTuner++;
 
                     if (CurrentTuner > 8)
                     {
-                        Debug.WriteLine("All tuners completed.");
+                        Debug.WriteLine("[DEBUG] All tuners completed");
                         MessageBox.Show("Measurement completed", "Measurement Successfully", MessageBoxButtons.OK);
                         SMU.WriteString("OUTPut OFF");
                         SS.WriteString("*CLS");
+
+                        if (Application.OpenForms.OfType<VdPTotalMeasureValuesForm>().FirstOrDefault() is VdPTotalMeasureValuesForm VdPTotalForm)
+                        {
+                            VdPTotalForm.Invoke((MethodInvoker)delegate { VdPTotalForm.LoadMeasurementData(); });
+                        }
+
                         break;
                     }
                 }
@@ -1535,7 +1543,7 @@ namespace Program01
             SMU.WriteString("INITiate");
             SMU.WriteString("*WAI");
             SMU.WriteString("OUTPut OFF");
-            await Task.Delay(points * repetitionValue * (int)delayValue * 250);
+            await Task.Delay(points * repetitionValue * (int)delayValue * 300);
         }
 
         private void UpdateMeasurementState()
@@ -1547,6 +1555,66 @@ namespace Program01
             }
 
             Debug.WriteLine($"Measuring Tuner {CurrentTuner}");
+        }
+
+        private void TracingRunMeasurement()
+        {
+            try
+            {
+                SMU.WriteString("TRACe:ACTual?");
+                string BufferCount = SMU.ReadString().Trim();
+                Debug.WriteLine($"Buffer count: {BufferCount}");
+
+                if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
+                {
+                    MessageBox.Show("No data in buffer!", "Error", MessageBoxButtons.OK);
+                    return;
+                }
+
+                SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOURce, READing");
+                string RawData = SMU.ReadString().Trim();
+                Debug.WriteLine($"Buffer contains: {BufferPoints} readings");
+                Debug.WriteLine($"Raw Data: {RawData}");
+
+                string[] DataPairs = RawData.Split(',');
+                List<(double Source, double Reading)> currentMeasurements = new List<(double, double)>();
+                List<double> XData = new List<double>();
+                List<double> YData = new List<double>();
+                Debug.WriteLine($"Number of data pairs: {DataPairs.Length}");
+
+                if (DataPairs.Length % 2 != 0)
+                {
+                    MessageBox.Show("Invalid buffer data format!", "Error", MessageBoxButtons.OK);
+                    return;
+                }
+
+                for (int i = 0; i < DataPairs.Length; i += 2)
+                {
+                    if (double.TryParse(DataPairs[i], out double SourceValue) && double.TryParse(DataPairs[i + 1], out double MeasuredValue))
+                    {
+                        XData.Add(SourceValue);
+                        YData.Add(MeasuredValue);
+                        currentMeasurements.Add((SourceValue, MeasuredValue));
+                    }
+                }
+
+                if (GlobalSettings.Instance.IsModes)
+                {
+                    
+                }
+                else
+                {
+                    Debug.WriteLine($"[DEBUG] TracingRunMeasurement - Tuner: {CurrentTuner}, Data Points Read: {currentMeasurements.Count}");
+                    GlobalSettings.Instance.CollectedMeasurements.StoreMeasurementData(CurrentTuner, currentMeasurements);
+
+                    List<double[]> measuredValues = YData.Zip(XData, (y, x) => new double[] { y, x }).ToList();
+                    GlobalSettings.Instance.AddMeasuredValues(measuredValues, CurrentTuner);
+                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"Error: {Ex.Message}");
+            }
         }
 
         private void IconbuttonErrorCheck_Click(object sender, EventArgs e)
@@ -1860,79 +1928,6 @@ namespace Program01
             {
                 dataChildForm.UpdateChart(XDataBuffer, YDataBuffer);
                 dataChildForm.UpdateMeasurementData(GlobalSettings.Instance.MaxMeasure, GlobalSettings.Instance.MinMeasure, GlobalSettings.Instance.MaxSource, GlobalSettings.Instance.MinSource, GlobalSettings.Instance.Slope);
-            }
-        }
-
-        private void TracingRunMeasurement()
-        {
-            try
-            {
-                SMU.WriteString("TRACe:ACTual?");
-                string BufferCount = SMU.ReadString().Trim();
-                Debug.WriteLine($"Buffer count: {BufferCount}");
-
-                if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
-                {
-                    MessageBox.Show("No data in buffer!", "Error", MessageBoxButtons.OK);
-                    return;
-                }
-
-                SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOURce, READing");
-                string RawData = SMU.ReadString().Trim();
-                Debug.WriteLine($"Buffer contains: {BufferPoints} readings");
-                Debug.WriteLine($"Raw Data: {RawData}");
-
-                string[] DataPairs = RawData.Split(',');
-                List<double> XData = new List<double>();
-                List<double> YData = new List<double>();
-                Debug.WriteLine($"Number of data pairs: {DataPairs.Length}");
-
-                if (DataPairs.Length % 2 != 0)
-                {
-                    MessageBox.Show("Invalid buffer data format!", "Error", MessageBoxButtons.OK);
-                    return;
-                }
-
-                for (int i = 0; i < DataPairs.Length; i += 2)
-                {
-                    if (double.TryParse(DataPairs[i], out double SourceValue) && double.TryParse(DataPairs[i + 1], out double MeasuredValue))
-                    {
-                        XData.Add(SourceValue);
-                        YData.Add(MeasuredValue);
-                    }
-                }
-
-                Debug.WriteLine("XData values:");
-                foreach (var Xvalue in XData)
-                {
-                    Debug.WriteLine($"{Xvalue} {GlobalSettings.Instance.StepUnit}");
-                    //Debug.WriteLine($"{XDataBuffer} {GlobalSettings.Instance.XDataBuffer}");
-                }
-
-                Debug.WriteLine("YData values:");
-                foreach (var Yvalue in YData)
-                {
-                    Debug.WriteLine($"{Yvalue} {GlobalSettings.Instance.SourceLimitLevelUnit}");
-                    //Debug.WriteLine($"{YDataBuffer} {GlobalSettings.Instance.YDataBuffer}");
-                }
-
-                // แปลงข้อมูลเป็น List<double[]> โดยให้ YData เป็นค่าแรก
-                List<double[]> measuredValues = YData.Zip(XData, (y, x) => new double[] { y, x }).ToList();
-
-                // ตรวจสอบขนาดของ measuredValues
-                if (measuredValues != null && measuredValues.Count > 0 && measuredValues[0].Length == 2)
-                {
-                    // ส่งข้อมูลไปยัง VdPTotalMeasureValuesForm
-                    //_vdPTotalMeasureValuesForm.UpdateMeasurementData(measuredValues);
-                }
-                else
-                {
-                    MessageBox.Show("ข้อมูลการวัดไม่ถูกต้อง!", "Warning", MessageBoxButtons.OK);
-                }
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show($"Error: {Ex.Message}");
             }
         }
 

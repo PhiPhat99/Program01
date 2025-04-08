@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Program01
 {
-    public class CollectHallMeasuredValue
+    public class CollectAndCalculateHallMeasured
     {
         /*private static HallMeasurementData instance;
 

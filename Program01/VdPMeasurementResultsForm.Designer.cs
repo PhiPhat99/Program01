@@ -656,22 +656,22 @@
             // 
             // TextboxSourceMode
             // 
-            this.TextboxSourceMode.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TextboxSourceMode.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TextboxSourceMode.Location = new System.Drawing.Point(536, 26);
             this.TextboxSourceMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TextboxSourceMode.Name = "TextboxSourceMode";
             this.TextboxSourceMode.ReadOnly = true;
-            this.TextboxSourceMode.Size = new System.Drawing.Size(150, 30);
+            this.TextboxSourceMode.Size = new System.Drawing.Size(110, 30);
             this.TextboxSourceMode.TabIndex = 61;
             // 
             // TextboxMeasureMode
             // 
-            this.TextboxMeasureMode.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TextboxMeasureMode.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TextboxMeasureMode.Location = new System.Drawing.Point(190, 26);
             this.TextboxMeasureMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TextboxMeasureMode.Name = "TextboxMeasureMode";
             this.TextboxMeasureMode.ReadOnly = true;
-            this.TextboxMeasureMode.Size = new System.Drawing.Size(150, 30);
+            this.TextboxMeasureMode.Size = new System.Drawing.Size(110, 30);
             this.TextboxMeasureMode.TabIndex = 60;
             // 
             // LabelMeasureMode

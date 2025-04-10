@@ -20,6 +20,10 @@ public class GlobalSettings
                     if (_instance == null)
                     {
                         _instance = new GlobalSettings();
+                        /*_instance.ResistancesByPosition = new Dictionary<int, double>();
+                        _instance.ResistanceA = double.NaN;
+                        _instance.ResistanceB = double.NaN;
+                        _instance.AverageResistanceAll = double.NaN;*/
                     }
                 }
             }
@@ -216,6 +220,7 @@ public class GlobalSettings
     public string MagneticFieldsUnit { get; set; } = "";
 
     private readonly List<List<double[]>> _allMeasuredValues = new List<List<double[]>>();
+
     public List<List<double[]>> AllMeasuredValues => _allMeasuredValues;
 
     private readonly List<double> _xDataBuffer = new List<double>();
@@ -238,6 +243,11 @@ public class GlobalSettings
 
     private double _slope = double.NaN;
     public double Slope => _slope;
+
+    public Dictionary<int, double> ResistancesByPosition { get; set; }
+    public double ResistanceA { get; set; }
+    public double ResistanceB { get; set; }
+    public double AverageResistanceAll { get; set; }
 
     private GlobalSettings()
     {

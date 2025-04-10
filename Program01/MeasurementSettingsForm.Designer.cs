@@ -60,20 +60,9 @@
             this.TextboxMagneticFields = new System.Windows.Forms.TextBox();
             this.LabelMagneticFieldsUnit = new System.Windows.Forms.Label();
             this.PanelTunerandData = new System.Windows.Forms.Panel();
-            this.PictureboxSample = new System.Windows.Forms.PictureBox();
-            this.PictureboxTunerDescription = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner8 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner7 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner6 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner5 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner4 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner3 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner2 = new System.Windows.Forms.PictureBox();
-            this.PictureboxTuner1 = new System.Windows.Forms.PictureBox();
             this.PanelButtonTabBar = new System.Windows.Forms.Panel();
             this.ButtonData = new System.Windows.Forms.Button();
             this.ButtonTuner = new System.Windows.Forms.Button();
-            this.IconbuttonTunerTest = new FontAwesome.Sharp.IconButton();
             this.ComboboxVISASMUIOPort = new System.Windows.Forms.ComboBox();
             this.ComboboxVISASSIOPort = new System.Windows.Forms.ComboBox();
             this.ComboboxStartUnit = new System.Windows.Forms.ComboBox();
@@ -87,28 +76,39 @@
             this.LabelToggleSwitchVdP = new System.Windows.Forms.Label();
             this.LabelToggleSwitchHall = new System.Windows.Forms.Label();
             this.LabelToggleSwitchMeasurementMode = new System.Windows.Forms.Label();
-            this.IconbuttonErrorCheck = new FontAwesome.Sharp.IconButton();
-            this.IconbuttonRunMeasurement = new FontAwesome.Sharp.IconButton();
-            this.IconbuttonClearSettings = new FontAwesome.Sharp.IconButton();
-            this.IconbuttonSSConnection = new FontAwesome.Sharp.IconButton();
-            this.IconbuttonSMUConnection = new FontAwesome.Sharp.IconButton();
             this.ComboboxSourceDelayUnit = new System.Windows.Forms.ComboBox();
             this.LabelSourceDelayUnit = new System.Windows.Forms.Label();
             this.TextboxSourceDelay = new System.Windows.Forms.TextBox();
             this.LabelSourceDelay = new System.Windows.Forms.Label();
+            this.IconbuttonTunerTest = new FontAwesome.Sharp.IconButton();
+            this.IconbuttonErrorCheck = new FontAwesome.Sharp.IconButton();
+            this.IconbuttonRunMeasurement = new FontAwesome.Sharp.IconButton();
+            this.IconbuttonClearSettings = new FontAwesome.Sharp.IconButton();
+            this.PictureboxSample = new System.Windows.Forms.PictureBox();
+            this.PictureboxTunerDescription = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition8 = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition7 = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition6 = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition5 = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition4 = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition3 = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition2 = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition1 = new System.Windows.Forms.PictureBox();
+            this.IconbuttonSSConnection = new FontAwesome.Sharp.IconButton();
+            this.IconbuttonSMUConnection = new FontAwesome.Sharp.IconButton();
             this.PanelTunerandData.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxSample)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTunerDescription)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner8)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner7)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner6)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner1)).BeginInit();
             this.PanelButtonTabBar.SuspendLayout();
             this.PanelToggleSwitchBase.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxSample)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTunerDescription)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition8)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition7)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition1)).BeginInit();
             this.SuspendLayout();
             // 
             // LabelSMUVISA
@@ -153,6 +153,7 @@
             this.ComboboxRsense.Size = new System.Drawing.Size(135, 31);
             this.ComboboxRsense.TabIndex = 5;
             this.ComboboxRsense.SelectedIndexChanged += new System.EventHandler(this.ComboboxRsense_SelectedIndexChanged);
+            // 
             // ComboboxSource
             // 
             this.ComboboxSource.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -421,130 +422,20 @@
             this.PanelTunerandData.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(248)))), ((int)(((byte)(231)))));
             this.PanelTunerandData.Controls.Add(this.PictureboxSample);
             this.PanelTunerandData.Controls.Add(this.PictureboxTunerDescription);
-            this.PanelTunerandData.Controls.Add(this.PictureboxTuner8);
-            this.PanelTunerandData.Controls.Add(this.PictureboxTuner7);
-            this.PanelTunerandData.Controls.Add(this.PictureboxTuner6);
-            this.PanelTunerandData.Controls.Add(this.PictureboxTuner5);
-            this.PanelTunerandData.Controls.Add(this.PictureboxTuner4);
-            this.PanelTunerandData.Controls.Add(this.PictureboxTuner3);
-            this.PanelTunerandData.Controls.Add(this.PictureboxTuner2);
-            this.PanelTunerandData.Controls.Add(this.PictureboxTuner1);
+            this.PanelTunerandData.Controls.Add(this.PictureboxMeasPosition8);
+            this.PanelTunerandData.Controls.Add(this.PictureboxMeasPosition7);
+            this.PanelTunerandData.Controls.Add(this.PictureboxMeasPosition6);
+            this.PanelTunerandData.Controls.Add(this.PictureboxMeasPosition5);
+            this.PanelTunerandData.Controls.Add(this.PictureboxMeasPosition4);
+            this.PanelTunerandData.Controls.Add(this.PictureboxMeasPosition3);
+            this.PanelTunerandData.Controls.Add(this.PictureboxMeasPosition2);
+            this.PanelTunerandData.Controls.Add(this.PictureboxMeasPosition1);
             this.PanelTunerandData.Controls.Add(this.PanelButtonTabBar);
             this.PanelTunerandData.Location = new System.Drawing.Point(460, 90);
             this.PanelTunerandData.Margin = new System.Windows.Forms.Padding(1);
             this.PanelTunerandData.Name = "PanelTunerandData";
             this.PanelTunerandData.Size = new System.Drawing.Size(790, 640);
             this.PanelTunerandData.TabIndex = 28;
-            // 
-            // PictureboxSample
-            // 
-            this.PictureboxSample.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxSample.Image = global::Program01.Properties.Resources.Sample;
-            this.PictureboxSample.Location = new System.Drawing.Point(280, 450);
-            this.PictureboxSample.Name = "PictureboxSample";
-            this.PictureboxSample.Size = new System.Drawing.Size(320, 180);
-            this.PictureboxSample.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxSample.TabIndex = 43;
-            this.PictureboxSample.TabStop = false;
-            // 
-            // PictureboxTunerDescription
-            // 
-            this.PictureboxTunerDescription.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxTunerDescription.Image = ((System.Drawing.Image)(resources.GetObject("PictureboxTunerDescription.Image")));
-            this.PictureboxTunerDescription.Location = new System.Drawing.Point(20, 485);
-            this.PictureboxTunerDescription.Name = "PictureboxTunerDescription";
-            this.PictureboxTunerDescription.Size = new System.Drawing.Size(240, 100);
-            this.PictureboxTunerDescription.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTunerDescription.TabIndex = 42;
-            this.PictureboxTunerDescription.TabStop = false;
-            // 
-            // PictureboxTuner8
-            // 
-            this.PictureboxTuner8.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxTuner8.Location = new System.Drawing.Point(590, 260);
-            this.PictureboxTuner8.Name = "PictureboxTuner8";
-            this.PictureboxTuner8.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner8.TabIndex = 8;
-            this.PictureboxTuner8.TabStop = false;
-            this.PictureboxTuner8.Click += new System.EventHandler(this.PictureboxTuner8_Click);
-            // 
-            // PictureboxTuner7
-            // 
-            this.PictureboxTuner7.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxTuner7.Location = new System.Drawing.Point(400, 260);
-            this.PictureboxTuner7.Name = "PictureboxTuner7";
-            this.PictureboxTuner7.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner7.TabIndex = 7;
-            this.PictureboxTuner7.TabStop = false;
-            this.PictureboxTuner7.Click += new System.EventHandler(this.PictureboxTuner7_Click);
-            // 
-            // PictureboxTuner6
-            // 
-            this.PictureboxTuner6.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxTuner6.Location = new System.Drawing.Point(210, 260);
-            this.PictureboxTuner6.Name = "PictureboxTuner6";
-            this.PictureboxTuner6.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner6.TabIndex = 6;
-            this.PictureboxTuner6.TabStop = false;
-            this.PictureboxTuner6.Click += new System.EventHandler(this.PictureboxTuner6_Click);
-            // 
-            // PictureboxTuner5
-            // 
-            this.PictureboxTuner5.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxTuner5.Location = new System.Drawing.Point(20, 260);
-            this.PictureboxTuner5.Name = "PictureboxTuner5";
-            this.PictureboxTuner5.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner5.TabIndex = 5;
-            this.PictureboxTuner5.TabStop = false;
-            this.PictureboxTuner5.Click += new System.EventHandler(this.PictureboxTuner5_Click);
-            // 
-            // PictureboxTuner4
-            // 
-            this.PictureboxTuner4.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxTuner4.Location = new System.Drawing.Point(590, 60);
-            this.PictureboxTuner4.Name = "PictureboxTuner4";
-            this.PictureboxTuner4.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner4.TabIndex = 4;
-            this.PictureboxTuner4.TabStop = false;
-            this.PictureboxTuner4.Click += new System.EventHandler(this.PictureboxTuner4_Click);
-            // 
-            // PictureboxTuner3
-            // 
-            this.PictureboxTuner3.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxTuner3.Location = new System.Drawing.Point(400, 60);
-            this.PictureboxTuner3.Name = "PictureboxTuner3";
-            this.PictureboxTuner3.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner3.TabIndex = 3;
-            this.PictureboxTuner3.TabStop = false;
-            this.PictureboxTuner3.Click += new System.EventHandler(this.PictureboxTuner3_Click);
-            // 
-            // PictureboxTuner2
-            // 
-            this.PictureboxTuner2.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxTuner2.Location = new System.Drawing.Point(210, 60);
-            this.PictureboxTuner2.Name = "PictureboxTuner2";
-            this.PictureboxTuner2.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner2.TabIndex = 2;
-            this.PictureboxTuner2.TabStop = false;
-            this.PictureboxTuner2.Click += new System.EventHandler(this.PictureboxTuner2_Click);
-            // 
-            // PictureboxTuner1
-            // 
-            this.PictureboxTuner1.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxTuner1.Location = new System.Drawing.Point(20, 60);
-            this.PictureboxTuner1.Name = "PictureboxTuner1";
-            this.PictureboxTuner1.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxTuner1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTuner1.TabIndex = 1;
-            this.PictureboxTuner1.TabStop = false;
-            this.PictureboxTuner1.Click += new System.EventHandler(this.PictureboxTuner1_Click);
             // 
             // PanelButtonTabBar
             // 
@@ -592,24 +483,6 @@
             this.ButtonTuner.Text = "TUNER";
             this.ButtonTuner.UseVisualStyleBackColor = false;
             this.ButtonTuner.Click += new System.EventHandler(this.ButtonTuner_Click);
-            // 
-            // IconbuttonTunerTest
-            // 
-            this.IconbuttonTunerTest.BackColor = System.Drawing.Color.Snow;
-            this.IconbuttonTunerTest.FlatAppearance.BorderSize = 0;
-            this.IconbuttonTunerTest.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.IconbuttonTunerTest.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IconbuttonTunerTest.IconChar = FontAwesome.Sharp.IconChar.None;
-            this.IconbuttonTunerTest.IconColor = System.Drawing.Color.Black;
-            this.IconbuttonTunerTest.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonTunerTest.Location = new System.Drawing.Point(29, 757);
-            this.IconbuttonTunerTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.IconbuttonTunerTest.Name = "IconbuttonTunerTest";
-            this.IconbuttonTunerTest.Size = new System.Drawing.Size(120, 30);
-            this.IconbuttonTunerTest.TabIndex = 41;
-            this.IconbuttonTunerTest.Text = "TUNER TEST";
-            this.IconbuttonTunerTest.UseVisualStyleBackColor = false;
-            this.IconbuttonTunerTest.Click += new System.EventHandler(this.IconbuttonTunerTest_Click);
             // 
             // ComboboxVISASMUIOPort
             // 
@@ -754,6 +627,64 @@
             this.LabelToggleSwitchMeasurementMode.TabIndex = 46;
             this.LabelToggleSwitchMeasurementMode.Text = "MEASUREMENTS";
             // 
+            // ComboboxSourceDelayUnit
+            // 
+            this.ComboboxSourceDelayUnit.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ComboboxSourceDelayUnit.FormattingEnabled = true;
+            this.ComboboxSourceDelayUnit.Location = new System.Drawing.Point(350, 400);
+            this.ComboboxSourceDelayUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.ComboboxSourceDelayUnit.Name = "ComboboxSourceDelayUnit";
+            this.ComboboxSourceDelayUnit.Size = new System.Drawing.Size(60, 31);
+            this.ComboboxSourceDelayUnit.TabIndex = 51;
+            // 
+            // LabelSourceDelayUnit
+            // 
+            this.LabelSourceDelayUnit.AutoSize = true;
+            this.LabelSourceDelayUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelSourceDelayUnit.Location = new System.Drawing.Point(270, 403);
+            this.LabelSourceDelayUnit.Name = "LabelSourceDelayUnit";
+            this.LabelSourceDelayUnit.Size = new System.Drawing.Size(63, 25);
+            this.LabelSourceDelayUnit.TabIndex = 50;
+            this.LabelSourceDelayUnit.Text = "UNIT :";
+            // 
+            // TextboxSourceDelay
+            // 
+            this.TextboxSourceDelay.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TextboxSourceDelay.Location = new System.Drawing.Point(155, 400);
+            this.TextboxSourceDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.TextboxSourceDelay.Name = "TextboxSourceDelay";
+            this.TextboxSourceDelay.Size = new System.Drawing.Size(100, 30);
+            this.TextboxSourceDelay.TabIndex = 49;
+            this.TextboxSourceDelay.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextboxSourceDelay_KeyPress);
+            // 
+            // LabelSourceDelay
+            // 
+            this.LabelSourceDelay.AutoSize = true;
+            this.LabelSourceDelay.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelSourceDelay.Location = new System.Drawing.Point(69, 403);
+            this.LabelSourceDelay.Name = "LabelSourceDelay";
+            this.LabelSourceDelay.Size = new System.Drawing.Size(73, 25);
+            this.LabelSourceDelay.TabIndex = 48;
+            this.LabelSourceDelay.Text = "DELAY :";
+            // 
+            // IconbuttonTunerTest
+            // 
+            this.IconbuttonTunerTest.BackColor = System.Drawing.Color.Snow;
+            this.IconbuttonTunerTest.FlatAppearance.BorderSize = 0;
+            this.IconbuttonTunerTest.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.IconbuttonTunerTest.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IconbuttonTunerTest.IconChar = FontAwesome.Sharp.IconChar.None;
+            this.IconbuttonTunerTest.IconColor = System.Drawing.Color.Black;
+            this.IconbuttonTunerTest.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.IconbuttonTunerTest.Location = new System.Drawing.Point(29, 757);
+            this.IconbuttonTunerTest.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.IconbuttonTunerTest.Name = "IconbuttonTunerTest";
+            this.IconbuttonTunerTest.Size = new System.Drawing.Size(120, 30);
+            this.IconbuttonTunerTest.TabIndex = 41;
+            this.IconbuttonTunerTest.Text = "TUNER TEST";
+            this.IconbuttonTunerTest.UseVisualStyleBackColor = false;
+            this.IconbuttonTunerTest.Click += new System.EventHandler(this.IconbuttonTunerTest_Click);
+            // 
             // IconbuttonErrorCheck
             // 
             this.IconbuttonErrorCheck.BackColor = System.Drawing.Color.Snow;
@@ -810,6 +741,116 @@
             this.IconbuttonClearSettings.UseVisualStyleBackColor = false;
             this.IconbuttonClearSettings.Click += new System.EventHandler(this.IconbuttonClearSettings_Click);
             // 
+            // PictureboxSample
+            // 
+            this.PictureboxSample.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxSample.Image = global::Program01.Properties.Resources.Sample;
+            this.PictureboxSample.Location = new System.Drawing.Point(280, 450);
+            this.PictureboxSample.Name = "PictureboxSample";
+            this.PictureboxSample.Size = new System.Drawing.Size(320, 180);
+            this.PictureboxSample.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxSample.TabIndex = 43;
+            this.PictureboxSample.TabStop = false;
+            // 
+            // PictureboxTunerDescription
+            // 
+            this.PictureboxTunerDescription.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxTunerDescription.Image = ((System.Drawing.Image)(resources.GetObject("PictureboxTunerDescription.Image")));
+            this.PictureboxTunerDescription.Location = new System.Drawing.Point(20, 485);
+            this.PictureboxTunerDescription.Name = "PictureboxTunerDescription";
+            this.PictureboxTunerDescription.Size = new System.Drawing.Size(240, 100);
+            this.PictureboxTunerDescription.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxTunerDescription.TabIndex = 42;
+            this.PictureboxTunerDescription.TabStop = false;
+            // 
+            // PictureboxMeasPosition8
+            // 
+            this.PictureboxMeasPosition8.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition8.Location = new System.Drawing.Point(590, 260);
+            this.PictureboxMeasPosition8.Name = "PictureboxMeasPosition8";
+            this.PictureboxMeasPosition8.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition8.TabIndex = 8;
+            this.PictureboxMeasPosition8.TabStop = false;
+            this.PictureboxMeasPosition8.Click += new System.EventHandler(this.PictureboxMeasPosition8_Click);
+            // 
+            // PictureboxMeasPosition7
+            // 
+            this.PictureboxMeasPosition7.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition7.Location = new System.Drawing.Point(400, 260);
+            this.PictureboxMeasPosition7.Name = "PictureboxMeasPosition7";
+            this.PictureboxMeasPosition7.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition7.TabIndex = 7;
+            this.PictureboxMeasPosition7.TabStop = false;
+            this.PictureboxMeasPosition7.Click += new System.EventHandler(this.PictureboxMeasPosition7_Click);
+            // 
+            // PictureboxMeasPosition6
+            // 
+            this.PictureboxMeasPosition6.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition6.Location = new System.Drawing.Point(210, 260);
+            this.PictureboxMeasPosition6.Name = "PictureboxMeasPosition6";
+            this.PictureboxMeasPosition6.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition6.TabIndex = 6;
+            this.PictureboxMeasPosition6.TabStop = false;
+            this.PictureboxMeasPosition6.Click += new System.EventHandler(this.PictureboxMeasPosition6_Click);
+            // 
+            // PictureboxMeasPosition5
+            // 
+            this.PictureboxMeasPosition5.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition5.Location = new System.Drawing.Point(20, 260);
+            this.PictureboxMeasPosition5.Name = "PictureboxMeasPosition5";
+            this.PictureboxMeasPosition5.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition5.TabIndex = 5;
+            this.PictureboxMeasPosition5.TabStop = false;
+            this.PictureboxMeasPosition5.Click += new System.EventHandler(this.PictureboxMeasPosition5_Click);
+            // 
+            // PictureboxMeasPosition4
+            // 
+            this.PictureboxMeasPosition4.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition4.Location = new System.Drawing.Point(590, 60);
+            this.PictureboxMeasPosition4.Name = "PictureboxMeasPosition4";
+            this.PictureboxMeasPosition4.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition4.TabIndex = 4;
+            this.PictureboxMeasPosition4.TabStop = false;
+            this.PictureboxMeasPosition4.Click += new System.EventHandler(this.PictureboxMeasPosition4_Click);
+            // 
+            // PictureboxMeasPosition3
+            // 
+            this.PictureboxMeasPosition3.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition3.Location = new System.Drawing.Point(400, 60);
+            this.PictureboxMeasPosition3.Name = "PictureboxMeasPosition3";
+            this.PictureboxMeasPosition3.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition3.TabIndex = 3;
+            this.PictureboxMeasPosition3.TabStop = false;
+            this.PictureboxMeasPosition3.Click += new System.EventHandler(this.PictureboxMeasPosition3_Click);
+            // 
+            // PictureboxMeasPosition2
+            // 
+            this.PictureboxMeasPosition2.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition2.Location = new System.Drawing.Point(210, 60);
+            this.PictureboxMeasPosition2.Name = "PictureboxMeasPosition2";
+            this.PictureboxMeasPosition2.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition2.TabIndex = 2;
+            this.PictureboxMeasPosition2.TabStop = false;
+            this.PictureboxMeasPosition2.Click += new System.EventHandler(this.PictureboxMeasPosition2_Click);
+            // 
+            // PictureboxMeasPosition1
+            // 
+            this.PictureboxMeasPosition1.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition1.Location = new System.Drawing.Point(20, 60);
+            this.PictureboxMeasPosition1.Name = "PictureboxMeasPosition1";
+            this.PictureboxMeasPosition1.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition1.TabIndex = 1;
+            this.PictureboxMeasPosition1.TabStop = false;
+            this.PictureboxMeasPosition1.Click += new System.EventHandler(this.PictureboxMeasPosition1_Click);
+            // 
             // IconbuttonSSConnection
             // 
             this.IconbuttonSSConnection.BackColor = System.Drawing.Color.White;
@@ -839,46 +880,6 @@
             this.IconbuttonSMUConnection.TabIndex = 0;
             this.IconbuttonSMUConnection.UseVisualStyleBackColor = false;
             this.IconbuttonSMUConnection.Click += new System.EventHandler(this.IconbuttonSMUConnection_Click);
-            // 
-            // ComboboxSourceDelayUnit
-            // 
-            this.ComboboxSourceDelayUnit.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.ComboboxSourceDelayUnit.FormattingEnabled = true;
-            this.ComboboxSourceDelayUnit.Location = new System.Drawing.Point(350, 400);
-            this.ComboboxSourceDelayUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.ComboboxSourceDelayUnit.Name = "ComboboxSourceDelayUnit";
-            this.ComboboxSourceDelayUnit.Size = new System.Drawing.Size(60, 31);
-            this.ComboboxSourceDelayUnit.TabIndex = 51;
-            // 
-            // LabelSourceDelayUnit
-            // 
-            this.LabelSourceDelayUnit.AutoSize = true;
-            this.LabelSourceDelayUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSourceDelayUnit.Location = new System.Drawing.Point(270, 403);
-            this.LabelSourceDelayUnit.Name = "LabelSourceDelayUnit";
-            this.LabelSourceDelayUnit.Size = new System.Drawing.Size(63, 25);
-            this.LabelSourceDelayUnit.TabIndex = 50;
-            this.LabelSourceDelayUnit.Text = "UNIT :";
-            // 
-            // TextboxSourceDelay
-            // 
-            this.TextboxSourceDelay.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxSourceDelay.Location = new System.Drawing.Point(155, 400);
-            this.TextboxSourceDelay.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxSourceDelay.Name = "TextboxSourceDelay";
-            this.TextboxSourceDelay.Size = new System.Drawing.Size(100, 30);
-            this.TextboxSourceDelay.TabIndex = 49;
-            this.TextboxSourceDelay.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextboxSourceDelay_KeyPress);
-            // 
-            // LabelSourceDelay
-            // 
-            this.LabelSourceDelay.AutoSize = true;
-            this.LabelSourceDelay.Font = new System.Drawing.Font("Segoe UI Semibold", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSourceDelay.Location = new System.Drawing.Point(69, 403);
-            this.LabelSourceDelay.Name = "LabelSourceDelay";
-            this.LabelSourceDelay.Size = new System.Drawing.Size(73, 25);
-            this.LabelSourceDelay.TabIndex = 48;
-            this.LabelSourceDelay.Text = "DELAY :";
             // 
             // MeasurementSettingsForm
             // 
@@ -945,18 +946,18 @@
             this.Text = "2";
             this.Load += new System.EventHandler(this.MeasurementSettingsChildForm_Load);
             this.PanelTunerandData.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxSample)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTunerDescription)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner8)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner7)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner6)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTuner1)).EndInit();
             this.PanelButtonTabBar.ResumeLayout(false);
             this.PanelToggleSwitchBase.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxSample)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxTunerDescription)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition8)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition7)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1010,14 +1011,14 @@
         private System.Windows.Forms.ComboBox ComboboxSourceLimitLevelUnit;
         private System.Windows.Forms.ComboBox ComboboxThicknessUnit;
         private System.Windows.Forms.ComboBox ComboboxMagneticFieldsUnit;
-        private System.Windows.Forms.PictureBox PictureboxTuner1;
-        private System.Windows.Forms.PictureBox PictureboxTuner2;
-        private System.Windows.Forms.PictureBox PictureboxTuner4;
-        private System.Windows.Forms.PictureBox PictureboxTuner3;
-        private System.Windows.Forms.PictureBox PictureboxTuner8;
-        private System.Windows.Forms.PictureBox PictureboxTuner7;
-        private System.Windows.Forms.PictureBox PictureboxTuner6;
-        private System.Windows.Forms.PictureBox PictureboxTuner5;
+        private System.Windows.Forms.PictureBox PictureboxMeasPosition1;
+        private System.Windows.Forms.PictureBox PictureboxMeasPosition2;
+        private System.Windows.Forms.PictureBox PictureboxMeasPosition4;
+        private System.Windows.Forms.PictureBox PictureboxMeasPosition3;
+        private System.Windows.Forms.PictureBox PictureboxMeasPosition8;
+        private System.Windows.Forms.PictureBox PictureboxMeasPosition7;
+        private System.Windows.Forms.PictureBox PictureboxMeasPosition6;
+        private System.Windows.Forms.PictureBox PictureboxMeasPosition5;
         private FontAwesome.Sharp.IconButton IconbuttonTunerTest;
         private System.Windows.Forms.PictureBox PictureboxTunerDescription;
         private System.Windows.Forms.Panel PanelToggleSwitchBase;

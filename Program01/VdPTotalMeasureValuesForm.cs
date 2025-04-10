@@ -5,7 +5,6 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Diagnostics;
-using System.Drawing;
 
 namespace Program01
 {

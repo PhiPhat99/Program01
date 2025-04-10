@@ -17,12 +17,16 @@ namespace Program01
         public FormattedIO488 SMU;
         public FormattedIO488 SS;
         public ResourceManager Rsrcmngr;
+        private string SMUModelKeyword = "MODEL 2450";
+        private string SSModelKeyword = "MODEL 7001";
 
         private int TargetPosition;
         private int CurrentTuner;
 
         public event EventHandler<bool> ModeChanged;
         public event EventHandler ToggleChanged;
+        private string ModeName = GlobalSettings.Instance.IsHallMode ? "Hall effect" : "Van der Pauw";
+
 
         private Form CurrentChildForm;
         public DataChildForm DataChildForm = null;
@@ -61,8 +65,6 @@ namespace Program01
 
                 Dictionary<string, (string Address, string Response)> DeviceResponses = FindConnectedGPIBDevicesWithResponse();
 
-                string SMUModelKeyword = "MODEL 2450";
-                string SSModelKeyword = "MODEL 7001";
                 string[] SMUAddresses = DeviceResponses
                     .Where(d => d.Value.Response.IndexOf(SMUModelKeyword, StringComparison.OrdinalIgnoreCase) >= 0)
                     .Select(d => d.Value.Address)
@@ -92,7 +94,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                Debug.WriteLine($"[ERROR] ไม่สามารถค้นหาอุปกรณ์ GPIB: {Ex.Message}");
+                MessageBox.Show($"ไม่ค้นพบ GPIB Address ของเครื่องมือ: {Ex.Message}", "ข้อผิดพลาด");
             }
         }
 
@@ -119,13 +121,14 @@ namespace Program01
                         if (!string.IsNullOrEmpty(Response))
                         {
                             ConnectedDevices[Device] = (Device, Response);
-                            Debug.WriteLine($"[DEBUG] Instruments Model: {Response}");
+
+                            Debug.WriteLine($"[DEBUG] โมเดลเครื่องมือวัด: {Response}");
                             Debug.WriteLine($"[DEBUG] อุปกรณ์ที่ใช้งานอยู่: {Device}");
                         }
                     }
                     catch (Exception)
                     {
-                        Debug.WriteLine($"[ERROR] อุปกรณ์ {Device} ไม่ตอบสนอง");
+                        Debug.WriteLine($"เครื่องมือ {Device} ไม่มีการตอบสนอง");
                     }
                     finally
                     {
@@ -143,7 +146,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                Debug.WriteLine($"[ERROR] ไม่สามารถค้นหาอุปกรณ์ GPIB: {Ex.Message}");
+                MessageBox.Show($"ไม่พบเจอ GPIB Address ของเครื่องมือที่ทำการเชื่อมต่อ: {Ex.Message}", "ข้อผิดพลาด");
             }
 
             return ConnectedDevices;
@@ -191,7 +194,7 @@ namespace Program01
 
         private void LoadSettings()
         {
-            Debug.WriteLine("[LOAD SETTINGS STARTED]");
+            Debug.WriteLine("[เริ่มการตั้งค่าโหลดข้อมูล]");
 
             try
             {
@@ -277,13 +280,14 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error loading settings: {Ex.Message}", "ERROR");
+                MessageBox.Show($"การตั้งค่าโหลดข้อมูลไม่สำเร็จ: {Ex.Message}", "ข้อผิดพลาด");
+
                 Debug.WriteLine($"[ERROR - LOAD SETTINGS]: {Ex.Message}");
                 Debug.WriteLine($"[ERROR - LOAD SETTINGS - STACK TRACE]: {Ex.StackTrace}");
             }
             finally
             {
-                Debug.WriteLine("[LOAD SETTINGS FINISHED]");
+                Debug.WriteLine("[เสร็จสิ้นการตั้งค่าโหลด]");
             }
         }
 
@@ -335,7 +339,7 @@ namespace Program01
 
         private void SaveToGlobalSettings()
         {
-            Debug.WriteLine("[SAVE SETTINGS STARTED]");
+            Debug.WriteLine("[เริ่มต้นการตั้งค่าบันทึกข้อมูล]");
 
             try
             {
@@ -420,11 +424,12 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error saving settings: {Ex.Message}", "ERROR");
+                MessageBox.Show($"การตั้งค่าบันทึกข้อมูลไม่สำเร็จ: {Ex.Message}", "ข้อผิดพลาด");
+
                 Debug.WriteLine($"[ERROR - SAVE SETTINGS]: {Ex.Message}");
                 Debug.WriteLine($"[ERROR - SAVE SETTINGS - STACK TRACE]: {Ex.StackTrace}");
             }
-            Debug.WriteLine("[SAVE SETTINGS FINISHED]");
+            Debug.WriteLine("[เสร็จสิ้นการตั้งค่าบันทึกข้อมูล]");
         }
 
         private void MeasurementSettingsChildForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -455,7 +460,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error connecting to device: {Ex.Message}", "Connection Error", MessageBoxButtons.OK);
+                MessageBox.Show($"ไม่สามารถทำการเชื่อมต่อเครื่องมือได้: {Ex.Message}", "ข้อผิดพลาดในการเชื่อมต่อ", MessageBoxButtons.OK);
                 return false;
             }
         }
@@ -480,7 +485,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error disconnecting device: {Ex.Message}", "Disconnection Error", MessageBoxButtons.OK);
+                MessageBox.Show($"ไม่สามารถตัดการเชื่อมต่อเครื่องมือได้: {Ex.Message}", "ข้อผิดพลาดในการตัดการเชื่อมต่อ", MessageBoxButtons.OK);
                 return false;
             }
         }
@@ -534,11 +539,11 @@ namespace Program01
                 }
 
                 UpdateUIAfterConnection(GlobalSettings.Instance.IsSMUConnected ? "Connected to Source Measure Unit" : "Disconnected from Source Measure Unit", GlobalSettings.Instance.IsSMUConnected, IconbuttonSMUConnection);
-                MessageBox.Show(GlobalSettings.Instance.IsSMUConnected ? "Connected to Source Measure Unit" : "Disconnected from Source Measure Unit", "Informationc");
+                MessageBox.Show(GlobalSettings.Instance.IsSMUConnected ? "เชื่อมต่อเครื่องมือ Source Measure Unit สำเร็จ" : "ตัดการเชื่อมต่อจากเครื่องมือ Source Measure Unit", "การแจ้งเตือน", MessageBoxButtons.OK);
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}", "Connection Error", MessageBoxButtons.OK);
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาดในการเชื่อมต่อ", MessageBoxButtons.OK);
             }
         }
 
@@ -573,11 +578,11 @@ namespace Program01
                 }
 
                 UpdateUIAfterConnection(GlobalSettings.Instance.IsSSConnected ? "Connected to Switch System" : "Disconnected from Switch System", GlobalSettings.Instance.IsSSConnected, IconbuttonSSConnection);
-                MessageBox.Show(GlobalSettings.Instance.IsSSConnected ? "Connected to Switch System" : "Disconnected from Switch System", "Information");
+                MessageBox.Show(GlobalSettings.Instance.IsSSConnected ? "เชื่อมต่อเครื่องมือ Switch System สำเร็จ" : "ตัดการเชื่อมต่อจากเครื่องมือ Switch System", "การแจ้งเตือน", MessageBoxButtons.OK);
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}", "Connection Error", MessageBoxButtons.OK);
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาดในการเชื่อมต่อ", MessageBoxButtons.OK);
             }
         }
 
@@ -619,7 +624,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -643,7 +648,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -669,7 +674,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -681,7 +686,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -738,7 +743,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -768,7 +773,7 @@ namespace Program01
             {
                 if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("ไม่สามารถลบล้างข้อมูลการตั้งค่าได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการลบล้างข้อมูล", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -800,7 +805,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"การลบล้างข้อมูลการตั้งค่าไม่สำเร็จ: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -818,7 +823,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -836,17 +841,10 @@ namespace Program01
         private void UpdateMeasurementMode()
         {
             bool isHallMode = GlobalSettings.Instance.IsHallMode;
-            string ModeName = isHallMode ? "Hall effect" : "Van der Pauw";
             Debug.WriteLine($"You select: {ModeName} measurement");
 
-            TextboxMagneticFields.Enabled = isHallMode;
-            TextboxMagneticFields.Visible = isHallMode;
-            ComboboxMagneticFieldsUnit.Visible = isHallMode;
-            LabelMagneticFields.Visible = isHallMode;
-            LabelMagneticFieldsUnit.Visible = isHallMode;
-
-            LabelToggleSwitchVdP.ForeColor = isHallMode ? System.Drawing.SystemColors.ActiveCaptionText : Color.FromArgb(144, 198, 101);
-            LabelToggleSwitchHall.ForeColor = isHallMode ? Color.FromArgb(144, 198, 101) : System.Drawing.SystemColors.ActiveCaptionText;
+            LabelToggleSwitchVdP.ForeColor = isHallMode ? SystemColors.ActiveCaptionText : Color.FromArgb(144, 198, 101);
+            LabelToggleSwitchHall.ForeColor = isHallMode ? Color.FromArgb(144, 198, 101) : SystemColors.ActiveCaptionText;
             PanelToggleSwitchButton.BackColor = isHallMode ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
             PanelToggleSwitchBase.BackColor = isHallMode ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
 
@@ -857,25 +855,25 @@ namespace Program01
         {
             if (isHallMode)
             {
-                PictureboxTuner1.Image = Properties.Resources.V_1_Hall;
-                PictureboxTuner2.Image = Properties.Resources.V_2_Hall;
-                PictureboxTuner3.Image = Properties.Resources.V_3_Hall;
-                PictureboxTuner4.Image = Properties.Resources.V_4_Hall;
-                PictureboxTuner5.Image = Properties.Resources.V_5_Hall;
-                PictureboxTuner6.Image = Properties.Resources.V_6_Hall;
-                PictureboxTuner7.Image = Properties.Resources.V_7_Hall;
-                PictureboxTuner8.Image = Properties.Resources.V_8_Hall;
+                PictureboxMeasPosition1.Image = Properties.Resources.Hall_MP1Minus;
+                PictureboxMeasPosition2.Image = Properties.Resources.Hall_MP1Plus;
+                PictureboxMeasPosition3.Image = Properties.Resources.Hall_MP2Minus;
+                PictureboxMeasPosition4.Image = Properties.Resources.Hall_MP2Plus;
+                PictureboxMeasPosition5.Image = Properties.Resources.Hall_MP3Minus;
+                PictureboxMeasPosition6.Image = Properties.Resources.Hall_MP3Plus;
+                PictureboxMeasPosition7.Image = Properties.Resources.Hall_MP4Minus;
+                PictureboxMeasPosition8.Image = Properties.Resources.Hall_MP4Plus;
             }
             else
             {
-                PictureboxTuner1.Image = Properties.Resources.R_A1_VdP;
-                PictureboxTuner2.Image = Properties.Resources.R_A2_VdP;
-                PictureboxTuner3.Image = Properties.Resources.R_A3_VdP;
-                PictureboxTuner4.Image = Properties.Resources.R_A4_VdP;
-                PictureboxTuner5.Image = Properties.Resources.R_B1_VdP;
-                PictureboxTuner6.Image = Properties.Resources.R_B2_VdP;
-                PictureboxTuner7.Image = Properties.Resources.R_B3_VdP;
-                PictureboxTuner8.Image = Properties.Resources.R_B4_VdP;
+                PictureboxMeasPosition1.Image = Properties.Resources.VdP_MP1Minus;
+                PictureboxMeasPosition2.Image = Properties.Resources.VdP_MP1Plus;
+                PictureboxMeasPosition3.Image = Properties.Resources.VdP_MP2Minus;
+                PictureboxMeasPosition4.Image = Properties.Resources.VdP_MP2Plus;
+                PictureboxMeasPosition5.Image = Properties.Resources.VdP_MP3Minus;
+                PictureboxMeasPosition6.Image = Properties.Resources.VdP_MP3Plus;
+                PictureboxMeasPosition7.Image = Properties.Resources.VdP_MP4Minus;
+                PictureboxMeasPosition8.Image = Properties.Resources.VdP_MP4Plus;
             }
         }
 
@@ -887,13 +885,46 @@ namespace Program01
             PanelToggleSwitchBase.BackColor = GlobalSettings.Instance.IsModes ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
         }
 
-        private void PictureboxTuner1_Click(object sender, EventArgs e)
+        private void PictureboxMeasPosition1_Click(object sender, EventArgs e)
         {
             try
             {
                 if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("ไม่สามารถทำการเลือกตำแหน่งการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการทดสอบการวัด", MessageBoxButtons.OK);
+                    return;
+                }
+
+                if (GlobalSettings.Instance.IsModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
+                }
+                else if (GlobalSettings.Instance.IsModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
+                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+            }
+        }
+
+        private void PictureboxMeasPosition2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
+                {
+                    MessageBox.Show("ไม่สามารถทำการเลือกตำแหน่งการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการทดสอบการวัด", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -904,6 +935,138 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
+                }
+                else if (GlobalSettings.Instance.IsModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
+                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+            }
+        }
+
+        private void PictureboxMeasPosition3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
+                {
+                    MessageBox.Show("ไม่สามารถทำการเลือกตำแหน่งการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการทดสอบการวัด", MessageBoxButtons.OK);
+                    return;
+                }
+
+                if (GlobalSettings.Instance.IsModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
+                }
+                else if (GlobalSettings.Instance.IsModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
+                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+            }
+        }
+
+        private void PictureboxMeasPosition4_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
+                {
+                    MessageBox.Show("ไม่สามารถทำการเลือกตำแหน่งการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการทดสอบการวัด", MessageBoxButtons.OK);
+                    return;
+                }
+
+                if (GlobalSettings.Instance.IsModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
+                }
+                else if (GlobalSettings.Instance.IsModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
+                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+            }
+        }
+
+        private void PictureboxMeasPosition5_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
+                {
+                    MessageBox.Show("ไม่สามารถทำการเลือกตำแหน่งการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการทดสอบการวัด", MessageBoxButtons.OK);
+                    return;
+                }
+
+                if (GlobalSettings.Instance.IsModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
+                }
+                else if (GlobalSettings.Instance.IsModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!4)");
+                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+            }
+        }
+
+        private void PictureboxMeasPosition6_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
+                {
+                    MessageBox.Show("ไม่สามารถทำการเลือกตำแหน่งการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการทดสอบการวัด", MessageBoxButtons.OK);
+                    return;
+                }
+
+                if (GlobalSettings.Instance.IsModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
                 }
                 else if (GlobalSettings.Instance.IsModes == true)
                 {
@@ -916,215 +1079,17 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
-        private void PictureboxTuner2_Click(object sender, EventArgs e)
+        private void PictureboxMeasPosition7_Click(object sender, EventArgs e)
         {
             try
             {
                 if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
-                    return;
-                }
-
-                if (GlobalSettings.Instance.IsModes == false)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
-                }
-                else if (GlobalSettings.Instance.IsModes == true)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!4)");
-                }
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show($"Error: {Ex.Message}");
-            }
-        }
-
-        private void PictureboxTuner3_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
-                {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
-                    return;
-                }
-
-                if (GlobalSettings.Instance.IsModes == false)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
-                }
-                else if (GlobalSettings.Instance.IsModes == true)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
-                }
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show($"Error: {Ex.Message}");
-            }
-        }
-
-        private void PictureboxTuner4_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
-                {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
-                    return;
-                }
-
-                if (GlobalSettings.Instance.IsModes == false)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
-                }
-                else if (GlobalSettings.Instance.IsModes == true)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
-                }
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show($"Error: {Ex.Message}");
-            }
-        }
-
-        private void PictureboxTuner5_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
-                {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
-                    return;
-                }
-
-                if (GlobalSettings.Instance.IsModes == false)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
-                }
-                else if (GlobalSettings.Instance.IsModes == true)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
-                }
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show($"Error: {Ex.Message}");
-            }
-        }
-
-        private void PictureboxTuner6_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
-                {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
-                    return;
-                }
-
-                if (GlobalSettings.Instance.IsModes == false)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
-                }
-                else if (GlobalSettings.Instance.IsModes == true)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
-                }
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show($"Error: {Ex.Message}");
-            }
-        }
-
-        private void PictureboxTuner7_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
-                {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
-                    return;
-                }
-
-                if (GlobalSettings.Instance.IsModes == false)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
-                }
-                else if (GlobalSettings.Instance.IsModes == true)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
-                }
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show($"Error: {Ex.Message}");
-            }
-        }
-
-        private void PictureboxTuner8_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
-                {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("ไม่สามารถทำการเลือกตำแหน่งการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการทดสอบการวัด", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1147,7 +1112,40 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+            }
+        }
+
+        private void PictureboxMeasPosition8_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
+                {
+                    MessageBox.Show("ไม่สามารถทำการเลือกตำแหน่งการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการทดสอบการวัด", MessageBoxButtons.OK);
+                    return;
+                }
+
+                if (GlobalSettings.Instance.IsModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
+                }
+                else if (GlobalSettings.Instance.IsModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
+                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -1157,7 +1155,7 @@ namespace Program01
             {
                 if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("ไม่สามารถทำการทดสอบการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการทดสอบการวัด", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1168,13 +1166,12 @@ namespace Program01
 
                 if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelevellimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
                 {
-                    MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "WARNING", MessageBoxButtons.OK);
                     return;
                 }
 
                 if (repetitionValue > 3)
                 {
-                    MessageBox.Show("Cannot set the repetition value greater than 3 in Tuner test", "WARNING", MessageBoxButtons.OK);
+                    MessageBox.Show("ไม่สามารถตั้งค่าการวัดซ้ำ (Repetition) มากกว่า 3 ครั้งในการทดสอบการวัด", "การแจ้งเตือน", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1344,7 +1341,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -1354,7 +1351,7 @@ namespace Program01
             {
                 if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("ไม่สามารถทำการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการวัด", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1370,7 +1367,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -1401,7 +1398,7 @@ namespace Program01
                     if (CurrentTuner > 8)
                     {
                         Debug.WriteLine("[DEBUG] All tuners completed");
-                        MessageBox.Show("Measurement completed", "Measurement Successfully", MessageBoxButtons.OK);
+                        MessageBox.Show($"ทำการวัด {ModeName} เสร็จสิ้นแล้ว", "การวัดเสร็จสิ้น", MessageBoxButtons.OK);
                         SMU.WriteString("OUTPut OFF");
                         SS.WriteString("*CLS");
 
@@ -1410,13 +1407,14 @@ namespace Program01
                             VdPTotalForm.Invoke((MethodInvoker)delegate { VdPTotalForm.LoadMeasurementData(); });
                         }
 
+                        CollectAndCalculateVdPMeasured.Instance.CalculateVanderPauw();
                         break;
                     }
                 }
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -1543,6 +1541,7 @@ namespace Program01
             SMU.WriteString("INITiate");
             SMU.WriteString("*WAI");
             SMU.WriteString("OUTPut OFF");
+
             await Task.Delay(points * repetitionValue * (int)delayValue * 300);
         }
 
@@ -1550,7 +1549,6 @@ namespace Program01
         {
             if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelevellimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
             {
-                MessageBox.Show("Invalid input values. Please ensure all fields are correctly filled.", "Input Error", MessageBoxButtons.OK);
                 return;
             }
 
@@ -1567,7 +1565,7 @@ namespace Program01
 
                 if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
                 {
-                    MessageBox.Show("No data in buffer!", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("ไม่สามารถทำการดึงข้อมูลการวัดจากเครื่องมือได้ เนื่องจากไม่มีข้อมูลอยู่ในบัฟเฟอร์", "ข้อผิดพลาดในการดึงข้อมูลการวัด", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1584,7 +1582,7 @@ namespace Program01
 
                 if (DataPairs.Length % 2 != 0)
                 {
-                    MessageBox.Show("Invalid buffer data format!", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("รูปแบบของข้อมูลในบัฟเฟอร์ไม่ถูกต้อง", "ข้อผิดพลาดในการดึงข้อมูลการวัด", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1613,7 +1611,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -1623,7 +1621,7 @@ namespace Program01
             {
                 if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
-                    MessageBox.Show("The instrument(s) is not connected", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("ไม่สามารถตรวจสอบข้อผิดพลาดจาดเครื่องมือได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการตรวจสอบ", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1631,12 +1629,24 @@ namespace Program01
                 SS.WriteString("SYSTem:ERRor?");
                 string SMUrespones = SMU.ReadString();
                 string SSresponses = SS.ReadString();
-                Debug.WriteLine($"There is Source Measure Unit error : {SMUrespones}");
-                Debug.WriteLine($"There is Switch System error : {SSresponses}");
+
+                if (SMUrespones == null && SSresponses == null)
+                {
+                    MessageBox.Show("ไม่พบข้อผิดพลาดจากเครื่องมือ", "การตรวจสอบเสร็จสิ้น", MessageBoxButtons.OK);
+                    Debug.WriteLine($"There is Source Measure Unit error : {SMUrespones}");
+                    Debug.WriteLine($"There is Switch System error : {SSresponses}");
+                }
+                
+                if (SMUrespones != null || SSresponses != null)
+                {
+                    MessageBox.Show($"ตรวจพบข้อผิดพลาดจากเครื่องมือ {SMUModelKeyword} {SMUrespones}: {SSModelKeyword} {SSresponses} ? ", "การตรวจสอบเสร็จสิ้น", MessageBoxButtons.OK);   // แก้ไขเงื่อนไขตรงนี้ด้วย
+                    Debug.WriteLine($"There is Source Measure Unit error : {SMUrespones}");
+                    Debug.WriteLine($"There is Switch System error : {SSresponses}");
+                }
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -1660,7 +1670,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -1689,7 +1699,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -1701,14 +1711,27 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
         private bool ValidateInputs(out double start, out double stop, out double step, out int repetition, out double sourcelevellimit, out double thickness, out double magneticfields, out double delay, out int points)
         {
-            start = stop = step = sourcelevellimit = thickness = magneticfields = delay = 0;
+            start = stop = step = thickness = magneticfields = 0;
             repetition = points = 1;
+            delay = 100;
+            ComboboxSourceDelayUnit.SelectedItem = "µs";
+
+            if (GlobalSettings.Instance.MeasureMode == "Voltage")
+            {
+                sourcelevellimit = 21;
+                ComboboxSourceLimitLevelUnit.SelectedItem = "V";
+            }
+            else
+            {
+                sourcelevellimit = 1.05;
+                ComboboxSourceLimitLevelUnit.SelectedItem = "A";
+            }
 
             try
             {
@@ -1717,46 +1740,60 @@ namespace Program01
                     !IsValidNumber(TextboxStep.Text, ComboboxStepUnit.SelectedItem, out step) ||
                     !IsValidNumber(TextboxSourceDelay.Text, ComboboxSourceDelayUnit.SelectedItem, out delay) ||
                     !IsValidNumber(TextboxSourceLimitLevel.Text, ComboboxSourceLimitLevelUnit.SelectedItem, out sourcelevellimit) ||
-                    !IsValidNumber(TextboxThickness.Text, ComboboxThicknessUnit.SelectedItem, out thickness))
+                    !IsValidNumber(TextboxThickness.Text, ComboboxThicknessUnit.SelectedItem, out thickness) ||
+                    !IsValidNumber(TextboxMagneticFields.Text, ComboboxMagneticFieldsUnit.SelectedItem, out magneticfields))
                 {
-                    return false;
-                }
-
-                if (GlobalSettings.Instance.IsModes)
-                {
-                    if (!IsValidNumber(TextboxMagneticFields.Text, ComboboxMagneticFieldsUnit.SelectedItem, out magneticfields))
-                    {
-                        return false;
-                    }
-
-                    if (magneticfields <= 0)
-                    {
-                        return false;
-                    }
-                }
-
-                if (!int.TryParse(TextboxRepetition.Text, out repetition) || repetition < 1)
-                {
+                    MessageBox.Show("กรุณาตรวจสอบและทำการตั้งค่าการวัดให้ถูกต้อง", "ข้อผิดพลาดในการตั้งค่าการวัด", MessageBoxButtons.OK);
                     return false;
                 }
 
                 points = (int)((stop - start) / step) + 1;
 
-                if (start >= stop || step <= 0 || repetition < 1 || repetition > 999 || thickness < 0 || sourcelevellimit < 0 ||
-                    delay < 49E-6 || delay > 10E+3 || points < 1 || step >= stop)
+                if (!int.TryParse(TextboxRepetition.Text, out repetition) || repetition < 1 || repetition > 16)
                 {
+                    MessageBox.Show("ควรทำการตั้งค่าการวัดซ้ำมากกว่า 1 ครั้ง แต่ไม่เกิน 16 ครั้ง กรุณาทำการตั้งค่าการวัดใหม่", "ข้อผิดพลาดในการตั้งค่าการวัด", MessageBoxButtons.OK);
                     return false;
                 }
 
-                if (string.Equals(GlobalSettings.Instance.SourceLimitType, "Current", StringComparison.OrdinalIgnoreCase) &&
-                    (sourcelevellimit > 1.05 || sourcelevellimit < -1.05))
+                if (start >= stop)
                 {
+                    MessageBox.Show("ควรทำการตั้งค่าเริ่มต้นการวัดน้อยกว่าค่าสิ้นสุดการวัด กรุณาทำการตั้งค่าการวัดใหม่", "ข้อผิดพลาดในการตั้งค่าการวัด", MessageBoxButtons.OK);
                     return false;
                 }
 
-                if (string.Equals(GlobalSettings.Instance.SourceLimitType, "Voltage", StringComparison.OrdinalIgnoreCase) &&
-                    (sourcelevellimit > 210 || sourcelevellimit < -210))
+                if (step <= 0)
                 {
+                    MessageBox.Show("ควรทำการตั้งค่าระดับการวัดมากกว่า 0 กรุณาทำการตั้งค่าการวัดใหม่", "ข้อผิดพลาดในการตั้งค่าการวัด", MessageBoxButtons.OK);
+                    return false;
+                }
+
+                if (step >= stop)
+                {
+                    MessageBox.Show("ควรทำการตั้งค่าระดับการวัดน้อยกว่าค่าสิ้นสุดการวัด กรุณาทำการตั้งค่าการวัดใหม่", "ข้อผิดพลาดในการตั้งค่าการวัด", MessageBoxButtons.OK);
+                    return false;
+                }
+
+                if (delay < 100E-6 || delay > 10E+3)
+                {
+                    MessageBox.Show("ควรทำการตั้งค่าความหน่วงของการวัดอยู่ในช่วง 100 µs - 10000 s กรุณาทำการตั้งค่าการวัดใหม่", "ข้อผิดพลาดในการตั้งค่าการวัด", MessageBoxButtons.OK);
+                    return false;
+                }
+
+                if (thickness < 0)
+                {
+                    MessageBox.Show("ไม่สามารถตั้งค่าความหนาของตัวอย่างน้อยกว่า 0 ได้ กรุณาทำการตั้งค่าการวัดใหม่", "ข้อผิดพลาดในการตั้งค่าการวัด", MessageBoxButtons.OK);
+                    return false;
+                }
+
+                if (string.Equals(GlobalSettings.Instance.SourceLimitType, "Current", StringComparison.OrdinalIgnoreCase) && (sourcelevellimit > 1.05 || sourcelevellimit < -1.05))
+                {
+                    MessageBox.Show("ควรทำการตั้งค่าระดับขีดจำกัดของกระแสจากแหล่งจ่ายอยู่ในช่วง -1.05 A - 1.05 A กรุณาทำการตั้งค่าการวัดใหม่", "ข้อผิดพลาดในการตั้งค่าการวัด", MessageBoxButtons.OK);
+                    return false;
+                }
+
+                if (string.Equals(GlobalSettings.Instance.SourceLimitType, "Voltage", StringComparison.OrdinalIgnoreCase) && (sourcelevellimit > 210 || sourcelevellimit < -210))
+                {
+                    MessageBox.Show("ควรทำการตั้งค่าระดับขีดจำกัดของแรงดันจากแหล่งจ่ายอยู่ในช่วง -210 V - 210 V กรุณาทำการตั้งค่าการวัดใหม่", "ข้อผิดพลาดในการตั้งค่าการวัด", MessageBoxButtons.OK);
                     return false;
                 }
 
@@ -1764,7 +1801,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Validation Error: {Ex.Message}", "Error", MessageBoxButtons.OK);
+                MessageBox.Show($"เกิดข้อผิดพลาดในการตรวจสอบการตั้งค่าการวัด: {Ex.Message}", "ข้อผิดพลาดในการตั้งค่าการวัด", MessageBoxButtons.OK);
                 return false;
             }
         }
@@ -1778,7 +1815,6 @@ namespace Program01
                 return false;
             }
 
-            // ตรวจสอบให้แน่ใจว่าค่าที่ป้อนเป็นตัวเลข
             if (double.TryParse(textValue, out double value))
             {
                 result = ConvertValueBasedOnUnit(unit.ToString(), value);
@@ -1865,7 +1901,7 @@ namespace Program01
 
                 if (!int.TryParse(bufferCount, out int bufferPoints) || bufferPoints == 0)
                 {
-                    MessageBox.Show("No data in buffer!", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("ไม่สามารถทำการดึงข้อมูลการวัดจากเครื่องมือได้ เนื่องจากไม่มีข้อมูลอยู่ในบัฟเฟอร์", "ข้อผิดพลาดในการดึงข้อมูลการวัด", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1876,7 +1912,7 @@ namespace Program01
 
                 if (dataPairs.Length % 2 != 0)
                 {
-                    MessageBox.Show("Invalid buffer data format!", "Error", MessageBoxButtons.OK);
+                    MessageBox.Show("รูปแบบของข้อมูลในบัฟเฟอร์ไม่ถูกต้อง", "ข้อผิดพลาดในการดึงข้อมูลการวัด", MessageBoxButtons.OK);
                     return;
                 }
 
@@ -1900,7 +1936,7 @@ namespace Program01
 
                 if (maxSource != minSource)
                 {
-                    slope = (maxMeasure - minMeasure) / (maxSource - minSource);
+                    slope = Math.Abs((maxMeasure - minMeasure) / (maxSource - minSource));
                 }
 
                 Debug.Write($"Minimum Source Values: {minSource}" + Environment.NewLine);
@@ -1916,7 +1952,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 

@@ -7,6 +7,7 @@ public class GlobalSettings
 {
     private static GlobalSettings _instance;
     private static readonly object _lock = new object();
+
     public CollectAndCalculateVdPMeasured CollectedMeasurements { get; private set; } = CollectAndCalculateVdPMeasured.Instance;
 
     public static GlobalSettings Instance
@@ -20,10 +21,6 @@ public class GlobalSettings
                     if (_instance == null)
                     {
                         _instance = new GlobalSettings();
-                        /*_instance.ResistancesByPosition = new Dictionary<int, double>();
-                        _instance.ResistanceA = double.NaN;
-                        _instance.ResistanceB = double.NaN;
-                        _instance.AverageResistanceAll = double.NaN;*/
                     }
                 }
             }
@@ -147,64 +144,64 @@ public class GlobalSettings
 
     }
 
-    private string _startValue = "";
-    public string StartValue
+    private double _startValue = 0;
+    public double StartValue
     {
         get => _startValue;
         set => SetProperty(ref _startValue, value);
 
     }
 
-    private string _stopValue = "";
-    public string StopValue
+    private double _stopValue = 0;
+    public double StopValue
     {
         get => _stopValue;
         set => SetProperty(ref _stopValue, value);
 
     }
 
-    private string _stepValue = "";
-    public string StepValue
+    private double _stepValue = 0;
+    public double StepValue
     {
         get => _stepValue;
         set => SetProperty(ref _stepValue, value);
 
     }
 
-    private string _sourceDelayValue = "";
-    public string SourceDelayValue
+    private double _sourceDelayValue = 0;
+    public double SourceDelayValue
     {
         get => _sourceDelayValue;
         set => SetProperty(ref _sourceDelayValue, value);
 
     }
 
-    private string _sourceLimitLevelValue = "";
-    public string SourceLimitLevelValue
+    private double _sourceLimitLevelValue = 0;
+    public double SourceLimitLevelValue
     {
         get => _sourceLimitLevelValue;
         set => SetProperty(ref _sourceLimitLevelValue, value);
 
     }
 
-    private string _thicknessValue = "";
-    public string ThicknessValue
+    private double _thicknessValue = 0;
+    public double ThicknessValue
     {
         get => _thicknessValue;
         set => SetProperty(ref _thicknessValue, value);
 
     }
 
-    private string _repetitionValue = "1";
-    public string RepetitionValue
+    private int _repetitionValue = 1;
+    public int RepetitionValue
     {
         get => _repetitionValue;
         set => SetProperty(ref _repetitionValue, value);
 
     }
 
-    private string _magneticFieldsValue = "";
-    public string MagneticFieldsValue
+    private double _magneticFieldsValue = 0;
+    public double MagneticFieldsValue
     {
         get => _magneticFieldsValue;
         set => SetProperty(ref _magneticFieldsValue, value);
@@ -248,6 +245,7 @@ public class GlobalSettings
     public double ResistanceA { get; set; }
     public double ResistanceB { get; set; }
     public double AverageResistanceAll { get; set; }
+    public double SheetResistance {  get; set; }
 
     private GlobalSettings()
     {

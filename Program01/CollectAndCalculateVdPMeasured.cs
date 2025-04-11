@@ -39,9 +39,9 @@ namespace Program01
 
             if (dataPairs != null)
             {
-                foreach (var data in dataPairs)
+                foreach ((double Source, double Reading) in dataPairs)
                 {
-                    Debug.WriteLine($"[DEBUG]    Source: {data.Source}, Reading: {data.Reading}");
+                    Debug.WriteLine($"[DEBUG]    Source: {Source}, Reading: {Reading}");
                 }
             }
 
@@ -78,8 +78,8 @@ namespace Program01
 
         public void CalculateVanderPauw()
         {
-            ClearResults();
-            Debug.WriteLine("[DEBUG] CalculateVanderPauw() called");
+            /*ClearResults();
+            Debug.WriteLine("[DEBUG] CalculateVanderPauw() called");*/
 
             for (int i = 1; i <= 8; i++)
             {
@@ -90,18 +90,18 @@ namespace Program01
                     double SumSource = 0;
                     double SumReading = 0;
 
-                    foreach (var dataPoint in measurementData)
+                    foreach ((double Source, double Reading) in measurementData)
                     {
-                        SumSource += dataPoint.Source;
-                        SumReading += dataPoint.Reading;
+                        SumSource += Source;
+                        SumReading += Reading;
                     }
 
                     double AverageSource = SumSource / measurementData.Count;
                     double AverageReading = SumReading / measurementData.Count;
-                    Debug.WriteLine($"The Average {GlobalSettings.Instance.SourceMode}: {AverageSource} {GlobalSettings.Instance.StartUnit}");
-                    Debug.WriteLine($"The Average {GlobalSettings.Instance.MeasureMode}: {AverageReading} {GlobalSettings.Instance.SourceLimitLevelUnit}");
+                    Debug.WriteLine($"The Average {GlobalSettings.Instance.SourceMode}: {AverageSource} A");
+                    Debug.WriteLine($"The Average {GlobalSettings.Instance.MeasureMode}: {AverageReading} V");
 
-                    double Resistance = 0;
+                    double Resistance;
 
                     if (Math.Abs(AverageSource) > 1e-9)
                     {
@@ -165,8 +165,50 @@ namespace Program01
                 }
             }
 
+            int MaxIterations = 100;
+
+            double ResA = GlobalSettings.Instance.ResistanceA;
+            double ResB = GlobalSettings.Instance.ResistanceB;
+            double InitGuess = 100.000;
+            double Tolerance = 0.001;
+            double ShtRes = InitGuess;
+
+            for (int i = 0; i < MaxIterations; i++)
+            {
+                double ExpOfA = Math.Exp((-Math.PI * ResA) / ShtRes);
+                double ExpOfB = Math.Exp((-Math.PI * ResB) / ShtRes);
+                double Func_ShtRes = ExpOfA + ExpOfB - 1;
+                double FuncPrime_ShtRes = (Math.PI * ResA / (ShtRes * ShtRes)) * ExpOfA + (Math.PI * ResB / (ShtRes * ShtRes)) * ExpOfB;
+
+                if (Math.Abs(Func_ShtRes) < Tolerance)
+                {
+                    return;
+                }
+
+                if (Math.Abs(FuncPrime_ShtRes) < 1e-9)
+                {
+                    throw new Exception("อนุพันธ์มีค่าใกล้เคียงศูนย์ การคำนวณอาจไม่ลู่เข้า");
+                }
+
+                ShtRes = ShtRes - Func_ShtRes / FuncPrime_ShtRes;
+
+                if (double.IsNaN(ShtRes) || double.IsInfinity(ShtRes))
+                {
+                    throw new Exception("คำนวณค่า Sheet Resistance ไม่ลู่เข้า");
+                }
+
+                if (ShtRes <= 0)
+                {
+                    ShtRes = InitGuess;
+                    throw new Exception("ค่า Sheet Resistance ที่คำนวณได้ไม่สมเหตุสมผล");
+                }
+
+                throw new Exception("จำนวนรอบการทำซ้ำเกินค่าที่กำหนด");
+            }
+
             GlobalSettings.Instance.AverageResistanceAll = CountAll > 0 ? SumResistanceAll / CountAll : double.NaN;
             GlobalSettings.Instance.ResistancesByPosition = new Dictionary<int, double>(_resistancesByPosition);
+            GlobalSettings.Instance.SheetResistance = ShtRes <= 0 ? ShtRes : double.NaN;
             
             CalculationCompleted?.Invoke(this, EventArgs.Empty);
             Debug.WriteLine("[DEBUG] CalculateVanderPauw() completed and CalculationCompleted event invoked");

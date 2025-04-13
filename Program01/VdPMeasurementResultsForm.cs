@@ -76,7 +76,7 @@ namespace Program01
             }
             if (Controls.Find("TextboxSheetResUnit", true).FirstOrDefault() is TextBox sheetresistanceunitTextBox)
             {
-                sheetresistanceunitTextBox.Text = "Ω";
+                sheetresistanceunitTextBox.Text = "Ω / Sqr";
             }
         }
 

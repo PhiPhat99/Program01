@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Program01
 {
@@ -76,10 +77,22 @@ namespace Program01
             _measurementsByTuner.Clear();
         }
 
+        private static double F(double rs, double ra, double rb)
+        {
+            return Math.Exp(-Math.PI * ra / rs) + Math.Exp(-Math.PI * rb / rs) - 1.0;
+        }
+
+        private static double FPrime(double rs, double ra, double rb)
+        {
+            double termA = (Math.PI * ra / (rs * rs)) * Math.Exp(-Math.PI * ra / rs);
+            double termB = (Math.PI * rb / (rs * rs)) * Math.Exp(-Math.PI * rb / rs);
+            return termA + termB;
+        }
+
         public void CalculateVanderPauw()
         {
-            /*ClearResults();
-            Debug.WriteLine("[DEBUG] CalculateVanderPauw() called");*/
+            ClearResults();
+            Debug.WriteLine("[DEBUG] CalculateVanderPauw() called");
 
             for (int i = 1; i <= 8; i++)
             {
@@ -103,7 +116,7 @@ namespace Program01
 
                     double Resistance;
 
-                    if (Math.Abs(AverageSource) > 1e-9)
+                    if (Math.Abs(AverageSource) > 1E-9)
                     {
                         Resistance = Math.Abs(AverageReading / AverageSource);
                     }
@@ -114,7 +127,7 @@ namespace Program01
                     }
 
                     _resistancesByPosition[i] = Resistance;
-                    Debug.WriteLine($"[DEBUG]   Position {i} - Resistance: {Resistance} Ohm");
+                    Debug.WriteLine($"[DEBUG]    Position {i} - Resistance: {Resistance} Ohm");
                 }
                 else
                 {
@@ -165,53 +178,59 @@ namespace Program01
                 }
             }
 
-            int MaxIterations = 100;
+            double ra = GlobalSettings.Instance.ResistanceA;
+            double rb = GlobalSettings.Instance.ResistanceB;
+            double initialRs = (ra + rb) / 2.0;
+            double tolerance = 1E-6;
+            int maxIterations = 200;
 
-            double ResA = GlobalSettings.Instance.ResistanceA;
-            double ResB = GlobalSettings.Instance.ResistanceB;
-            double InitGuess = 100.000;
-            double Tolerance = 0.001;
-            double ShtRes = InitGuess;
+            double solvedRs = SolveVanDerPauw(ra, rb, initialRs, tolerance, maxIterations);
 
-            for (int i = 0; i < MaxIterations; i++)
+            if (!double.IsNaN(solvedRs))
             {
-                double ExpOfA = Math.Exp((-Math.PI * ResA) / ShtRes);
-                double ExpOfB = Math.Exp((-Math.PI * ResB) / ShtRes);
-                double Func_ShtRes = ExpOfA + ExpOfB - 1;
-                double FuncPrime_ShtRes = (Math.PI * ResA / (ShtRes * ShtRes)) * ExpOfA + (Math.PI * ResB / (ShtRes * ShtRes)) * ExpOfB;
-
-                if (Math.Abs(Func_ShtRes) < Tolerance)
-                {
-                    return;
-                }
-
-                if (Math.Abs(FuncPrime_ShtRes) < 1e-9)
-                {
-                    throw new Exception("อนุพันธ์มีค่าใกล้เคียงศูนย์ การคำนวณอาจไม่ลู่เข้า");
-                }
-
-                ShtRes = ShtRes - Func_ShtRes / FuncPrime_ShtRes;
-
-                if (double.IsNaN(ShtRes) || double.IsInfinity(ShtRes))
-                {
-                    throw new Exception("คำนวณค่า Sheet Resistance ไม่ลู่เข้า");
-                }
-
-                if (ShtRes <= 0)
-                {
-                    ShtRes = InitGuess;
-                    throw new Exception("ค่า Sheet Resistance ที่คำนวณได้ไม่สมเหตุสมผล");
-                }
-
-                throw new Exception("จำนวนรอบการทำซ้ำเกินค่าที่กำหนด");
+                GlobalSettings.Instance.SheetResistance = solvedRs;
+                Debug.WriteLine($"[DEBUG]    Sheet Resistance (Rs) calculated: {solvedRs} Ohm/square");
+            }
+            else
+            {
+                GlobalSettings.Instance.SheetResistance = double.NaN;
+                Debug.WriteLine("[DEBUG]    ไม่สามารถหาค่า Sheet Resistance ได้");
             }
 
-            GlobalSettings.Instance.AverageResistanceAll = CountAll > 0 ? SumResistanceAll / CountAll : double.NaN;
+            GlobalSettings.Instance.AverageResistanceAll = (double)_resistancesByPosition.Values.Where(r => !double.IsNaN(r)).Sum() / _resistancesByPosition.Values.Count(r => !double.IsNaN(r));
             GlobalSettings.Instance.ResistancesByPosition = new Dictionary<int, double>(_resistancesByPosition);
-            GlobalSettings.Instance.SheetResistance = ShtRes <= 0 ? ShtRes : double.NaN;
-            
+
             CalculationCompleted?.Invoke(this, EventArgs.Empty);
             Debug.WriteLine("[DEBUG] CalculateVanderPauw() completed and CalculationCompleted event invoked");
+        }
+
+        private static double SolveVanDerPauw(double ra, double rb, double initialRs, double tolerance, int maxIterations)
+        {
+            double rs = initialRs;
+
+            for (int i = 0; i < maxIterations; i++)
+            {
+                double fValue = F(rs, ra, rb);
+                double fPrimeValue = FPrime(rs, ra, rb);
+
+                if (Math.Abs(fPrimeValue) < 1E-12)
+                {
+                    Debug.WriteLine("[WARNING] อนุพันธ์มีค่าใกล้เคียงศูนย์ การลู่เข้าอาจมีปัญหา");
+                    return double.NaN;
+                }
+
+                double nextRs = rs - fValue / fPrimeValue;
+
+                if (Math.Abs(nextRs - rs) < tolerance)
+                {
+                    return nextRs;
+                }
+
+                rs = nextRs;
+            }
+
+            Debug.WriteLine($"[WARNING] จำนวนรอบการทำซ้ำเกินค่าที่กำหนด ({maxIterations}) อาจไม่ลู่เข้าสู่คำตอบ");
+            return double.NaN;
         }
 
         public void ClearResults()

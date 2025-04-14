@@ -246,6 +246,8 @@ public class GlobalSettings
     public double ResistanceB { get; set; }
     public double AverageResistanceAll { get; set; }
     public double SheetResistance {  get; set; }
+    public double Resistivity { get; set; }
+    public double Conductivity { get; set; }
 
     private GlobalSettings()
     {

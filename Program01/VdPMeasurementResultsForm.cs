@@ -78,6 +78,24 @@ namespace Program01
             {
                 sheetresistanceunitTextBox.Text = "Ω / Sqr";
             }
+
+            if (Controls.Find("TextboxResistivity", true).FirstOrDefault() is TextBox resistivityTextBox)
+            {
+                resistivityTextBox.Text = !double.IsNaN(GlobalSettings.Instance.Resistivity) ? GlobalSettings.Instance.Resistivity.ToString("F5") : "N/A";
+            }
+            if (Controls.Find("TextboxResistivityUnit", true).FirstOrDefault() is TextBox resistivityunitTextBox)
+            {
+                resistivityunitTextBox.Text = "Ω ⋅ m";
+            }
+
+            if (Controls.Find("TextboxConductivity", true).FirstOrDefault() is TextBox conductivityTextBox)
+            { 
+                conductivityTextBox.Text = !double.IsNaN(GlobalSettings.Instance.Conductivity) ? GlobalSettings.Instance.Conductivity.ToString("F5") : "N/A";
+            }
+            if (Controls.Find("TextboxConductivityUnit", true).FirstOrDefault() is TextBox conductivityunitTextBox)
+            {
+                conductivityunitTextBox.Text = "Ω / m";
+            }
         }
 
         public void LoadTotalResistancesChart()

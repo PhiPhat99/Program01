@@ -64,8 +64,6 @@
             this.LabelThickness = new System.Windows.Forms.Label();
             this.TextboxSheetRes = new System.Windows.Forms.TextBox();
             this.LabelSheetResistance = new System.Windows.Forms.Label();
-            this.TextboxFactor = new System.Windows.Forms.TextBox();
-            this.LabelFactor = new System.Windows.Forms.Label();
             this.TextboxResistivity = new System.Windows.Forms.TextBox();
             this.LabelResistivity = new System.Windows.Forms.Label();
             this.TextboxConductivity = new System.Windows.Forms.TextBox();
@@ -372,31 +370,10 @@
             this.LabelSheetResistance.TabIndex = 96;
             this.LabelSheetResistance.Text = "Sheet Resistance :";
             // 
-            // TextboxFactor
-            // 
-            this.TextboxFactor.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxFactor.Location = new System.Drawing.Point(200, 674);
-            this.TextboxFactor.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxFactor.Name = "TextboxFactor";
-            this.TextboxFactor.ReadOnly = true;
-            this.TextboxFactor.Size = new System.Drawing.Size(125, 27);
-            this.TextboxFactor.TabIndex = 101;
-            // 
-            // LabelFactor
-            // 
-            this.LabelFactor.AutoSize = true;
-            this.LabelFactor.BackColor = System.Drawing.Color.Transparent;
-            this.LabelFactor.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelFactor.Location = new System.Drawing.Point(122, 675);
-            this.LabelFactor.Name = "LabelFactor";
-            this.LabelFactor.Size = new System.Drawing.Size(66, 23);
-            this.LabelFactor.TabIndex = 100;
-            this.LabelFactor.Text = "Factor :";
-            // 
             // TextboxResistivity
             // 
             this.TextboxResistivity.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxResistivity.Location = new System.Drawing.Point(200, 724);
+            this.TextboxResistivity.Location = new System.Drawing.Point(200, 674);
             this.TextboxResistivity.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TextboxResistivity.Name = "TextboxResistivity";
             this.TextboxResistivity.ReadOnly = true;
@@ -408,7 +385,7 @@
             this.LabelResistivity.AutoSize = true;
             this.LabelResistivity.BackColor = System.Drawing.Color.Transparent;
             this.LabelResistivity.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelResistivity.Location = new System.Drawing.Point(93, 725);
+            this.LabelResistivity.Location = new System.Drawing.Point(93, 675);
             this.LabelResistivity.Name = "LabelResistivity";
             this.LabelResistivity.Size = new System.Drawing.Size(95, 23);
             this.LabelResistivity.TabIndex = 102;
@@ -417,7 +394,7 @@
             // TextboxConductivity
             // 
             this.TextboxConductivity.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxConductivity.Location = new System.Drawing.Point(200, 774);
+            this.TextboxConductivity.Location = new System.Drawing.Point(200, 724);
             this.TextboxConductivity.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TextboxConductivity.Name = "TextboxConductivity";
             this.TextboxConductivity.ReadOnly = true;
@@ -429,7 +406,7 @@
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(72, 775);
+            this.label1.Location = new System.Drawing.Point(72, 725);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(116, 23);
             this.label1.TabIndex = 105;
@@ -568,7 +545,7 @@
             // TextboxResistivityUnit
             // 
             this.TextboxResistivityUnit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxResistivityUnit.Location = new System.Drawing.Point(325, 724);
+            this.TextboxResistivityUnit.Location = new System.Drawing.Point(325, 674);
             this.TextboxResistivityUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TextboxResistivityUnit.Name = "TextboxResistivityUnit";
             this.TextboxResistivityUnit.ReadOnly = true;
@@ -578,7 +555,7 @@
             // TextboxConductivityUnit
             // 
             this.TextboxConductivityUnit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxConductivityUnit.Location = new System.Drawing.Point(325, 774);
+            this.TextboxConductivityUnit.Location = new System.Drawing.Point(325, 724);
             this.TextboxConductivityUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TextboxConductivityUnit.Name = "TextboxConductivityUnit";
             this.TextboxConductivityUnit.ReadOnly = true;
@@ -610,9 +587,7 @@
             this.PanelResults.Controls.Add(this.TextboxRes8Unit);
             this.PanelResults.Controls.Add(this.LabelResistivity);
             this.PanelResults.Controls.Add(this.TextboxRes6);
-            this.PanelResults.Controls.Add(this.TextboxFactor);
             this.PanelResults.Controls.Add(this.TextboxRes7Unit);
-            this.PanelResults.Controls.Add(this.LabelFactor);
             this.PanelResults.Controls.Add(this.LabelResistance5);
             this.PanelResults.Controls.Add(this.TextboxThickness);
             this.PanelResults.Controls.Add(this.TextboxRes6Unit);
@@ -830,8 +805,6 @@
         private System.Windows.Forms.Label LabelThickness;
         private System.Windows.Forms.TextBox TextboxSheetRes;
         private System.Windows.Forms.Label LabelSheetResistance;
-        private System.Windows.Forms.TextBox TextboxFactor;
-        private System.Windows.Forms.Label LabelFactor;
         private System.Windows.Forms.TextBox TextboxResistivity;
         private System.Windows.Forms.Label LabelResistivity;
         private System.Windows.Forms.TextBox TextboxConductivity;

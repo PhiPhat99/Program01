@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Program01
 {
@@ -118,12 +117,12 @@ namespace Program01
 
                     if (Math.Abs(AverageSource) > 1E-9)
                     {
-                        Resistance = Math.Abs(AverageReading / AverageSource);
+                        Resistance = Math.Abs((double)AverageReading / AverageSource);
                     }
                     else
                     {
                         Resistance = 0;
-                        Debug.WriteLine($"[WARNING] Position {i} - Average Source is close to zero, setting Resistance to NaN.");
+                        Debug.WriteLine($"[WARNING] Position {i} - Average Source is close to zero, setting Resistance to 0.");
                     }
 
                     _resistancesByPosition[i] = Resistance;
@@ -132,39 +131,49 @@ namespace Program01
                 else
                 {
                     _resistancesByPosition[i] = double.NaN;
-                    Debug.WriteLine($"[WARNING] Position {i} - Average Source is close to zero, setting Resistance to NaN");
+                    Debug.WriteLine($"[WARNING] Position {i} - No measurement data.");
                 }
             }
 
             double SumResistanceA = 0;
             int CountA = 0;
 
-            for (int i = 1; i <= 4; i++)
-            {
-                if (_resistancesByPosition.ContainsKey(i) && !double.IsNaN(_resistancesByPosition[i]))
-                {
-                    SumResistanceA += _resistancesByPosition[i];
-                    CountA++;
-                }
-            }
+            // รวมค่าความต้านทานจาก Position 1 และ 2
+            double avgRes1_2 = 0;
+            int count1_2 = 0;
+            if (_resistancesByPosition.ContainsKey(1) && !double.IsNaN(_resistancesByPosition[1])) { avgRes1_2 += _resistancesByPosition[1]; count1_2++; }
+            if (_resistancesByPosition.ContainsKey(2) && !double.IsNaN(_resistancesByPosition[2])) { avgRes1_2 += _resistancesByPosition[2]; count1_2++; }
+            if (count1_2 > 0) { SumResistanceA += avgRes1_2 / count1_2; CountA++; }
+
+            // รวมค่าความต้านทานจาก Position 5 และ 6
+            double avgRes5_6 = 0;
+            int count5_6 = 0;
+            if (_resistancesByPosition.ContainsKey(5) && !double.IsNaN(_resistancesByPosition[5])) { avgRes5_6 += _resistancesByPosition[5]; count5_6++; }
+            if (_resistancesByPosition.ContainsKey(6) && !double.IsNaN(_resistancesByPosition[6])) { avgRes5_6 += _resistancesByPosition[6]; count5_6++; }
+            if (count5_6 > 0) { SumResistanceA += avgRes5_6 / count5_6; CountA++; }
 
             GlobalSettings.Instance.ResistanceA = CountA > 0 ? SumResistanceA / CountA : double.NaN;
-            Debug.WriteLine($"[DEBUG]   Resistance A: {GlobalSettings.Instance.ResistanceA} Ohm (Count: {CountA})");
+            Debug.WriteLine($"[DEBUG]    Resistance A: {GlobalSettings.Instance.ResistanceA} Ohm (Count: {CountA} pairs)");
 
             double SumResistanceB = 0;
             int CountB = 0;
 
-            for (int i = 5; i <= 8; i++)
-            {
-                if (_resistancesByPosition.ContainsKey(i) && !double.IsNaN(_resistancesByPosition[i]))
-                {
-                    SumResistanceB += _resistancesByPosition[i];
-                    CountB++;
-                }
-            }
+            // รวมค่าความต้านทานจาก Position 3 และ 4
+            double avgRes3_4 = 0;
+            int count3_4 = 0;
+            if (_resistancesByPosition.ContainsKey(3) && !double.IsNaN(_resistancesByPosition[3])) { avgRes3_4 += _resistancesByPosition[3]; count3_4++; }
+            if (_resistancesByPosition.ContainsKey(4) && !double.IsNaN(_resistancesByPosition[4])) { avgRes3_4 += _resistancesByPosition[4]; count3_4++; }
+            if (count3_4 > 0) { SumResistanceB += avgRes3_4 / count3_4; CountB++; }
+
+            // รวมค่าความต้านทานจาก Position 7 และ 8
+            double avgRes7_8 = 0;
+            int count7_8 = 0;
+            if (_resistancesByPosition.ContainsKey(7) && !double.IsNaN(_resistancesByPosition[7])) { avgRes7_8 += _resistancesByPosition[7]; count7_8++; }
+            if (_resistancesByPosition.ContainsKey(8) && !double.IsNaN(_resistancesByPosition[8])) { avgRes7_8 += _resistancesByPosition[8]; count7_8++; }
+            if (count7_8 > 0) { SumResistanceB += avgRes7_8 / count7_8; CountB++; }
 
             GlobalSettings.Instance.ResistanceB = CountB > 0 ? SumResistanceB / CountB : double.NaN;
-            Debug.WriteLine($"[DEBUG]   Resistance B: {GlobalSettings.Instance.ResistanceB} Ohm (Count: {CountB})");
+            Debug.WriteLine($"[DEBUG]    Resistance B: {GlobalSettings.Instance.ResistanceB} Ohm (Count: {CountB} pairs)");
 
             double SumResistanceAll = 0;
             int CountAll = 0;
@@ -183,13 +192,12 @@ namespace Program01
             double initialRs = (ra + rb) / 2.0;
             double tolerance = 1E-6;
             int maxIterations = 200;
-
             double solvedRs = SolveVanDerPauw(ra, rb, initialRs, tolerance, maxIterations);
 
             if (!double.IsNaN(solvedRs))
             {
                 GlobalSettings.Instance.SheetResistance = solvedRs;
-                Debug.WriteLine($"[DEBUG]    Sheet Resistance (Rs) calculated: {solvedRs} Ohm/square");
+                Debug.WriteLine($"[DEBUG]    Sheet Resistance (Rs) calculated: {solvedRs} Ohm / square");
             }
             else
             {
@@ -197,8 +205,34 @@ namespace Program01
                 Debug.WriteLine("[DEBUG]    ไม่สามารถหาค่า Sheet Resistance ได้");
             }
 
-            GlobalSettings.Instance.AverageResistanceAll = (double)_resistancesByPosition.Values.Where(r => !double.IsNaN(r)).Sum() / _resistancesByPosition.Values.Count(r => !double.IsNaN(r));
+            GlobalSettings.Instance.AverageResistanceAll = CountAll > 0 ? SumResistanceAll / CountAll : double.NaN;
             GlobalSettings.Instance.ResistancesByPosition = new Dictionary<int, double>(_resistancesByPosition);
+
+            double Resistivity = GlobalSettings.Instance.SheetResistance * GlobalSettings.Instance.ThicknessValue;  //  แก้ไขวิธีการคำนวณใหม่ เพราะคำนวณไม่ถูกต้อง
+            
+            if (!double.IsNaN (Resistivity))
+            {
+                GlobalSettings.Instance.Resistivity = Resistivity;
+                Debug.WriteLine($"[DEBUG]   Resistivity (ρ) calculated: {GlobalSettings.Instance.Resistivity} Ohm ⋅ meter");
+            }
+            else
+            {
+                GlobalSettings.Instance.Resistivity = double.NaN;
+                Debug.WriteLine("[DEBUG]    ไม่สามารถหาค่า Resistivity ได้");
+            }
+
+            double Conductivity = 1 / GlobalSettings.Instance.Resistivity;  //  แก้ไขวิธีการคำนวณใหม่ เพราะคำนวณไม่ถูกต้อง
+
+            if (!double.IsNaN (Conductivity))
+            {
+                GlobalSettings.Instance.Conductivity = Conductivity;
+                Debug.WriteLine($"[DEBUG]   Conductivity (σ) calculated: {GlobalSettings.Instance.Conductivity} Ohm / meter");
+            }
+            else
+            {
+                GlobalSettings.Instance.Conductivity = double.NaN;
+                Debug.WriteLine("[DEBUG]    ไม่สามารถหาค่า Conductivity ได้");
+            }
 
             CalculationCompleted?.Invoke(this, EventArgs.Empty);
             Debug.WriteLine("[DEBUG] CalculateVanderPauw() completed and CalculationCompleted event invoked");
@@ -240,4 +274,3 @@ namespace Program01
         }
     }
 }
-

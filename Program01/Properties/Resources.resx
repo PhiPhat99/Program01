@@ -127,52 +127,52 @@
   <data name="Applied Physics KMITL Logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Applied Physics KMITL Logo.jpeg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Hall_MP1Minus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Hall_MP1Minus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Hall_MP1negative" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Hall_MP1negative.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Hall_MP1Plus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Hall_MP1Plus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Hall_MP1positive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Hall_MP1positive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Hall_MP2Minus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Hall_MP2Minus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Hall_MP2negative" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Hall_MP2negative.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Hall_MP2Plus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Hall_MP2Plus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Hall_MP2positive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Hall_MP2positive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Hall_MP3Minus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Hall_MP3Minus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Hall_MP3negative" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Hall_MP3negative.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Hall_MP3Plus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Hall_MP3Plus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Hall_MP3positive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Hall_MP3positive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Hall_MP4Minus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Hall_MP4Minus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Hall_MP4negative" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Hall_MP4negative.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Hall_MP4Plus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Hall_MP4Plus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Hall_MP4positive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Hall_MP4positive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VdP_MP1Minus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\VdP_MP1Minus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="VdP_MP1negative" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VdP_MP1negative.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VdP_MP1Plus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\VdP_MP1Plus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="VdP_MP1positive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VdP_MP1positive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VdP_MP2Minus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\VdP_MP2Minus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="VdP_MP2negative" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VdP_MP2negative.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VdP_MP2Plus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\VdP_MP2Plus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="VdP_MP2positive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VdP_MP2positive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VdP_MP3Minus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\VdP_MP3Minus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="VdP_MP3negative" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VdP_MP3negative.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VdP_MP3Plus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\VdP_MP3Plus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="VdP_MP3positive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VdP_MP3positive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VdP_MP4Minus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\VdP_MP4Minus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="VdP_MP4negative" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VdP_MP4negative.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="VdP_MP4Plus" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\VdP_MP4Plus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="VdP_MP4positive" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\VdP_MP4positive.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -25,8 +25,7 @@ namespace Program01
 
         public event EventHandler<bool> ModeChanged;
         public event EventHandler ToggleChanged;
-        private string ModeName = GlobalSettings.Instance.IsHallMode ? "Hall effect" : "Van der Pauw";
-
+        private readonly string ModeName = GlobalSettings.Instance.IsHallMode ? "Hall effect" : "Van der Pauw";
 
         private Form CurrentChildForm;
         private DataChildForm DataChildForm = null;
@@ -842,25 +841,25 @@ namespace Program01
         {
             if (isHallMode)
             {
-                PictureboxMeasPosition1.Image = Properties.Resources.Hall_MP1Minus;
-                PictureboxMeasPosition2.Image = Properties.Resources.Hall_MP1Plus;
-                PictureboxMeasPosition3.Image = Properties.Resources.Hall_MP2Minus;
-                PictureboxMeasPosition4.Image = Properties.Resources.Hall_MP2Plus;
-                PictureboxMeasPosition5.Image = Properties.Resources.Hall_MP3Minus;
-                PictureboxMeasPosition6.Image = Properties.Resources.Hall_MP3Plus;
-                PictureboxMeasPosition7.Image = Properties.Resources.Hall_MP4Minus;
-                PictureboxMeasPosition8.Image = Properties.Resources.Hall_MP4Plus;
+                PictureboxMeasPosition1.Image = Properties.Resources.Hall_MP1negative;
+                PictureboxMeasPosition2.Image = Properties.Resources.Hall_MP1positive;
+                PictureboxMeasPosition3.Image = Properties.Resources.Hall_MP2negative;
+                PictureboxMeasPosition4.Image = Properties.Resources.Hall_MP2positive;
+                PictureboxMeasPosition5.Image = Properties.Resources.Hall_MP3negative;
+                PictureboxMeasPosition6.Image = Properties.Resources.Hall_MP3positive;
+                PictureboxMeasPosition7.Image = Properties.Resources.Hall_MP4negative;
+                PictureboxMeasPosition8.Image = Properties.Resources.Hall_MP4positive;
             }
             else
             {
-                PictureboxMeasPosition1.Image = Properties.Resources.VdP_MP1Minus;
-                PictureboxMeasPosition2.Image = Properties.Resources.VdP_MP1Plus;
-                PictureboxMeasPosition3.Image = Properties.Resources.VdP_MP2Minus;
-                PictureboxMeasPosition4.Image = Properties.Resources.VdP_MP2Plus;
-                PictureboxMeasPosition5.Image = Properties.Resources.VdP_MP3Minus;
-                PictureboxMeasPosition6.Image = Properties.Resources.VdP_MP3Plus;
-                PictureboxMeasPosition7.Image = Properties.Resources.VdP_MP4Minus;
-                PictureboxMeasPosition8.Image = Properties.Resources.VdP_MP4Plus;
+                PictureboxMeasPosition1.Image = Properties.Resources.VdP_MP1negative;
+                PictureboxMeasPosition2.Image = Properties.Resources.VdP_MP1positive;
+                PictureboxMeasPosition3.Image = Properties.Resources.VdP_MP2negative;
+                PictureboxMeasPosition4.Image = Properties.Resources.VdP_MP2positive;
+                PictureboxMeasPosition5.Image = Properties.Resources.VdP_MP3negative;
+                PictureboxMeasPosition6.Image = Properties.Resources.VdP_MP3positive;
+                PictureboxMeasPosition7.Image = Properties.Resources.VdP_MP4negative;
+                PictureboxMeasPosition8.Image = Properties.Resources.VdP_MP4positive;
             }
         }
 
@@ -893,10 +892,10 @@ namespace Program01
                 else if (GlobalSettings.Instance.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!4)");
                 }
             }
             catch (Exception Ex)
@@ -926,6 +925,72 @@ namespace Program01
                 else if (GlobalSettings.Instance.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!4)");
+                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+            }
+        }
+
+        private void PictureboxMeasPosition3_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
+                {
+                    MessageBox.Show("ไม่สามารถทำการเลือกตำแหน่งการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการทดสอบการวัด", MessageBoxButtons.OK);
+                    return;
+                }
+
+                if (GlobalSettings.Instance.IsModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
+                }
+                else if (GlobalSettings.Instance.IsModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
+                }
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+            }
+        }
+
+        private void PictureboxMeasPosition4_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
+                {
+                    MessageBox.Show("ไม่สามารถทำการเลือกตำแหน่งการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการทดสอบการวัด", MessageBoxButtons.OK);
+                    return;
+                }
+
+                if (GlobalSettings.Instance.IsModes == false)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
+                }
+                else if (GlobalSettings.Instance.IsModes == true)
+                {
+                    SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
@@ -938,7 +1003,7 @@ namespace Program01
             }
         }
 
-        private void PictureboxMeasPosition3_Click(object sender, EventArgs e)
+        private void PictureboxMeasPosition5_Click(object sender, EventArgs e)
         {
             try
             {
@@ -971,7 +1036,7 @@ namespace Program01
             }
         }
 
-        private void PictureboxMeasPosition4_Click(object sender, EventArgs e)
+        private void PictureboxMeasPosition6_Click(object sender, EventArgs e)
         {
             try
             {
@@ -996,72 +1061,6 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
-                }
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
-            }
-        }
-
-        private void PictureboxMeasPosition5_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
-                {
-                    MessageBox.Show("ไม่สามารถทำการเลือกตำแหน่งการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการทดสอบการวัด", MessageBoxButtons.OK);
-                    return;
-                }
-
-                if (GlobalSettings.Instance.IsModes == false)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
-                }
-                else if (GlobalSettings.Instance.IsModes == true)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!4)");
-                }
-            }
-            catch (Exception Ex)
-            {
-                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
-            }
-        }
-
-        private void PictureboxMeasPosition6_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
-                {
-                    MessageBox.Show("ไม่สามารถทำการเลือกตำแหน่งการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการทดสอบการวัด", MessageBoxButtons.OK);
-                    return;
-                }
-
-                if (GlobalSettings.Instance.IsModes == false)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
-                }
-                else if (GlobalSettings.Instance.IsModes == true)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!4)");
                 }
             }
             catch (Exception Ex)
@@ -1170,7 +1169,7 @@ namespace Program01
                     SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
                     SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
                     SMU.WriteString("TRACe:CLEar");
-                    SMU.WriteString("TRACe:POINts 3000000, 'defbuffer1'");
+                    SMU.WriteString("TRACe:POINts 1000000, 'defbuffer1'");
 
                     if (GlobalSettings.Instance.RsenseMode == "4-Wires")
                     {
@@ -1203,7 +1202,7 @@ namespace Program01
                     SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
                     SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
                     SMU.WriteString("TRACe:CLEar");
-                    SMU.WriteString("TRACe:POINts 3000000, 'defbuffer1'");
+                    SMU.WriteString("TRACe:POINts 1000000, 'defbuffer1'");
 
                     if (GlobalSettings.Instance.RsenseMode == "4-Wires")
                     {
@@ -1237,7 +1236,7 @@ namespace Program01
                     SMU.WriteString($"SENSe:FUNCtion 'VOLTage'");
                     SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
                     SMU.WriteString("TRACe:CLEar");
-                    SMU.WriteString("TRACe:POINts 3000000, 'defbuffer1'");
+                    SMU.WriteString("TRACe:POINts 1000000, 'defbuffer1'");
 
                     if (GlobalSettings.Instance.RsenseMode == "4-Wires")
                     {
@@ -1271,7 +1270,7 @@ namespace Program01
                     SMU.WriteString($"SENSe:FUNCtion 'CURRent'");
                     SMU.WriteString($"SENSe:CURRent:RANGe:AUTO ON");
                     SMU.WriteString("TRACe:CLEar");
-                    SMU.WriteString("TRACe:POINts 3000000, 'defbuffer1'");
+                    SMU.WriteString("TRACe:POINts 1000000, 'defbuffer1'");
 
                     if (GlobalSettings.Instance.RsenseMode == "4-Wires")
                     {
@@ -1385,8 +1384,10 @@ namespace Program01
             }
         }
 
-        private void IconbuttonRunMeasurement_Click(object sender, EventArgs e)
+        private async void IconbuttonRunMeasurement_Click(object sender, EventArgs e)
         {
+            DisableEditRun(true);
+
             try
             {
                 if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
@@ -1403,23 +1404,22 @@ namespace Program01
                 }
 
                 SaveToGlobalSettings();
-                RunMeasurement();
+                await RunMeasurement(startValue, stopValue, stepValue, repetitionValue, sourcelevellimitValue, thicknessValue, magneticfieldsValue, delayValue, points);
             }
             catch (Exception Ex)
             {
                 MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
+            finally
+            {
+                DisableEditRun(false);
+            }
         }
 
-        private async void RunMeasurement()
+        private async Task RunMeasurement(double startValue, double stopValue, double stepValue, int repetitionValue, double sourcelevellimitValue, double thicknessValue, double magneticfieldsValue, double delayValue, int points)
         {
             try
             {
-                if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelevellimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
-                {
-                    return;
-                }
-
                 CurrentTuner = 1;
                 CollectAndCalculateVdPMeasured.Instance.ClearAllData();
 
@@ -1438,9 +1438,9 @@ namespace Program01
                     if (CurrentTuner > 8)
                     {
                         Debug.WriteLine("[DEBUG] All tuners completed");
-                        MessageBox.Show($"ทำการวัด {ModeName} เสร็จสิ้นแล้ว", "การวัดเสร็จสิ้น", MessageBoxButtons.OK);
                         SMU.WriteString("OUTPut OFF");
                         SS.WriteString("*CLS");
+                        MessageBox.Show($"ทำการวัด {ModeName} เสร็จสิ้นแล้ว", "การวัดเสร็จสิ้น", MessageBoxButtons.OK);
 
                         if (Application.OpenForms.OfType<VdPTotalMeasureValuesForm>().FirstOrDefault() is VdPTotalMeasureValuesForm VdPTotalForm)
                         {
@@ -1455,6 +1455,10 @@ namespace Program01
             catch (Exception Ex)
             {
                 MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+            }
+            finally
+            {
+                DisableEditRun(false);
             }
         }
 
@@ -1474,17 +1478,17 @@ namespace Program01
             var configurations = new Dictionary<int, List<string>>
             {
                 { 1, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!5", "1!2!4", "1!3!3", "1!4!6" } :
-                                                                new List<string> { "1!1!4", "1!2!6", "1!3!3", "1!4!5" }},
-                { 2, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!4", "1!2!5", "1!3!3", "1!4!6" } :
-                                                                new List<string> { "1!1!6", "1!2!4", "1!3!3", "1!4!5" }},
-                { 3, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!3", "1!2!4", "1!3!5", "1!4!6" } :
-                                                                new List<string> { "1!1!5", "1!2!3", "1!3!4", "1!4!6" }},
-                { 4, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!4", "1!2!3", "1!3!5", "1!4!6" } :
-                                                                new List<string> { "1!1!3", "1!2!5", "1!3!4", "1!4!6" }},
-                { 5, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!6", "1!2!3", "1!3!4", "1!4!5" } :
                                                                 new List<string> { "1!1!5", "1!2!3", "1!3!6", "1!4!4" }},
-                { 6, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!3", "1!2!6", "1!3!4", "1!4!5" } :
+                { 2, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!4", "1!2!5", "1!3!3", "1!4!6" } :
                                                                 new List<string> { "1!1!3", "1!2!5", "1!3!6", "1!4!4" }},
+                { 3, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!6", "1!2!3", "1!3!4", "1!4!5" } :
+                                                                new List<string> { "1!1!4", "1!2!6", "1!3!3", "1!4!5" }},
+                { 4, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!3", "1!2!6", "1!3!4", "1!4!5" } :
+                                                                new List<string> { "1!1!6", "1!2!4", "1!3!3", "1!4!5" }},
+                { 5, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!3", "1!2!4", "1!3!5", "1!4!6" } :
+                                                                new List<string> { "1!1!5", "1!2!3", "1!3!4", "1!4!6" }},
+                { 6, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!4", "1!2!3", "1!3!5", "1!4!6" } :
+                                                                new List<string> { "1!1!3", "1!2!5", "1!3!4", "1!4!6" }},
                 { 7, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!6", "1!2!5", "1!3!4", "1!4!3" } :
                                                                 new List<string> { "1!1!4", "1!2!6", "1!3!5", "1!4!3" }},
                 { 8, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!5", "1!2!6", "1!3!4", "1!4!3" } :
@@ -2012,62 +2016,28 @@ namespace Program01
             }
         }
 
-        private void DisableEditRun(bool IsRun)
+        private void DisableEditRun(bool shouldDisable)
         {
-            if (!IsRun)
-            {
-                IsRun = true;
-                //GlobalSettings.Instance.IsRun = IsRun;
+            ComboboxMeasure.Enabled = !shouldDisable;
+            ComboboxRsense.Enabled = !shouldDisable;
+            ComboboxSource.Enabled = !shouldDisable;
+            ComboboxSourceLimitMode.Enabled = !shouldDisable;
+            ComboboxStartUnit.Enabled = !shouldDisable;
+            ComboboxStopUnit.Enabled = !shouldDisable;
+            ComboboxStepUnit.Enabled = !shouldDisable;
+            ComboboxSourceDelayUnit.Enabled = !shouldDisable;
+            ComboboxSourceLimitLevelUnit.Enabled = !shouldDisable;
+            ComboboxThicknessUnit.Enabled = !shouldDisable;
+            ComboboxMagneticFieldsUnit.Enabled = !shouldDisable;
 
-                ComboboxMeasure.Enabled = false;
-                ComboboxRsense.Enabled = false;
-                ComboboxSource.Enabled = false;
-                ComboboxSourceLimitMode.Enabled = false;
-                ComboboxStartUnit.Enabled = false;
-                ComboboxStopUnit.Enabled = false;
-                ComboboxStepUnit.Enabled = false;
-                ComboboxSourceDelayUnit.Enabled = false;
-                ComboboxSourceLimitLevelUnit.Enabled = false;
-                ComboboxThicknessUnit.Enabled = false;
-                ComboboxMagneticFieldsUnit.Enabled = false;
-
-                TextboxStart.Enabled = false;
-                TextboxStop.Enabled = false;
-                TextboxStep.Enabled = false;
-                TextboxSourceDelay.Enabled = false;
-                TextboxSourceDelay.Enabled = false;
-                TextboxSourceLimitLevel.Enabled = false;
-                TextboxThickness.Enabled = false;
-                TextboxRepetition.Enabled = false;
-                TextboxMagneticFields.Enabled = false;
-            }
-            else
-            {
-                IsRun = false;
-                //GlobalSettings.Instance.IsRun = IsRun;
-
-                ComboboxMeasure.Enabled = true;
-                ComboboxRsense.Enabled = true;
-                ComboboxSource.Enabled = true;
-                ComboboxSourceLimitMode.Enabled = true;
-                ComboboxStartUnit.Enabled = true;
-                ComboboxStopUnit.Enabled = true;
-                ComboboxStepUnit.Enabled = true;
-                ComboboxSourceDelayUnit.Enabled = true;
-                ComboboxSourceLimitLevelUnit.Enabled = true;
-                ComboboxThicknessUnit.Enabled = true;
-                ComboboxMagneticFieldsUnit.Enabled = true;
-
-                TextboxStart.Enabled = true;
-                TextboxStop.Enabled = true;
-                TextboxStep.Enabled = true;
-                TextboxSourceDelay.Enabled = true;
-                TextboxSourceDelay.Enabled = true;
-                TextboxSourceLimitLevel.Enabled = true;
-                TextboxThickness.Enabled = true;
-                TextboxRepetition.Enabled = true;
-                TextboxMagneticFields.Enabled = true;
-            }
+            TextboxStart.Enabled = !shouldDisable;
+            TextboxStop.Enabled = !shouldDisable;
+            TextboxStep.Enabled = !shouldDisable;
+            TextboxSourceDelay.Enabled = !shouldDisable;
+            TextboxSourceLimitLevel.Enabled = !shouldDisable;
+            TextboxThickness.Enabled = !shouldDisable;
+            TextboxRepetition.Enabled = !shouldDisable;
+            TextboxMagneticFields.Enabled = !shouldDisable;
         }
     }
 }

@@ -83,9 +83,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Hall_MP1Minus {
+        internal static System.Drawing.Bitmap Hall_MP1negative {
             get {
-                object obj = ResourceManager.GetObject("Hall_MP1Minus", resourceCulture);
+                object obj = ResourceManager.GetObject("Hall_MP1negative", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +93,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Hall_MP1Plus {
+        internal static System.Drawing.Bitmap Hall_MP1positive {
             get {
-                object obj = ResourceManager.GetObject("Hall_MP1Plus", resourceCulture);
+                object obj = ResourceManager.GetObject("Hall_MP1positive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +103,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Hall_MP2Minus {
+        internal static System.Drawing.Bitmap Hall_MP2negative {
             get {
-                object obj = ResourceManager.GetObject("Hall_MP2Minus", resourceCulture);
+                object obj = ResourceManager.GetObject("Hall_MP2negative", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +113,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Hall_MP2Plus {
+        internal static System.Drawing.Bitmap Hall_MP2positive {
             get {
-                object obj = ResourceManager.GetObject("Hall_MP2Plus", resourceCulture);
+                object obj = ResourceManager.GetObject("Hall_MP2positive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,9 +123,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Hall_MP3Minus {
+        internal static System.Drawing.Bitmap Hall_MP3negative {
             get {
-                object obj = ResourceManager.GetObject("Hall_MP3Minus", resourceCulture);
+                object obj = ResourceManager.GetObject("Hall_MP3negative", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -133,9 +133,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Hall_MP3Plus {
+        internal static System.Drawing.Bitmap Hall_MP3positive {
             get {
-                object obj = ResourceManager.GetObject("Hall_MP3Plus", resourceCulture);
+                object obj = ResourceManager.GetObject("Hall_MP3positive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -143,9 +143,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Hall_MP4Minus {
+        internal static System.Drawing.Bitmap Hall_MP4negative {
             get {
-                object obj = ResourceManager.GetObject("Hall_MP4Minus", resourceCulture);
+                object obj = ResourceManager.GetObject("Hall_MP4negative", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -153,9 +153,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Hall_MP4Plus {
+        internal static System.Drawing.Bitmap Hall_MP4positive {
             get {
-                object obj = ResourceManager.GetObject("Hall_MP4Plus", resourceCulture);
+                object obj = ResourceManager.GetObject("Hall_MP4positive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -173,9 +173,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap VdP_MP1Minus {
+        internal static System.Drawing.Bitmap VdP_MP1negative {
             get {
-                object obj = ResourceManager.GetObject("VdP_MP1Minus", resourceCulture);
+                object obj = ResourceManager.GetObject("VdP_MP1negative", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -183,9 +183,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap VdP_MP1Plus {
+        internal static System.Drawing.Bitmap VdP_MP1positive {
             get {
-                object obj = ResourceManager.GetObject("VdP_MP1Plus", resourceCulture);
+                object obj = ResourceManager.GetObject("VdP_MP1positive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -193,9 +193,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap VdP_MP2Minus {
+        internal static System.Drawing.Bitmap VdP_MP2negative {
             get {
-                object obj = ResourceManager.GetObject("VdP_MP2Minus", resourceCulture);
+                object obj = ResourceManager.GetObject("VdP_MP2negative", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -203,9 +203,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap VdP_MP2Plus {
+        internal static System.Drawing.Bitmap VdP_MP2positive {
             get {
-                object obj = ResourceManager.GetObject("VdP_MP2Plus", resourceCulture);
+                object obj = ResourceManager.GetObject("VdP_MP2positive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -213,9 +213,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap VdP_MP3Minus {
+        internal static System.Drawing.Bitmap VdP_MP3negative {
             get {
-                object obj = ResourceManager.GetObject("VdP_MP3Minus", resourceCulture);
+                object obj = ResourceManager.GetObject("VdP_MP3negative", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -223,9 +223,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap VdP_MP3Plus {
+        internal static System.Drawing.Bitmap VdP_MP3positive {
             get {
-                object obj = ResourceManager.GetObject("VdP_MP3Plus", resourceCulture);
+                object obj = ResourceManager.GetObject("VdP_MP3positive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -233,9 +233,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap VdP_MP4Minus {
+        internal static System.Drawing.Bitmap VdP_MP4negative {
             get {
-                object obj = ResourceManager.GetObject("VdP_MP4Minus", resourceCulture);
+                object obj = ResourceManager.GetObject("VdP_MP4negative", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -243,9 +243,9 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap VdP_MP4Plus {
+        internal static System.Drawing.Bitmap VdP_MP4positive {
             get {
-                object obj = ResourceManager.GetObject("VdP_MP4Plus", resourceCulture);
+                object obj = ResourceManager.GetObject("VdP_MP4positive", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

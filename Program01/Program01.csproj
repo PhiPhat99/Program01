@@ -253,52 +253,52 @@
     <None Include="Resources\Sample.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Hall_MP1Minus.png" />
+    <None Include="Resources\Hall_MP1negative.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Hall_MP1Plus.png" />
+    <None Include="Resources\Hall_MP1positive.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Hall_MP2Minus.png" />
+    <None Include="Resources\Hall_MP2negative.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Hall_MP2Plus.png" />
+    <None Include="Resources\Hall_MP2positive.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Hall_MP3Minus.png" />
+    <None Include="Resources\Hall_MP3negative.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Hall_MP3Plus.png" />
+    <None Include="Resources\Hall_MP3positive.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Hall_MP4Minus.png" />
+    <None Include="Resources\Hall_MP4negative.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Hall_MP4Plus.png" />
+    <None Include="Resources\Hall_MP4positive.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\VdP_MP1Minus.png" />
+    <None Include="Resources\VdP_MP1negative.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\VdP_MP1Plus.png" />
+    <None Include="Resources\VdP_MP1positive.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\VdP_MP2Minus.png" />
+    <None Include="Resources\VdP_MP2negative.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\VdP_MP2Plus.png" />
+    <None Include="Resources\VdP_MP2positive.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\VdP_MP3Minus.png" />
+    <None Include="Resources\VdP_MP3negative.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\VdP_MP3Plus.png" />
+    <None Include="Resources\VdP_MP3positive.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\VdP_MP4Minus.png" />
+    <None Include="Resources\VdP_MP4negative.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\VdP_MP4Plus.png" />
+    <None Include="Resources\VdP_MP4positive.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" />

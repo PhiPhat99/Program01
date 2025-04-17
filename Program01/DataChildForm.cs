@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using Program01;
-using static Program01.MeasurementSettingsForm;
 
 namespace Program01
 {
@@ -18,7 +14,7 @@ namespace Program01
 
         private void DataChildForm_Load(object sender, EventArgs e)
         {
-            GlobalSettings.Instance.OnSettingsChanged += UpdateFromGlobalSettings;
+            GlobalSettingsParseValues.Instance.OnSettingsChanged += UpdateFromGlobalSettings;
             UpdateFromGlobalSettings();
         }
 
@@ -33,25 +29,25 @@ namespace Program01
             ChartTunerTesting.Series["MeasurementData"].Points.Clear();
             var ChartAreas = ChartTunerTesting.ChartAreas[0];
 
-            if (GlobalSettings.Instance.SourceMode == "Voltage" && GlobalSettings.Instance.MeasureMode == "Voltage")
+            if (GlobalSettingsForUI.Instance.SourceModeUI == "Voltage" && GlobalSettingsForUI.Instance.MeasureModeUI == "Voltage")
             {
-                ChartAreas.AxisX.Title = $"{GlobalSettings.Instance.SourceMode} (Source) [{GlobalSettings.Instance.StepUnit}]";
-                ChartAreas.AxisY.Title = $"{GlobalSettings.Instance.MeasureMode} (Source) [{GlobalSettings.Instance.StepUnit}]";
+                ChartAreas.AxisX.Title = $"{GlobalSettingsForUI.Instance.SourceModeUI} (Source) [{GlobalSettingsForUI.Instance.StepUnitUI}]";
+                ChartAreas.AxisY.Title = $"{GlobalSettingsForUI.Instance.MeasureModeUI} (Source) [{GlobalSettingsForUI.Instance.StepUnitUI}]";
             }
-            else if (GlobalSettings.Instance.SourceMode == "Voltage" && GlobalSettings.Instance.MeasureMode == "Current")
+            else if (GlobalSettingsForUI.Instance.SourceModeUI == "Voltage" && GlobalSettingsForUI.Instance.MeasureModeUI == "Current")
             {
-                ChartAreas.AxisX.Title = $"{GlobalSettings.Instance.SourceMode} (Source) [V]";
-                ChartAreas.AxisY.Title = $"Current (Measure) [{GlobalSettings.Instance.SourceLimitLevelUnit}]";
+                ChartAreas.AxisX.Title = $"{GlobalSettingsForUI.Instance.SourceModeUI} (Source) [V]";
+                ChartAreas.AxisY.Title = $"Current (Measure) [{GlobalSettingsForUI.Instance.SourceLimitLevelUnitUI}]";
             }
-            else if (GlobalSettings.Instance.SourceMode == "Current" && GlobalSettings.Instance.MeasureMode == "Voltage")
+            else if (GlobalSettingsForUI.Instance.SourceModeUI == "Current" && GlobalSettingsForUI.Instance.MeasureModeUI == "Voltage")
             {
-                ChartAreas.AxisX.Title = $"Current (Source) [{GlobalSettings.Instance.StepUnit}]";
-                ChartAreas.AxisY.Title = $"{GlobalSettings.Instance.MeasureMode} (Measure) [V]";
+                ChartAreas.AxisX.Title = $"Current (Source) [{GlobalSettingsForUI.Instance.StepUnitUI}]";
+                ChartAreas.AxisY.Title = $"{GlobalSettingsForUI.Instance.MeasureModeUI} (Measure) [V]";
             }
-            else if (GlobalSettings.Instance.SourceMode == "Current" && GlobalSettings.Instance.MeasureMode == "Current")
+            else if (GlobalSettingsForUI.Instance.SourceModeUI == "Current" && GlobalSettingsForUI.Instance.MeasureModeUI == "Current")
             {
-                ChartAreas.AxisX.Title = $"Current (Source) [{GlobalSettings.Instance.StepUnit}]";
-                ChartAreas.AxisY.Title = $"Current (Measure) [{GlobalSettings.Instance.StepUnit}]";
+                ChartAreas.AxisX.Title = $"Current (Source) [{GlobalSettingsForUI.Instance.StepUnitUI}]";
+                ChartAreas.AxisY.Title = $"Current (Measure) [{GlobalSettingsForUI.Instance.StepUnitUI}]";
             }
 
             ChartAreas.AxisX.LabelStyle.Angle = 90;
@@ -87,7 +83,7 @@ namespace Program01
             TextboxMinSourceValue.Text = MinSource.ToString("0.######");
             TextboxSlopeValue.Text = Slope.ToString("0.######");
 
-            if (GlobalSettings.Instance.SourceMode == "Voltage" && GlobalSettings.Instance.MeasureMode == "Voltage")
+            if (GlobalSettingsForUI.Instance.SourceModeUI == "Voltage" && GlobalSettingsForUI.Instance.MeasureModeUI == "Voltage")
             {
                 LabelMaxMeasureUnit.Text = "V";
                 LabelMinMeasureUnit.Text = "V";
@@ -95,7 +91,7 @@ namespace Program01
                 LabelMinSourceUnit.Text = "V";
                 LabelSlopeUnit.Text = "";
             }
-            else if (GlobalSettings.Instance.SourceMode == "Voltage" && GlobalSettings.Instance.MeasureMode == "Current")
+            else if (GlobalSettingsForUI.Instance.SourceModeUI == "Voltage" && GlobalSettingsForUI.Instance.MeasureModeUI == "Current")
             {
                 LabelMaxMeasureUnit.Text = "A";
                 LabelMinMeasureUnit.Text = "A";
@@ -103,7 +99,7 @@ namespace Program01
                 LabelMinSourceUnit.Text = "V";
                 LabelSlopeUnit.Text = "Ω⁻¹";
             }
-            else if (GlobalSettings.Instance.SourceMode == "Current" && GlobalSettings.Instance.MeasureMode == "Voltage")
+            else if (GlobalSettingsForUI.Instance.SourceModeUI == "Current" && GlobalSettingsForUI.Instance.MeasureModeUI == "Voltage")
             {
                 LabelMaxMeasureUnit.Text = "V";
                 LabelMinMeasureUnit.Text = "V";
@@ -111,7 +107,7 @@ namespace Program01
                 LabelMinSourceUnit.Text = "A";
                 LabelSlopeUnit.Text = "Ω";
             }
-            else if (GlobalSettings.Instance.SourceMode == "Current" && GlobalSettings.Instance.MeasureMode == "Current")
+            else if (GlobalSettingsForUI.Instance.SourceModeUI == "Current" && GlobalSettingsForUI.Instance.MeasureModeUI == "Current")
             {
                 LabelMaxMeasureUnit.Text = "A";
                 LabelMinMeasureUnit.Text = "A";
@@ -123,16 +119,16 @@ namespace Program01
 
         private void UpdateFromGlobalSettings()
         {
-            if (GlobalSettings.Instance.XDataBuffer.Count > 0 && GlobalSettings.Instance.YDataBuffer.Count > 0)
+            if (GlobalSettingsParseValues.Instance.XDataBuffer.Count > 0 && GlobalSettingsParseValues.Instance.YDataBuffer.Count > 0)
             {
-                UpdateChart(GlobalSettings.Instance.XDataBuffer, GlobalSettings.Instance.YDataBuffer);
-                UpdateMeasurementData(GlobalSettings.Instance.MaxMeasure, GlobalSettings.Instance.MinMeasure, GlobalSettings.Instance.MaxSource, GlobalSettings.Instance.MinSource, GlobalSettings.Instance.Slope);
+                UpdateChart(GlobalSettingsParseValues.Instance.XDataBuffer, GlobalSettingsParseValues.Instance.YDataBuffer);
+                UpdateMeasurementData(GlobalSettingsParseValues.Instance.MaxMeasure, GlobalSettingsParseValues.Instance.MinMeasure, GlobalSettingsParseValues.Instance.MaxSource, GlobalSettingsParseValues.Instance.MinSource, GlobalSettingsParseValues.Instance.Slope);
             }
         }
 
         private void DataChildForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            GlobalSettings.Instance.OnSettingsChanged -= UpdateFromGlobalSettings;
+            GlobalSettingsParseValues.Instance.OnSettingsChanged -= UpdateFromGlobalSettings;
         }
     }
 }

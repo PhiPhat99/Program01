@@ -110,8 +110,8 @@ namespace Program01
 
                     double AverageSource = SumSource / measurementData.Count;
                     double AverageReading = SumReading / measurementData.Count;
-                    Debug.WriteLine($"The Average {GlobalSettings.Instance.SourceMode}: {AverageSource} A");
-                    Debug.WriteLine($"The Average {GlobalSettings.Instance.MeasureMode}: {AverageReading} V");
+                    Debug.WriteLine($"The Average {GlobalSettingsForUI.Instance.SourceModeUI}: {AverageSource} A");
+                    Debug.WriteLine($"The Average {GlobalSettingsForUI.Instance.MeasureModeUI}: {AverageReading} V");
 
                     double Resistance;
 
@@ -152,8 +152,8 @@ namespace Program01
             if (_resistancesByPosition.ContainsKey(6) && !double.IsNaN(_resistancesByPosition[6])) { avgRes5_6 += _resistancesByPosition[6]; count5_6++; }
             if (count5_6 > 0) { SumResistanceA += avgRes5_6 / count5_6; CountA++; }
 
-            GlobalSettings.Instance.ResistanceA = CountA > 0 ? SumResistanceA / CountA : double.NaN;
-            Debug.WriteLine($"[DEBUG]    Resistance A: {GlobalSettings.Instance.ResistanceA} Ohm (Count: {CountA} pairs)");
+            GlobalSettingsParseValues.Instance.ResistanceA = CountA > 0 ? SumResistanceA / CountA : double.NaN;
+            Debug.WriteLine($"[DEBUG]    Resistance A: {GlobalSettingsParseValues.Instance.ResistanceA} Ohm (Count: {CountA} pairs)");
 
             double SumResistanceB = 0;
             int CountB = 0;
@@ -172,8 +172,8 @@ namespace Program01
             if (_resistancesByPosition.ContainsKey(8) && !double.IsNaN(_resistancesByPosition[8])) { avgRes7_8 += _resistancesByPosition[8]; count7_8++; }
             if (count7_8 > 0) { SumResistanceB += avgRes7_8 / count7_8; CountB++; }
 
-            GlobalSettings.Instance.ResistanceB = CountB > 0 ? SumResistanceB / CountB : double.NaN;
-            Debug.WriteLine($"[DEBUG]    Resistance B: {GlobalSettings.Instance.ResistanceB} Ohm (Count: {CountB} pairs)");
+            GlobalSettingsParseValues.Instance.ResistanceB = CountB > 0 ? SumResistanceB / CountB : double.NaN;
+            Debug.WriteLine($"[DEBUG]    Resistance B: {GlobalSettingsParseValues.Instance.ResistanceB} Ohm (Count: {CountB} pairs)");
 
             double SumResistanceAll = 0;
             int CountAll = 0;
@@ -187,8 +187,8 @@ namespace Program01
                 }
             }
 
-            double ra = GlobalSettings.Instance.ResistanceA;
-            double rb = GlobalSettings.Instance.ResistanceB;
+            double ra = GlobalSettingsParseValues.Instance.ResistanceA;
+            double rb = GlobalSettingsParseValues.Instance.ResistanceB;
             double initialRs = (ra + rb) / 2.0;
             double tolerance = 1E-6;
             int maxIterations = 200;
@@ -196,41 +196,41 @@ namespace Program01
 
             if (!double.IsNaN(solvedRs))
             {
-                GlobalSettings.Instance.SheetResistance = solvedRs;
+                GlobalSettingsParseValues.Instance.SheetResistance = solvedRs;
                 Debug.WriteLine($"[DEBUG]    Sheet Resistance (Rs) calculated: {solvedRs} Ohm / square");
             }
             else
             {
-                GlobalSettings.Instance.SheetResistance = double.NaN;
+                GlobalSettingsParseValues.Instance.SheetResistance = double.NaN;
                 Debug.WriteLine("[DEBUG]    ไม่สามารถหาค่า Sheet Resistance ได้");
             }
 
-            GlobalSettings.Instance.AverageResistanceAll = CountAll > 0 ? SumResistanceAll / CountAll : double.NaN;
-            GlobalSettings.Instance.ResistancesByPosition = new Dictionary<int, double>(_resistancesByPosition);
+            GlobalSettingsParseValues.Instance.AverageResistanceAll = CountAll > 0 ? SumResistanceAll / CountAll : double.NaN;
+            GlobalSettingsParseValues.Instance.ResistancesByPosition = new Dictionary<int, double>(_resistancesByPosition);
 
-            double Resistivity = GlobalSettings.Instance.SheetResistance * GlobalSettings.Instance.ThicknessValue;  //  แก้ไขวิธีการคำนวณใหม่ เพราะคำนวณไม่ถูกต้อง
+            double Resistivity = GlobalSettingsParseValues.Instance.SheetResistance;  //  แก้ไขวิธีการคำนวณใหม่ เพราะคำนวณไม่ถูกต้อง
             
             if (!double.IsNaN (Resistivity))
             {
-                GlobalSettings.Instance.Resistivity = Resistivity;
-                Debug.WriteLine($"[DEBUG]   Resistivity (ρ) calculated: {GlobalSettings.Instance.Resistivity} Ohm ⋅ meter");
+                GlobalSettingsParseValues.Instance.Resistivity = Resistivity;
+                Debug.WriteLine($"[DEBUG]   Resistivity (ρ) calculated: {GlobalSettingsParseValues.Instance.Resistivity} Ohm ⋅ meter");
             }
             else
             {
-                GlobalSettings.Instance.Resistivity = double.NaN;
+                GlobalSettingsParseValues.Instance.Resistivity = double.NaN;
                 Debug.WriteLine("[DEBUG]    ไม่สามารถหาค่า Resistivity ได้");
             }
 
-            double Conductivity = 1 / GlobalSettings.Instance.Resistivity;  //  แก้ไขวิธีการคำนวณใหม่ เพราะคำนวณไม่ถูกต้อง
+            double Conductivity = 1 / GlobalSettingsParseValues.Instance.Resistivity;  //  แก้ไขวิธีการคำนวณใหม่ เพราะคำนวณไม่ถูกต้อง
 
             if (!double.IsNaN (Conductivity))
             {
-                GlobalSettings.Instance.Conductivity = Conductivity;
-                Debug.WriteLine($"[DEBUG]   Conductivity (σ) calculated: {GlobalSettings.Instance.Conductivity} Ohm / meter");
+                GlobalSettingsParseValues.Instance.Conductivity = Conductivity;
+                Debug.WriteLine($"[DEBUG]   Conductivity (σ) calculated: {GlobalSettingsParseValues.Instance.Conductivity} Ohm / meter");
             }
             else
             {
-                GlobalSettings.Instance.Conductivity = double.NaN;
+                GlobalSettingsParseValues.Instance.Conductivity = double.NaN;
                 Debug.WriteLine("[DEBUG]    ไม่สามารถหาค่า Conductivity ได้");
             }
 

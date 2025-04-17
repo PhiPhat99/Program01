@@ -18,9 +18,9 @@ namespace Program01
             {
                 if (Controls.Find($"TextboxRes{i}", true).FirstOrDefault() is TextBox resistanceTextBox)
                 {
-                    if (GlobalSettings.Instance.ResistancesByPosition.ContainsKey(i) && !double.IsNaN(GlobalSettings.Instance.ResistancesByPosition[i]))
+                    if (GlobalSettingsParseValues.Instance.ResistancesByPosition.ContainsKey(i) && !double.IsNaN(GlobalSettingsParseValues.Instance.ResistancesByPosition[i]))
                     {
-                        resistanceTextBox.Text = GlobalSettings.Instance.ResistancesByPosition[i].ToString("F5");
+                        resistanceTextBox.Text = GlobalSettingsParseValues.Instance.ResistancesByPosition[i].ToString("F5");
                     }
                     else
                     {
@@ -35,7 +35,7 @@ namespace Program01
 
             if (Controls.Find("TextboxResA", true).FirstOrDefault() is TextBox resistanceATextBox)
             {
-                resistanceATextBox.Text = !double.IsNaN(GlobalSettings.Instance.ResistanceA) ? GlobalSettings.Instance.ResistanceA.ToString("F5") : "N/A";
+                resistanceATextBox.Text = !double.IsNaN(GlobalSettingsParseValues.Instance.ResistanceA) ? GlobalSettingsParseValues.Instance.ResistanceA.ToString("F5") : "N/A";
             }
             if (Controls.Find("TextboxResAUnit", true).FirstOrDefault() is TextBox unitATextBox)
             {
@@ -44,7 +44,7 @@ namespace Program01
 
             if (Controls.Find("TextboxResB", true).FirstOrDefault() is TextBox resistanceBTextBox)
             {
-                resistanceBTextBox.Text = !double.IsNaN(GlobalSettings.Instance.ResistanceB) ? GlobalSettings.Instance.ResistanceB.ToString("F5") : "N/A";
+                resistanceBTextBox.Text = !double.IsNaN(GlobalSettingsParseValues.Instance.ResistanceB) ? GlobalSettingsParseValues.Instance.ResistanceB.ToString("F5") : "N/A";
             }
             if (Controls.Find("TextboxResBUnit", true).FirstOrDefault() is TextBox unitBTextBox)
             {
@@ -54,7 +54,7 @@ namespace Program01
 
             if (Controls.Find("TextboxAvgRes", true).FirstOrDefault() is TextBox averageResistanceTextBox)
             {
-                averageResistanceTextBox.Text = !double.IsNaN(GlobalSettings.Instance.AverageResistanceAll) ? GlobalSettings.Instance.AverageResistanceAll.ToString("F5") : "N/A";
+                averageResistanceTextBox.Text = !double.IsNaN(GlobalSettingsParseValues.Instance.AverageResistanceAll) ? GlobalSettingsParseValues.Instance.AverageResistanceAll.ToString("F5") : "N/A";
             }
             if (Controls.Find("TextboxAvgResUnit", true).FirstOrDefault() is TextBox averageUnitTextBox)
             {
@@ -63,16 +63,16 @@ namespace Program01
 
             if (Controls.Find("TextboxThickness", true).FirstOrDefault() is TextBox thicknessTextBox)
             {
-                thicknessTextBox.Text = !double.IsNaN(GlobalSettings.Instance.ThicknessValue) ? GlobalSettings.Instance.ThicknessValue.ToString("F5") : "N/A";
+                thicknessTextBox.Text = !double.IsNaN(GlobalSettingsForUI.Instance.ThicknessValueUI) ? GlobalSettingsForUI.Instance.ThicknessValueUI.ToString("F5") : "N/A";
             }
             if (Controls.Find("TextboxThicknessUnit", true).FirstOrDefault() is TextBox thicknessUnitTextBox)
             {
-                thicknessUnitTextBox.Text = GlobalSettings.Instance.ThicknessUnit;
+                thicknessUnitTextBox.Text = GlobalSettingsForUI.Instance.ThicknessUnitUI;
             }
 
             if (Controls.Find("TextboxSheetRes", true).FirstOrDefault() is TextBox sheetresistanceTextBox)
             {
-                sheetresistanceTextBox.Text = !double.IsNaN(GlobalSettings.Instance.SheetResistance) ? GlobalSettings.Instance.SheetResistance.ToString("F5") : "N/A";
+                sheetresistanceTextBox.Text = !double.IsNaN(GlobalSettingsParseValues.Instance.SheetResistance) ? GlobalSettingsParseValues.Instance.SheetResistance.ToString("F5") : "N/A";
             }
             if (Controls.Find("TextboxSheetResUnit", true).FirstOrDefault() is TextBox sheetresistanceunitTextBox)
             {
@@ -81,7 +81,7 @@ namespace Program01
 
             if (Controls.Find("TextboxResistivity", true).FirstOrDefault() is TextBox resistivityTextBox)
             {
-                resistivityTextBox.Text = !double.IsNaN(GlobalSettings.Instance.Resistivity) ? GlobalSettings.Instance.Resistivity.ToString("F5") : "N/A";
+                resistivityTextBox.Text = !double.IsNaN(GlobalSettingsParseValues.Instance.Resistivity) ? GlobalSettingsParseValues.Instance.Resistivity.ToString("F5") : "N/A";
             }
             if (Controls.Find("TextboxResistivityUnit", true).FirstOrDefault() is TextBox resistivityunitTextBox)
             {
@@ -90,7 +90,7 @@ namespace Program01
 
             if (Controls.Find("TextboxConductivity", true).FirstOrDefault() is TextBox conductivityTextBox)
             { 
-                conductivityTextBox.Text = !double.IsNaN(GlobalSettings.Instance.Conductivity) ? GlobalSettings.Instance.Conductivity.ToString("F5") : "N/A";
+                conductivityTextBox.Text = !double.IsNaN(GlobalSettingsParseValues.Instance.Conductivity) ? GlobalSettingsParseValues.Instance.Conductivity.ToString("F5") : "N/A";
             }
             if (Controls.Find("TextboxConductivityUnit", true).FirstOrDefault() is TextBox conductivityunitTextBox)
             {

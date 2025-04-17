@@ -74,26 +74,26 @@ namespace Program01
                 chart.Titles.Clear();
                 chart.Titles.Add(title);
 
-                if (GlobalSettings.Instance.SourceMode == "Voltage")
+                if (GlobalSettingsForUI.Instance.SourceModeUI == "Voltage")
                 {
-                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceMode} (V)";
+                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettingsForUI.Instance.SourceModeUI} (V)";
                 }
                 else
                 {
-                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceMode} (A)";
+                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettingsForUI.Instance.SourceModeUI} (A)";
                 }
 
                 chart.ChartAreas[0].AxisX.LabelStyle.Angle = 90;
                 chart.ChartAreas[0].AxisX.IsLabelAutoFit = false;
                 chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.FixedCount;
 
-                if (GlobalSettings.Instance.MeasureMode == "Voltage")
+                if (GlobalSettingsForUI.Instance.MeasureModeUI == "Voltage")
                 {
-                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureMode} (V)";
+                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettingsForUI.Instance.MeasureModeUI} (V)";
                 }
                 else
                 {
-                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureMode} (A)";
+                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettingsForUI.Instance.MeasureModeUI} (A)";
                 }
 
                 chart.ChartAreas[0].AxisY.LabelStyle.Angle = 0;

@@ -40,7 +40,7 @@ namespace Program01
                 TabcontrolVdPTotalCharts.TabPages["TotalMeasuredValuesTabPage"].Controls.ContainsKey("ChartTotalPositions"))
             {
                 Chart totalChart = (Chart)TabcontrolVdPTotalCharts.TabPages["TotalMeasuredValuesTabPage"].Controls["ChartTotalPositions"];
-                SetupIVChart(totalChart, "I-V Graph of Total Positions"); // ตั้งค่า Title แบบไดนามิก
+                SetupIVChart(totalChart, "I-V Graph of Total Positions");
             }
             else
             {
@@ -74,26 +74,26 @@ namespace Program01
                 chart.Titles.Clear();
                 chart.Titles.Add(title);
 
-                if (GlobalSettingsForUI.Instance.SourceModeUI == "Voltage")
+                if (GlobalSettings.Instance.SourceModeUI == "Voltage")
                 {
-                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettingsForUI.Instance.SourceModeUI} (V)";
+                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (V)";
                 }
                 else
                 {
-                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettingsForUI.Instance.SourceModeUI} (A)";
+                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (A)";
                 }
 
                 chart.ChartAreas[0].AxisX.LabelStyle.Angle = 90;
                 chart.ChartAreas[0].AxisX.IsLabelAutoFit = false;
                 chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.FixedCount;
 
-                if (GlobalSettingsForUI.Instance.MeasureModeUI == "Voltage")
+                if (GlobalSettings.Instance.MeasureModeUI == "Voltage")
                 {
-                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettingsForUI.Instance.MeasureModeUI} (V)";
+                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (V)";
                 }
                 else
                 {
-                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettingsForUI.Instance.MeasureModeUI} (A)";
+                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (A)";
                 }
 
                 chart.ChartAreas[0].AxisY.LabelStyle.Angle = 0;
@@ -149,7 +149,7 @@ namespace Program01
 
                 Debug.WriteLine($"[DEBUG] LoadMeasurementData - maxSteps: {maxSteps}");
 
-                DatagridviewVdPTotalMesure.ColumnCount = 16; // กำหนดจำนวน Column เป็น 16 (Source + Measured สำหรับ 8 Tuner)
+                DatagridviewVdPTotalMesure.ColumnCount = 16;
 
                 for (int i = 0; i < maxSteps; i++)
                 {
@@ -174,7 +174,7 @@ namespace Program01
             }
             else
             {
-                Debug.WriteLine("[DEBUG] LoadMeasurementData - No data to display in DataGridView.");
+                Debug.WriteLine("[DEBUG] LoadMeasurementData - No data to display in DataGridView");
             }
         }
 
@@ -213,12 +213,10 @@ namespace Program01
                             }
                             else
                             {
-                                // เพิ่ม Debug Log เพื่อตรวจสอบกรณีที่ไม่มีข้อมูลหรือ Series
                                 Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - No data or Series key not found for Position {i}. AllMeasurements.ContainsKey({i}) = {AllMeasurements.ContainsKey(i)}");
                             }
                         }
 
-                        // ตรวจสอบและเปิดใช้งาน Legend
                         if (TotalChart.Legends.Count > 0)
                         {
                             TotalChart.Legends[0].Enabled = true;
@@ -239,7 +237,6 @@ namespace Program01
                 Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - TotalMeasuredValuesTabPage not found.");
             }
 
-            // ส่วนการแสดงกราฟใน Tabs แยกตามตำแหน่ง (เพิ่มการตรวจสอบ AllMeasurements.ContainsKey(i))
             for (int i = 1; i <= 8; i++)
             {
                 string tabPageName = $"MeasuredValueP{i}TabPage";
@@ -251,7 +248,7 @@ namespace Program01
                     if (measuredChart != null && measuredChart.Series.Count > 0 && AllMeasurements[i] != null && AllMeasurements[i].Count > 0)
                     {
                         Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - Binding data for Position {i} to {chartName}");
-                        measuredChart.DataSource = AllMeasurements[i].Select(data => new { Source = data.Source, Reading = data.Reading }).ToList();
+                        measuredChart.DataSource = AllMeasurements[i].Select(data => new { data.Source, data.Reading }).ToList();
                         measuredChart.DataBind();
                     }
                     else
@@ -266,7 +263,6 @@ namespace Program01
             }
         }
 
-        // ฟังก์ชัน TabPageExists (ถ้ายังไม่ได้เพิ่ม)
         private bool TabPageExists(TabControl tabControl, string tabPageName)
         {
             foreach (TabPage tabPage in tabControl.TabPages)

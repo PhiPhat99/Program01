@@ -121,9 +121,8 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GlobalSettingsParseValues.cs" />
+    <Compile Include="GlobalSettings.cs" />
     <Compile Include="CollectAndCalculateHallMeasured.cs" />
-    <Compile Include="GlobalSettingsForUI.cs" />
     <Compile Include="InstrumentsConnectionManager.cs" />
     <Compile Include="CollectAndCalculateVdPMeasured.cs" />
     <Compile Include="DataChildForm.cs">

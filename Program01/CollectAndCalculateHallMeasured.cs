@@ -1,48 +1,79 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Program01
 {
     public class CollectAndCalculateHallMeasured
     {
-        /*private static HallMeasurementData instance;
+        public static CollectAndCalculateHallMeasured _instance;
+        private static readonly object _lock = new object();
+        private Dictionary<int, List<(double Source, double Reading)>> _measurementsByPosition = new Dictionary<int, List<(double, double)>>();
+        public event EventHandler DataUpdated;
+        public event EventHandler CalculationCompleted;
 
-        public List<double> HallMeasured { get; set; } = new List<double>();
+        private CollectAndCalculateHallMeasured() { }
 
-        private HallMeasurementData() { }
-
-        public static HallMeasurementData Instance
+        public static CollectAndCalculateHallMeasured Instance
         {
             get
             {
-                if (instance == null)
-                    instance = new HallMeasurementData();
-                return instance;
+                if (_instance == null)
+                {
+                    lock (_lock)
+                    {
+                        if (_instance == null)
+                        {
+                            _instance = new CollectAndCalculateHallMeasured();
+                        }
+                    }
+                }
+                return _instance;
             }
         }
 
-
-        public void AddMeasurement(double measured1, double measured2, double measured3, double measured4, double measured5, double measured6, double measured7, double measured8)
+        public void StoreMeasurementData(int tunerPosition, List<(double Source, double Reading)> dataPairs)
         {
-            HallMeasured.Add(measured1);
-            HallMeasured.Add(measured2);
-            HallMeasured.Add(measured3);
-            HallMeasured.Add(measured4);
-            HallMeasured.Add(measured5);
-            HallMeasured.Add(measured6);
-            HallMeasured.Add(measured7);
-            HallMeasured.Add(measured8);
+            Debug.WriteLine($"[DEBUG] StoreMeasurementData - Tuner: {tunerPosition}, Data Count: {dataPairs?.Count ?? 0}");
+
+            if (dataPairs != null)
+            {
+                foreach ((double Source, double Reading) in dataPairs)
+                {
+                    Debug.WriteLine($"[DEBUG]    Source: {Source}, Reading: {Reading}");
+                }
+            }
+
+            if (!_measurementsByPosition.ContainsKey(tunerPosition))
+            {
+                _measurementsByPosition[tunerPosition] = new List<(double, double)>();
+            }
+
+            _measurementsByPosition[tunerPosition].AddRange(dataPairs);
+            DataUpdated?.Invoke(this, EventArgs.Empty);
         }
 
-        public void ClearMeasurements()
+        public Dictionary<int, List<(double Source, double Reading)>> GetAllMeasurementsByTuner()
         {
-            HallMeasured.Clear();
+            return _measurementsByPosition;
         }
 
-        public class CollectHallMeasuredValue
+        public List<(double Source, double Reading)> GetAllData()
         {
-            public static HallMeasurementData Instance => HallMeasurementData.Instance;
-        }*/
+            List<(double Source, double Reading)> allData = new List<(double, double)>();
+
+            foreach (var measurements in _measurementsByPosition.Values)
+            {
+                allData.AddRange(measurements);
+            }
+
+            return allData;
+        }
+
+        public void ClearAllData()
+        {
+            _measurementsByPosition.Clear();
+        }
     }
 }
 

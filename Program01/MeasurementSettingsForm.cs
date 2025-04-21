@@ -307,11 +307,11 @@ namespace Program01
             ComboboxSourceLimitMode.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
 
             ComboboxStartUnit.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
+            ComboboxStartUnit.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
             ComboboxStepUnit.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
             ComboboxStepUnit.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
             ComboboxStopUnit.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
             ComboboxStopUnit.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
-            ComboboxStartUnit.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
 
             ComboboxSourceDelayUnit.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
             ComboboxSourceDelayUnit.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
@@ -1559,7 +1559,7 @@ namespace Program01
                     OnToggleChanged();
                     
                     CurrentTuner = 1;
-                    //CollectAndCalculateHallMeasured.Instance.ClearAllData();
+                    CollectAndCalculateHallMeasured.Instance.ClearAllData();
 
                     while (CurrentTuner <= 8)
                     {
@@ -1603,7 +1603,7 @@ namespace Program01
                         OnToggleChanged();
 
                         CurrentTuner = 1;
-                        //CollectAndCalculateHallMeasured.Instance.ClearAllData();
+                        CollectAndCalculateHallMeasured.Instance.ClearAllData();
 
                         while (CurrentTuner <= 8)
                         {
@@ -1647,7 +1647,7 @@ namespace Program01
                             OnToggleChanged();
 
                             CurrentTuner = 1;
-                            //CollectAndCalculateHallMeasured.Instance.ClearAllData();
+                            CollectAndCalculateHallMeasured.Instance.ClearAllData();
 
                             while (CurrentTuner <= 8)
                             {

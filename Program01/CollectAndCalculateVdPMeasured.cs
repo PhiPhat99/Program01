@@ -8,7 +8,7 @@ namespace Program01
     {
         public static CollectAndCalculateVdPMeasured _instance;
         private static readonly object _lock = new object();
-        private Dictionary<int, List<(double Source, double Reading)>> _measurementsByTuner = new Dictionary<int, List<(double, double)>>();
+        private Dictionary<int, List<(double Source, double Reading)>> _measurementsByPosition = new Dictionary<int, List<(double, double)>>();
         private Dictionary<int, double> _resistancesByPosition = new Dictionary<int, double>();
         public event EventHandler DataUpdated;
         public event EventHandler CalculationCompleted;
@@ -45,25 +45,25 @@ namespace Program01
                 }
             }
 
-            if (!_measurementsByTuner.ContainsKey(tunerPosition))
+            if (!_measurementsByPosition.ContainsKey(tunerPosition))
             {
-                _measurementsByTuner[tunerPosition] = new List<(double, double)>();
+                _measurementsByPosition[tunerPosition] = new List<(double, double)>();
             }
 
-            _measurementsByTuner[tunerPosition].AddRange(dataPairs);
+            _measurementsByPosition[tunerPosition].AddRange(dataPairs);
             DataUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         public Dictionary<int, List<(double Source, double Reading)>> GetAllMeasurementsByTuner()
         {
-            return _measurementsByTuner;
+            return _measurementsByPosition;
         }
 
         public List<(double Source, double Reading)> GetAllData()
         {
             List<(double Source, double Reading)> allData = new List<(double, double)>();
 
-            foreach (var measurements in _measurementsByTuner.Values)
+            foreach (var measurements in _measurementsByPosition.Values)
             {
                 allData.AddRange(measurements);
             }
@@ -73,7 +73,7 @@ namespace Program01
 
         public void ClearAllData()
         {
-            _measurementsByTuner.Clear();
+            _measurementsByPosition.Clear();
         }
 
         private static double F(double Rs, double Ra, double Rb)
@@ -95,9 +95,9 @@ namespace Program01
 
             for (int i = 1; i <= 8; i++)
             {
-                if (_measurementsByTuner.ContainsKey(i) && _measurementsByTuner[i].Count > 0)
+                if (_measurementsByPosition.ContainsKey(i) && _measurementsByPosition[i].Count > 0)
                 {
-                    List<(double Source, double Reading)> measurementData = _measurementsByTuner[i];
+                    List<(double Source, double Reading)> measurementData = _measurementsByPosition[i];
 
                     double SumSource = 0;
                     double SumReading = 0;

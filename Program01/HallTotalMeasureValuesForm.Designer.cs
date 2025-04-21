@@ -71,9 +71,13 @@
             this.Measured8Page = new System.Windows.Forms.TabPage();
             this.ChartMeasured8 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.Tabcontrol = new System.Windows.Forms.TabControl();
             this.TabpageHallOutMeasured = new System.Windows.Forms.TabPage();
             this.TabpageHallInMeasured = new System.Windows.Forms.TabPage();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.TabcontrolHallInMeasured = new System.Windows.Forms.TabControl();
+            this.TabpageHallInSouthVoltage = new System.Windows.Forms.TabPage();
+            this.TabpageHallInNorthVoltage = new System.Windows.Forms.TabPage();
             this.panel2.SuspendLayout();
             this.TabcontrolVdPTotalCharts.SuspendLayout();
             this.Measured1Page.SuspendLayout();
@@ -93,7 +97,10 @@
             this.Measured8Page.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ChartMeasured8)).BeginInit();
             this.panel1.SuspendLayout();
-            this.tabControl1.SuspendLayout();
+            this.Tabcontrol.SuspendLayout();
+            this.TabpageHallOutMeasured.SuspendLayout();
+            this.TabpageHallInMeasured.SuspendLayout();
+            this.TabcontrolHallInMeasured.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel2
@@ -341,44 +348,90 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Transparent;
-            this.panel1.Controls.Add(this.tabControl1);
+            this.panel1.Controls.Add(this.Tabcontrol);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(630, 820);
             this.panel1.TabIndex = 3;
             // 
-            // tabControl1
+            // Tabcontrol
             // 
-            this.tabControl1.Controls.Add(this.TabpageHallOutMeasured);
-            this.tabControl1.Controls.Add(this.TabpageHallInMeasured);
-            this.tabControl1.Location = new System.Drawing.Point(15, 50);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(600, 720);
-            this.tabControl1.TabIndex = 2;
+            this.Tabcontrol.Controls.Add(this.TabpageHallOutMeasured);
+            this.Tabcontrol.Controls.Add(this.TabpageHallInMeasured);
+            this.Tabcontrol.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Tabcontrol.Location = new System.Drawing.Point(15, 50);
+            this.Tabcontrol.Name = "Tabcontrol";
+            this.Tabcontrol.SelectedIndex = 0;
+            this.Tabcontrol.Size = new System.Drawing.Size(600, 720);
+            this.Tabcontrol.TabIndex = 2;
             // 
             // TabpageHallOutMeasured
             // 
+            this.TabpageHallOutMeasured.Controls.Add(this.tabControl1);
             this.TabpageHallOutMeasured.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageHallOutMeasured.Location = new System.Drawing.Point(4, 25);
+            this.TabpageHallOutMeasured.Location = new System.Drawing.Point(4, 29);
             this.TabpageHallOutMeasured.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageHallOutMeasured.Name = "TabpageHallOutMeasured";
-            this.TabpageHallOutMeasured.Size = new System.Drawing.Size(592, 691);
+            this.TabpageHallOutMeasured.Size = new System.Drawing.Size(592, 687);
             this.TabpageHallOutMeasured.TabIndex = 7;
             this.TabpageHallOutMeasured.Text = "Hall Out Voltage";
             this.TabpageHallOutMeasured.UseVisualStyleBackColor = true;
             // 
             // TabpageHallInMeasured
             // 
+            this.TabpageHallInMeasured.Controls.Add(this.TabcontrolHallInMeasured);
             this.TabpageHallInMeasured.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageHallInMeasured.Location = new System.Drawing.Point(4, 25);
+            this.TabpageHallInMeasured.Location = new System.Drawing.Point(4, 29);
             this.TabpageHallInMeasured.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageHallInMeasured.Name = "TabpageHallInMeasured";
-            this.TabpageHallInMeasured.Size = new System.Drawing.Size(592, 691);
+            this.TabpageHallInMeasured.Size = new System.Drawing.Size(592, 687);
             this.TabpageHallInMeasured.TabIndex = 8;
             this.TabpageHallInMeasured.Text = "Hall In Voltage";
             this.TabpageHallInMeasured.UseVisualStyleBackColor = true;
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(592, 687);
+            this.tabControl1.TabIndex = 3;
+            // 
+            // TabcontrolHallInMeasured
+            // 
+            this.TabcontrolHallInMeasured.Controls.Add(this.TabpageHallInSouthVoltage);
+            this.TabcontrolHallInMeasured.Controls.Add(this.TabpageHallInNorthVoltage);
+            this.TabcontrolHallInMeasured.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TabcontrolHallInMeasured.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TabcontrolHallInMeasured.Location = new System.Drawing.Point(0, 0);
+            this.TabcontrolHallInMeasured.Name = "TabcontrolHallInMeasured";
+            this.TabcontrolHallInMeasured.SelectedIndex = 0;
+            this.TabcontrolHallInMeasured.Size = new System.Drawing.Size(592, 687);
+            this.TabcontrolHallInMeasured.TabIndex = 3;
+            // 
+            // TabpageHallInSouthVoltage
+            // 
+            this.TabpageHallInSouthVoltage.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TabpageHallInSouthVoltage.Location = new System.Drawing.Point(4, 26);
+            this.TabpageHallInSouthVoltage.Margin = new System.Windows.Forms.Padding(0);
+            this.TabpageHallInSouthVoltage.Name = "TabpageHallInSouthVoltage";
+            this.TabpageHallInSouthVoltage.Size = new System.Drawing.Size(584, 657);
+            this.TabpageHallInSouthVoltage.TabIndex = 7;
+            this.TabpageHallInSouthVoltage.Text = "Hall In South Voltage";
+            this.TabpageHallInSouthVoltage.UseVisualStyleBackColor = true;
+            // 
+            // TabpageHallInNorthVoltage
+            // 
+            this.TabpageHallInNorthVoltage.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TabpageHallInNorthVoltage.Location = new System.Drawing.Point(4, 29);
+            this.TabpageHallInNorthVoltage.Margin = new System.Windows.Forms.Padding(0);
+            this.TabpageHallInNorthVoltage.Name = "TabpageHallInNorthVoltage";
+            this.TabpageHallInNorthVoltage.Size = new System.Drawing.Size(584, 658);
+            this.TabpageHallInNorthVoltage.TabIndex = 8;
+            this.TabpageHallInNorthVoltage.Text = "Hall In  North Voltage";
+            this.TabpageHallInNorthVoltage.UseVisualStyleBackColor = true;
             // 
             // HallTotalMeasureValuesForm
             // 
@@ -410,7 +463,10 @@
             this.Measured8Page.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ChartMeasured8)).EndInit();
             this.panel1.ResumeLayout(false);
-            this.tabControl1.ResumeLayout(false);
+            this.Tabcontrol.ResumeLayout(false);
+            this.TabpageHallOutMeasured.ResumeLayout(false);
+            this.TabpageHallInMeasured.ResumeLayout(false);
+            this.TabcontrolHallInMeasured.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -435,8 +491,12 @@
         private System.Windows.Forms.TabPage Measured8Page;
         private System.Windows.Forms.DataVisualization.Charting.Chart ChartMeasured8;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl Tabcontrol;
         private System.Windows.Forms.TabPage TabpageHallOutMeasured;
         private System.Windows.Forms.TabPage TabpageHallInMeasured;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl TabcontrolHallInMeasured;
+        private System.Windows.Forms.TabPage TabpageHallInSouthVoltage;
+        private System.Windows.Forms.TabPage TabpageHallInNorthVoltage;
     }
 }

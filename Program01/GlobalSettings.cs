@@ -1,7 +1,6 @@
 ﻿using Program01;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 public class GlobalSettings
@@ -155,7 +154,7 @@ public class GlobalSettings
     public double StopValueUI
     {
         get => _stopValueUI;
-        set => SetProperty(ref _startValueUI, value);
+        set => SetProperty(ref _stopValueUI, value);
     }
 
     private string _stopUnitUI = "mA";

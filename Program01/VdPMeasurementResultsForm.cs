@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
-using System.Windows.Forms.DataVisualization;
 using System.Windows.Forms.DataVisualization.Charting;
 
 
@@ -9,15 +9,23 @@ namespace Program01
 {
     public partial class VdPMeasurementResultsForm : Form
     {
+        public class ResistanceData
+        {
+            public int Position { get; set; }
+            public double Resistance { get; set; }
+        }
+
         public VdPMeasurementResultsForm()
         {
             InitializeComponent();
             LoadMeasurementResults();
             LoadTotalResistancesChart();
         }
-
         public void LoadMeasurementResults ()
         {
+            TextboxSourceMode.Text = GlobalSettings.Instance.SourceModeUI;
+            TextboxMeasureMode.Text = GlobalSettings.Instance.MeasureModeUI;
+
             for (int i = 1; i <= 8; i++)
             {
                 if (Controls.Find($"TextboxRes{i}", true).FirstOrDefault() is TextBox resistanceTextBox)
@@ -67,16 +75,17 @@ namespace Program01
 
             if (Controls.Find("TextboxThickness", true).FirstOrDefault() is TextBox thicknessTextBox)
             {
-                thicknessTextBox.Text = !double.IsNaN(GlobalSettings.Instance.ThicknessValueUI) ? GlobalSettings.Instance.ThicknessValueUI.ToString("F5") : "N/A";
+                thicknessTextBox.Text = $"{GlobalSettings.Instance.ThicknessValueUI}";
             }
             if (Controls.Find("TextboxThicknessUnit", true).FirstOrDefault() is TextBox thicknessUnitTextBox)
             {
-                thicknessUnitTextBox.Text = GlobalSettings.Instance.ThicknessUnitUI;
+                thicknessUnitTextBox.Text = $"{GlobalSettings.Instance.ThicknessUnitUI}";
             }
 
             if (Controls.Find("TextboxSheetRes", true).FirstOrDefault() is TextBox sheetresistanceTextBox)
             {
                 sheetresistanceTextBox.Text = !double.IsNaN(GlobalSettings.Instance.SheetResistance) ? GlobalSettings.Instance.SheetResistance.ToString("F5") : "N/A";
+                Debug.WriteLine($"Sheet Resistance: {GlobalSettings.Instance.SheetResistance}");
             }
             if (Controls.Find("TextboxSheetResUnit", true).FirstOrDefault() is TextBox sheetresistanceunitTextBox)
             {
@@ -86,6 +95,7 @@ namespace Program01
             if (Controls.Find("TextboxResistivity", true).FirstOrDefault() is TextBox resistivityTextBox)
             {
                 resistivityTextBox.Text = !double.IsNaN(GlobalSettings.Instance.Resistivity) ? GlobalSettings.Instance.Resistivity.ToString("F5") : "N/A";
+                Debug.WriteLine($"Resistivity: {GlobalSettings.Instance.SheetResistance} x {GlobalSettings.Instance.ThicknessValueStd}");
             }
             if (Controls.Find("TextboxResistivityUnit", true).FirstOrDefault() is TextBox resistivityunitTextBox)
             {
@@ -98,7 +108,7 @@ namespace Program01
             }
             if (Controls.Find("TextboxConductivityUnit", true).FirstOrDefault() is TextBox conductivityunitTextBox)
             {
-                conductivityunitTextBox.Text = "Ω / m";
+                conductivityunitTextBox.Text = "S / m";
             }
         }
 
@@ -112,27 +122,32 @@ namespace Program01
                 return;
             }
 
-            ChartTotalResistances.Series.Clear();
-
-            var resistanceSeries = new Series
-            {
-                Name = "Resistance (Ω)",
-            };
+            List<ResistanceData> resistanceDataSource = new List<ResistanceData>();
 
             for (int i = 1; i <= 8; i++)
             {
-                if (GlobalSettings.Instance.ResistancesByPosition.ContainsKey(i) && !double.IsNaN(GlobalSettings.Instance.ResistancesByPosition[i]))
+                if (GlobalSettings.Instance.ResistancesByPosition.ContainsKey(i))
                 {
-                    resistanceSeries.Points.AddXY($"Position {i}", GlobalSettings.Instance.ResistancesByPosition[i]);
+                    resistanceDataSource.Add(new ResistanceData { Position = i, Resistance = GlobalSettings.Instance.ResistancesByPosition[i] });
                 }
                 else
                 {
-                    resistanceSeries.Points.AddXY($"Position {i}", double.NaN);
+                    resistanceDataSource.Add(new ResistanceData { Position = i, Resistance = double.NaN });
                 }
             }
 
-            ChartTotalResistances.Series.Add(resistanceSeries);
-            ChartTotalResistances.ChartAreas[0].RecalculateAxesScale();
+            ChartTotalResistances.DataSource = resistanceDataSource;
+
+            if (ChartTotalResistances.Series.Count > 0)
+            {
+                Series resistanceSeries = ChartTotalResistances.Series[0];
+            }
+
+            if (ChartTotalResistances.ChartAreas.Count > 0)
+            {
+                ChartTotalResistances.ChartAreas[0].RecalculateAxesScale();
+            }
         }
     }
 }
+

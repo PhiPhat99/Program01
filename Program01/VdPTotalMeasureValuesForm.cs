@@ -200,11 +200,12 @@ namespace Program01
                             if (AllMeasurements.ContainsKey(i) && AllMeasurements[i] != null && AllMeasurements[i].Count > 0)
                             {
                                 Series series = TotalChart.Series[seriesName];
+
                                 if (series != null)
                                 {
                                     series.XValueMember = "Source";
                                     series.YValueMembers = "Reading";
-                                    series.Points.DataBind(AllMeasurements[i].Select(data => new { Source = data.Source, Reading = data.Reading }).ToList(), "Source", "Reading", null);
+                                    series.Points.DataBind(AllMeasurements[i].Select(data => new {data.Source,data.Reading }).ToList(), "Source", "Reading", null);
                                 }
                                 else
                                 {
@@ -224,17 +225,17 @@ namespace Program01
                     }
                     else
                     {
-                        Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - TotalChart or TotalChart.Series is null.");
+                        Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - TotalChart or TotalChart.Series is null");
                     }
                 }
                 else
                 {
-                    Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - ChartTotalPositions not found.");
+                    Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - ChartTotalPositions not found");
                 }
             }
             else
             {
-                Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - TotalMeasuredValuesTabPage not found.");
+                Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - TotalMeasuredValuesTabPage not found");
             }
 
             for (int i = 1; i <= 8; i++)

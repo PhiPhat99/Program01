@@ -208,12 +208,14 @@ namespace Program01
             GlobalSettings.Instance.AverageResistanceAll = CountAll > 0 ? SumResistanceAll / CountAll : double.NaN;
             GlobalSettings.Instance.ResistancesByPosition = new Dictionary<int, double>(_resistancesByPosition);
 
-            double Resistivity = GlobalSettings.Instance.SheetResistance * GlobalSettings.Instance.ThicknessValueStd;  //  แก้ไขวิธีการคำนวณใหม่ เพราะคำนวณไม่ถูกต้อง
+            double Resistivity = GlobalSettings.Instance.SheetResistance * GlobalSettings.Instance.ThicknessValueStd;
             
             if (!double.IsNaN (Resistivity))
             {
                 GlobalSettings.Instance.Resistivity = Resistivity;
                 Debug.WriteLine($"[DEBUG]   Resistivity (ρ) calculated: {GlobalSettings.Instance.Resistivity} Ohm ⋅ meter");
+                Debug.WriteLine($"ThicknessUI: {GlobalSettings.Instance.ThicknessValueUI}, Thickness Parse Value: {GlobalSettings.Instance.ThicknessValueStd}");
+                Debug.WriteLine($"Thickness Unit UI: {GlobalSettings.Instance.ThicknessUnitUI}");
             }
             else
             {
@@ -221,12 +223,12 @@ namespace Program01
                 Debug.WriteLine("[DEBUG]    ไม่สามารถหาค่า Resistivity ได้");
             }
 
-            double Conductivity = 1 / GlobalSettings.Instance.Resistivity;  //  แก้ไขวิธีการคำนวณใหม่ เพราะคำนวณไม่ถูกต้อง
+            double Conductivity = 1 / GlobalSettings.Instance.Resistivity;
 
             if (!double.IsNaN (Conductivity))
             {
                 GlobalSettings.Instance.Conductivity = Conductivity;
-                Debug.WriteLine($"[DEBUG]   Conductivity (σ) calculated: {GlobalSettings.Instance.Conductivity} Ohm / meter");
+                Debug.WriteLine($"[DEBUG]   Conductivity (σ) calculated: {GlobalSettings.Instance.Conductivity} Siemen / meter");
             }
             else
             {

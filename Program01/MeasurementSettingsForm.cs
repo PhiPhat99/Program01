@@ -25,7 +25,7 @@ namespace Program01
 
         public event EventHandler<bool> ModeChanged;
         public event EventHandler ToggleChanged;
-        private readonly string ModeName = GlobalSettings.Instance.IsHallMode ? "Hall effect" : "Van der Pauw";
+        private readonly string ModeName = GlobalSettings.Instance.IsHallMode ? "Hall Measurement" : "Van der Pauw";
 
         private Form CurrentChildForm;
         private DataChildForm DataChildForm = null;
@@ -297,25 +297,49 @@ namespace Program01
             UpdateToggleState();
             LoadSettings();
 
+            ComboboxRsense.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
             ComboboxRsense.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
+            ComboboxMeasure.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
             ComboboxMeasure.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
+            ComboboxSource.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
             ComboboxSource.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
+            ComboboxSourceLimitMode.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
             ComboboxSourceLimitMode.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
-            ComboboxStartUnit.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
-            ComboboxStopUnit.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
+
+            ComboboxStartUnit.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
             ComboboxStepUnit.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
+            ComboboxStepUnit.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
+            ComboboxStopUnit.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
+            ComboboxStopUnit.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
+            ComboboxStartUnit.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
+
+            ComboboxSourceDelayUnit.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
             ComboboxSourceDelayUnit.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
+            ComboboxSourceLimitLevelUnit.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
             ComboboxSourceLimitLevelUnit.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
+
+            ComboboxThicknessUnit.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
             ComboboxThicknessUnit.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
+            ComboboxMagneticFieldsUnit.SelectedIndexChanged -= (s, ea) => SaveToGlobalSettings();
             ComboboxMagneticFieldsUnit.SelectedIndexChanged += (s, ea) => SaveToGlobalSettings();
 
+            TextboxStart.TextChanged -= (s, ea) => SaveToGlobalSettings();
             TextboxStart.TextChanged += (s, ea) => SaveToGlobalSettings();
-            TextboxStop.TextChanged += (s, ea) => SaveToGlobalSettings();
+            TextboxStep.TextChanged -= (s, ea) => SaveToGlobalSettings();
             TextboxStep.TextChanged += (s, ea) => SaveToGlobalSettings();
+            TextboxStop.TextChanged -= (s, ea) => SaveToGlobalSettings();
+            TextboxStop.TextChanged += (s, ea) => SaveToGlobalSettings();
+
+            TextboxSourceDelay.TextChanged -= (s, ea) => SaveToGlobalSettings();
             TextboxSourceDelay.TextChanged += (s, ea) => SaveToGlobalSettings();
+            TextboxSourceLimitLevel.TextChanged -= (s, ea) => SaveToGlobalSettings();
             TextboxSourceLimitLevel.TextChanged += (s, ea) => SaveToGlobalSettings();
+            TextboxRepetition.TextChanged -= (s, ea) => SaveToGlobalSettings();
             TextboxRepetition.TextChanged += (s, ea) => SaveToGlobalSettings();
+
+            TextboxThickness.TextChanged -= (s, ea) => SaveToGlobalSettings();
             TextboxThickness.TextChanged += (s, ea) => SaveToGlobalSettings();
+            TextboxMagneticFields.TextChanged -= (s, ea) => SaveToGlobalSettings();
             TextboxMagneticFields.TextChanged += (s, ea) => SaveToGlobalSettings();
         }
 
@@ -360,50 +384,113 @@ namespace Program01
 
                 if (double.TryParse(TextboxStart.Text, out double startValue))
                 {
-                    GlobalSettings.Instance.StartValueUI = startValue;
-                    Debug.WriteLine($"[SAVE] StartValue (To GlobalSettings): {GlobalSettings.Instance.StartValueUI}");
+                    string selectedStartUnit = ComboboxStartUnit.SelectedItem?.ToString();
+
+                    if (!string.IsNullOrEmpty(selectedStartUnit))
+                    {
+                        double standardStart = ConvertValueBasedOnUnit(selectedStartUnit, startValue);
+
+                        GlobalSettings.Instance.StartValueUI = startValue;
+                        GlobalSettings.Instance.StartUnitUI = selectedStartUnit;
+                        GlobalSettings.Instance.StartValueStd = standardStart;
+                        Debug.WriteLine($"[SAVE] Start Value UI: {GlobalSettings.Instance.StartValueUI}, Start Unit UI: {GlobalSettings.Instance.StartUnitUI}, Start Standard Value: {GlobalSettings.Instance.StartValueStd}");
+                    }
                 }
 
                 if (double.TryParse(TextboxStep.Text, out double stepValue))
                 {
-                    GlobalSettings.Instance.StepValueUI = stepValue;
-                    Debug.WriteLine($"[SAVE] StepValue (To GlobalSettings): {GlobalSettings.Instance.StepValueUI}");
+                    string selectedStepUnit = ComboboxStepUnit.SelectedItem?.ToString();
+
+                    if (!string.IsNullOrEmpty(selectedStepUnit))
+                    {
+                        double standardStep = ConvertValueBasedOnUnit(selectedStepUnit, stepValue);
+
+                        GlobalSettings.Instance.StepValueUI = stepValue;
+                        GlobalSettings.Instance.StepUnitUI = selectedStepUnit;
+                        GlobalSettings.Instance.StepValueStd = standardStep;
+                        Debug.WriteLine($"[SAVE] Step Value UI: {GlobalSettings.Instance.StepValueUI}, Step Unit UI: {GlobalSettings.Instance.StepUnitUI}, Step Standard Value: {GlobalSettings.Instance.StepValueStd}");
+                    }
                 }
 
                 if (double.TryParse(TextboxStop.Text, out double stopValue))
                 {
-                    GlobalSettings.Instance.StopValueUI = stopValue;
-                    Debug.WriteLine($"[SAVE] StopValue (To GlobalSettings): {GlobalSettings.Instance.StopValueUI}");
+                    string selectedStopUnit = ComboboxStopUnit.SelectedItem?.ToString();
+
+                    if (!string.IsNullOrEmpty(selectedStopUnit))
+                    {
+                        double standardStop = ConvertValueBasedOnUnit(selectedStopUnit, stopValue);
+
+                        GlobalSettings.Instance.StopValueUI = stopValue;
+                        GlobalSettings.Instance.StopUnitUI = selectedStopUnit;
+                        GlobalSettings.Instance.StopValueStd = standardStop;
+                        Debug.WriteLine($"[SAVE] Stop Value UI: {GlobalSettings.Instance.StopValueUI}, Stop Unit UI: {GlobalSettings.Instance.StopUnitUI}, Stop Standard Value: {GlobalSettings.Instance.StopValueStd}");
+                    }
                 }
 
                 if (double.TryParse(TextboxSourceDelay.Text, out double delayValue))
                 {
-                    GlobalSettings.Instance.SourceDelayValueUI = delayValue;
-                    Debug.WriteLine($"[SAVE] SourceDelayValue (To GlobalSettings): {GlobalSettings.Instance.SourceDelayValueUI}");
+                    string selectedSourceDelayUnit = ComboboxSourceDelayUnit.SelectedItem?.ToString();
+
+                    if (!string.IsNullOrEmpty(selectedSourceDelayUnit))
+                    {
+                        double standardSourceDelay = ConvertValueBasedOnUnit(selectedSourceDelayUnit, delayValue);
+
+                        GlobalSettings.Instance.SourceDelayValueUI = delayValue;
+                        GlobalSettings.Instance.SourceDelayUnitUI = selectedSourceDelayUnit;
+                        GlobalSettings.Instance.SourceDelayValueStd = standardSourceDelay;
+                        Debug.WriteLine($"[SAVE] Delay Value UI: {GlobalSettings.Instance.SourceDelayValueUI}, Delay Unit UI: {GlobalSettings.Instance.SourceDelayUnitUI}, Delay Standard Value: {GlobalSettings.Instance.SourceDelayValueStd}");
+                    }
                 }
 
                 if (double.TryParse(TextboxSourceLimitLevel.Text, out double limitlevelValue))
                 {
-                    GlobalSettings.Instance.SourceLimitLevelValueUI = limitlevelValue;
-                    Debug.WriteLine($"[SAVE] SourceLimitLevelValue (To GlobalSettings): {GlobalSettings.Instance.SourceLimitLevelValueUI}");
+                    string selectedSourceLimitLevelUnit = ComboboxSourceLimitLevelUnit.SelectedItem?.ToString();
+
+                    if (!string.IsNullOrEmpty(selectedSourceLimitLevelUnit))
+                    {
+                        double standardSourceLimitLevel = ConvertValueBasedOnUnit(selectedSourceLimitLevelUnit, limitlevelValue);
+
+                        GlobalSettings.Instance.SourceLimitLevelValueUI = limitlevelValue;
+                        GlobalSettings.Instance.SourceLimitLevelUnitUI = selectedSourceLimitLevelUnit;
+                        GlobalSettings.Instance.SourceLimitLevelValueStd = standardSourceLimitLevel;
+                        Debug.WriteLine($"[SAVE] Limit Level Value UI: {GlobalSettings.Instance.SourceLimitLevelValueUI}, Limit Level Unit UI: {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Limit Level Standard Value: {GlobalSettings.Instance.SourceLimitLevelValueStd}");
+                    }
                 }
 
                 if (double.TryParse(TextboxThickness.Text, out double thicknessValue))
                 {
-                    GlobalSettings.Instance.ThicknessValueUI = thicknessValue;
-                    Debug.WriteLine($"[SAVE] ThicknessValue (To GlobalSettings): {GlobalSettings.Instance.ThicknessValueUI}");
+                    string selectedThicknessUnit = ComboboxThicknessUnit.SelectedItem?.ToString();
+
+                    if (!string.IsNullOrEmpty(selectedThicknessUnit))
+                    {
+                        double standardThickness = ConvertValueBasedOnUnit(selectedThicknessUnit, thicknessValue);
+
+                        GlobalSettings.Instance.ThicknessValueUI = thicknessValue;
+                        GlobalSettings.Instance.ThicknessUnitUI = selectedThicknessUnit;
+                        GlobalSettings.Instance.ThicknessValueStd = standardThickness;
+                        Debug.WriteLine($"[SAVE] Thickness Value UI: {GlobalSettings.Instance.ThicknessValueUI}, Thickness Unit UI: {GlobalSettings.Instance.ThicknessUnitUI}, Thickness Standard Value: {GlobalSettings.Instance.ThicknessValueStd}");
+                    }
                 }
 
                 if (int.TryParse(TextboxRepetition.Text, out int repetitionValue))
                 {
                     GlobalSettings.Instance.RepetitionValueUI = repetitionValue;
-                    Debug.WriteLine($"[SAVE] RepetitionValue (To GlobalSettings): {GlobalSettings.Instance.RepetitionValueUI}");
+                    Debug.WriteLine($"[SAVE] Repetition Value (To GlobalSettings): {GlobalSettings.Instance.RepetitionValueUI}");
                 }
 
                 if (double.TryParse(TextboxMagneticFields.Text, out double magneticfieldsValue))
                 {
-                    GlobalSettings.Instance.MagneticFieldsValueUI = magneticfieldsValue;
-                    Debug.WriteLine($"[SAVE] MagneticFieldsValue (To GlobalSettings): {GlobalSettings.Instance.MagneticFieldsValueUI}");
+                    string selectedMagneticFieldsUnit = ComboboxMagneticFieldsUnit.SelectedItem?.ToString();
+
+                    if (!string.IsNullOrEmpty(selectedMagneticFieldsUnit))
+                    {
+                        double standardMagneticFields = ConvertValueBasedOnUnit(selectedMagneticFieldsUnit, magneticfieldsValue);
+
+                        GlobalSettings.Instance.MagneticFieldsValueUI = magneticfieldsValue;
+                        GlobalSettings.Instance.MagneticFieldsUnitUI = selectedMagneticFieldsUnit;
+                        GlobalSettings.Instance.MagneticFieldsValueStd = standardMagneticFields;
+                        Debug.WriteLine($"[SAVE] Magnetic Fields Value UI: {GlobalSettings.Instance.MagneticFieldsValueUI}, Magnetic Fields Unit UI: {GlobalSettings.Instance.MagneticFieldsUnitUI}, Magnetic Fields Standard Value: {GlobalSettings.Instance.MagneticFieldsValueStd}");
+                    }
                 }
             }
             catch (Exception Ex)
@@ -792,7 +879,7 @@ namespace Program01
             }
             catch (Exception Ex)
             {
-                MessageBox.Show($"การลบล้างข้อมูลการตั้งค่าไม่สำเร็จ: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+                MessageBox.Show($"การล้างข้อมูลการตั้งค่าไม่สำเร็จ: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
         }
 
@@ -1138,6 +1225,8 @@ namespace Program01
 
         private void IconbuttonTunerTest_Click(object sender, EventArgs e)
         {
+            DisableEditRun(true);
+
             try
             {
                 if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
@@ -1300,6 +1389,10 @@ namespace Program01
             {
                 MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
             }
+            finally
+            {
+                DisableEditRun(false);
+            }
         }
 
         private void TracingTunerData()
@@ -1441,7 +1534,6 @@ namespace Program01
                         Debug.WriteLine("[DEBUG] All tuners completed");
                         SMU.WriteString("OUTPut OFF");
                         SS.WriteString("*CLS");
-                        MessageBox.Show($"ทำการวัด {ModeName} เสร็จสิ้นแล้ว", "การวัดเสร็จสิ้น", MessageBoxButtons.OK);
 
                         if (Application.OpenForms.OfType<VdPTotalMeasureValuesForm>().FirstOrDefault() is VdPTotalMeasureValuesForm VdPTotalForm)
                         {
@@ -1451,6 +1543,155 @@ namespace Program01
                         CollectAndCalculateVdPMeasured.Instance.CalculateVanderPauw();
                         break;
                     }
+                }
+
+                DialogResult result = MessageBox.Show($"ทำการวัด Van der Pauw เสร็จสิ้นแล้ว ต้องการทำการวัด Hall Measurement นอกสนามแม่เหล็กต่อหรือไม่ ?", "การวัดเสร็จสิ้น", MessageBoxButtons.YesNo);
+                
+                if (result == DialogResult.Yes)
+                {
+                    GlobalSettings.Instance.IsModes = true;
+                    GlobalSettings.Instance.IsModes = GlobalSettings.Instance.IsModes;
+                    GlobalSettings.Instance.IsHallMode = GlobalSettings.Instance.IsModes;
+                    GlobalSettings.Instance.IsVanDerPauwMode = GlobalSettings.Instance.IsModes;
+
+                    UpdateToggleState();
+                    UpdateMeasurementMode();
+                    OnToggleChanged();
+                    
+                    CurrentTuner = 1;
+                    //CollectAndCalculateHallMeasured.Instance.ClearAllData();
+
+                    while (CurrentTuner <= 8)
+                    {
+                        ConfigureSwitchSystem();
+                        await Task.Delay(600);
+                        UpdateMeasurementState();
+                        ConfigureSourceMeasureUnit();
+                        await ExecuteSweep();
+                        TracingRunMeasurement();
+                        await Task.Delay(1000);
+
+                        CurrentTuner++;
+
+                        if (CurrentTuner > 8)
+                        {
+                            Debug.WriteLine("[DEBUG] All tuners completed");
+                            SMU.WriteString("OUTPut OFF");
+                            SS.WriteString("*CLS");
+
+                            if (Application.OpenForms.OfType<HallTotalMeasureValuesForm>().FirstOrDefault() is HallTotalMeasureValuesForm HallTotalForm)
+                            {
+                                //HallTotalForm.Invoke((MethodInvoker)delegate { HallTotalForm.LoadMeasurementData(); });
+                            }
+
+                            //CollectAndCalculateHallMeasured.Instance.CalculateHallMeasurement();
+                            break;
+                        }
+                    }
+
+                    DialogResult result2 = MessageBox.Show($"ทำการวัด Hall Measurement ภายนอกสนามแม่เหล็กเสร็จสิ้นแล้ว ต้องการทำการวัด Hall Measurement ภายใต้สนามแม่เหล็กต่อหรือไม่ ?", "การวัดเสร็จสิ้น", MessageBoxButtons.YesNo);
+
+                    if (result2 == DialogResult.Yes)
+                    {
+                        GlobalSettings.Instance.IsModes = true;
+                        GlobalSettings.Instance.IsModes = GlobalSettings.Instance.IsModes;
+                        GlobalSettings.Instance.IsHallMode = GlobalSettings.Instance.IsModes;
+                        GlobalSettings.Instance.IsVanDerPauwMode = GlobalSettings.Instance.IsModes;
+
+                        UpdateToggleState();
+                        UpdateMeasurementMode();
+                        OnToggleChanged();
+
+                        CurrentTuner = 1;
+                        //CollectAndCalculateHallMeasured.Instance.ClearAllData();
+
+                        while (CurrentTuner <= 8)
+                        {
+                            ConfigureSwitchSystem();
+                            await Task.Delay(600);
+                            UpdateMeasurementState();
+                            ConfigureSourceMeasureUnit();
+                            await ExecuteSweep();
+                            TracingRunMeasurement();
+                            await Task.Delay(1000);
+
+                            CurrentTuner++;
+
+                            if (CurrentTuner > 8)
+                            {
+                                Debug.WriteLine("[DEBUG] All tuners completed");
+                                SMU.WriteString("OUTPut OFF");
+                                SS.WriteString("*CLS");
+
+                                if (Application.OpenForms.OfType<HallTotalMeasureValuesForm>().FirstOrDefault() is HallTotalMeasureValuesForm HallTotalForm)
+                                {
+                                    //HallTotalForm.Invoke((MethodInvoker)delegate { HallTotalForm.LoadMeasurementData(); });
+                                }
+
+                                //CollectAndCalculateHallMeasured.Instance.CalculateHallMeasurement();
+                                break;
+                            }
+                        }
+
+                        DialogResult result3 = MessageBox.Show($"ทำการวัด Hall Measurement ภายใต้สนามแม่เหล็กทิศใต้เสร็จสิ้นแล้ว ทำการกลับด้านของชิ้นงานตัวอย่าง เพื่อทำการวัด Hall Measurement ภายใต้สนามแม่เหล็กทิศเหนือ", "การวัดต่อเนื่อง", MessageBoxButtons.YesNo);
+
+                        if (result3 == DialogResult.Yes)
+                        {
+                            GlobalSettings.Instance.IsModes = true;
+                            GlobalSettings.Instance.IsModes = GlobalSettings.Instance.IsModes;
+                            GlobalSettings.Instance.IsHallMode = GlobalSettings.Instance.IsModes;
+                            GlobalSettings.Instance.IsVanDerPauwMode = GlobalSettings.Instance.IsModes;
+
+                            UpdateToggleState();
+                            UpdateMeasurementMode();
+                            OnToggleChanged();
+
+                            CurrentTuner = 1;
+                            //CollectAndCalculateHallMeasured.Instance.ClearAllData();
+
+                            while (CurrentTuner <= 8)
+                            {
+                                ConfigureSwitchSystem();
+                                await Task.Delay(600);
+                                UpdateMeasurementState();
+                                ConfigureSourceMeasureUnit();
+                                await ExecuteSweep();
+                                TracingRunMeasurement();
+                                await Task.Delay(1000);
+
+                                CurrentTuner++;
+
+                                if (CurrentTuner > 8)
+                                {
+                                    Debug.WriteLine("[DEBUG] All tuners completed");
+                                    SMU.WriteString("OUTPut OFF");
+                                    SS.WriteString("*CLS");
+
+                                    if (Application.OpenForms.OfType<HallTotalMeasureValuesForm>().FirstOrDefault() is HallTotalMeasureValuesForm HallTotalForm)
+                                    {
+                                        //HallTotalForm.Invoke((MethodInvoker)delegate { HallTotalForm.LoadMeasurementData(); });
+                                    }
+
+                                    //CollectAndCalculateHallMeasured.Instance.CalculateHallMeasurement();
+                                    break;
+                                }
+                            }
+
+                            MessageBox.Show($"ทำการวัด Hall Measurement เสร็จสิ้นแล้ว", "การวัดเสร็จสิ้น", MessageBoxButtons.OK);
+                        }
+                        else if (result3 == DialogResult.No)
+                        {
+                            DisableEditRun(false);
+                        }
+                    }
+                    else if (result2 == DialogResult.No)
+                    {
+                        DisableEditRun(false);
+                    }
+                }
+                else if (result == DialogResult.No)
+                {
+                    DisableEditRun(false);
                 }
             }
             catch (Exception Ex)
@@ -1465,12 +1706,26 @@ namespace Program01
 
         private void ConfigureSwitchSystem()
         {
-            SS.WriteString("ROUTe:OPEN ALL");
-            var channels = GetChannelConfiguration(CurrentTuner, GlobalSettings.Instance.IsModes);
 
-            foreach (var channel in channels)
+            if (GlobalSettings.Instance.IsModes == false)
             {
-                SS.WriteString($"ROUTe:CLOSe (@ {channel})");
+                SS.WriteString("ROUTe:OPEN ALL");
+                var channels = GetChannelConfiguration(CurrentTuner, GlobalSettings.Instance.IsModes);
+
+                foreach (var channel in channels)
+                {
+                    SS.WriteString($"ROUTe:CLOSe (@ {channel})");
+                }
+            }
+            else if (GlobalSettings.Instance.IsModes == true)
+            {
+                SS.WriteString("ROUTe:OPEN ALL");
+                var channels = GetChannelConfiguration(CurrentTuner, GlobalSettings.Instance.IsModes);
+
+                foreach (var channel in channels)
+                {
+                    SS.WriteString($"ROUTe:CLOSe (@ {channel})");
+                }
             }
         }
 
@@ -2002,6 +2257,8 @@ namespace Program01
 
         private void DisableEditRun(bool shouldDisable)
         {
+            ComboboxVISASMUIOPort.Enabled = !shouldDisable;
+            ComboboxVISASSIOPort.Enabled = !shouldDisable;
             ComboboxMeasure.Enabled = !shouldDisable;
             ComboboxRsense.Enabled = !shouldDisable;
             ComboboxSource.Enabled = !shouldDisable;
@@ -2022,6 +2279,11 @@ namespace Program01
             TextboxThickness.Enabled = !shouldDisable;
             TextboxRepetition.Enabled = !shouldDisable;
             TextboxMagneticFields.Enabled = !shouldDisable;
+
+            IconbuttonClearSettings.Enabled = !shouldDisable;
+            IconbuttonErrorCheck.Enabled = !shouldDisable;
+            IconbuttonRunMeasurement.Enabled = !shouldDisable;
+            IconbuttonTunerTest.Enabled = !shouldDisable;
         }
     }
 }

@@ -49,7 +49,7 @@ namespace Program01
 
             for (int i = 1; i <= 8; i++)
             {
-                string tabPageName = $"MeasuredValueP{i}TabPage";
+                string tabPageName = $"TabpageMeasuredPosition{i}";
                 string chartName = $"ChartPosition{i}";
 
                 if (TabcontrolVdPTotalCharts.TabPages.ContainsKey(tabPageName) &&
@@ -184,37 +184,29 @@ namespace Program01
             Dictionary<int, List<(double Source, double Reading)>> AllMeasurements = CollectAndCalculateVdPMeasured.Instance.GetAllMeasurementsByTuner();
             Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - Total Measurements Count: {AllMeasurements.Count}");
 
-            if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey("TotalMeasuredValuesTabPage"))
+            // --- ส่วนการจัดการ Chart รวม (Total Chart) ---
+            if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey("TabpageTotalVdPMeasuredPosition"))
             {
-                TabPage totalTabPage = TabcontrolVdPTotalCharts.TabPages["TotalMeasuredValuesTabPage"];
+                TabPage totalTabPage = TabcontrolVdPTotalCharts.TabPages["TabpageTotalVdPMeasuredPosition"];
                 if (totalTabPage != null && totalTabPage.Controls.ContainsKey("ChartTotalPositions"))
                 {
                     Chart TotalChart = (Chart)totalTabPage.Controls["ChartTotalPositions"];
 
-                    if (TotalChart != null && TotalChart.Series != null)
+                    if (TotalChart != null && TotalChart.Series != null && TotalChart.Series.Count == 8) // ตรวจสอบว่ามี Series ครบ 8 หรือไม่
                     {
                         for (int i = 1; i <= 8; i++)
                         {
-                            string seriesName = $"Position {i}";
-
                             if (AllMeasurements.ContainsKey(i) && AllMeasurements[i] != null && AllMeasurements[i].Count > 0)
                             {
-                                Series series = TotalChart.Series[seriesName];
-
-                                if (series != null)
-                                {
-                                    series.XValueMember = "Source";
-                                    series.YValueMembers = "Reading";
-                                    series.Points.DataBind(AllMeasurements[i].Select(data => new {data.Source,data.Reading }).ToList(), "Source", "Reading", null);
-                                }
-                                else
-                                {
-                                    Debug.WriteLine($"[WARNING] LoadMeasurementDataForCharts - Series '{seriesName}' is null.");
-                                }
+                                Series series = TotalChart.Series[i - 1]; // เข้าถึง Series ด้วย Index (0 ถึง 7)
+                                series.XValueMember = "Source";
+                                series.YValueMembers = "Reading";
+                                series.Points.DataBind(AllMeasurements[i].Select(data => new { data.Source, data.Reading }).ToList(), "Source", "Reading", null);
                             }
                             else
                             {
-                                Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - No data or Series key not found for Position {i}. AllMeasurements.ContainsKey({i}) = {AllMeasurements.ContainsKey(i)}");
+                                Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - No data for Position {i}. Clearing Series at index {i - 1}.");
+                                TotalChart.Series[i - 1].Points.Clear();
                             }
                         }
 
@@ -222,10 +214,21 @@ namespace Program01
                         {
                             TotalChart.Legends[0].Enabled = true;
                         }
+
+                        // ตัวอย่างการปรับแต่งแกน X ของ Chart รวม
+                        TotalChart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (Source)    [{GlobalSettings.Instance.StepUnitUI}]"; // กำหนดชื่อแกน X
+                        TotalChart.ChartAreas[0].AxisX.LabelStyle.Format = "E2";
+                        TotalChart.ChartAreas[0].AxisX.Interval = 0;
+                        //TotalChart.ChartAreas[0].AxisX.LabelStyle.Angle = 90;
+
+                        // ตัวอย่างการปรับแต่งแกน Y ของ Chart รวม
+                        TotalChart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (Measured)     [{GlobalSettings.Instance.SourceLimitLevelUnitUI}]"; // กำหนดชื่อแกน Y
+                        TotalChart.ChartAreas[0].AxisY.Interval = 0;
+                        TotalChart.ChartAreas[0].AxisY.LabelStyle.Format = "F3";
                     }
                     else
                     {
-                        Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - TotalChart or TotalChart.Series is null");
+                        Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - TotalChart or TotalChart.Series is null or does not have 8 Series.");
                     }
                 }
                 else
@@ -235,46 +238,65 @@ namespace Program01
             }
             else
             {
-                Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - TotalMeasuredValuesTabPage not found");
+                Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - TabpageTotalVdPMeasuredPosition not found");
             }
 
-            for (int i = 1; i <= 8; i++)
+            // --- ส่วนการจัดการ Chart แยกตาม Position และ TabPage ---
+            if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey("TabpageTotalVdPMeasuredPosition") &&
+                TabcontrolVdPTotalCharts.TabPages["TabpageTotalVdPMeasuredPosition"].Controls.ContainsKey("ChartTotalPositions"))
             {
-                string tabPageName = $"MeasuredValueP{i}TabPage";
-                string chartName = $"ChartPosition{i}";
-
-                if (TabPageExists(TabcontrolVdPTotalCharts, tabPageName) && TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls.ContainsKey(chartName) && AllMeasurements.ContainsKey(i))
+                Chart TotalChart = (Chart)TabcontrolVdPTotalCharts.TabPages["TabpageTotalVdPMeasuredPosition"].Controls["ChartTotalPositions"];
+                if (TotalChart != null && TotalChart.ChartAreas.Count > 0)
                 {
-                    Chart measuredChart = (Chart)TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls[chartName];
-                    if (measuredChart != null && measuredChart.Series.Count > 0 && AllMeasurements[i] != null && AllMeasurements[i].Count > 0)
+                    for (int i = 1; i <= 8; i++)
                     {
-                        Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - Binding data for Position {i} to {chartName}");
-                        measuredChart.DataSource = AllMeasurements[i].Select(data => new { data.Source, data.Reading }).ToList();
-                        measuredChart.DataBind();
-                    }
-                    else
-                    {
-                        Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - No data or Chart/Series issue for Position {i} in individual chart.");
-                        if (measuredChart != null && measuredChart.Series.Count > 0)
+                        string tabPageName = $"TabpageVdPMeasuredPosition{i}";
+                        string chartName = $"ChartPosition{i}";
+
+                        if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey(tabPageName) &&
+                            TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls.ContainsKey(chartName) && AllMeasurements.ContainsKey(i))
                         {
-                            measuredChart.Series[0].Points.Clear();
+                            Chart measuredChart = (Chart)TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls[chartName];
+
+                            if (measuredChart != null && measuredChart.ChartAreas.Count > 0)
+                            {
+                                // คัดลอกการตั้งค่าแกน X จาก TotalChart
+                                measuredChart.ChartAreas[0].AxisX.Title = TotalChart.ChartAreas[0].AxisX.Title;
+                                measuredChart.ChartAreas[0].AxisX.LabelStyle.Format = TotalChart.ChartAreas[0].AxisX.LabelStyle.Format;
+                                measuredChart.ChartAreas[0].AxisX.Interval = TotalChart.ChartAreas[0].AxisX.Interval;
+                                // คัดลอก Properties อื่นๆ ของแกน X ที่คุณต้องการให้เหมือนกัน
+
+                                // คัดลอกการตั้งค่าแกน Y จาก TotalChart
+                                measuredChart.ChartAreas[0].AxisY.Title = TotalChart.ChartAreas[0].AxisY.Title;
+                                measuredChart.ChartAreas[0].AxisY.LabelStyle.Format = TotalChart.ChartAreas[0].AxisY.LabelStyle.Format;
+                                measuredChart.ChartAreas[0].AxisY.Interval = TotalChart.ChartAreas[0].AxisY.Interval;
+                                // คัดลอก Properties อื่นๆ ของแกน Y ที่คุณต้องการให้เหมือนกัน
+                            }
+
+                            if (measuredChart != null && measuredChart.Series.Count > 0 && AllMeasurements[i] != null && AllMeasurements[i].Count > 0)
+                            {
+                                Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - Binding data for Position {i} to {chartName} in {tabPageName}");
+                                measuredChart.DataSource = AllMeasurements[i].Select(data => new { data.Source, data.Reading }).ToList();
+                                measuredChart.DataBind();
+                            }
+                            else
+                            {
+                                Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - No data or Chart/Series issue for Position {i} in {tabPageName}/{chartName}.");
+                                if (measuredChart != null && measuredChart.Series.Count > 0)
+                                {
+                                    measuredChart.Series[0].Points.Clear();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - TabPage '{tabPageName}' or Chart '{chartName}' not found for Position {i}. AllMeasurements.ContainsKey({i}) = {AllMeasurements.ContainsKey(i)}");
                         }
                     }
                 }
             }
         }
-
-        private bool TabPageExists(TabControl tabControl, string tabPageName)
-        {
-            foreach (TabPage tabPage in tabControl.TabPages)
-            {
-                if (tabPage.Name == tabPageName)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        
 
         #endregion
 

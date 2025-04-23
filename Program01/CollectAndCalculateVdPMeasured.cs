@@ -11,6 +11,7 @@ namespace Program01
         private Dictionary<int, List<(double Source, double Reading)>> _measurementsByPosition = new Dictionary<int, List<(double, double)>>();
         private Dictionary<int, double> _resistancesByPosition = new Dictionary<int, double>();
         public event EventHandler DataUpdated;
+        public event EventHandler  TriggerDataUpdated;
         public event EventHandler CalculationCompleted;
 
         private CollectAndCalculateVdPMeasured() { }
@@ -191,7 +192,7 @@ namespace Program01
             double Res_B = GlobalSettings.Instance.ResistanceB;
             double InitialRs = (Res_A + Res_B) / 2.0;
             double Tolerance = 1E-6;
-            int MaxIterations = 200;
+            int MaxIterations = 300;
             double SolvedRs = SolveVanDerPauw(Res_A, Res_B, InitialRs, Tolerance, MaxIterations);
 
             if (!double.IsNaN(SolvedRs))

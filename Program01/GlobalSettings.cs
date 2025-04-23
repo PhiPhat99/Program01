@@ -9,7 +9,9 @@ public class GlobalSettings
 
     private static readonly object _lock = new object();
 
-    public CollectAndCalculateVdPMeasured CollectedMeasurements { get; private set; } = CollectAndCalculateVdPMeasured.Instance;
+    public CollectAndCalculateVdPMeasured CollectedVdPMeasurements { get; private set; } = CollectAndCalculateVdPMeasured.Instance;
+    public CollectAndCalculateHallMeasured CollectedHallMeasurements { get; private set; } = CollectAndCalculateHallMeasured.Instance;
+
 
     public static GlobalSettings Instance
     {
@@ -93,7 +95,52 @@ public class GlobalSettings
         }
     }
 
-   private bool _isVanDerPauwMode;
+    private bool _isHallOutMeasuring;
+    public bool IsHallOutMeasuring
+    {
+        get => _isHallOutMeasuring;
+        set
+        {
+            if (_isHallOutMeasuring != value)
+            {
+                _isHallOutMeasuring = value;
+
+                OnSettingsChanged?.Invoke();
+            }
+        }
+    }
+
+    private bool _isHallInSouthMeasuring;
+    public bool IsHallInSouthMeasuring
+    {
+        get => _isHallOutMeasuring;
+        set
+        {
+            if (_isHallInSouthMeasuring != value)
+            {
+                _isHallInSouthMeasuring = value;
+
+                OnSettingsChanged?.Invoke();
+            }
+        }
+    }
+
+    private bool _isHallInNorthMeasuring;
+    public bool IsHallInNorthMeasuring
+    {
+        get => _isHallInNorthMeasuring;
+        set
+        {
+            if (_isHallInNorthMeasuring != value)
+            {
+                _isHallInNorthMeasuring = value;
+
+                OnSettingsChanged?.Invoke();
+            }
+        }
+    }
+
+    private bool _isVanDerPauwMode;
     public bool IsVanDerPauwMode
     {
         get => _isVanDerPauwMode;

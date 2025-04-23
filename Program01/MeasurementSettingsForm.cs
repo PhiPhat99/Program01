@@ -25,7 +25,6 @@ namespace Program01
 
         public event EventHandler<bool> ModeChanged;
         public event EventHandler ToggleChanged;
-        private readonly string ModeName = GlobalSettings.Instance.IsHallMode ? "Hall Measurement" : "Van der Pauw";
 
         private Form CurrentChildForm;
         private DataChildForm DataChildForm = null;
@@ -891,6 +890,8 @@ namespace Program01
                 GlobalSettings.Instance.IsHallMode = GlobalSettings.Instance.IsModes;
                 GlobalSettings.Instance.IsVanDerPauwMode = !GlobalSettings.Instance.IsModes;
 
+                Debug.WriteLine($"{GlobalSettings.Instance.IsModes}, {GlobalSettings.Instance.IsVanDerPauwMode}, {GlobalSettings.Instance.IsHallMode}");
+
                 UpdateToggleState();
                 UpdateMeasurementMode();
                 OnToggleChanged();
@@ -914,6 +915,7 @@ namespace Program01
 
         private void UpdateMeasurementMode()
         {
+            string ModeName = GlobalSettings.Instance.IsHallMode ? "Hall Effect" : "Van der Pauw";
             bool isHallMode = GlobalSettings.Instance.IsHallMode;
             Debug.WriteLine($"You select: {ModeName} measurement");
 
@@ -1498,7 +1500,32 @@ namespace Program01
                 }
 
                 SaveToGlobalSettings();
-                await RunMeasurement(startValue, stopValue, stepValue, repetitionValue, sourcelevellimitValue, thicknessValue, magneticfieldsValue, delayValue, points);
+
+                // ตรวจสอบว่ามีการเลือกโหมดการวัดเริ่มต้นหรือไม่
+                if (GlobalSettings.Instance.IsVanDerPauwMode)
+                {
+                    await RunVanDerPauwMeasurement(startValue, stopValue, stepValue, repetitionValue, sourcelevellimitValue, thicknessValue, magneticfieldsValue, delayValue, points);
+
+                    if (GlobalSettings.Instance.IsHallMode) // หากเลือก Hall Mode ไว้ด้วย ให้ทำการวัดต่อ
+                    {
+                        await RunHallMeasurementSequence();
+                    }
+                }
+                else if (GlobalSettings.Instance.IsHallMode)
+                {
+                    await RunHallMeasurementSequence();
+                }
+                else // หากไม่ได้เลือกโหมดใดๆ ให้เริ่ม Van der Pauw ก่อน แล้วถามว่าจะวัด Hall ต่อหรือไม่
+                {
+                    await RunVanDerPauwMeasurement(startValue, stopValue, stepValue, repetitionValue, sourcelevellimitValue, thicknessValue, magneticfieldsValue, delayValue, points);
+
+                    DialogResult resultHall = MessageBox.Show($"ทำการวัด Van der Pauw เสร็จสิ้นแล้ว ต้องการทำการวัด Hall Measurement ต่อหรือไม่ ?", "การวัดเสร็จสิ้น", MessageBoxButtons.YesNo);
+
+                    if (resultHall == DialogResult.Yes)
+                    {
+                        await RunHallMeasurementSequence();
+                    }
+                }
             }
             catch (Exception Ex)
             {
@@ -1510,203 +1537,111 @@ namespace Program01
             }
         }
 
-        private async Task RunMeasurement(double startValue, double stopValue, double stepValue, int repetitionValue, double sourcelevellimitValue, double thicknessValue, double magneticfieldsValue, double delayValue, int points)
+        private async Task RunVanDerPauwMeasurement(double startValue, double stopValue, double stepValue, int repetitionValue, double sourcelevellimitValue, double thicknessValue, double magneticfieldsValue, double delayValue, int points)
         {
-            try
+            GlobalSettings.Instance.IsModes = false;
+            GlobalSettings.Instance.IsVanDerPauwMode = true;
+            GlobalSettings.Instance.IsHallMode = false;
+            UpdateToggleState();
+            UpdateMeasurementMode();
+            OnToggleChanged();
+
+            CurrentTuner = 1;
+            CollectAndCalculateVdPMeasured.Instance.ClearAllData();
+
+            while (CurrentTuner <= 8)
             {
-                CurrentTuner = 1;
-                CollectAndCalculateVdPMeasured.Instance.ClearAllData();
+                ConfigureSwitchSystem();
+                await Task.Delay(600);
+                UpdateMeasurementState();
+                ConfigureSourceMeasureUnit();
+                await ExecuteSweep();
+                TracingRunMeasurement();
+                await Task.Delay(1000);
 
-                while (CurrentTuner <= 8)
+                CurrentTuner++;
+
+                if (CurrentTuner > 8)
                 {
-                    ConfigureSwitchSystem();
-                    await Task.Delay(600);
-                    UpdateMeasurementState();
-                    ConfigureSourceMeasureUnit();
-                    await ExecuteSweep();
-                    TracingRunMeasurement();
-                    await Task.Delay(1000);
+                    Debug.WriteLine("[DEBUG] All tuners completed (Van der Pauw)");
+                    SMU.WriteString("OUTPut OFF");
+                    SS.WriteString("*CLS");
 
-                    CurrentTuner++;
-
-                    if (CurrentTuner > 8)
+                    if (Application.OpenForms.OfType<VdPTotalMeasureValuesForm>().FirstOrDefault() is VdPTotalMeasureValuesForm VdPTotalForm)
                     {
-                        Debug.WriteLine("[DEBUG] All tuners completed");
-                        SMU.WriteString("OUTPut OFF");
-                        SS.WriteString("*CLS");
-
-                        if (Application.OpenForms.OfType<VdPTotalMeasureValuesForm>().FirstOrDefault() is VdPTotalMeasureValuesForm VdPTotalForm)
-                        {
-                            VdPTotalForm.Invoke((MethodInvoker)delegate { VdPTotalForm.LoadMeasurementData(); });
-                        }
-
-                        CollectAndCalculateVdPMeasured.Instance.CalculateVanderPauw();
-                        break;
-                    }
-                }
-
-                DialogResult result = MessageBox.Show($"ทำการวัด Van der Pauw เสร็จสิ้นแล้ว ต้องการทำการวัด Hall Measurement นอกสนามแม่เหล็กต่อหรือไม่ ?", "การวัดเสร็จสิ้น", MessageBoxButtons.YesNo);
-                
-                if (result == DialogResult.Yes)
-                {
-                    GlobalSettings.Instance.IsModes = true;
-                    GlobalSettings.Instance.IsModes = GlobalSettings.Instance.IsModes;
-                    GlobalSettings.Instance.IsHallMode = GlobalSettings.Instance.IsModes;
-                    GlobalSettings.Instance.IsVanDerPauwMode = GlobalSettings.Instance.IsModes;
-
-                    UpdateToggleState();
-                    UpdateMeasurementMode();
-                    OnToggleChanged();
-                    
-                    CurrentTuner = 1;
-                    CollectAndCalculateHallMeasured.Instance.ClearAllData();
-
-                    while (CurrentTuner <= 8)
-                    {
-                        ConfigureSwitchSystem();
-                        await Task.Delay(600);
-                        UpdateMeasurementState();
-                        ConfigureSourceMeasureUnit();
-                        await ExecuteSweep();
-                        TracingRunMeasurement();
-                        await Task.Delay(1000);
-
-                        CurrentTuner++;
-
-                        if (CurrentTuner > 8)
-                        {
-                            Debug.WriteLine("[DEBUG] All tuners completed");
-                            SMU.WriteString("OUTPut OFF");
-                            SS.WriteString("*CLS");
-
-                            if (Application.OpenForms.OfType<HallTotalMeasureValuesForm>().FirstOrDefault() is HallTotalMeasureValuesForm HallTotalForm)
-                            {
-                                //HallTotalForm.Invoke((MethodInvoker)delegate { HallTotalForm.LoadMeasurementData(); });
-                            }
-
-                            //CollectAndCalculateHallMeasured.Instance.CalculateHallMeasurement();
-                            break;
-                        }
+                        VdPTotalForm.Invoke((MethodInvoker)delegate { VdPTotalForm.LoadMeasurementData(); });
                     }
 
-                    DialogResult result2 = MessageBox.Show($"ทำการวัด Hall Measurement ภายนอกสนามแม่เหล็กเสร็จสิ้นแล้ว ต้องการทำการวัด Hall Measurement ภายใต้สนามแม่เหล็กต่อหรือไม่ ?", "การวัดเสร็จสิ้น", MessageBoxButtons.YesNo);
-
-                    if (result2 == DialogResult.Yes)
-                    {
-                        GlobalSettings.Instance.IsModes = true;
-                        GlobalSettings.Instance.IsModes = GlobalSettings.Instance.IsModes;
-                        GlobalSettings.Instance.IsHallMode = GlobalSettings.Instance.IsModes;
-                        GlobalSettings.Instance.IsVanDerPauwMode = GlobalSettings.Instance.IsModes;
-
-                        UpdateToggleState();
-                        UpdateMeasurementMode();
-                        OnToggleChanged();
-
-                        CurrentTuner = 1;
-                        CollectAndCalculateHallMeasured.Instance.ClearAllData();
-
-                        while (CurrentTuner <= 8)
-                        {
-                            ConfigureSwitchSystem();
-                            await Task.Delay(600);
-                            UpdateMeasurementState();
-                            ConfigureSourceMeasureUnit();
-                            await ExecuteSweep();
-                            TracingRunMeasurement();
-                            await Task.Delay(1000);
-
-                            CurrentTuner++;
-
-                            if (CurrentTuner > 8)
-                            {
-                                Debug.WriteLine("[DEBUG] All tuners completed");
-                                SMU.WriteString("OUTPut OFF");
-                                SS.WriteString("*CLS");
-
-                                if (Application.OpenForms.OfType<HallTotalMeasureValuesForm>().FirstOrDefault() is HallTotalMeasureValuesForm HallTotalForm)
-                                {
-                                    //HallTotalForm.Invoke((MethodInvoker)delegate { HallTotalForm.LoadMeasurementData(); });
-                                }
-
-                                //CollectAndCalculateHallMeasured.Instance.CalculateHallMeasurement();
-                                break;
-                            }
-                        }
-
-                        DialogResult result3 = MessageBox.Show($"ทำการวัด Hall Measurement ภายใต้สนามแม่เหล็กทิศใต้เสร็จสิ้นแล้ว ทำการกลับด้านของชิ้นงานตัวอย่าง เพื่อทำการวัด Hall Measurement ภายใต้สนามแม่เหล็กทิศเหนือ", "การวัดต่อเนื่อง", MessageBoxButtons.YesNo);
-
-                        if (result3 == DialogResult.Yes)
-                        {
-                            GlobalSettings.Instance.IsModes = true;
-                            GlobalSettings.Instance.IsModes = GlobalSettings.Instance.IsModes;
-                            GlobalSettings.Instance.IsHallMode = GlobalSettings.Instance.IsModes;
-                            GlobalSettings.Instance.IsVanDerPauwMode = GlobalSettings.Instance.IsModes;
-
-                            UpdateToggleState();
-                            UpdateMeasurementMode();
-                            OnToggleChanged();
-
-                            CurrentTuner = 1;
-                            CollectAndCalculateHallMeasured.Instance.ClearAllData();
-
-                            while (CurrentTuner <= 8)
-                            {
-                                ConfigureSwitchSystem();
-                                await Task.Delay(600);
-                                UpdateMeasurementState();
-                                ConfigureSourceMeasureUnit();
-                                await ExecuteSweep();
-                                TracingRunMeasurement();
-                                await Task.Delay(1000);
-
-                                CurrentTuner++;
-
-                                if (CurrentTuner > 8)
-                                {
-                                    Debug.WriteLine("[DEBUG] All tuners completed");
-                                    SMU.WriteString("OUTPut OFF");
-                                    SS.WriteString("*CLS");
-
-                                    if (Application.OpenForms.OfType<HallTotalMeasureValuesForm>().FirstOrDefault() is HallTotalMeasureValuesForm HallTotalForm)
-                                    {
-                                        //HallTotalForm.Invoke((MethodInvoker)delegate { HallTotalForm.LoadMeasurementData(); });
-                                    }
-
-                                    //CollectAndCalculateHallMeasured.Instance.CalculateHallMeasurement();
-                                    break;
-                                }
-                            }
-
-                            MessageBox.Show($"ทำการวัด Hall Measurement เสร็จสิ้นแล้ว", "การวัดเสร็จสิ้น", MessageBoxButtons.OK);
-                        }
-                        else if (result3 == DialogResult.No)
-                        {
-                            DisableEditRun(false);
-                        }
-                    }
-                    else if (result2 == DialogResult.No)
-                    {
-                        DisableEditRun(false);
-                    }
-                }
-                else if (result == DialogResult.No)
-                {
-                    DisableEditRun(false);
+                    CollectAndCalculateVdPMeasured.Instance.CalculateVanderPauw();
+                    break;
                 }
             }
-            catch (Exception Ex)
+        }
+
+        private async Task RunHallMeasurementSequence()
+        {
+            GlobalSettings.Instance.IsModes = true;
+            GlobalSettings.Instance.IsHallMode = true;
+            GlobalSettings.Instance.IsVanDerPauwMode = false;
+            UpdateToggleState();
+            UpdateMeasurementMode();
+            OnToggleChanged();
+
+            await RunHallMeasurement(false); // วัด Hall นอกสนามแม่เหล็ก
+
+            DialogResult resultHallSouth = MessageBox.Show($"ทำการวัด Hall Measurement ภายนอกสนามแม่เหล็กเสร็จสิ้นแล้ว ต้องการทำการวัด Hall Measurement ภายใต้สนามแม่เหล็กทิศใต้ต่อหรือไม่ ?", "การวัดเสร็จสิ้น", MessageBoxButtons.YesNo);
+
+            if (resultHallSouth == DialogResult.Yes)
             {
-                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+                await RunHallMeasurement(true, "South"); // วัด Hall ใต้สนามแม่เหล็กทิศใต้
+
+                DialogResult resultHallNorth = MessageBox.Show($"ทำการวัด Hall Measurement ภายใต้สนามแม่เหล็กทิศใต้เสร็จสิ้นแล้ว ทำการกลับด้านของชิ้นงานตัวอย่าง เพื่อทำการวัด Hall Measurement ภายใต้สนามแม่เหล็กทิศเหนือ", "การวัดต่อเนื่อง", MessageBoxButtons.YesNo);
+
+                if (resultHallNorth == DialogResult.Yes)
+                {
+                    await RunHallMeasurement(true, "North"); // วัด Hall ใต้สนามแม่เหล็กทิศเหนือ
+                }
             }
-            finally
+
+            MessageBox.Show("ทำการวัด Hall Measurement เสร็จสิ้นแล้ว", "การวัดเสร็จสิ้น", MessageBoxButtons.OK);
+        }
+
+        private async Task RunHallMeasurement(bool HasMagneticField, string MagneticFieldDirection = "")
+        {
+            CurrentTuner = 1;
+            CollectAndCalculateHallMeasured.Instance.ClearAllData();
+            Debug.WriteLine($"[DEBUG] Starting Hall Measurement (Magnetic Field: {HasMagneticField}, Direction: {MagneticFieldDirection})");
+
+            while (CurrentTuner <= 8)
             {
-                DisableEditRun(false);
+                ConfigureSwitchSystem();
+                await Task.Delay(600);
+                UpdateMeasurementState();
+                ConfigureSourceMeasureUnit();
+                await ExecuteSweep();
+                TracingRunMeasurement();
+                await Task.Delay(1000);
+
+                CurrentTuner++;
+
+                if (CurrentTuner > 8)
+                {
+                    Debug.WriteLine($"[DEBUG] All tuners completed (Hall Measurement - Magnetic Field: {HasMagneticField}, Direction: {MagneticFieldDirection})");
+                    SMU.WriteString("OUTPut OFF");
+                    SS.WriteString("*CLS");
+
+                    if (Application.OpenForms.OfType<HallTotalMeasureValuesForm>().FirstOrDefault() is HallTotalMeasureValuesForm HallTotalForm)
+                    {
+                        HallTotalForm.Invoke((MethodInvoker)delegate { HallTotalForm.LoadHallMeasurementData(); });
+                    }
+
+                    break;
+                }
             }
         }
 
         private void ConfigureSwitchSystem()
         {
-
             if (GlobalSettings.Instance.IsModes == false)
             {
                 SS.WriteString("ROUTe:OPEN ALL");
@@ -1729,7 +1664,7 @@ namespace Program01
             }
         }
 
-        private List<string> GetChannelConfiguration(int Tuner, bool IsModes)
+        private List<string> GetChannelConfiguration(int Tuner, bool IsMode)
         {
             var configurations = new Dictionary<int, List<string>>
             {
@@ -1857,61 +1792,118 @@ namespace Program01
 
         private void TracingRunMeasurement()
         {
-            try
+            string measurementType = "HallOut"; // Default
+
+            if (GlobalSettings.Instance.IsModes) // Check if in Hall Mode
             {
-                SMU.WriteString("TRACe:ACTual?");
-                string BufferCount = SMU.ReadString().Trim();
-                Debug.WriteLine($"Buffer count: {BufferCount}");
-
-                if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
+                if (GlobalSettings.Instance.IsHallOutMeasuring)
                 {
-                    MessageBox.Show("ไม่สามารถทำการดึงข้อมูลการวัดจากเครื่องมือได้ เนื่องจากไม่มีข้อมูลอยู่ในบัฟเฟอร์", "ข้อผิดพลาดในการดึงข้อมูลการวัด", MessageBoxButtons.OK);
-                    return;
+                    measurementType = "HallOut";
+                }
+                else if (GlobalSettings.Instance.IsHallInSouthMeasuring)
+                {
+                    measurementType = "HallInSouth";
+                }
+                else if (GlobalSettings.Instance.IsHallInNorthMeasuring)
+                {
+                    measurementType = "HallInNorth";
                 }
 
-                SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOURce, READing");
-                string RawData = SMU.ReadString().Trim();
-                Debug.WriteLine($"Buffer contains: {BufferPoints} readings");
-                Debug.WriteLine($"Raw Data: {RawData}");
-
-                string[] DataPairs = RawData.Split(',');
-                List<(double Source, double Reading)> currentMeasurements = new List<(double, double)>();
-                List<double> XData = new List<double>();
-                List<double> YData = new List<double>();
-                Debug.WriteLine($"Number of data pairs: {DataPairs.Length}");
-
-                if (DataPairs.Length % 2 != 0)
+                try
                 {
-                    MessageBox.Show("รูปแบบของข้อมูลในบัฟเฟอร์ไม่ถูกต้อง", "ข้อผิดพลาดในการดึงข้อมูลการวัด", MessageBoxButtons.OK);
-                    return;
-                }
+                    SMU.WriteString("TRACe:ACTual?");
+                    string BufferCount = SMU.ReadString().Trim();
+                    Debug.WriteLine($"Buffer count: {BufferCount}");
 
-                for (int i = 0; i < DataPairs.Length; i += 2)
-                {
-                    if (double.TryParse(DataPairs[i], out double SourceValue) && double.TryParse(DataPairs[i + 1], out double MeasuredValue))
+                    if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
                     {
-                        XData.Add(SourceValue);
-                        YData.Add(MeasuredValue);
-                        currentMeasurements.Add((SourceValue, MeasuredValue));
+                        MessageBox.Show("ไม่สามารถทำการดึงข้อมูลการวัดจากเครื่องมือได้ เนื่องจากไม่มีข้อมูลอยู่ในบัฟเฟอร์", "ข้อผิดพลาดในการดึงข้อมูลการวัด", MessageBoxButtons.OK);
+                        return;
                     }
-                }
 
-                if (GlobalSettings.Instance.IsModes)
-                {
-                    
-                }
-                else
-                {
-                    Debug.WriteLine($"[DEBUG] TracingRunMeasurement - Tuner: {CurrentTuner}, Data Points Read: {currentMeasurements.Count}");
-                    GlobalSettings.Instance.CollectedMeasurements.StoreMeasurementData(CurrentTuner, currentMeasurements);
+                    SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOURce, READing");
+                    string RawData = SMU.ReadString().Trim();
+                    Debug.WriteLine($"Buffer contains: {BufferPoints} readings");
+                    Debug.WriteLine($"Raw Data: {RawData}");
 
-                    List<double[]> measuredValues = YData.Zip(XData, (y, x) => new double[] { y, x }).ToList();
-                    GlobalSettings.Instance.AddMeasuredValues(measuredValues, CurrentTuner);
+                    string[] DataPairs = RawData.Split(',');
+                    List<(double Source, double Reading, string MeasurementType)> currentMeasurements = new List<(double, double, string)>(); // ปรับปรุงชนิด List
+                    List<double> XData = new List<double>();
+                    List<double> YData = new List<double>();
+                    Debug.WriteLine($"Number of data pairs: {DataPairs.Length}");
+
+                    if (DataPairs.Length % 2 != 0)
+                    {
+                        MessageBox.Show("รูปแบบของข้อมูลในบัฟเฟอร์ไม่ถูกต้อง", "ข้อผิดพลาดในการดึงข้อมูลการวัด", MessageBoxButtons.OK);
+                        return;
+                    }
+
+                    for (int i = 0; i < DataPairs.Length; i += 2)
+                    {
+                        if (double.TryParse(DataPairs[i], out double SourceValue) && double.TryParse(DataPairs[i + 1], out double MeasuredValue))
+                        {
+                            XData.Add(SourceValue);
+                            YData.Add(MeasuredValue);
+                            currentMeasurements.Add((SourceValue, MeasuredValue, measurementType)); // เพิ่ม measurementType
+                        }
+                    }
+
+                    Debug.WriteLine($"[DEBUG] TracingRunMeasurement (Hall) - Tuner: {CurrentTuner}, Type: {measurementType}, Data Points Read: {currentMeasurements.Count}");
+                    GlobalSettings.Instance.CollectedHallMeasurements.StoreMeasurementData(CurrentTuner, currentMeasurements, measurementType);
+                }
+                catch (Exception Ex)
+                {
+                    MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
                 }
             }
-            catch (Exception Ex)
+            else // Van der Pauw Mode (ยังคงเหมือนเดิม)
             {
-                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+                try
+                {
+                    SMU.WriteString("TRACe:ACTual?");
+                    string BufferCount = SMU.ReadString().Trim();
+                    Debug.WriteLine($"Buffer count: {BufferCount}");
+
+                    if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
+                    {
+                        MessageBox.Show("ไม่สามารถทำการดึงข้อมูลการวัดจากเครื่องมือได้ เนื่องจากไม่มีข้อมูลอยู่ในบัฟเฟอร์", "ข้อผิดพลาดในการดึงข้อมูลการวัด", MessageBoxButtons.OK);
+                        return;
+                    }
+
+                    SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOURce, READing");
+                    string RawData = SMU.ReadString().Trim();
+                    Debug.WriteLine($"Buffer contains: {BufferPoints} readings");
+                    Debug.WriteLine($"Raw Data: {RawData}");
+
+                    string[] DataPairs = RawData.Split(',');
+                    List<(double Source, double Reading)> currentMeasurements = new List<(double, double)>();
+                    List<double> XData = new List<double>();
+                    List<double> YData = new List<double>();
+                    Debug.WriteLine($"Number of data pairs: {DataPairs.Length}");
+
+                    if (DataPairs.Length % 2 != 0)
+                    {
+                        MessageBox.Show("รูปแบบของข้อมูลในบัฟเฟอร์ไม่ถูกต้อง", "ข้อผิดพลาดในการดึงข้อมูลการวัด", MessageBoxButtons.OK);
+                        return;
+                    }
+
+                    for (int i = 0; i < DataPairs.Length; i += 2)
+                    {
+                        if (double.TryParse(DataPairs[i], out double SourceValue) && double.TryParse(DataPairs[i + 1], out double MeasuredValue))
+                        {
+                            XData.Add(SourceValue);
+                            YData.Add(MeasuredValue);
+                            currentMeasurements.Add((SourceValue, MeasuredValue));
+                        }
+                    }
+
+                    Debug.WriteLine($"[DEBUG] TracingRunMeasurement (VdP) - Tuner: {CurrentTuner}, Data Points Read: {currentMeasurements.Count}");
+                    GlobalSettings.Instance.CollectedVdPMeasurements.StoreMeasurementData(CurrentTuner, currentMeasurements);
+                }
+                catch (Exception Ex)
+                {
+                    MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+                }
             }
         }
 

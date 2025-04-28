@@ -931,14 +931,14 @@ namespace Program01
         {
             if (isHallMode)
             {
-                PictureboxMeasPosition1.Image = Properties.Resources.Hall_MP1negative;
-                PictureboxMeasPosition2.Image = Properties.Resources.Hall_MP1positive;
-                PictureboxMeasPosition3.Image = Properties.Resources.Hall_MP2negative;
-                PictureboxMeasPosition4.Image = Properties.Resources.Hall_MP2positive;
-                PictureboxMeasPosition5.Image = Properties.Resources.Hall_MP3negative;
-                PictureboxMeasPosition6.Image = Properties.Resources.Hall_MP3positive;
-                PictureboxMeasPosition7.Image = Properties.Resources.Hall_MP4negative;
-                PictureboxMeasPosition8.Image = Properties.Resources.Hall_MP4positive;
+                PictureboxMeasPosition1.Image = Properties.Resources.Hall_MP1;
+                PictureboxMeasPosition2.Image = Properties.Resources.Hall_MP2;
+                PictureboxMeasPosition3.Image = Properties.Resources.Hall_MP3;
+                PictureboxMeasPosition4.Image = Properties.Resources.Hall_MP4;
+                PictureboxMeasPosition5.Image = null;
+                PictureboxMeasPosition6.Image = null;
+                PictureboxMeasPosition7.Image = null;
+                PictureboxMeasPosition8.Image = null;
             }
             else
             {
@@ -1111,14 +1111,14 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
-                else if (GlobalSettings.Instance.IsModes == true)
+                /*else if (GlobalSettings.Instance.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
-                }
+                }*/
             }
             catch (Exception Ex)
             {
@@ -1144,14 +1144,14 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
-                else if (GlobalSettings.Instance.IsModes == true)
+                /*else if (GlobalSettings.Instance.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
-                }
+                }*/
             }
             catch (Exception Ex)
             {
@@ -1177,14 +1177,14 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
                 }
-                else if (GlobalSettings.Instance.IsModes == true)
+                /*else if (GlobalSettings.Instance.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
-                }
+                }*/
             }
             catch (Exception Ex)
             {
@@ -1210,14 +1210,14 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
                 }
-                else if (GlobalSettings.Instance.IsModes == true)
+                /*else if (GlobalSettings.Instance.IsModes == true)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
-                }
+                }*/
             }
             catch (Exception Ex)
             {
@@ -1501,12 +1501,11 @@ namespace Program01
 
                 SaveToGlobalSettings();
 
-                // ตรวจสอบว่ามีการเลือกโหมดการวัดเริ่มต้นหรือไม่
                 if (GlobalSettings.Instance.IsVanDerPauwMode)
                 {
                     await RunVanDerPauwMeasurement(startValue, stopValue, stepValue, repetitionValue, sourcelevellimitValue, thicknessValue, magneticfieldsValue, delayValue, points);
 
-                    if (GlobalSettings.Instance.IsHallMode) // หากเลือก Hall Mode ไว้ด้วย ให้ทำการวัดต่อ
+                    if (GlobalSettings.Instance.IsHallMode)
                     {
                         await RunHallMeasurementSequence();
                     }
@@ -1515,11 +1514,10 @@ namespace Program01
                 {
                     await RunHallMeasurementSequence();
                 }
-                else // หากไม่ได้เลือกโหมดใดๆ ให้เริ่ม Van der Pauw ก่อน แล้วถามว่าจะวัด Hall ต่อหรือไม่
+                else
                 {
                     await RunVanDerPauwMeasurement(startValue, stopValue, stepValue, repetitionValue, sourcelevellimitValue, thicknessValue, magneticfieldsValue, delayValue, points);
-
-                    DialogResult resultHall = MessageBox.Show($"ทำการวัด Van der Pauw เสร็จสิ้นแล้ว ต้องการทำการวัด Hall Measurement ต่อหรือไม่ ?", "การวัดเสร็จสิ้น", MessageBoxButtons.YesNo);
+                    DialogResult resultHall = MessageBox.Show($"ทำการวัด Van der Pauw เสร็จสิ้นแล้ว ต้องการทำการวัด Hall Effect Measurement ต่อหรือไม่ ?", "การวัดเสร็จสิ้น", MessageBoxButtons.YesNo);
 
                     if (resultHall == DialogResult.Yes)
                     {
@@ -1560,22 +1558,18 @@ namespace Program01
                 await Task.Delay(1000);
 
                 CurrentTuner++;
-
-                if (CurrentTuner > 8)
-                {
-                    Debug.WriteLine("[DEBUG] All tuners completed (Van der Pauw)");
-                    SMU.WriteString("OUTPut OFF");
-                    SS.WriteString("*CLS");
-
-                    if (Application.OpenForms.OfType<VdPTotalMeasureValuesForm>().FirstOrDefault() is VdPTotalMeasureValuesForm VdPTotalForm)
-                    {
-                        VdPTotalForm.Invoke((MethodInvoker)delegate { VdPTotalForm.LoadMeasurementData(); });
-                    }
-
-                    CollectAndCalculateVdPMeasured.Instance.CalculateVanderPauw();
-                    break;
-                }
             }
+
+            Debug.WriteLine("[DEBUG] All tuners completed (Van der Pauw)");
+            SMU.WriteString("OUTPut OFF");
+            SS.WriteString("*CLS");
+
+            if (Application.OpenForms.OfType<VdPTotalMeasureValuesForm>().FirstOrDefault() is VdPTotalMeasureValuesForm VdPTotalForm)
+            {
+                VdPTotalForm.Invoke((MethodInvoker)delegate { VdPTotalForm.LoadMeasurementData(); });
+            }
+
+            CollectAndCalculateVdPMeasured.Instance.CalculateVanderPauw();
         }
 
         private async Task RunHallMeasurementSequence()
@@ -1587,15 +1581,13 @@ namespace Program01
             UpdateMeasurementMode();
             OnToggleChanged();
 
-            await RunHallMeasurement(false); // วัด Hall นอกสนามแม่เหล็ก
-
-            DialogResult resultHallSouth = MessageBox.Show($"ทำการวัด Hall Measurement ภายนอกสนามแม่เหล็กเสร็จสิ้นแล้ว ต้องการทำการวัด Hall Measurement ภายใต้สนามแม่เหล็กทิศใต้ต่อหรือไม่ ?", "การวัดเสร็จสิ้น", MessageBoxButtons.YesNo);
+            await RunHallMeasurement(false); // วัด Hall ภายนอกสนามแม่เหล็ก
+            DialogResult resultHallSouth = MessageBox.Show($"ทำการวัด Hall Effect Measurement ภายนอกสนามแม่เหล็กเสร็จสิ้นแล้ว ต้องการทำการวัด Hall Effect Measurement ภายใต้สนามแม่เหล็กทิศใต้ต่อหรือไม่ ?", "การวัดเสร็จสิ้น", MessageBoxButtons.YesNo);
 
             if (resultHallSouth == DialogResult.Yes)
             {
                 await RunHallMeasurement(true, "South"); // วัด Hall ใต้สนามแม่เหล็กทิศใต้
-
-                DialogResult resultHallNorth = MessageBox.Show($"ทำการวัด Hall Measurement ภายใต้สนามแม่เหล็กทิศใต้เสร็จสิ้นแล้ว ทำการกลับด้านของชิ้นงานตัวอย่าง เพื่อทำการวัด Hall Measurement ภายใต้สนามแม่เหล็กทิศเหนือ", "การวัดต่อเนื่อง", MessageBoxButtons.YesNo);
+                DialogResult resultHallNorth = MessageBox.Show($"ทำการวัด Hall Effect Measurement ภายใต้สนามแม่เหล็กทิศใต้เสร็จสิ้นแล้ว ทำการกลับด้านของชิ้นงานตัวอย่าง เพื่อทำการวัด Hall Effect Measurement ภายใต้สนามแม่เหล็กทิศเหนือ", "การวัดต่อเนื่อง", MessageBoxButtons.YesNo);
 
                 if (resultHallNorth == DialogResult.Yes)
                 {
@@ -1603,7 +1595,7 @@ namespace Program01
                 }
             }
 
-            MessageBox.Show("ทำการวัด Hall Measurement เสร็จสิ้นแล้ว", "การวัดเสร็จสิ้น", MessageBoxButtons.OK);
+            MessageBox.Show("ทำการวัด Hall Effect Measurement เสร็จสิ้นแล้ว", "การวัดเสร็จสิ้น", MessageBoxButtons.OK);
         }
 
         private async Task RunHallMeasurement(bool HasMagneticField, string MagneticFieldDirection = "")
@@ -1612,7 +1604,7 @@ namespace Program01
             CollectAndCalculateHallMeasured.Instance.ClearAllData();
             Debug.WriteLine($"[DEBUG] Starting Hall Measurement (Magnetic Field: {HasMagneticField}, Direction: {MagneticFieldDirection})");
 
-            while (CurrentTuner <= 8)
+            while (CurrentTuner <= 4)
             {
                 ConfigureSwitchSystem();
                 await Task.Delay(600);
@@ -1623,77 +1615,83 @@ namespace Program01
                 await Task.Delay(1000);
 
                 CurrentTuner++;
+            }
 
-                if (CurrentTuner > 8)
-                {
-                    Debug.WriteLine($"[DEBUG] All tuners completed (Hall Measurement - Magnetic Field: {HasMagneticField}, Direction: {MagneticFieldDirection})");
-                    SMU.WriteString("OUTPut OFF");
-                    SS.WriteString("*CLS");
+            Debug.WriteLine($"[DEBUG] Hall Measurement (Magnetic Field: {HasMagneticField}, Direction: {MagneticFieldDirection}) completed for 4 positions.");
+            SMU.WriteString("OUTPut OFF");
+            SS.WriteString("*CLS");
 
-                    if (Application.OpenForms.OfType<HallTotalMeasureValuesForm>().FirstOrDefault() is HallTotalMeasureValuesForm HallTotalForm)
-                    {
-                        HallTotalForm.Invoke((MethodInvoker)delegate { HallTotalForm.LoadHallMeasurementData(); });
-                    }
-
-                    break;
-                }
+            if (Application.OpenForms.OfType<HallTotalMeasureValuesForm>().FirstOrDefault() is HallTotalMeasureValuesForm HallTotalForm)
+            {
+                HallTotalForm.Invoke((MethodInvoker)delegate { HallTotalForm.LoadHallMeasurementData(); });
             }
         }
 
         private void ConfigureSwitchSystem()
         {
-            if (GlobalSettings.Instance.IsModes == false)
-            {
-                SS.WriteString("ROUTe:OPEN ALL");
-                var channels = GetChannelConfiguration(CurrentTuner, GlobalSettings.Instance.IsModes);
+            SS.WriteString("ROUTe:OPEN ALL");
+            bool currentMode = GlobalSettings.Instance.IsModes;
+            var channels = GetChannelConfiguration(CurrentTuner, currentMode);
 
+            Debug.WriteLine($"Configuring Switch System in {(currentMode ? "Hall" : "Normal")} Mode for Tuner: {CurrentTuner}");
+
+            if (channels != null && channels.Any())
+            {
                 foreach (var channel in channels)
                 {
                     SS.WriteString($"ROUTe:CLOSe (@ {channel})");
+                    Debug.WriteLine($"Closing channel: {channel}");
                 }
             }
-            else if (GlobalSettings.Instance.IsModes == true)
+            else
             {
-                SS.WriteString("ROUTe:OPEN ALL");
-                var channels = GetChannelConfiguration(CurrentTuner, GlobalSettings.Instance.IsModes);
-
-                foreach (var channel in channels)
-                {
-                    SS.WriteString($"ROUTe:CLOSe (@ {channel})");
-                }
+                Debug.WriteLine($"No channels to configure for Tuner: {CurrentTuner} in {(currentMode ? "Hall Effect Measurement" : "Van der Pauw")} Mode");
             }
         }
 
-        private List<string> GetChannelConfiguration(int Tuner, bool IsMode)
+        private Dictionary<int, List<string>> GetChannelConfigurations(bool IsMode)
         {
-            var configurations = new Dictionary<int, List<string>>
+            if (!IsMode) // Van der Pauw Mode
             {
-                { 1, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!5", "1!2!4", "1!3!3", "1!4!6" } :
-                                                                new List<string> { "1!1!5", "1!2!3", "1!3!6", "1!4!4" }},
-                { 2, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!4", "1!2!5", "1!3!3", "1!4!6" } :
-                                                                new List<string> { "1!1!3", "1!2!5", "1!3!6", "1!4!4" }},
-                { 3, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!6", "1!2!3", "1!3!4", "1!4!5" } :
-                                                                new List<string> { "1!1!4", "1!2!6", "1!3!3", "1!4!5" }},
-                { 4, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!3", "1!2!6", "1!3!4", "1!4!5" } :
-                                                                new List<string> { "1!1!6", "1!2!4", "1!3!3", "1!4!5" }},
-                { 5, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!3", "1!2!4", "1!3!5", "1!4!6" } :
-                                                                new List<string> { "1!1!5", "1!2!3", "1!3!4", "1!4!6" }},
-                { 6, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!4", "1!2!3", "1!3!5", "1!4!6" } :
-                                                                new List<string> { "1!1!3", "1!2!5", "1!3!4", "1!4!6" }},
-                { 7, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!6", "1!2!5", "1!3!4", "1!4!3" } :
-                                                                new List<string> { "1!1!4", "1!2!6", "1!3!5", "1!4!3" }},
-                { 8, GlobalSettings.Instance.IsModes == false ? new List<string> { "1!1!5", "1!2!6", "1!3!4", "1!4!3" } :
-                                                                new List<string> { "1!1!6", "1!2!4", "1!3!5", "1!4!3" }}
-            };
-
-            Debug.WriteLine($"Tuner: {Tuner}, IsModes: {GlobalSettings.Instance.IsModes}");
-
-            foreach (var channel in configurations[Tuner])
-            {
-                Debug.WriteLine($"Channel: {channel}");
+                return new Dictionary<int, List<string>>
+        {
+            { 1, new List<string> { "1!1!5", "1!2!4", "1!3!3", "1!4!6" }},
+            { 2, new List<string> { "1!1!4", "1!2!5", "1!3!3", "1!4!6" }},
+            { 3, new List<string> { "1!1!6", "1!2!3", "1!3!4", "1!4!5" }},
+            { 4, new List<string> { "1!1!3", "1!2!6", "1!3!4", "1!4!5" }},
+            { 5, new List<string> { "1!1!3", "1!2!4", "1!3!5", "1!4!6" }},
+            { 6, new List<string> { "1!1!4", "1!2!3", "1!3!5", "1!4!6" }},
+            { 7, new List<string> { "1!1!6", "1!2!5", "1!3!4", "1!4!3" }},
+            { 8, new List<string> { "1!1!5", "1!2!6", "1!3!4", "1!4!3" }}
+        };
             }
+            else // Hall Effect Measurement Mode
+            {
+                return new Dictionary<int, List<string>>
+        {
+            { 1, new List<string> { "1!1!5", "1!2!3", "1!3!6", "1!4!4" }},
+            { 2, new List<string> { "1!1!3", "1!2!5", "1!3!6", "1!4!4" }},
+            { 3, new List<string> { "1!1!4", "1!2!6", "1!3!3", "1!4!5" }},
+            { 4, new List<string> { "1!1!6", "1!2!4", "1!3!3", "1!4!5" }}
+        };
+            }
+        }
 
-            return configurations.ContainsKey(Tuner) ? configurations[Tuner] : new List<string>();
+        private List<string> GetChannelConfiguration(int Position, bool IsMode)
+        {
+            var configurations = GetChannelConfigurations(IsMode);
+            Debug.WriteLine($"Getting Channel Configuration for Position: {Position}, IsMode: {(IsMode ? "Hall" : "Normal")}");
+
+            if (configurations.ContainsKey(Position))
+            {
+                Debug.WriteLine($"Found configuration for Position {Position}: {string.Join(", ", configurations[Position])}");
+                return configurations[Position];
+            }
+            else
+            {
+                Debug.WriteLine($"No configuration found for Position {Position} in {(IsMode ? "Hall" : "Normal")} Mode.");
+                return new List<string>();
+            }
         }
 
         private void ConfigureSourceMeasureUnit()
@@ -1792,21 +1790,21 @@ namespace Program01
 
         private void TracingRunMeasurement()
         {
-            string measurementType = "HallOut"; // Default
+            string measurementType = "withoutfield"; // Default สำหรับ Hall Out
 
             if (GlobalSettings.Instance.IsModes) // Check if in Hall Mode
             {
                 if (GlobalSettings.Instance.IsHallOutMeasuring)
                 {
-                    measurementType = "HallOut";
+                    measurementType = "withoutfield";
                 }
                 else if (GlobalSettings.Instance.IsHallInSouthMeasuring)
                 {
-                    measurementType = "HallInSouth";
+                    measurementType = "southfield";
                 }
                 else if (GlobalSettings.Instance.IsHallInNorthMeasuring)
                 {
-                    measurementType = "HallInNorth";
+                    measurementType = "northfield";
                 }
 
                 try
@@ -1817,7 +1815,7 @@ namespace Program01
 
                     if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
                     {
-                        MessageBox.Show("ไม่สามารถทำการดึงข้อมูลการวัดจากเครื่องมือได้ เนื่องจากไม่มีข้อมูลอยู่ในบัฟเฟอร์", "ข้อผิดพลาดในการดึงข้อมูลการวัด", MessageBoxButtons.OK);
+                        MessageBox.Show("ไม่สามารถดึงข้อมูลการวัดได้: ไม่มีข้อมูลในบัฟเฟอร์", "ข้อผิดพลาด", MessageBoxButtons.OK);
                         return;
                     }
 
@@ -1827,14 +1825,12 @@ namespace Program01
                     Debug.WriteLine($"Raw Data: {RawData}");
 
                     string[] DataPairs = RawData.Split(',');
-                    List<(double Source, double Reading, string MeasurementType)> currentMeasurements = new List<(double, double, string)>(); // ปรับปรุงชนิด List
-                    List<double> XData = new List<double>();
-                    List<double> YData = new List<double>();
+                    List<(double Source, double Reading)> currentMeasurements = new List<(double, double)>(); // สร้าง List สำหรับ Hall Effect
                     Debug.WriteLine($"Number of data pairs: {DataPairs.Length}");
 
                     if (DataPairs.Length % 2 != 0)
                     {
-                        MessageBox.Show("รูปแบบของข้อมูลในบัฟเฟอร์ไม่ถูกต้อง", "ข้อผิดพลาดในการดึงข้อมูลการวัด", MessageBoxButtons.OK);
+                        MessageBox.Show("รูปแบบข้อมูลในบัฟเฟอร์ไม่ถูกต้อง", "ข้อผิดพลาด", MessageBoxButtons.OK);
                         return;
                     }
 
@@ -1842,21 +1838,19 @@ namespace Program01
                     {
                         if (double.TryParse(DataPairs[i], out double SourceValue) && double.TryParse(DataPairs[i + 1], out double MeasuredValue))
                         {
-                            XData.Add(SourceValue);
-                            YData.Add(MeasuredValue);
-                            currentMeasurements.Add((SourceValue, MeasuredValue, measurementType)); // เพิ่ม measurementType
+                            currentMeasurements.Add((SourceValue, MeasuredValue));
                         }
                     }
 
                     Debug.WriteLine($"[DEBUG] TracingRunMeasurement (Hall) - Tuner: {CurrentTuner}, Type: {measurementType}, Data Points Read: {currentMeasurements.Count}");
-                    GlobalSettings.Instance.CollectedHallMeasurements.StoreMeasurementData(CurrentTuner, currentMeasurements, measurementType);
+                    GlobalSettings.Instance.CollectedHallMeasurements.StoreMeasurementData(CurrentTuner, currentMeasurements, measurementType); // ส่ง List<(double, double)>
                 }
                 catch (Exception Ex)
                 {
                     MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
                 }
             }
-            else // Van der Pauw Mode (ยังคงเหมือนเดิม)
+            else // Van der Pauw Mode
             {
                 try
                 {

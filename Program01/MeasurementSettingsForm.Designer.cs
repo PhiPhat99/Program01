@@ -60,6 +60,16 @@
             this.TextboxMagneticFields = new System.Windows.Forms.TextBox();
             this.LabelMagneticFieldsUnit = new System.Windows.Forms.Label();
             this.PanelTunerandData = new System.Windows.Forms.Panel();
+            this.PictureboxSample = new System.Windows.Forms.PictureBox();
+            this.PictureboxTunerDescription = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition8 = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition7 = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition6 = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition5 = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition4 = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition3 = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition2 = new System.Windows.Forms.PictureBox();
+            this.PictureboxMeasPosition1 = new System.Windows.Forms.PictureBox();
             this.PanelButtonTabBar = new System.Windows.Forms.Panel();
             this.ButtonData = new System.Windows.Forms.Button();
             this.ButtonTuner = new System.Windows.Forms.Button();
@@ -84,21 +94,9 @@
             this.IconbuttonErrorCheck = new FontAwesome.Sharp.IconButton();
             this.IconbuttonRunMeasurement = new FontAwesome.Sharp.IconButton();
             this.IconbuttonClearSettings = new FontAwesome.Sharp.IconButton();
-            this.PictureboxSample = new System.Windows.Forms.PictureBox();
-            this.PictureboxTunerDescription = new System.Windows.Forms.PictureBox();
-            this.PictureboxMeasPosition8 = new System.Windows.Forms.PictureBox();
-            this.PictureboxMeasPosition7 = new System.Windows.Forms.PictureBox();
-            this.PictureboxMeasPosition6 = new System.Windows.Forms.PictureBox();
-            this.PictureboxMeasPosition5 = new System.Windows.Forms.PictureBox();
-            this.PictureboxMeasPosition4 = new System.Windows.Forms.PictureBox();
-            this.PictureboxMeasPosition3 = new System.Windows.Forms.PictureBox();
-            this.PictureboxMeasPosition2 = new System.Windows.Forms.PictureBox();
-            this.PictureboxMeasPosition1 = new System.Windows.Forms.PictureBox();
             this.IconbuttonSSConnection = new FontAwesome.Sharp.IconButton();
             this.IconbuttonSMUConnection = new FontAwesome.Sharp.IconButton();
             this.PanelTunerandData.SuspendLayout();
-            this.PanelButtonTabBar.SuspendLayout();
-            this.PanelToggleSwitchBase.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxSample)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTunerDescription)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition8)).BeginInit();
@@ -109,6 +107,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition1)).BeginInit();
+            this.PanelButtonTabBar.SuspendLayout();
+            this.PanelToggleSwitchBase.SuspendLayout();
             this.SuspendLayout();
             // 
             // LabelSMUVISA
@@ -419,7 +419,7 @@
             // 
             // PanelTunerandData
             // 
-            this.PanelTunerandData.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(248)))), ((int)(((byte)(231)))));
+            this.PanelTunerandData.BackColor = System.Drawing.Color.Gainsboro;
             this.PanelTunerandData.Controls.Add(this.PictureboxSample);
             this.PanelTunerandData.Controls.Add(this.PictureboxTunerDescription);
             this.PanelTunerandData.Controls.Add(this.PictureboxMeasPosition8);
@@ -437,9 +437,119 @@
             this.PanelTunerandData.Size = new System.Drawing.Size(790, 640);
             this.PanelTunerandData.TabIndex = 28;
             // 
+            // PictureboxSample
+            // 
+            this.PictureboxSample.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxSample.Image = global::Program01.Properties.Resources.Sample;
+            this.PictureboxSample.Location = new System.Drawing.Point(420, 450);
+            this.PictureboxSample.Name = "PictureboxSample";
+            this.PictureboxSample.Size = new System.Drawing.Size(320, 180);
+            this.PictureboxSample.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxSample.TabIndex = 43;
+            this.PictureboxSample.TabStop = false;
+            // 
+            // PictureboxTunerDescription
+            // 
+            this.PictureboxTunerDescription.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxTunerDescription.Image = ((System.Drawing.Image)(resources.GetObject("PictureboxTunerDescription.Image")));
+            this.PictureboxTunerDescription.Location = new System.Drawing.Point(80, 480);
+            this.PictureboxTunerDescription.Name = "PictureboxTunerDescription";
+            this.PictureboxTunerDescription.Size = new System.Drawing.Size(240, 100);
+            this.PictureboxTunerDescription.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxTunerDescription.TabIndex = 42;
+            this.PictureboxTunerDescription.TabStop = false;
+            // 
+            // PictureboxMeasPosition8
+            // 
+            this.PictureboxMeasPosition8.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition8.Location = new System.Drawing.Point(590, 260);
+            this.PictureboxMeasPosition8.Name = "PictureboxMeasPosition8";
+            this.PictureboxMeasPosition8.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition8.TabIndex = 8;
+            this.PictureboxMeasPosition8.TabStop = false;
+            this.PictureboxMeasPosition8.Click += new System.EventHandler(this.PictureboxMeasPosition8_Click);
+            // 
+            // PictureboxMeasPosition7
+            // 
+            this.PictureboxMeasPosition7.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition7.Location = new System.Drawing.Point(400, 260);
+            this.PictureboxMeasPosition7.Name = "PictureboxMeasPosition7";
+            this.PictureboxMeasPosition7.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition7.TabIndex = 7;
+            this.PictureboxMeasPosition7.TabStop = false;
+            this.PictureboxMeasPosition7.Click += new System.EventHandler(this.PictureboxMeasPosition7_Click);
+            // 
+            // PictureboxMeasPosition6
+            // 
+            this.PictureboxMeasPosition6.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition6.Location = new System.Drawing.Point(210, 260);
+            this.PictureboxMeasPosition6.Name = "PictureboxMeasPosition6";
+            this.PictureboxMeasPosition6.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition6.TabIndex = 6;
+            this.PictureboxMeasPosition6.TabStop = false;
+            this.PictureboxMeasPosition6.Click += new System.EventHandler(this.PictureboxMeasPosition6_Click);
+            // 
+            // PictureboxMeasPosition5
+            // 
+            this.PictureboxMeasPosition5.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition5.Location = new System.Drawing.Point(20, 260);
+            this.PictureboxMeasPosition5.Name = "PictureboxMeasPosition5";
+            this.PictureboxMeasPosition5.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition5.TabIndex = 5;
+            this.PictureboxMeasPosition5.TabStop = false;
+            this.PictureboxMeasPosition5.Click += new System.EventHandler(this.PictureboxMeasPosition5_Click);
+            // 
+            // PictureboxMeasPosition4
+            // 
+            this.PictureboxMeasPosition4.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition4.Location = new System.Drawing.Point(590, 60);
+            this.PictureboxMeasPosition4.Name = "PictureboxMeasPosition4";
+            this.PictureboxMeasPosition4.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition4.TabIndex = 4;
+            this.PictureboxMeasPosition4.TabStop = false;
+            this.PictureboxMeasPosition4.Click += new System.EventHandler(this.PictureboxMeasPosition4_Click);
+            // 
+            // PictureboxMeasPosition3
+            // 
+            this.PictureboxMeasPosition3.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition3.Location = new System.Drawing.Point(400, 60);
+            this.PictureboxMeasPosition3.Name = "PictureboxMeasPosition3";
+            this.PictureboxMeasPosition3.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition3.TabIndex = 3;
+            this.PictureboxMeasPosition3.TabStop = false;
+            this.PictureboxMeasPosition3.Click += new System.EventHandler(this.PictureboxMeasPosition3_Click);
+            // 
+            // PictureboxMeasPosition2
+            // 
+            this.PictureboxMeasPosition2.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition2.Location = new System.Drawing.Point(210, 60);
+            this.PictureboxMeasPosition2.Name = "PictureboxMeasPosition2";
+            this.PictureboxMeasPosition2.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition2.TabIndex = 2;
+            this.PictureboxMeasPosition2.TabStop = false;
+            this.PictureboxMeasPosition2.Click += new System.EventHandler(this.PictureboxMeasPosition2_Click);
+            // 
+            // PictureboxMeasPosition1
+            // 
+            this.PictureboxMeasPosition1.BackColor = System.Drawing.Color.Transparent;
+            this.PictureboxMeasPosition1.Location = new System.Drawing.Point(20, 60);
+            this.PictureboxMeasPosition1.Name = "PictureboxMeasPosition1";
+            this.PictureboxMeasPosition1.Size = new System.Drawing.Size(180, 180);
+            this.PictureboxMeasPosition1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.PictureboxMeasPosition1.TabIndex = 1;
+            this.PictureboxMeasPosition1.TabStop = false;
+            this.PictureboxMeasPosition1.Click += new System.EventHandler(this.PictureboxMeasPosition1_Click);
+            // 
             // PanelButtonTabBar
             // 
-            this.PanelButtonTabBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(248)))), ((int)(((byte)(231)))));
+            this.PanelButtonTabBar.BackColor = System.Drawing.Color.Gray;
             this.PanelButtonTabBar.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PanelButtonTabBar.Controls.Add(this.ButtonData);
             this.PanelButtonTabBar.Controls.Add(this.ButtonTuner);
@@ -671,7 +781,6 @@
             // 
             this.IconbuttonTunerTest.BackColor = System.Drawing.Color.Snow;
             this.IconbuttonTunerTest.FlatAppearance.BorderSize = 0;
-            this.IconbuttonTunerTest.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.IconbuttonTunerTest.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.IconbuttonTunerTest.IconChar = FontAwesome.Sharp.IconChar.None;
             this.IconbuttonTunerTest.IconColor = System.Drawing.Color.Black;
@@ -689,7 +798,6 @@
             // 
             this.IconbuttonErrorCheck.BackColor = System.Drawing.Color.Snow;
             this.IconbuttonErrorCheck.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.IconbuttonErrorCheck.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.IconbuttonErrorCheck.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.IconbuttonErrorCheck.IconChar = FontAwesome.Sharp.IconChar.None;
             this.IconbuttonErrorCheck.IconColor = System.Drawing.Color.Black;
@@ -707,7 +815,6 @@
             // 
             this.IconbuttonRunMeasurement.BackColor = System.Drawing.Color.Snow;
             this.IconbuttonRunMeasurement.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.IconbuttonRunMeasurement.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.IconbuttonRunMeasurement.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.IconbuttonRunMeasurement.IconChar = FontAwesome.Sharp.IconChar.Running;
             this.IconbuttonRunMeasurement.IconColor = System.Drawing.Color.Black;
@@ -727,7 +834,6 @@
             // 
             this.IconbuttonClearSettings.BackColor = System.Drawing.Color.Snow;
             this.IconbuttonClearSettings.FlatAppearance.BorderColor = System.Drawing.Color.White;
-            this.IconbuttonClearSettings.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.IconbuttonClearSettings.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.IconbuttonClearSettings.IconChar = FontAwesome.Sharp.IconChar.None;
             this.IconbuttonClearSettings.IconColor = System.Drawing.Color.Black;
@@ -741,119 +847,9 @@
             this.IconbuttonClearSettings.UseVisualStyleBackColor = false;
             this.IconbuttonClearSettings.Click += new System.EventHandler(this.IconbuttonClearSettings_Click);
             // 
-            // PictureboxSample
-            // 
-            this.PictureboxSample.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxSample.Image = global::Program01.Properties.Resources.Sample;
-            this.PictureboxSample.Location = new System.Drawing.Point(280, 450);
-            this.PictureboxSample.Name = "PictureboxSample";
-            this.PictureboxSample.Size = new System.Drawing.Size(320, 180);
-            this.PictureboxSample.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxSample.TabIndex = 43;
-            this.PictureboxSample.TabStop = false;
-            // 
-            // PictureboxTunerDescription
-            // 
-            this.PictureboxTunerDescription.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxTunerDescription.Image = ((System.Drawing.Image)(resources.GetObject("PictureboxTunerDescription.Image")));
-            this.PictureboxTunerDescription.Location = new System.Drawing.Point(20, 485);
-            this.PictureboxTunerDescription.Name = "PictureboxTunerDescription";
-            this.PictureboxTunerDescription.Size = new System.Drawing.Size(240, 100);
-            this.PictureboxTunerDescription.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxTunerDescription.TabIndex = 42;
-            this.PictureboxTunerDescription.TabStop = false;
-            // 
-            // PictureboxMeasPosition8
-            // 
-            this.PictureboxMeasPosition8.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxMeasPosition8.Location = new System.Drawing.Point(590, 260);
-            this.PictureboxMeasPosition8.Name = "PictureboxMeasPosition8";
-            this.PictureboxMeasPosition8.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxMeasPosition8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxMeasPosition8.TabIndex = 8;
-            this.PictureboxMeasPosition8.TabStop = false;
-            this.PictureboxMeasPosition8.Click += new System.EventHandler(this.PictureboxMeasPosition8_Click);
-            // 
-            // PictureboxMeasPosition7
-            // 
-            this.PictureboxMeasPosition7.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxMeasPosition7.Location = new System.Drawing.Point(400, 260);
-            this.PictureboxMeasPosition7.Name = "PictureboxMeasPosition7";
-            this.PictureboxMeasPosition7.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxMeasPosition7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxMeasPosition7.TabIndex = 7;
-            this.PictureboxMeasPosition7.TabStop = false;
-            this.PictureboxMeasPosition7.Click += new System.EventHandler(this.PictureboxMeasPosition7_Click);
-            // 
-            // PictureboxMeasPosition6
-            // 
-            this.PictureboxMeasPosition6.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxMeasPosition6.Location = new System.Drawing.Point(210, 260);
-            this.PictureboxMeasPosition6.Name = "PictureboxMeasPosition6";
-            this.PictureboxMeasPosition6.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxMeasPosition6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxMeasPosition6.TabIndex = 6;
-            this.PictureboxMeasPosition6.TabStop = false;
-            this.PictureboxMeasPosition6.Click += new System.EventHandler(this.PictureboxMeasPosition6_Click);
-            // 
-            // PictureboxMeasPosition5
-            // 
-            this.PictureboxMeasPosition5.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxMeasPosition5.Location = new System.Drawing.Point(20, 260);
-            this.PictureboxMeasPosition5.Name = "PictureboxMeasPosition5";
-            this.PictureboxMeasPosition5.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxMeasPosition5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxMeasPosition5.TabIndex = 5;
-            this.PictureboxMeasPosition5.TabStop = false;
-            this.PictureboxMeasPosition5.Click += new System.EventHandler(this.PictureboxMeasPosition5_Click);
-            // 
-            // PictureboxMeasPosition4
-            // 
-            this.PictureboxMeasPosition4.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxMeasPosition4.Location = new System.Drawing.Point(590, 60);
-            this.PictureboxMeasPosition4.Name = "PictureboxMeasPosition4";
-            this.PictureboxMeasPosition4.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxMeasPosition4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxMeasPosition4.TabIndex = 4;
-            this.PictureboxMeasPosition4.TabStop = false;
-            this.PictureboxMeasPosition4.Click += new System.EventHandler(this.PictureboxMeasPosition4_Click);
-            // 
-            // PictureboxMeasPosition3
-            // 
-            this.PictureboxMeasPosition3.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxMeasPosition3.Location = new System.Drawing.Point(400, 60);
-            this.PictureboxMeasPosition3.Name = "PictureboxMeasPosition3";
-            this.PictureboxMeasPosition3.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxMeasPosition3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxMeasPosition3.TabIndex = 3;
-            this.PictureboxMeasPosition3.TabStop = false;
-            this.PictureboxMeasPosition3.Click += new System.EventHandler(this.PictureboxMeasPosition3_Click);
-            // 
-            // PictureboxMeasPosition2
-            // 
-            this.PictureboxMeasPosition2.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxMeasPosition2.Location = new System.Drawing.Point(210, 60);
-            this.PictureboxMeasPosition2.Name = "PictureboxMeasPosition2";
-            this.PictureboxMeasPosition2.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxMeasPosition2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxMeasPosition2.TabIndex = 2;
-            this.PictureboxMeasPosition2.TabStop = false;
-            this.PictureboxMeasPosition2.Click += new System.EventHandler(this.PictureboxMeasPosition2_Click);
-            // 
-            // PictureboxMeasPosition1
-            // 
-            this.PictureboxMeasPosition1.BackColor = System.Drawing.Color.Transparent;
-            this.PictureboxMeasPosition1.Location = new System.Drawing.Point(20, 60);
-            this.PictureboxMeasPosition1.Name = "PictureboxMeasPosition1";
-            this.PictureboxMeasPosition1.Size = new System.Drawing.Size(180, 180);
-            this.PictureboxMeasPosition1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PictureboxMeasPosition1.TabIndex = 1;
-            this.PictureboxMeasPosition1.TabStop = false;
-            this.PictureboxMeasPosition1.Click += new System.EventHandler(this.PictureboxMeasPosition1_Click);
-            // 
             // IconbuttonSSConnection
             // 
-            this.IconbuttonSSConnection.BackColor = System.Drawing.Color.White;
+            this.IconbuttonSSConnection.BackColor = System.Drawing.Color.Snow;
             this.IconbuttonSSConnection.IconChar = FontAwesome.Sharp.IconChar.PowerOff;
             this.IconbuttonSSConnection.IconColor = System.Drawing.Color.Gainsboro;
             this.IconbuttonSSConnection.IconFont = FontAwesome.Sharp.IconFont.Auto;
@@ -885,7 +881,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(242)))), ((int)(((byte)(234)))), ((int)(((byte)(213)))));
+            this.BackColor = System.Drawing.Color.LightGray;
             this.ClientSize = new System.Drawing.Size(1260, 820);
             this.Controls.Add(this.ComboboxSourceDelayUnit);
             this.Controls.Add(this.LabelSourceDelayUnit);
@@ -946,8 +942,6 @@
             this.Text = "2";
             this.Load += new System.EventHandler(this.MeasurementSettingsChildForm_Load);
             this.PanelTunerandData.ResumeLayout(false);
-            this.PanelButtonTabBar.ResumeLayout(false);
-            this.PanelToggleSwitchBase.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxSample)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxTunerDescription)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition8)).EndInit();
@@ -958,6 +952,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.PictureboxMeasPosition1)).EndInit();
+            this.PanelButtonTabBar.ResumeLayout(false);
+            this.PanelToggleSwitchBase.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 

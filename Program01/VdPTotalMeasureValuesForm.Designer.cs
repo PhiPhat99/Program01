@@ -158,6 +158,7 @@
             this.DatagridviewVdPTotalMesure.AllowUserToDeleteRows = false;
             this.DatagridviewVdPTotalMesure.AllowUserToResizeColumns = false;
             this.DatagridviewVdPTotalMesure.AllowUserToResizeRows = false;
+            this.DatagridviewVdPTotalMesure.BackgroundColor = System.Drawing.Color.DarkGray;
             this.DatagridviewVdPTotalMesure.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.DatagridviewVdPTotalMesure.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
@@ -384,7 +385,7 @@
             this.TabcontrolVdPTotalCharts.Controls.Add(this.TabpageVdPMeasuredPosition6);
             this.TabcontrolVdPTotalCharts.Controls.Add(this.TabpageVdPMeasuredPosition7);
             this.TabcontrolVdPTotalCharts.Controls.Add(this.TabpageVdPMeasuredPosition8);
-            this.TabcontrolVdPTotalCharts.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TabcontrolVdPTotalCharts.Font = new System.Drawing.Font("Segoe UI", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TabcontrolVdPTotalCharts.Location = new System.Drawing.Point(15, 50);
             this.TabcontrolVdPTotalCharts.Name = "TabcontrolVdPTotalCharts";
             this.TabcontrolVdPTotalCharts.SelectedIndex = 0;
@@ -395,10 +396,10 @@
             // 
             this.TabpageTotalVdPMeasuredPosition.Controls.Add(this.ChartTotalPositions);
             this.TabpageTotalVdPMeasuredPosition.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageTotalVdPMeasuredPosition.Location = new System.Drawing.Point(4, 32);
+            this.TabpageTotalVdPMeasuredPosition.Location = new System.Drawing.Point(4, 40);
             this.TabpageTotalVdPMeasuredPosition.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageTotalVdPMeasuredPosition.Name = "TabpageTotalVdPMeasuredPosition";
-            this.TabpageTotalVdPMeasuredPosition.Size = new System.Drawing.Size(627, 684);
+            this.TabpageTotalVdPMeasuredPosition.Size = new System.Drawing.Size(627, 676);
             this.TabpageTotalVdPMeasuredPosition.TabIndex = 0;
             this.TabpageTotalVdPMeasuredPosition.Text = "Total";
             this.TabpageTotalVdPMeasuredPosition.UseVisualStyleBackColor = true;
@@ -498,7 +499,7 @@
             this.ChartTotalPositions.Series.Add(series6);
             this.ChartTotalPositions.Series.Add(series7);
             this.ChartTotalPositions.Series.Add(series8);
-            this.ChartTotalPositions.Size = new System.Drawing.Size(627, 684);
+            this.ChartTotalPositions.Size = new System.Drawing.Size(627, 676);
             this.ChartTotalPositions.TabIndex = 0;
             this.ChartTotalPositions.Text = "Total Positions";
             // 
@@ -914,7 +915,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(138)))), ((int)(((byte)(114)))));
+            this.BackColor = System.Drawing.Color.LightGray;
             this.ClientSize = new System.Drawing.Size(1260, 820);
             this.Controls.Add(this.PanelMeasuedValueChart);
             this.Controls.Add(this.PanelMeasuredValues);

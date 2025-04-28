@@ -24,43 +24,20 @@ namespace Program01
             this.Load += HallTotalMeasureValuesForm_Load;
             this.FormClosing += HallTotalMeasureValuesForm_FormClosing;
 
-            // Initialize DataTables for BindingSources
-            HallOutVoltageBindingSource.DataSource = CreateHallOutDataTable();
+            HallOutVoltageBindingSource.DataSource = CreateHallDataTable();
             DatagridviewHallOutVoltageTotalMeasured.DataSource = HallOutVoltageBindingSource;
 
-            HallInSouthVoltageBindingSource.DataSource = CreateHallInSouthDataTable();
+            HallInSouthVoltageBindingSource.DataSource = CreateHallDataTable();
             DatagridviewHallSouthVoltageTotalMeasured.DataSource = HallInSouthVoltageBindingSource;
 
-            HallInNorthVoltageBindingSource.DataSource = CreateHallInNorthDataTable();
+            HallInNorthVoltageBindingSource.DataSource = CreateHallDataTable();
             DatagridviewHallNorthVoltageTotalMeasured.DataSource = HallInNorthVoltageBindingSource;
         }
 
-        private DataTable CreateHallOutDataTable()
+        private DataTable CreateHallDataTable()
         {
             DataTable dataTable = new DataTable();
-            for (int i = 0; i < 8; i++)
-            {
-                dataTable.Columns.Add($"Source{i}", typeof(double));
-                dataTable.Columns.Add($"Measured{i}", typeof(double));
-            }
-            return dataTable;
-        }
-
-        private DataTable CreateHallInSouthDataTable()
-        {
-            DataTable dataTable = new DataTable();
-            for (int i = 0; i < 8; i++)
-            {
-                dataTable.Columns.Add($"Source{i}", typeof(double));
-                dataTable.Columns.Add($"Measured{i}", typeof(double));
-            }
-            return dataTable;
-        }
-
-        private DataTable CreateHallInNorthDataTable()
-        {
-            DataTable dataTable = new DataTable();
-            for (int i = 0; i < 8; i++)
+            for (int i = 1; i <= 4; i++)
             {
                 dataTable.Columns.Add($"Source{i}", typeof(double));
                 dataTable.Columns.Add($"Measured{i}", typeof(double));
@@ -82,67 +59,76 @@ namespace Program01
 
         private void InitializeChartsInTabControls()
         {
-            InitializeChartsForTab(TabcontrolHallTotalChart, "TabpageHallOutTotalChart", "ChartHallOutMeasuredPosition");
-            InitializeChartsForTab(TabcontrolHallTotalChart, "TabpageHallInTotalChart", "ChartHallInSouthMeasuredPosition", "TabpageHallInSouthTotalChart");
-            InitializeChartsForTab(TabcontrolHallTotalChart, "TabpageHallInTotalChart", "ChartHallInNorthMeasuredPosition", "TabpageHallInNorthTotalChart");
+            InitializeChartsForTabPage(
+                MainTabControlName: "TabcontrolHallInTotalChart",
+                MainTabPagesName: "TabpageHallInSouthTotalChart",
+                SubTabControlName: "TabcontrolHallInSouthTotalChart",
+                SubTabPagesName: "TabpageV_hiSouthMP",
+                ChartNamePrefix: "ChartHallInSouthMeasuredPosition",
+                IsSouth: true
+            );
 
-            Debug.WriteLine("[DEBUG] InitializeChartsInTabControl() - Charts in TabControl initialized (using Designer settings).");
+            InitializeChartsForTabPage(
+                MainTabControlName: "TabcontrolHallInTotalChart",
+                MainTabPagesName: "TabpageHallInNorthTotalChart",
+                SubTabControlName: "TabcontrolHallInNorthTotalChart",
+                SubTabPagesName: "TabpageV_hiNorthMP",
+                ChartNamePrefix: "ChartHallInNorthMeasuredPosition",
+                IsSouth: false
+            );
+
+            Debug.WriteLine("[DEBUG] InitializeChartsInTabControls() - All charts initialized successfully.");
         }
 
-        private void InitializeChartsForTab(TabControl mainTabControl, string parentTabPageName, string chartNamePrefix, string childTabPageName = null)
+        private void InitializeChartsForTabPage(string MainTabControlName, string MainTabPagesName, string SubTabControlName, string SubTabPagesName, string ChartNamePrefix, bool IsSouth)
         {
-            if (mainTabControl.TabPages.ContainsKey(parentTabPageName))
+            // Step 1: Find Main TabControl
+            TabControl MainTbCtrl = this.Controls.Find(MainTabControlName, true).OfType<TabControl>().FirstOrDefault();
+            if (MainTbCtrl == null)
             {
-                TabControl targetTabControl = mainTabControl.TabPages[parentTabPageName].Controls.OfType<TabControl>().FirstOrDefault();
-
-                if (targetTabControl != null && childTabPageName != null && targetTabControl.TabPages.ContainsKey(childTabPageName))
-                {
-                    for (int i = 1; i <= 4; i++)
-                    {
-                        string tabPageName = $"TabpageV_{(childTabPageName.Contains("South") ? "hiSouth" : "hiNorth")}TotalMP{i}";
-                        string chartName = $"{chartNamePrefix}{i}";
-                        Chart measuredChart = targetTabControl.TabPages[childTabPageName].Controls.Find(chartName, true).OfType<Chart>().FirstOrDefault();
-
-                        if (measuredChart != null)
-                        {
-                            SetupIVChart(measuredChart, $"I-V Graph of Positions {(i * 2 - 1)} & {i * 2}");
-                        }
-                        else
-                        {
-                            Debug.WriteLine($"[WARNING] InitializeChartsForTab - {chartName} not found in {tabPageName} ({childTabPageName})!");
-                        }
-                    }
-                }
-                else if (targetTabControl == null && childTabPageName == null) // กรณี Hall Out ที่ไม่มี TabControl ซ้อน
-                {
-                    for (int i = 1; i <= 4; i++)
-                    {
-                        string tabPageName = $"TabpageV_hoTotalMP{i}";
-                        string chartName = $"{chartNamePrefix}{i}";
-                        Chart measuredChart = mainTabControl.TabPages[parentTabPageName].Controls.Find(chartName, true).OfType<Chart>().FirstOrDefault();
-
-                        if (measuredChart != null)
-                        {
-                            SetupIVChart(measuredChart, $"I-V Graph of Positions {(i * 2 - 1)} & {i * 2}");
-                        }
-                        else
-                        {
-                            Debug.WriteLine($"[WARNING] InitializeChartsForTab - {chartName} not found in {tabPageName} ({parentTabPageName})!");
-                        }
-                    }
-                }
-                else if (childTabPageName != null)
-                {
-                    Debug.WriteLine($"[WARNING] InitializeChartsForTab - Child TabPage '{childTabPageName}' not found in '{parentTabPageName}'!");
-                }
-                else if (targetTabControl == null)
-                {
-                    Debug.WriteLine($"[WARNING] InitializeChartsForTab - Inner TabControl not found in '{parentTabPageName}'!");
-                }
+                Debug.WriteLine($"[WARNING] Main TabControl '{MainTabControlName}' not found!");
+                return;
             }
-            else
+
+            // Step 2: Find Main TabPage inside Main TabControl
+            TabPage MainTbPgs = MainTbCtrl.TabPages.Cast<TabPage>().FirstOrDefault(tp => tp.Name == MainTabPagesName);
+            if (MainTbPgs == null)
             {
-                Debug.WriteLine($"[WARNING] InitializeChartsForTab - Parent TabPage '{parentTabPageName}' not found!");
+                Debug.WriteLine($"[WARNING] Main TabPage '{MainTabPagesName}' not found inside '{MainTabControlName}'!");
+                return;
+            }
+
+            // Step 3: Find Sub TabControl inside Main TabPage
+            TabControl SubTbCtrl = MainTbPgs.Controls.Find(SubTabControlName, true).OfType<TabControl>().FirstOrDefault();
+            if (SubTbCtrl == null)
+            {
+                Debug.WriteLine($"[WARNING] Sub TabControl '{SubTabControlName}' not found inside '{MainTabPagesName}'!");
+                return;
+            }
+
+            // Step 4: Find the specific SubTabPage
+            TabPage TargetSubTabPage = SubTbCtrl.TabPages.Cast<TabPage>().FirstOrDefault(tp => tp.Name == SubTabPagesName);
+            if (TargetSubTabPage == null)
+            {
+                Debug.WriteLine($"[WARNING] SubTabPage '{SubTabPagesName}' not found inside '{SubTabControlName}'!");
+                return;
+            }
+
+            // Step 5: Find and setup Charts inside the specific SubTabPage
+            for (int i = 1; i <= 4; i++)
+            {
+                string ChartName = $"{ChartNamePrefix}{i}";
+                Chart chart = TargetSubTabPage.Controls.Find(ChartName, true).OfType<Chart>().FirstOrDefault();
+
+                if (chart != null)
+                {
+                    string location = IsSouth ? "South" : "North";
+                    SetupIVChart(chart, $"I-V Graph of Position {i} ({location})");
+                }
+                else
+                {
+                    Debug.WriteLine($"[WARNING] Chart '{ChartName}' not found in SubTabPage '{TargetSubTabPage.Name}'!");
+                }
             }
         }
 
@@ -179,40 +165,47 @@ namespace Program01
 
         public void LoadHallMeasurementData()
         {
-            var hallOutMeasurements = CollectAndCalculateHallMeasured.Instance.GetAllHallMeasurementsByType("HallOut");
+            // ดึงข้อมูลการวัด Hall Out (Without Field) และอัปเดต DataGridView
+            var hallOutMeasurements = CollectAndCalculateHallMeasured.Instance.GetAllHallMeasurementsByType("withoutfield");
             UpdateHallDataGridView(hallOutMeasurements, HallOutVoltageBindingSource);
 
-            var hallInSouthMeasurements = CollectAndCalculateHallMeasured.Instance.GetAllHallMeasurementsByType("HallInSouth");
+            // ดึงข้อมูลการวัด Hall In (South Field) และอัปเดต DataGridView
+            var hallInSouthMeasurements = CollectAndCalculateHallMeasured.Instance.GetAllHallMeasurementsByType("southfield");
             UpdateHallDataGridView(hallInSouthMeasurements, HallInSouthVoltageBindingSource);
 
-            var hallInNorthMeasurements = CollectAndCalculateHallMeasured.Instance.GetAllHallMeasurementsByType("HallInNorth");
+            // ดึงข้อมูลการวัด Hall In (North Field) และอัปเดต DataGridView
+            var hallInNorthMeasurements = CollectAndCalculateHallMeasured.Instance.GetAllHallMeasurementsByType("northfield");
             UpdateHallDataGridView(hallInNorthMeasurements, HallInNorthVoltageBindingSource);
-
-            // Update Charts ตามข้อมูลแต่ละประเภท (ถ้ามี)
         }
 
-        private void UpdateHallDataGridView(Dictionary<int, List<(double Source, double Reading, string MeasurementType)>> measurements, BindingSource bindingSource)
+        private void UpdateHallDataGridView(Dictionary<int, List<(double Source, double Reading)>> measurements, BindingSource bindingSource)
         {
-            DataTable dataTable = bindingSource.DataSource as DataTable;
-            dataTable.Rows.Clear();
-
-            foreach (var PositionData in measurements)
+            if (bindingSource.DataSource is DataTable dataTable)
             {
-                int PositionNumber = PositionData.Key;
+                dataTable.Rows.Clear();
 
-                if (PositionNumber >= 1 && PositionNumber <= 8)
+                foreach (var PositionData in measurements)
                 {
-                    foreach (var measurement in PositionData.Value)
+                    int PositionNumber = PositionData.Key;
+
+                    if (PositionNumber >= 1 && PositionNumber <= 4)
                     {
                         DataRow rowData = dataTable.NewRow();
-                        rowData[$"Source{PositionNumber - 1}"] = measurement.Source;
-                        rowData[$"Measured{PositionNumber - 1}"] = measurement.Reading;
+                        for (int i = 0; i < PositionData.Value.Count; i++)
+                        { 
+                            if (i < 4)
+                            {
+                                rowData[$"Source{PositionNumber}"] = PositionData.Value[i].Source;
+                                rowData[$"Measured{PositionNumber}"] = PositionData.Value[i].Reading;
+                                break;
+                            }
+                        }
                         dataTable.Rows.Add(rowData);
                     }
                 }
-            }
 
-            bindingSource.ResetBindings(false);
+                bindingSource.ResetBindings(false);
+            }
         }
 
         private void CollectAndCalculateHallMeasured_DataUpdated(object sender, EventArgs e)

@@ -7,8 +7,11 @@ public class CollectAndCalculateHallMeasured
 {
     public static CollectAndCalculateHallMeasured _instance;
     private static readonly object _lock = new object();
-    private Dictionary<int, List<(double Source, double Reading, string MeasurementType)>> _hallMeasurementsByPosition = new Dictionary<int, List<(double, double, string)>>(); // ปรับปรุง Dictionary สำหรับเก็บประเภท
 
+    private Dictionary<int, List<(double Source, double Reading)>> _hallMeasurementsWithoutField = new Dictionary<int, List<(double, double)>>();
+    private Dictionary<int, List<(double Source, double Reading)>> _hallMeasurementsWithNorthField = new Dictionary<int, List<(double, double)>>();
+    private Dictionary<int, List<(double Source, double Reading)>> _hallMeasurementsWithSouthField = new Dictionary<int, List<(double, double)>>();
+    
     public event EventHandler DataUpdated;
     public event EventHandler CalculationCompleted;
 
@@ -32,38 +35,77 @@ public class CollectAndCalculateHallMeasured
         }
     }
 
-    // เมธอดสำหรับจัดเก็บข้อมูล Hall Measurement พร้อมประเภท
-    public void StoreMeasurementData(int tunerPosition, List<(double Source, double Reading, string MeasurementType)> dataPairs, string measurementType)
+    public void StoreMeasurementData(int tunerPosition, List<(double Source, double Reading)> dataPairs, string measurementType)
     {
         Debug.WriteLine($"[DEBUG] StoreMeasurementData - Tuner: {tunerPosition}, Type: {measurementType}, Data Count: {dataPairs?.Count ?? 0}");
 
         if (dataPairs != null)
         {
-            if (!_hallMeasurementsByPosition.ContainsKey(tunerPosition))
+            Dictionary<int, List<(double Source, double Reading)>> targetDictionary = null;
+
+            switch (measurementType.ToLower())
             {
-                _hallMeasurementsByPosition[tunerPosition] = new List<(double Source, double Reading, string MeasurementType)>();
+                case "withoutfield":
+                    targetDictionary = _hallMeasurementsWithoutField;
+                    break;
+                case "northfield":
+                    targetDictionary = _hallMeasurementsWithNorthField;
+                    break;
+                case "southfield":
+                    targetDictionary = _hallMeasurementsWithSouthField;
+                    break;
+                default:
+                    Debug.WriteLine($"[WARNING] Unknown Measurement Type: {measurementType}");
+                    return;
             }
 
-            _hallMeasurementsByPosition[tunerPosition].AddRange(dataPairs);
-            DataUpdated?.Invoke(this, EventArgs.Empty);
+            if (targetDictionary != null)
+            {
+                if (!targetDictionary.ContainsKey(tunerPosition))
+                {
+                    targetDictionary[tunerPosition] = new List<(double Source, double Reading)>();
+                }
+                targetDictionary[tunerPosition].AddRange(dataPairs);
+                DataUpdated?.Invoke(this, EventArgs.Empty);
+            }
         }
     }
 
-    public Dictionary<int, List<(double Source, double Reading, string MeasurementType)>> GetAllHallMeasurementsByType(string measurementType)
+    public Dictionary<int, List<(double Source, double Reading)>> GetHallMeasurementsWithoutField()
     {
-        return _hallMeasurementsByPosition
-            .Where(kvp => kvp.Value.Any(m => m.MeasurementType == measurementType))
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Where(m => m.MeasurementType == measurementType).ToList());
+        return _hallMeasurementsWithoutField.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
     }
 
-    // เมธอดสำหรับดึงข้อมูล Hall Measurement ทั้งหมด
-    public Dictionary<int, List<(double Source, double Reading, string MeasurementType)>> GetAllHallMeasurementsByPosition()
+    public Dictionary<int, List<(double Source, double Reading)>> GetHallMeasurementsWithNorthField()
     {
-        return _hallMeasurementsByPosition.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
+        return _hallMeasurementsWithNorthField.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
+    }
+
+    public Dictionary<int, List<(double Source, double Reading)>> GetHallMeasurementsWithSouthField()
+    {
+        return _hallMeasurementsWithSouthField.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
+    }
+
+    public Dictionary<int, List<(double Source, double Reading)>> GetAllHallMeasurementsByType(string measurementType)
+    {
+        switch (measurementType.ToLower())
+        {
+            case "withoutfield":
+                return _hallMeasurementsWithoutField.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
+            case "northfield":
+                return _hallMeasurementsWithNorthField.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
+            case "southfield":
+                return _hallMeasurementsWithSouthField.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
+            default:
+                Debug.WriteLine($"[WARNING] Unknown Measurement Type: {measurementType}");
+                return new Dictionary<int, List<(double Source, double Reading)>>();
+        }
     }
 
     public void ClearAllData()
     {
-        _hallMeasurementsByPosition.Clear();
+        _hallMeasurementsWithoutField.Clear();
+        _hallMeasurementsWithNorthField.Clear();
+        _hallMeasurementsWithSouthField.Clear();
     }
 }

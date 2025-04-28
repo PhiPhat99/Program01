@@ -201,7 +201,7 @@
             // 
             // PanelDesktop
             // 
-            this.PanelDesktop.BackColor = System.Drawing.Color.Snow;
+            this.PanelDesktop.BackColor = System.Drawing.Color.LightGray;
             this.PanelDesktop.Controls.Add(this.IconbuttonUserLogin);
             this.PanelDesktop.Controls.Add(this.IconbuttonBrowseFileVdPandHallMeasurementPath);
             this.PanelDesktop.Controls.Add(this.IconbuttonBrowseFileHallMeasurementDataPathOnly);
@@ -229,121 +229,121 @@
             // 
             // IconbuttonUserLogin
             // 
+            this.IconbuttonUserLogin.BackColor = System.Drawing.Color.Snow;
             this.IconbuttonUserLogin.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.IconbuttonUserLogin.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.IconbuttonUserLogin.IconChar = FontAwesome.Sharp.IconChar.SignIn;
             this.IconbuttonUserLogin.IconColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(161)))), ((int)(((byte)(251)))));
             this.IconbuttonUserLogin.IconFont = FontAwesome.Sharp.IconFont.Solid;
-            this.IconbuttonUserLogin.IconSize = 24;
+            this.IconbuttonUserLogin.IconSize = 22;
             this.IconbuttonUserLogin.Location = new System.Drawing.Point(900, 240);
             this.IconbuttonUserLogin.Name = "IconbuttonUserLogin";
-            this.IconbuttonUserLogin.Size = new System.Drawing.Size(100, 30);
+            this.IconbuttonUserLogin.Size = new System.Drawing.Size(100, 40);
             this.IconbuttonUserLogin.TabIndex = 19;
             this.IconbuttonUserLogin.Text = "Login";
             this.IconbuttonUserLogin.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonUserLogin.UseVisualStyleBackColor = true;
+            this.IconbuttonUserLogin.UseVisualStyleBackColor = false;
             this.IconbuttonUserLogin.Click += new System.EventHandler(this.IconbuttonUserLogin_Click);
             // 
             // IconbuttonBrowseFileVdPandHallMeasurementPath
             // 
+            this.IconbuttonBrowseFileVdPandHallMeasurementPath.BackColor = System.Drawing.Color.Snow;
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.IconChar = FontAwesome.Sharp.IconChar.FolderOpen;
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.IconColor = System.Drawing.Color.Gold;
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.IconFont = FontAwesome.Sharp.IconFont.Solid;
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.IconSize = 24;
+            this.IconbuttonBrowseFileVdPandHallMeasurementPath.IconSize = 21;
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.Location = new System.Drawing.Point(770, 558);
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.Name = "IconbuttonBrowseFileVdPandHallMeasurementPath";
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.Size = new System.Drawing.Size(110, 30);
+            this.IconbuttonBrowseFileVdPandHallMeasurementPath.Size = new System.Drawing.Size(100, 40);
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.TabIndex = 18;
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.Text = "Browse";
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonBrowseFileVdPandHallMeasurementPath.UseVisualStyleBackColor = true;
+            this.IconbuttonBrowseFileVdPandHallMeasurementPath.UseVisualStyleBackColor = false;
             this.IconbuttonBrowseFileVdPandHallMeasurementPath.Click += new System.EventHandler(this.IconbuttonBrowseFileVdPandHallMeasurementPath_Click);
             // 
             // IconbuttonBrowseFileHallMeasurementDataPathOnly
             // 
+            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.BackColor = System.Drawing.Color.Snow;
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.IconChar = FontAwesome.Sharp.IconChar.FolderOpen;
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.IconColor = System.Drawing.Color.Gold;
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.IconFont = FontAwesome.Sharp.IconFont.Solid;
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.IconSize = 24;
+            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.IconSize = 21;
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Location = new System.Drawing.Point(770, 458);
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Name = "IconbuttonBrowseFileHallMeasurementDataPathOnly";
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Size = new System.Drawing.Size(110, 30);
+            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Size = new System.Drawing.Size(100, 40);
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.TabIndex = 17;
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Text = "Browse";
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.UseVisualStyleBackColor = true;
+            this.IconbuttonBrowseFileHallMeasurementDataPathOnly.UseVisualStyleBackColor = false;
             this.IconbuttonBrowseFileHallMeasurementDataPathOnly.Click += new System.EventHandler(this.IconbuttonBrowseFileHallMeasurementDataPathOnly_Click);
             // 
             // IconbuttonBrowseFileVdPDataPathOnly
             // 
+            this.IconbuttonBrowseFileVdPDataPathOnly.BackColor = System.Drawing.Color.Snow;
             this.IconbuttonBrowseFileVdPDataPathOnly.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.IconbuttonBrowseFileVdPDataPathOnly.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.IconbuttonBrowseFileVdPDataPathOnly.IconChar = FontAwesome.Sharp.IconChar.FolderOpen;
             this.IconbuttonBrowseFileVdPDataPathOnly.IconColor = System.Drawing.Color.Gold;
             this.IconbuttonBrowseFileVdPDataPathOnly.IconFont = FontAwesome.Sharp.IconFont.Solid;
-            this.IconbuttonBrowseFileVdPDataPathOnly.IconSize = 24;
+            this.IconbuttonBrowseFileVdPDataPathOnly.IconSize = 21;
             this.IconbuttonBrowseFileVdPDataPathOnly.Location = new System.Drawing.Point(770, 360);
             this.IconbuttonBrowseFileVdPDataPathOnly.Name = "IconbuttonBrowseFileVdPDataPathOnly";
-            this.IconbuttonBrowseFileVdPDataPathOnly.Size = new System.Drawing.Size(110, 30);
+            this.IconbuttonBrowseFileVdPDataPathOnly.Size = new System.Drawing.Size(100, 40);
             this.IconbuttonBrowseFileVdPDataPathOnly.TabIndex = 16;
             this.IconbuttonBrowseFileVdPDataPathOnly.Text = "Browse";
             this.IconbuttonBrowseFileVdPDataPathOnly.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonBrowseFileVdPDataPathOnly.UseVisualStyleBackColor = true;
+            this.IconbuttonBrowseFileVdPDataPathOnly.UseVisualStyleBackColor = false;
             this.IconbuttonBrowseFileVdPDataPathOnly.Click += new System.EventHandler(this.IconbuttonBrowseFileVdPDataPathOnly_Click);
             // 
             // IconbuttonSaveFileVdPandHallMeasurementPath
             // 
+            this.IconbuttonSaveFileVdPandHallMeasurementPath.BackColor = System.Drawing.Color.Snow;
             this.IconbuttonSaveFileVdPandHallMeasurementPath.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.IconbuttonSaveFileVdPandHallMeasurementPath.IconChar = FontAwesome.Sharp.IconChar.FileExcel;
             this.IconbuttonSaveFileVdPandHallMeasurementPath.IconColor = System.Drawing.Color.Green;
             this.IconbuttonSaveFileVdPandHallMeasurementPath.IconFont = FontAwesome.Sharp.IconFont.Solid;
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.IconSize = 24;
+            this.IconbuttonSaveFileVdPandHallMeasurementPath.IconSize = 21;
             this.IconbuttonSaveFileVdPandHallMeasurementPath.Location = new System.Drawing.Point(900, 558);
             this.IconbuttonSaveFileVdPandHallMeasurementPath.Name = "IconbuttonSaveFileVdPandHallMeasurementPath";
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.Size = new System.Drawing.Size(90, 30);
+            this.IconbuttonSaveFileVdPandHallMeasurementPath.Size = new System.Drawing.Size(100, 40);
             this.IconbuttonSaveFileVdPandHallMeasurementPath.TabIndex = 14;
             this.IconbuttonSaveFileVdPandHallMeasurementPath.Text = "Save";
             this.IconbuttonSaveFileVdPandHallMeasurementPath.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonSaveFileVdPandHallMeasurementPath.UseVisualStyleBackColor = true;
+            this.IconbuttonSaveFileVdPandHallMeasurementPath.UseVisualStyleBackColor = false;
             this.IconbuttonSaveFileVdPandHallMeasurementPath.Click += new System.EventHandler(this.IconbuttonSaveFileVdPandHallMeasurementPath_Click);
             // 
             // IconbuttonSaveFileHallMeasurementDataPathOnly
             // 
+            this.IconbuttonSaveFileHallMeasurementDataPathOnly.BackColor = System.Drawing.Color.Snow;
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.IconChar = FontAwesome.Sharp.IconChar.FileExcel;
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.IconColor = System.Drawing.Color.Green;
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.IconFont = FontAwesome.Sharp.IconFont.Solid;
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.IconSize = 24;
+            this.IconbuttonSaveFileHallMeasurementDataPathOnly.IconSize = 21;
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.Location = new System.Drawing.Point(900, 458);
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.Name = "IconbuttonSaveFileHallMeasurementDataPathOnly";
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.Size = new System.Drawing.Size(90, 30);
+            this.IconbuttonSaveFileHallMeasurementDataPathOnly.Size = new System.Drawing.Size(100, 40);
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.TabIndex = 13;
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.Text = "Save";
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonSaveFileHallMeasurementDataPathOnly.UseVisualStyleBackColor = true;
+            this.IconbuttonSaveFileHallMeasurementDataPathOnly.UseVisualStyleBackColor = false;
             this.IconbuttonSaveFileHallMeasurementDataPathOnly.Click += new System.EventHandler(this.IconbuttonSaveFileHallMeasurementDataPathOnly_Click);
             // 
             // IconbuttonSaveFileVdPDataPathOnly
             // 
+            this.IconbuttonSaveFileVdPDataPathOnly.BackColor = System.Drawing.Color.Snow;
             this.IconbuttonSaveFileVdPDataPathOnly.FlatAppearance.BorderColor = System.Drawing.Color.DimGray;
-            this.IconbuttonSaveFileVdPDataPathOnly.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.IconbuttonSaveFileVdPDataPathOnly.IconChar = FontAwesome.Sharp.IconChar.FileExcel;
             this.IconbuttonSaveFileVdPDataPathOnly.IconColor = System.Drawing.Color.Green;
             this.IconbuttonSaveFileVdPDataPathOnly.IconFont = FontAwesome.Sharp.IconFont.Solid;
-            this.IconbuttonSaveFileVdPDataPathOnly.IconSize = 24;
+            this.IconbuttonSaveFileVdPDataPathOnly.IconSize = 21;
             this.IconbuttonSaveFileVdPDataPathOnly.Location = new System.Drawing.Point(900, 360);
             this.IconbuttonSaveFileVdPDataPathOnly.Name = "IconbuttonSaveFileVdPDataPathOnly";
-            this.IconbuttonSaveFileVdPDataPathOnly.Size = new System.Drawing.Size(90, 30);
+            this.IconbuttonSaveFileVdPDataPathOnly.Size = new System.Drawing.Size(100, 40);
             this.IconbuttonSaveFileVdPDataPathOnly.TabIndex = 12;
             this.IconbuttonSaveFileVdPDataPathOnly.Text = "Save";
             this.IconbuttonSaveFileVdPDataPathOnly.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonSaveFileVdPDataPathOnly.UseVisualStyleBackColor = true;
+            this.IconbuttonSaveFileVdPDataPathOnly.UseVisualStyleBackColor = false;
             this.IconbuttonSaveFileVdPDataPathOnly.Click += new System.EventHandler(this.IconbuttonSaveFileVdPDataPathOnly_Click);
             // 
             // TextboxFileVdPandHallMeasurementDataPath
@@ -437,9 +437,9 @@
             this.LabelSaveHallMeasurementDataOnly.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LabelSaveHallMeasurementDataOnly.Location = new System.Drawing.Point(80, 410);
             this.LabelSaveHallMeasurementDataOnly.Name = "LabelSaveHallMeasurementDataOnly";
-            this.LabelSaveHallMeasurementDataOnly.Size = new System.Drawing.Size(440, 28);
+            this.LabelSaveHallMeasurementDataOnly.Size = new System.Drawing.Size(478, 28);
             this.LabelSaveHallMeasurementDataOnly.TabIndex = 2;
-            this.LabelSaveHallMeasurementDataOnly.Text = "Save file data of Hall effect measurement only ";
+            this.LabelSaveHallMeasurementDataOnly.Text = "Save file raw data of Hall effect measurement only ";
             // 
             // LabelSaveVdPDataOnly
             // 
@@ -447,9 +447,9 @@
             this.LabelSaveVdPDataOnly.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LabelSaveVdPDataOnly.Location = new System.Drawing.Point(80, 310);
             this.LabelSaveVdPDataOnly.Name = "LabelSaveVdPDataOnly";
-            this.LabelSaveVdPDataOnly.Size = new System.Drawing.Size(417, 28);
+            this.LabelSaveVdPDataOnly.Size = new System.Drawing.Size(455, 28);
             this.LabelSaveVdPDataOnly.TabIndex = 1;
-            this.LabelSaveVdPDataOnly.Text = "Save file data of Van der Pauw method only ";
+            this.LabelSaveVdPDataOnly.Text = "Save file raw data of Van der Pauw method only ";
             // 
             // LabelProgramTitle
             // 
@@ -688,7 +688,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.BackColor = System.Drawing.Color.LightGray;
             this.ClientSize = new System.Drawing.Size(1500, 1000);
             this.Controls.Add(this.PanelDesktop);
             this.Controls.Add(this.PanelTitleTabBar);

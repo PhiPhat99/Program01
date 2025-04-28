@@ -11,7 +11,6 @@ namespace Program01
         private Dictionary<int, List<(double Source, double Reading)>> _measurementsByPosition = new Dictionary<int, List<(double, double)>>();
         private Dictionary<int, double> _resistancesByPosition = new Dictionary<int, double>();
         public event EventHandler DataUpdated;
-        public event EventHandler  TriggerDataUpdated;
         public event EventHandler CalculationCompleted;
 
         private CollectAndCalculateVdPMeasured() { }

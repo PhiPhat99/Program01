@@ -217,7 +217,7 @@ namespace Program01
 
                         // ตัวอย่างการปรับแต่งแกน X ของ Chart รวม
                         TotalChart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (Source)    [{GlobalSettings.Instance.StepUnitUI}]"; // กำหนดชื่อแกน X
-                        TotalChart.ChartAreas[0].AxisX.LabelStyle.Format = "E2";
+                        TotalChart.ChartAreas[0].AxisX.LabelStyle.Format = "F3";
                         TotalChart.ChartAreas[0].AxisX.Interval = 0;
                         //TotalChart.ChartAreas[0].AxisX.LabelStyle.Angle = 90;
 

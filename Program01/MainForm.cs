@@ -449,7 +449,7 @@ namespace Program01
                 }
                 else
                 {
-                    ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+                    ExcelPackage.License.SetNonCommercialOrganization("KMITL");
                     string VdPFilePath = TextboxFileVdPDataPath.Text;
 
                     if (string.IsNullOrWhiteSpace(VdPFilePath))
@@ -479,18 +479,72 @@ namespace Program01
                         worksheet.Cells[1, 1, 1, 5].Merge = true;
                         worksheet.Cells[1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                         worksheet.Cells[1, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
                         worksheet.Cells[1, 6].Value = "Date and Time";
                         worksheet.Cells[1, 6, 1, 8].Merge = true;
                         worksheet.Cells[1, 6].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                         worksheet.Cells[1, 6].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
                         worksheet.Cells[2, 1].Value = UserFullName;
                         worksheet.Cells[2, 1, 2, 5].Merge = true;
                         worksheet.Cells[2, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                         worksheet.Cells[2, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                        
                         worksheet.Cells[2, 6].Value = DateTime.Now.ToString("dd/MM/yyyy   HH:mm:ss");
                         worksheet.Cells[2, 6, 2, 8].Merge = true;
                         worksheet.Cells[2, 6].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                         worksheet.Cells[2, 6].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                        
+                        worksheet.Cells[1, 11].Value = "Total Current Source & Voltage Measured";
+                        worksheet.Cells[1, 11, 2, 28].Merge = true;
+                        worksheet.Cells[1, 11].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[1, 11].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 11].Value = "I_s (A)";
+                        worksheet.Cells[3, 11, 3, 12].Merge = true;
+                        worksheet.Cells[3, 11].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 11].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 13].Value = "V_MP1 (V)";
+                        worksheet.Cells[3, 13, 3, 14].Merge = true;
+                        worksheet.Cells[3, 13].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 13].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 15].Value = "V_MP2 (V)";
+                        worksheet.Cells[3, 15, 3, 16].Merge = true;
+                        worksheet.Cells[3, 15].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 15].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 17].Value = "V_MP3 (V)";
+                        worksheet.Cells[3, 17, 3, 18].Merge = true;
+                        worksheet.Cells[3, 17].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 17].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 19].Value = "V_MP4 (V)";
+                        worksheet.Cells[3, 19, 3, 20].Merge = true;
+                        worksheet.Cells[3, 19].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 19].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 21].Value = "V_MP5 (V)";
+                        worksheet.Cells[3, 21, 3, 22].Merge = true;
+                        worksheet.Cells[3, 21].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 21].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 23].Value = "V_MP6 (V)";
+                        worksheet.Cells[3, 23, 3, 24].Merge = true;
+                        worksheet.Cells[3, 23].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 23].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 25].Value = "V_MP7 (V)";
+                        worksheet.Cells[3, 25, 3, 26].Merge = true;
+                        worksheet.Cells[3, 25].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 25].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 27].Value = "V_MP8 (V)";
+                        worksheet.Cells[3, 27, 3, 28].Merge = true;
+                        worksheet.Cells[3, 27].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 27].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
                         package.SaveAs(new FileInfo(newFilePath));
                     }
 
@@ -547,7 +601,7 @@ namespace Program01
                 }
                 else
                 {
-                    ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+                    ExcelPackage.License.SetNonCommercialOrganization("KMITL");
                     string HallFilePath = TextboxFileHallMeasurementDataPath.Text;
 
                     if (string.IsNullOrWhiteSpace(HallFilePath))
@@ -577,18 +631,112 @@ namespace Program01
                         worksheet.Cells[1, 1, 1, 5].Merge = true;
                         worksheet.Cells[1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                         worksheet.Cells[1, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
                         worksheet.Cells[1, 6].Value = "Date and Time";
                         worksheet.Cells[1, 6, 1, 8].Merge = true;
                         worksheet.Cells[1, 6].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                         worksheet.Cells[1, 6].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
                         worksheet.Cells[2, 1].Value = UserFullName;
                         worksheet.Cells[2, 1, 2, 5].Merge = true;
                         worksheet.Cells[2, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                         worksheet.Cells[2, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
                         worksheet.Cells[2, 6].Value = DateTime.Now.ToString("dd/MM/yyyy   HH:mm:ss");
                         worksheet.Cells[2, 6, 2, 8].Merge = true;
                         worksheet.Cells[2, 6].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                         worksheet.Cells[2, 6].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[1, 11].Value = "Total Current Source & Hall Out Magnetic Field Voltage Measured";
+                        worksheet.Cells[1, 11, 2, 20].Merge = true;
+                        worksheet.Cells[1, 11].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[1, 11].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 11].Value = "I_s (A)";
+                        worksheet.Cells[3, 11, 3, 12].Merge = true;
+                        worksheet.Cells[3, 11].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 11].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 13].Value = "V_ho1 (V)";
+                        worksheet.Cells[3, 13, 3, 14].Merge = true;
+                        worksheet.Cells[3, 13].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 13].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 15].Value = "V_ho2 (V)";
+                        worksheet.Cells[3, 15, 3, 16].Merge = true;
+                        worksheet.Cells[3, 15].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 15].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 17].Value = "V_ho3 (V)";
+                        worksheet.Cells[3, 17, 3, 18].Merge = true;
+                        worksheet.Cells[3, 17].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 17].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 19].Value = "V_ho4 (V)";
+                        worksheet.Cells[3, 19, 3, 20].Merge = true;
+                        worksheet.Cells[3, 19].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 19].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[1, 21].Value = "Total Current Source & Hall In Magnetic Field (South) Voltage Measured";
+                        worksheet.Cells[1, 21, 2, 30].Merge = true;
+                        worksheet.Cells[1, 21].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[1, 21].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 21].Value = "I_s (A)";
+                        worksheet.Cells[3, 21, 3, 22].Merge = true;
+                        worksheet.Cells[3, 21].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 21].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 23].Value = "V_ho(S)1 (V)";
+                        worksheet.Cells[3, 23, 3, 24].Merge = true;
+                        worksheet.Cells[3, 23].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 23].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 25].Value = "V_ho(S)2 (V)";
+                        worksheet.Cells[3, 25, 3, 26].Merge = true;
+                        worksheet.Cells[3, 25].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 25].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 27].Value = "V_ho(S)3 (V)";
+                        worksheet.Cells[3, 27, 3, 28].Merge = true;
+                        worksheet.Cells[3, 27].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 27].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 29].Value = "V_ho(S)4 (V)";
+                        worksheet.Cells[3, 29, 3, 30].Merge = true;
+                        worksheet.Cells[3, 29].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 29].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[1, 31].Value = "Total Current Source & Hall In Magnetic Field (North) Voltage Measured";
+                        worksheet.Cells[1, 31, 2, 40].Merge = true;
+                        worksheet.Cells[1, 31].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[1, 31].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 31].Value = "I_s (A)";
+                        worksheet.Cells[3, 31, 3, 32].Merge = true;
+                        worksheet.Cells[3, 31].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 31].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 33].Value = "V_ho(N)1 (V)";
+                        worksheet.Cells[3, 33, 3, 34].Merge = true;
+                        worksheet.Cells[3, 33].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 33].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 35].Value = "V_ho(N)2 (V)";
+                        worksheet.Cells[3, 35, 3, 36].Merge = true;
+                        worksheet.Cells[3, 35].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 35].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 37].Value = "V_ho(N)3 (V)";
+                        worksheet.Cells[3, 37, 3, 38].Merge = true;
+                        worksheet.Cells[3, 37].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 37].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
+                        worksheet.Cells[3, 39].Value = "V_ho(N)4 (V)";
+                        worksheet.Cells[3, 39, 3, 40].Merge = true;
+                        worksheet.Cells[3, 39].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[3, 39].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+
                         package.SaveAs(new FileInfo(newFilePath));
                     }
                     MessageBox.Show($"File has been created successfully at: {newFilePath}", "Saving Successful", MessageBoxButtons.OK);
@@ -644,7 +792,7 @@ namespace Program01
                 }
                 else
                 {
-                    ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+                    ExcelPackage.License.SetNonCommercialOrganization("KMITL");
                     string VdPandHallFilePath = TextboxFileVdPandHallMeasurementDataPath.Text;
 
                     if (string.IsNullOrWhiteSpace(VdPandHallFilePath))
@@ -674,18 +822,23 @@ namespace Program01
                         worksheet.Cells[1, 1, 1, 5].Merge = true;
                         worksheet.Cells[1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                         worksheet.Cells[1, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                        
                         worksheet.Cells[1, 6].Value = "Date and Time";
                         worksheet.Cells[1, 6, 1, 8].Merge = true;
                         worksheet.Cells[1, 6].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                         worksheet.Cells[1, 6].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                        
                         worksheet.Cells[2, 1].Value = UserFullName;
                         worksheet.Cells[2, 1, 2, 5].Merge = true;
                         worksheet.Cells[2, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                         worksheet.Cells[2, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                        
                         worksheet.Cells[2, 6].Value = DateTime.Now.ToString("dd/MM/yyyy   HH:mm:ss");
                         worksheet.Cells[2, 6, 2, 8].Merge = true;
                         worksheet.Cells[2, 6].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                         worksheet.Cells[2, 6].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                        
+
                         package.SaveAs(new FileInfo(newFilePath));
                     }
 

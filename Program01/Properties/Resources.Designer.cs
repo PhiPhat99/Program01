@@ -83,6 +83,16 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Hall_MP1 {
+            get {
+                object obj = ResourceManager.GetObject("Hall_MP1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Hall_MP1negative {
             get {
                 object obj = ResourceManager.GetObject("Hall_MP1negative", resourceCulture);
@@ -96,6 +106,16 @@ namespace Program01.Properties {
         internal static System.Drawing.Bitmap Hall_MP1positive {
             get {
                 object obj = ResourceManager.GetObject("Hall_MP1positive", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Hall_MP2 {
+            get {
+                object obj = ResourceManager.GetObject("Hall_MP2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,6 +143,16 @@ namespace Program01.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Hall_MP3 {
+            get {
+                object obj = ResourceManager.GetObject("Hall_MP3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Hall_MP3negative {
             get {
                 object obj = ResourceManager.GetObject("Hall_MP3negative", resourceCulture);
@@ -136,6 +166,16 @@ namespace Program01.Properties {
         internal static System.Drawing.Bitmap Hall_MP3positive {
             get {
                 object obj = ResourceManager.GetObject("Hall_MP3positive", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Hall_MP4 {
+            get {
+                object obj = ResourceManager.GetObject("Hall_MP4", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

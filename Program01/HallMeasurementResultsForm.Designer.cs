@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.PanelResultsChart = new System.Windows.Forms.Panel();
             this.ChartHallTotalVoltages = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.PanelMeasureAndSource = new System.Windows.Forms.Panel();
@@ -116,23 +116,23 @@
             // 
             // ChartHallTotalVoltages
             // 
-            chartArea1.Name = "ChartArea1";
-            this.ChartHallTotalVoltages.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.ChartHallTotalVoltages.Legends.Add(legend1);
+            chartArea4.Name = "ChartArea1";
+            this.ChartHallTotalVoltages.ChartAreas.Add(chartArea4);
+            legend4.Name = "Legend1";
+            this.ChartHallTotalVoltages.Legends.Add(legend4);
             this.ChartHallTotalVoltages.Location = new System.Drawing.Point(60, 50);
             this.ChartHallTotalVoltages.Name = "ChartHallTotalVoltages";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.ChartHallTotalVoltages.Series.Add(series1);
+            series4.ChartArea = "ChartArea1";
+            series4.Legend = "Legend1";
+            series4.Name = "Series1";
+            this.ChartHallTotalVoltages.Series.Add(series4);
             this.ChartHallTotalVoltages.Size = new System.Drawing.Size(720, 600);
             this.ChartHallTotalVoltages.TabIndex = 124;
             this.ChartHallTotalVoltages.Text = "chart1";
             // 
             // PanelMeasureAndSource
             // 
-            this.PanelMeasureAndSource.BackColor = System.Drawing.Color.Transparent;
+            this.PanelMeasureAndSource.BackColor = System.Drawing.Color.DimGray;
             this.PanelMeasureAndSource.Controls.Add(this.TextboxSourceMode);
             this.PanelMeasureAndSource.Controls.Add(this.TextboxMeasureMode);
             this.PanelMeasureAndSource.Controls.Add(this.LabelMeasureMode);
@@ -185,7 +185,7 @@
             // 
             // PanelResults
             // 
-            this.PanelResults.BackColor = System.Drawing.Color.Transparent;
+            this.PanelResults.BackColor = System.Drawing.Color.DarkGray;
             this.PanelResults.Controls.Add(this.label15);
             this.PanelResults.Controls.Add(this.textBox27);
             this.PanelResults.Controls.Add(this.textBox28);
@@ -866,7 +866,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(95)))), ((int)(((byte)(77)))), ((int)(((byte)(221)))));
+            this.BackColor = System.Drawing.Color.LightGray;
             this.ClientSize = new System.Drawing.Size(1260, 820);
             this.Controls.Add(this.PanelResultsChart);
             this.Controls.Add(this.PanelMeasureAndSource);

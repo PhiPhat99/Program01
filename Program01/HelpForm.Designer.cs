@@ -37,14 +37,14 @@ namespace Program01
         {
             this.SuspendLayout();
             // 
-            // HelpChildForm
+            // HelpForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(172)))), ((int)(((byte)(126)))), ((int)(((byte)(241)))));
+            this.BackColor = System.Drawing.Color.LightGray;
             this.ClientSize = new System.Drawing.Size(1260, 820);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "HelpChildForm";
+            this.Name = "HelpForm";
             this.Text = "Help";
             this.ResumeLayout(false);
 

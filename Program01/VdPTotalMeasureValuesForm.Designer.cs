@@ -410,12 +410,12 @@
             chartArea1.AxisX.MajorGrid.LineWidth = 2;
             chartArea1.AxisX.MinorGrid.Enabled = true;
             chartArea1.AxisX.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-            chartArea1.AxisX.Title = "Source (Unit)";
+            chartArea1.AxisX.Title = "Measure (Unit)";
             chartArea1.AxisX.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             chartArea1.AxisY.MajorGrid.LineWidth = 2;
             chartArea1.AxisY.MinorGrid.Enabled = true;
             chartArea1.AxisY.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-            chartArea1.AxisY.Title = "Measured (Unit)";
+            chartArea1.AxisY.Title = "Source (Unit)";
             chartArea1.AxisY.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             chartArea1.BackColor = System.Drawing.Color.Gray;
             chartArea1.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
@@ -507,12 +507,12 @@
             // 
             this.TabpageVdPMeasuredPosition1.Controls.Add(this.ChartPosition1);
             this.TabpageVdPMeasuredPosition1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageVdPMeasuredPosition1.Location = new System.Drawing.Point(4, 32);
+            this.TabpageVdPMeasuredPosition1.Location = new System.Drawing.Point(4, 40);
             this.TabpageVdPMeasuredPosition1.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageVdPMeasuredPosition1.Name = "TabpageVdPMeasuredPosition1";
-            this.TabpageVdPMeasuredPosition1.Size = new System.Drawing.Size(627, 684);
+            this.TabpageVdPMeasuredPosition1.Size = new System.Drawing.Size(627, 676);
             this.TabpageVdPMeasuredPosition1.TabIndex = 1;
-            this.TabpageVdPMeasuredPosition1.Text = "Position 1-";
+            this.TabpageVdPMeasuredPosition1.Text = "Position 1";
             this.TabpageVdPMeasuredPosition1.UseVisualStyleBackColor = true;
             // 
             // ChartPosition1
@@ -548,22 +548,22 @@
             series9.MarkerColor = System.Drawing.Color.OrangeRed;
             series9.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
             series9.Name = "SeriesMeasuredP1";
-            series9.XValueMember = "Source";
-            series9.YValueMembers = "Reading";
+            series9.XValueMember = "Reading";
+            series9.YValueMembers = "Source";
             this.ChartPosition1.Series.Add(series9);
-            this.ChartPosition1.Size = new System.Drawing.Size(627, 684);
+            this.ChartPosition1.Size = new System.Drawing.Size(627, 676);
             this.ChartPosition1.TabIndex = 1;
             // 
             // TabpageVdPMeasuredPosition2
             // 
             this.TabpageVdPMeasuredPosition2.Controls.Add(this.ChartPosition2);
             this.TabpageVdPMeasuredPosition2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageVdPMeasuredPosition2.Location = new System.Drawing.Point(4, 32);
+            this.TabpageVdPMeasuredPosition2.Location = new System.Drawing.Point(4, 40);
             this.TabpageVdPMeasuredPosition2.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageVdPMeasuredPosition2.Name = "TabpageVdPMeasuredPosition2";
-            this.TabpageVdPMeasuredPosition2.Size = new System.Drawing.Size(627, 684);
+            this.TabpageVdPMeasuredPosition2.Size = new System.Drawing.Size(627, 676);
             this.TabpageVdPMeasuredPosition2.TabIndex = 2;
-            this.TabpageVdPMeasuredPosition2.Text = "Position 1+";
+            this.TabpageVdPMeasuredPosition2.Text = "Position 2";
             this.TabpageVdPMeasuredPosition2.UseVisualStyleBackColor = true;
             // 
             // ChartPosition2
@@ -599,22 +599,22 @@
             series10.MarkerColor = System.Drawing.Color.OrangeRed;
             series10.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
             series10.Name = "SeriesMeasuredP2";
-            series10.XValueMember = "Source";
-            series10.YValueMembers = "Reading";
+            series10.XValueMember = "Reading";
+            series10.YValueMembers = "Source";
             this.ChartPosition2.Series.Add(series10);
-            this.ChartPosition2.Size = new System.Drawing.Size(627, 684);
+            this.ChartPosition2.Size = new System.Drawing.Size(627, 676);
             this.ChartPosition2.TabIndex = 2;
             // 
             // TabpageVdPMeasuredPosition3
             // 
             this.TabpageVdPMeasuredPosition3.Controls.Add(this.ChartPosition3);
             this.TabpageVdPMeasuredPosition3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageVdPMeasuredPosition3.Location = new System.Drawing.Point(4, 32);
+            this.TabpageVdPMeasuredPosition3.Location = new System.Drawing.Point(4, 40);
             this.TabpageVdPMeasuredPosition3.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageVdPMeasuredPosition3.Name = "TabpageVdPMeasuredPosition3";
-            this.TabpageVdPMeasuredPosition3.Size = new System.Drawing.Size(627, 684);
+            this.TabpageVdPMeasuredPosition3.Size = new System.Drawing.Size(627, 676);
             this.TabpageVdPMeasuredPosition3.TabIndex = 3;
-            this.TabpageVdPMeasuredPosition3.Text = "Position 2-";
+            this.TabpageVdPMeasuredPosition3.Text = "Position 3";
             this.TabpageVdPMeasuredPosition3.UseVisualStyleBackColor = true;
             // 
             // ChartPosition3
@@ -650,22 +650,22 @@
             series11.MarkerColor = System.Drawing.Color.OrangeRed;
             series11.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
             series11.Name = "SeriesMeasuredP3";
-            series11.XValueMember = "Source";
-            series11.YValueMembers = "Reading";
+            series11.XValueMember = "Reading";
+            series11.YValueMembers = "Source";
             this.ChartPosition3.Series.Add(series11);
-            this.ChartPosition3.Size = new System.Drawing.Size(627, 684);
+            this.ChartPosition3.Size = new System.Drawing.Size(627, 676);
             this.ChartPosition3.TabIndex = 2;
             // 
             // TabpageVdPMeasuredPosition4
             // 
             this.TabpageVdPMeasuredPosition4.Controls.Add(this.ChartPosition4);
             this.TabpageVdPMeasuredPosition4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageVdPMeasuredPosition4.Location = new System.Drawing.Point(4, 32);
+            this.TabpageVdPMeasuredPosition4.Location = new System.Drawing.Point(4, 40);
             this.TabpageVdPMeasuredPosition4.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageVdPMeasuredPosition4.Name = "TabpageVdPMeasuredPosition4";
-            this.TabpageVdPMeasuredPosition4.Size = new System.Drawing.Size(627, 684);
+            this.TabpageVdPMeasuredPosition4.Size = new System.Drawing.Size(627, 676);
             this.TabpageVdPMeasuredPosition4.TabIndex = 4;
-            this.TabpageVdPMeasuredPosition4.Text = "Position 2+";
+            this.TabpageVdPMeasuredPosition4.Text = "Position 4";
             this.TabpageVdPMeasuredPosition4.UseVisualStyleBackColor = true;
             // 
             // ChartPosition4
@@ -701,22 +701,22 @@
             series12.MarkerColor = System.Drawing.Color.OrangeRed;
             series12.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
             series12.Name = "SeriesMeasuredP4";
-            series12.XValueMember = "Source";
-            series12.YValueMembers = "Reading";
+            series12.XValueMember = "Reading";
+            series12.YValueMembers = "Source";
             this.ChartPosition4.Series.Add(series12);
-            this.ChartPosition4.Size = new System.Drawing.Size(627, 684);
+            this.ChartPosition4.Size = new System.Drawing.Size(627, 676);
             this.ChartPosition4.TabIndex = 3;
             // 
             // TabpageVdPMeasuredPosition5
             // 
             this.TabpageVdPMeasuredPosition5.Controls.Add(this.ChartPosition5);
             this.TabpageVdPMeasuredPosition5.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageVdPMeasuredPosition5.Location = new System.Drawing.Point(4, 32);
+            this.TabpageVdPMeasuredPosition5.Location = new System.Drawing.Point(4, 40);
             this.TabpageVdPMeasuredPosition5.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageVdPMeasuredPosition5.Name = "TabpageVdPMeasuredPosition5";
-            this.TabpageVdPMeasuredPosition5.Size = new System.Drawing.Size(627, 684);
+            this.TabpageVdPMeasuredPosition5.Size = new System.Drawing.Size(627, 676);
             this.TabpageVdPMeasuredPosition5.TabIndex = 5;
-            this.TabpageVdPMeasuredPosition5.Text = "Position 3-";
+            this.TabpageVdPMeasuredPosition5.Text = "Position 5";
             this.TabpageVdPMeasuredPosition5.UseVisualStyleBackColor = true;
             // 
             // ChartPosition5
@@ -752,22 +752,22 @@
             series13.MarkerColor = System.Drawing.Color.OrangeRed;
             series13.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
             series13.Name = "SeriesMeasuredP5";
-            series13.XValueMember = "Source";
-            series13.YValueMembers = "Reading";
+            series13.XValueMember = "Reading";
+            series13.YValueMembers = "Source";
             this.ChartPosition5.Series.Add(series13);
-            this.ChartPosition5.Size = new System.Drawing.Size(627, 684);
+            this.ChartPosition5.Size = new System.Drawing.Size(627, 676);
             this.ChartPosition5.TabIndex = 3;
             // 
             // TabpageVdPMeasuredPosition6
             // 
             this.TabpageVdPMeasuredPosition6.Controls.Add(this.ChartPosition6);
             this.TabpageVdPMeasuredPosition6.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageVdPMeasuredPosition6.Location = new System.Drawing.Point(4, 32);
+            this.TabpageVdPMeasuredPosition6.Location = new System.Drawing.Point(4, 40);
             this.TabpageVdPMeasuredPosition6.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageVdPMeasuredPosition6.Name = "TabpageVdPMeasuredPosition6";
-            this.TabpageVdPMeasuredPosition6.Size = new System.Drawing.Size(627, 684);
+            this.TabpageVdPMeasuredPosition6.Size = new System.Drawing.Size(627, 676);
             this.TabpageVdPMeasuredPosition6.TabIndex = 6;
-            this.TabpageVdPMeasuredPosition6.Text = "Position 3+";
+            this.TabpageVdPMeasuredPosition6.Text = "Position 6";
             this.TabpageVdPMeasuredPosition6.UseVisualStyleBackColor = true;
             // 
             // ChartPosition6
@@ -803,22 +803,22 @@
             series14.MarkerColor = System.Drawing.Color.OrangeRed;
             series14.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
             series14.Name = "SeriesMeasuredP6";
-            series14.XValueMember = "Source";
-            series14.YValueMembers = "Reading";
+            series14.XValueMember = "Reading";
+            series14.YValueMembers = "Source";
             this.ChartPosition6.Series.Add(series14);
-            this.ChartPosition6.Size = new System.Drawing.Size(627, 684);
+            this.ChartPosition6.Size = new System.Drawing.Size(627, 676);
             this.ChartPosition6.TabIndex = 3;
             // 
             // TabpageVdPMeasuredPosition7
             // 
             this.TabpageVdPMeasuredPosition7.Controls.Add(this.ChartPosition7);
             this.TabpageVdPMeasuredPosition7.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageVdPMeasuredPosition7.Location = new System.Drawing.Point(4, 32);
+            this.TabpageVdPMeasuredPosition7.Location = new System.Drawing.Point(4, 40);
             this.TabpageVdPMeasuredPosition7.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageVdPMeasuredPosition7.Name = "TabpageVdPMeasuredPosition7";
-            this.TabpageVdPMeasuredPosition7.Size = new System.Drawing.Size(627, 684);
+            this.TabpageVdPMeasuredPosition7.Size = new System.Drawing.Size(627, 676);
             this.TabpageVdPMeasuredPosition7.TabIndex = 7;
-            this.TabpageVdPMeasuredPosition7.Text = "Position 4-";
+            this.TabpageVdPMeasuredPosition7.Text = "Position 7";
             this.TabpageVdPMeasuredPosition7.UseVisualStyleBackColor = true;
             // 
             // ChartPosition7
@@ -854,22 +854,22 @@
             series15.MarkerColor = System.Drawing.Color.OrangeRed;
             series15.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
             series15.Name = "SeriesMeasuredP7";
-            series15.XValueMember = "Source";
-            series15.YValueMembers = "Reading";
+            series15.XValueMember = "Reading";
+            series15.YValueMembers = "Source";
             this.ChartPosition7.Series.Add(series15);
-            this.ChartPosition7.Size = new System.Drawing.Size(627, 684);
+            this.ChartPosition7.Size = new System.Drawing.Size(627, 676);
             this.ChartPosition7.TabIndex = 3;
             // 
             // TabpageVdPMeasuredPosition8
             // 
             this.TabpageVdPMeasuredPosition8.Controls.Add(this.ChartPosition8);
             this.TabpageVdPMeasuredPosition8.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageVdPMeasuredPosition8.Location = new System.Drawing.Point(4, 32);
+            this.TabpageVdPMeasuredPosition8.Location = new System.Drawing.Point(4, 40);
             this.TabpageVdPMeasuredPosition8.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageVdPMeasuredPosition8.Name = "TabpageVdPMeasuredPosition8";
-            this.TabpageVdPMeasuredPosition8.Size = new System.Drawing.Size(627, 684);
+            this.TabpageVdPMeasuredPosition8.Size = new System.Drawing.Size(627, 676);
             this.TabpageVdPMeasuredPosition8.TabIndex = 8;
-            this.TabpageVdPMeasuredPosition8.Text = " Position 4+";
+            this.TabpageVdPMeasuredPosition8.Text = " Position 8";
             this.TabpageVdPMeasuredPosition8.UseVisualStyleBackColor = true;
             // 
             // ChartPosition8
@@ -905,10 +905,10 @@
             series16.MarkerColor = System.Drawing.Color.OrangeRed;
             series16.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
             series16.Name = "SeriesMeasuredP3";
-            series16.XValueMember = "Source";
-            series16.YValueMembers = "Reading";
+            series16.XValueMember = "Reading";
+            series16.YValueMembers = "Source";
             this.ChartPosition8.Series.Add(series16);
-            this.ChartPosition8.Size = new System.Drawing.Size(627, 684);
+            this.ChartPosition8.Size = new System.Drawing.Size(627, 676);
             this.ChartPosition8.TabIndex = 3;
             // 
             // VdPTotalMeasureValuesForm

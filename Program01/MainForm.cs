@@ -195,12 +195,12 @@ namespace Program01
                         IconbuttonUserLogin.IconColor = Color.Black;
                         IconbuttonUserLogin.TextImageRelation = TextImageRelation.TextBeforeImage;
                         IconbuttonUserLogin.Text = "Logout";
-                        MessageBox.Show("You have been logged in successfully", "Login Successful", MessageBoxButtons.OK);
+                        MessageBox.Show("คุณได้เข้าสู่ระบบเรียบร้อยแล้ว", "เข้าสู่ระบบสำเร็จ", MessageBoxButtons.OK);
 
                     }
                     else
                     {
-                        MessageBox.Show("Please fill in both the Firstname - Lastname before proceeding", "Invalid Username", MessageBoxButtons.OK);
+                        MessageBox.Show("กรุณากรอกชื่อ - นามสกุลก่อนดำเนินการใดๆ ต่อ", "ชื่อผู้ใช้งานไม่ถูกต้อง", MessageBoxButtons.OK);
                     }
                 }
                 else
@@ -212,7 +212,7 @@ namespace Program01
                     IconbuttonUserLogin.IconColor = RGBColors.Color6;
                     IconbuttonUserLogin.TextImageRelation = TextImageRelation.ImageBeforeText;
                     IconbuttonUserLogin.Text = "Login";
-                    MessageBox.Show("You have been logged out successfully", "Logout Successful", MessageBoxButtons.OK);
+                    MessageBox.Show("คุณได้ออกจากระบบเรียบร้อยแล้ว", "ออกจากระบบสำเร็จ", MessageBoxButtons.OK);
 
                 }
             }
@@ -226,7 +226,7 @@ namespace Program01
         {
             try
             {
-                DialogResult result = MessageBox.Show("Do you want to exit the program?", "Confirm Exit", MessageBoxButtons.YesNo);
+                DialogResult result = MessageBox.Show("คุณต้องการออกจากโปรแกรมหรือไม่?", "ยืนยันการออกจากโปรแกรม", MessageBoxButtons.YesNo);
 
                 if (result == DialogResult.Yes)
                 {
@@ -247,7 +247,7 @@ namespace Program01
             {
                 if (!IsLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Accessibility Failed", MessageBoxButtons.OK);
+                    MessageBox.Show("กรุณาเข้าสู่ระบบก่อนดำเนินการต่อ", "การเข้าถึงล้มเหลว", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -269,7 +269,7 @@ namespace Program01
             {
                 if (!IsLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Accessibility Failed", MessageBoxButtons.OK);
+                    MessageBox.Show("กรุณาเข้าสู่ระบบก่อนดำเนินการต่อ", "การเข้าถึงล้มเหลว", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -291,7 +291,7 @@ namespace Program01
             {
                 if (!IsLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Accessibility Failed", MessageBoxButtons.OK);
+                    MessageBox.Show("กรุณาเข้าสู่ระบบก่อนดำเนินการต่อ", "การเข้าถึงล้มเหลว", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -332,7 +332,7 @@ namespace Program01
             {
                 if (!IsLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Accessibility Failed", MessageBoxButtons.OK);
+                    MessageBox.Show("กรุณาเข้าสู่ระบบก่อนดำเนินการต่อ", "การเข้าถึงล้มเหลว", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -411,11 +411,11 @@ namespace Program01
             {
                 if (!IsLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Browsing Failed", MessageBoxButtons.OK);
+                    MessageBox.Show("กรุณาเข้าสู่ระบบก่อนดำเนินการต่อ", "การสืบค้นล้มเหลว", MessageBoxButtons.OK);
                 }
                 else
                 {
-                    FolderBrowserDialogVdPFile.Description = "Please select the folder for saving the file";
+                    FolderBrowserDialogVdPFile.Description = "กรุณาเลือกโฟลเดอร์สำหรับการบันทึกไฟล์";
                     FolderBrowserDialogVdPFile.ShowNewFolderButton = true;
 
                     if (FolderBrowserDialogVdPFile.ShowDialog() == DialogResult.OK)
@@ -445,7 +445,7 @@ namespace Program01
             {
                 if (!IsLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Saving Failed", MessageBoxButtons.OK);
+                    MessageBox.Show("กรุณาเข้าสู่ระบบก่อนดำเนินการต่อ", "การบันทึกล้มเหลว", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -454,7 +454,7 @@ namespace Program01
 
                     if (string.IsNullOrWhiteSpace(VdPFilePath))
                     {
-                        MessageBox.Show("Please enter the file path first!", "Saving Failed", MessageBoxButtons.OK);
+                        MessageBox.Show("กรุณาเลือกที่อยู่ในการบันทึกไฟล์ก่อน!", "การบันทึกล้มเหลว", MessageBoxButtons.OK);
                         return;
                     }
 
@@ -463,7 +463,7 @@ namespace Program01
                     if (!Directory.Exists(directory))
                     {
                         Directory.CreateDirectory(directory);
-                        MessageBox.Show($"Directory created: {directory}", "Info");
+                        MessageBox.Show($"ไดเรกทอรีได้ถูกสร้างไว้แล้ว: {directory}", "การแจ้งเตือนข้อมูล");
                     }
 
                     string newFileName = "VanderPauwResultsData.xlsx";
@@ -548,7 +548,7 @@ namespace Program01
                         package.SaveAs(new FileInfo(newFilePath));
                     }
 
-                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "Saving Successful", MessageBoxButtons.OK);
+                    MessageBox.Show($"ไฟล์ได้ถูกสร้างขึ้น และถูกจัดเก็บไว้ที่: {newFilePath}", "การบันทึกเสร็จสิ้น", MessageBoxButtons.OK);
                 }
             }
             catch (Exception Ex)
@@ -563,11 +563,11 @@ namespace Program01
             {
                 if (!IsLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Browsing Failed", MessageBoxButtons.OK);
+                    MessageBox.Show("กรุณาเข้าสู่ระบบก่อนดำเนินการต่อ", "การสืบค้นล้มเหลว", MessageBoxButtons.OK);
                 }
                 else 
                 {
-                    FolderBrowserDialogHallMeasurementFile.Description = "Please select the folder for saving the file";
+                    FolderBrowserDialogHallMeasurementFile.Description = "กรุณาเลือกโฟลเดอร์สำหรับการบันทึกไฟล์";
                     FolderBrowserDialogHallMeasurementFile.ShowNewFolderButton = true;
 
                     if (FolderBrowserDialogHallMeasurementFile.ShowDialog() == DialogResult.OK)
@@ -597,7 +597,7 @@ namespace Program01
             {
                 if (!IsLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Saving Failed", MessageBoxButtons.OK);
+                    MessageBox.Show("กรุณาเข้าสู่ระบบก่อนดำเนินการต่อ", "การบันทึกล้มเหลว", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -606,7 +606,7 @@ namespace Program01
 
                     if (string.IsNullOrWhiteSpace(HallFilePath))
                     {
-                        MessageBox.Show("Please enter the file path first!", "Saving Failed", MessageBoxButtons.OK);
+                        MessageBox.Show("กรุณาเลือกที่อยู่ในการบันทึกไฟล์ก่อน!", "การบันทึกล้มเหลว", MessageBoxButtons.OK);
                         return;
                     }
 
@@ -615,7 +615,7 @@ namespace Program01
                     if (!Directory.Exists(directory))
                     {
                         Directory.CreateDirectory(directory);
-                        MessageBox.Show($"Directory created: {directory}", "Info");
+                        MessageBox.Show($"ไดเรกทอรีได้ถูกสร้างไว้แล้ว: {directory}", "การแจ้งเตือนข้อมูล");
                     }
 
                     string newFileName = "HallMeasurementResultsData.xlsx";
@@ -739,7 +739,7 @@ namespace Program01
 
                         package.SaveAs(new FileInfo(newFilePath));
                     }
-                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "Saving Successful", MessageBoxButtons.OK);
+                    MessageBox.Show($"ไฟล์ได้ถูกสร้างขึ้น และถูกจัดเก็บไว้ที่: {newFilePath}", "การบันทึกเสร็จสิ้น", MessageBoxButtons.OK);
                 }
             }
             catch (Exception ex)
@@ -754,11 +754,11 @@ namespace Program01
             {
                 if (!IsLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Browsing Failed", MessageBoxButtons.OK);
+                    MessageBox.Show("กรุณาเข้าสู่ระบบก่อนดำเนินการต่อ", "การสืบค้นล้มเหลว", MessageBoxButtons.OK);
                 }
                 else
                 {
-                    FolderBrowserDialogVdPandHallMeasurementFile.Description = "Please select the folder for saving the file";
+                    FolderBrowserDialogVdPandHallMeasurementFile.Description = "กรุณาเลือกโฟลเดอร์สำหรับการบันทึกไฟล์";
                     FolderBrowserDialogVdPandHallMeasurementFile.ShowNewFolderButton = true;
 
                     if (FolderBrowserDialogVdPandHallMeasurementFile.ShowDialog() == DialogResult.OK)
@@ -788,7 +788,7 @@ namespace Program01
             {
                 if (!IsLoggedIn)
                 {
-                    MessageBox.Show("Please log in before proceeding", "Saving Failed", MessageBoxButtons.OK);
+                    MessageBox.Show("กรุณาเข้าสู่ระบบก่อนดำเนินการต่อ", "การบันทึกล้มเหลว", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -797,7 +797,7 @@ namespace Program01
 
                     if (string.IsNullOrWhiteSpace(VdPandHallFilePath))
                     {
-                        MessageBox.Show("Please enter the file path first!", "Saving Failed", MessageBoxButtons.OK);
+                        MessageBox.Show("กรุณาเลือกที่อยู่ในการบันทึกไฟล์ก่อน!", "การบันทึกล้มเหลว", MessageBoxButtons.OK);
                         return;
                     }
 
@@ -806,7 +806,7 @@ namespace Program01
                     if (!Directory.Exists(directory))
                     {
                         Directory.CreateDirectory(directory);
-                        MessageBox.Show($"Directory created: {directory}", "Info");
+                        MessageBox.Show($"ไดเรกทอรีได้ถูกสร้างไว้แล้ว: {directory}", "การแจ้งเตือนข้อมูล");
                     }
 
                     string newFileName = "VanderPauwandHallMeasurementResultsData.xlsx";
@@ -842,7 +842,7 @@ namespace Program01
                         package.SaveAs(new FileInfo(newFilePath));
                     }
 
-                    MessageBox.Show($"File has been created successfully at: {newFilePath}", "Saving Successful", MessageBoxButtons.OK);
+                    MessageBox.Show($"ไฟล์ได้ถูกสร้างขึ้น และถูกจัดเก็บไว้ที่: {newFilePath}", "การบันทึกเสร็จสิ้น", MessageBoxButtons.OK);
                 }
             }
             catch (Exception ex)

@@ -23,7 +23,7 @@ namespace Program01
         private int TargetPosition;
         private int CurrentTuner;
 
-        public event EventHandler<bool> ModeChanged;
+        public event EventHandler<MeasurementMode> ModeChanged;
         public event EventHandler ToggleChanged;
 
         private Form CurrentChildForm;
@@ -32,21 +32,17 @@ namespace Program01
         public List<double> XDataBuffer = new List<double>();
         public List<double> YDataBuffer = new List<double>();
 
-        public bool IsOn
-        {
-            get => GlobalSettings.Instance.IsModes;
-            set
-            {
-                GlobalSettings.Instance.IsModes = value;
-                UpdateToggleState();
-            }
-        }
+        private List<Dictionary<int, List<(double Source, double Reading)>>> allHallMeasurements = new List<Dictionary<int, List<(double, double)>>>();
+
+        public bool IsVanderPauwOrHallToggle { get; set; } = false;
+
 
         public MeasurementSettingsForm()
         {
             InitializeComponent();
             Rsrcmngr = new ResourceManager();
             InitializeGPIB();
+            InitializeToggleStateFromGlobalSettings();
             LoadSettings();
 
             ComboboxRsense.Items.AddRange(new string[] { "2-Wires", "4-Wires" });
@@ -184,6 +180,24 @@ namespace Program01
             }
         }
 
+        private void InitializeToggleStateFromGlobalSettings()
+        {
+            if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.HallEffectMeasurement)
+            {
+                IsVanderPauwOrHallToggle = true;
+            }
+            else
+            {
+                IsVanderPauwOrHallToggle = false;
+            }
+
+            Debug.WriteLine($"[DEBUG] Form Load - Initial IsVanderPauwOrHallToggle: {IsVanderPauwOrHallToggle}");
+            Debug.WriteLine($"[DEBUG] Form Load - Initial CurrentMeasurementMode: {GlobalSettings.Instance.CurrentMeasurementMode}");
+
+            UpdateToggleState();
+            UpdateMeasurementMode();
+        }
+
         public class MeasurementEventArgs : EventArgs
         {
             public List<double[]> MeasuredValues { get; }
@@ -200,8 +214,8 @@ namespace Program01
 
             try
             {
-                Debug.WriteLine($"[LOAD] RsenseMode (From GlobalSettings): {GlobalSettings.Instance.RsenseModeUI}");
-                SetComboBoxSelectedItem(ComboboxRsense, GlobalSettings.Instance.RsenseModeUI);
+                Debug.WriteLine($"[LOAD] RsenseMode (From GlobalSettings): {GlobalSettings.Instance.ResistanceSenseModeUI}");
+                SetComboBoxSelectedItem(ComboboxRsense, GlobalSettings.Instance.ResistanceSenseModeUI);
 
                 Debug.WriteLine($"[LOAD] MeasureMode (From GlobalSettings): {GlobalSettings.Instance.MeasureModeUI}");
                 SetComboBoxSelectedItem(ComboboxMeasure, GlobalSettings.Instance.MeasureModeUI);
@@ -209,8 +223,8 @@ namespace Program01
                 Debug.WriteLine($"[LOAD] SourceMode (From GlobalSettings): {GlobalSettings.Instance.SourceModeUI}");
                 SetComboBoxSelectedItem(ComboboxSource, GlobalSettings.Instance.SourceModeUI);
 
-                Debug.WriteLine($"[LOAD] SourceLimitType (From GlobalSettings): {GlobalSettings.Instance.SourceLimitTypeUI}");
-                SetComboBoxSelectedItem(ComboboxSourceLimitMode, GlobalSettings.Instance.SourceLimitTypeUI);
+                Debug.WriteLine($"[LOAD] SourceLimitType (From GlobalSettings): {GlobalSettings.Instance.SourceLimitModeUI}");
+                SetComboBoxSelectedItem(ComboboxSourceLimitMode, GlobalSettings.Instance.SourceLimitModeUI);
 
                 Debug.WriteLine($"[LOAD] StartUnit (From GlobalSettings): {GlobalSettings.Instance.StartUnitUI}");
                 SetComboBoxSelectedItem(ComboboxStartUnit, GlobalSettings.Instance.StartUnitUI);
@@ -348,8 +362,8 @@ namespace Program01
 
             try
             {
-                GlobalSettings.Instance.RsenseModeUI = ComboboxRsense.SelectedItem?.ToString() ?? "";
-                Debug.WriteLine($"[SAVE] RsenseMode (To GlobalSettings): {GlobalSettings.Instance.RsenseModeUI}");
+                GlobalSettings.Instance.ResistanceSenseModeUI = ComboboxRsense.SelectedItem?.ToString() ?? "";
+                Debug.WriteLine($"[SAVE] RsenseMode (To GlobalSettings): {GlobalSettings.Instance.ResistanceSenseModeUI}");
 
                 GlobalSettings.Instance.MeasureModeUI = ComboboxMeasure.SelectedItem?.ToString() ?? "";
                 Debug.WriteLine($"[SAVE] MeasureMode (To GlobalSettings): {GlobalSettings.Instance.MeasureModeUI}");
@@ -357,8 +371,8 @@ namespace Program01
                 GlobalSettings.Instance.SourceModeUI = ComboboxSource.SelectedItem?.ToString() ?? "";
                 Debug.WriteLine($"[SAVE] SourceMode (To GlobalSettings): {GlobalSettings.Instance.SourceModeUI}");
 
-                GlobalSettings.Instance.SourceLimitTypeUI = ComboboxSourceLimitMode.SelectedItem?.ToString() ?? "";
-                Debug.WriteLine($"[SAVE] SourceLimitType (To GlobalSettings): {GlobalSettings.Instance.SourceLimitTypeUI}");
+                GlobalSettings.Instance.SourceLimitModeUI = ComboboxSourceLimitMode.SelectedItem?.ToString() ?? "";
+                Debug.WriteLine($"[SAVE] SourceLimitType (To GlobalSettings): {GlobalSettings.Instance.SourceLimitModeUI}");
 
                 GlobalSettings.Instance.StartUnitUI = ComboboxStartUnit.SelectedItem?.ToString() ?? "";
                 Debug.WriteLine($"[SAVE] StartUnit (To GlobalSettings): {GlobalSettings.Instance.StartUnitUI}");
@@ -663,11 +677,11 @@ namespace Program01
         {
             try
             {
-                GlobalSettings.Instance.RsenseModeUI = ComboboxRsense.SelectedItem?.ToString();
+                GlobalSettings.Instance.ResistanceSenseModeUI = ComboboxRsense.SelectedItem?.ToString();
 
                 if (GlobalSettings.Instance.MeasureModeUI == "Voltage")
                 {
-                    switch (GlobalSettings.Instance.RsenseModeUI)
+                    switch (GlobalSettings.Instance.ResistanceSenseModeUI)
                     {
                         case "2-Wires":
                             break;
@@ -675,14 +689,13 @@ namespace Program01
                             break;
                         default:
                             ComboboxRsense.SelectedIndex = -1;
-                            GlobalSettings.Instance.RsenseModeUI = "";
+                            GlobalSettings.Instance.ResistanceSenseModeUI = "";
                             break;
                     }
                 }
-
                 else
                 {
-                    switch (GlobalSettings.Instance.RsenseModeUI)
+                    switch (GlobalSettings.Instance.ResistanceSenseModeUI)
                     {
                         case "2-Wires":
                             break;
@@ -690,7 +703,7 @@ namespace Program01
                             break;
                         default:
                             ComboboxRsense.SelectedIndex = -1;
-                            GlobalSettings.Instance.RsenseModeUI = "";
+                            GlobalSettings.Instance.ResistanceSenseModeUI = "";
                             break;
                     }
                 }
@@ -755,7 +768,7 @@ namespace Program01
         {
             try
             {
-                GlobalSettings.Instance.SourceLimitTypeUI = ComboboxSourceLimitMode.SelectedItem?.ToString();
+                GlobalSettings.Instance.SourceLimitModeUI = ComboboxSourceLimitMode.SelectedItem?.ToString();
             }
             catch (Exception Ex)
             {
@@ -837,60 +850,104 @@ namespace Program01
 
         private void IconbuttonClearSettings_Click(object sender, EventArgs e)
         {
-            ClearSettings();
+            ResetSettings();
         }
 
-        private void ClearSettings()
+        private void ResetSettings()
         {
+            Debug.WriteLine("[DEBUG] ResetSettings - Start");
             try
             {
                 if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
                     MessageBox.Show("ไม่สามารถล้างข้อมูลการตั้งค่าได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการลบล้างข้อมูล", MessageBoxButtons.OK);
+                    Debug.WriteLine("[DEBUG] ResetSettings - เครื่องมือไม่ได้เชื่อมต่อ");
                     return;
                 }
 
-                SMU.WriteString("*CLS");
+                Debug.WriteLine("[DEBUG] ResetSettings - ส่งคำสั่ง Reset ไปยัง SMU และ SS");
                 SMU.WriteString("*RST");
-                SS.WriteString("*CLS");
+                SS.WriteString("*RST");
                 SS.WriteString("ROUTe:OPEN ALL");
 
-                ComboboxRsense.SelectedIndex = -1;
-                ComboboxMeasure.SelectedIndex = -1;
-                ComboboxSource.SelectedIndex = -1;
-                ComboboxSourceLimitMode.SelectedIndex = -1;
-                ComboboxStartUnit.SelectedIndex = -1;
-                ComboboxStopUnit.SelectedIndex = -1;
-                ComboboxStepUnit.SelectedIndex = -1;
-                ComboboxSourceDelayUnit.SelectedIndex = -1;
-                ComboboxSourceLimitLevelUnit.SelectedIndex = -1;
-                ComboboxThicknessUnit.SelectedIndex = -1;
-                ComboboxMagneticFieldsUnit.SelectedIndex = -1;
+                Debug.WriteLine("[DEBUG] ResetSettings - กำหนดค่า UI Controls เป็นค่าเริ่มต้นจาก GlobalSettings");
 
-                TextboxStart.Clear();
-                TextboxStep.Clear();
-                TextboxStop.Clear();
-                TextboxSourceDelay.Clear();
-                TextboxSourceLimitLevel.Clear();
-                TextboxThickness.Clear();
-                TextboxRepetition.Clear();
-                TextboxMagneticFields.Clear();
+                ComboboxRsense.SelectedItem = "4-Wires";
+                Debug.WriteLine($"[DEBUG] ResetSettings - ComboboxRsense.SelectedItem set to: {ComboboxRsense.SelectedItem}");
+
+                ComboboxMeasure.SelectedItem = "Voltage";
+                Debug.WriteLine($"[DEBUG] ResetSettings - ComboboxMeasure.SelectedItem set to: {ComboboxMeasure.SelectedItem}");
+
+                ComboboxSource.SelectedItem = "Current";
+                Debug.WriteLine($"[DEBUG] ResetSettings - ComboboxSource.SelectedItem set to: {ComboboxSource.SelectedItem}");
+
+                ComboboxSourceLimitMode.SelectedItem = "Voltage";
+                Debug.WriteLine($"[DEBUG] ResetSettings - ComboboxSourceLimitMode.SelectedItem set to: {ComboboxSourceLimitMode.SelectedItem}");
+
+                ComboboxStartUnit.SelectedItem = "mA";
+                Debug.WriteLine($"[DEBUG] ResetSettings - ComboboxStartUnit.SelectedItem set to: {ComboboxStartUnit.SelectedItem}");
+
+                ComboboxStopUnit.SelectedItem = "mA";
+                Debug.WriteLine($"[DEBUG] ResetSettings - ComboboxStopUnit.SelectedItem set to: {ComboboxStopUnit.SelectedItem}");
+
+                ComboboxStepUnit.SelectedItem = "µA";
+                Debug.WriteLine($"[DEBUG] ResetSettings - ComboboxStepUnit.SelectedItem set to: {ComboboxStepUnit.SelectedItem}");
+
+                ComboboxSourceDelayUnit.SelectedItem = "µs";
+                Debug.WriteLine($"[DEBUG] ResetSettings - ComboboxSourceDelayUnit.SelectedItem set to: {ComboboxSourceDelayUnit.SelectedItem}");
+
+                ComboboxSourceLimitLevelUnit.SelectedItem = "V";
+                Debug.WriteLine($"[DEBUG] ResetSettings - ComboboxSourceLimitLevelUnit.SelectedItem set to: {ComboboxSourceLimitLevelUnit.SelectedItem}");
+
+                ComboboxThicknessUnit.SelectedItem = "µm";
+                Debug.WriteLine($"[DEBUG] ResetSettings - ComboboxThicknessUnit.SelectedItem set to: {ComboboxThicknessUnit.SelectedItem}");
+
+                ComboboxMagneticFieldsUnit.SelectedItem = "T";
+                Debug.WriteLine($"[DEBUG] ResetSettings - ComboboxMagneticFieldsUnit.SelectedItem set to: {ComboboxMagneticFieldsUnit.SelectedItem}");
+
+                TextboxStart.Text = "0";
+                Debug.WriteLine($"[DEBUG] ResetSettings - TextboxStart.Text set to: {TextboxStart.Text}");
+
+                TextboxStep.Text = "0";
+                Debug.WriteLine($"[DEBUG] ResetSettings - TextboxStep.Text set to: {TextboxStep.Text}");
+
+                TextboxStop.Text = "0";
+                Debug.WriteLine($"[DEBUG] ResetSettings - TextboxStop.Text set to: {TextboxStop.Text}");
+
+                TextboxSourceDelay.Text = "100";
+                Debug.WriteLine($"[DEBUG] ResetSettings - TextboxSourceDelay.Text set to: {TextboxSourceDelay.Text}");
+
+                TextboxSourceLimitLevel.Text = "21";
+                Debug.WriteLine($"[DEBUG] ResetSettings - TextboxSourceLimitLevel.Text set to: {TextboxSourceLimitLevel.Text}");
+
+                TextboxThickness.Text = "0";
+                Debug.WriteLine($"[DEBUG] ResetSettings - TextboxThickness.Text set to: {TextboxThickness.Text}");
+
+                TextboxRepetition.Text = "1";
+                Debug.WriteLine($"[DEBUG] ResetSettings - TextboxRepetition.Text set to: {TextboxRepetition.Text}");
+
+                TextboxMagneticFields.Text = "0.55";
+                Debug.WriteLine($"[DEBUG] ResetSettings - TextboxMagneticFields.Text set to: {TextboxMagneticFields.Text}");
+
+                Debug.WriteLine("[DEBUG] ResetSettings - UI Controls ถูกกำหนดค่าเป็นค่าเริ่มต้นจาก GlobalSettings แล้ว");
             }
             catch (Exception Ex)
             {
                 MessageBox.Show($"การล้างข้อมูลการตั้งค่าไม่สำเร็จ: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+                Debug.WriteLine($"[ERROR] ResetSettings - เกิดข้อผิดพลาด: {Ex.Message}");
             }
+            Debug.WriteLine("[DEBUG] ResetSettings - End");
         }
 
         public void PanelToggleSwitchBase_MouseClick(object sender, MouseEventArgs e)
         {
             try
             {
-                GlobalSettings.Instance.IsModes = !GlobalSettings.Instance.IsModes;
-                GlobalSettings.Instance.IsHallMode = GlobalSettings.Instance.IsModes;
-                GlobalSettings.Instance.IsVanDerPauwMode = !GlobalSettings.Instance.IsModes;
+                IsVanderPauwOrHallToggle = !IsVanderPauwOrHallToggle;
+                Debug.WriteLine($"The Value of IsVanderPauwOrHallToggle boolean variable is: {IsVanderPauwOrHallToggle}");
 
-                Debug.WriteLine($"{GlobalSettings.Instance.IsModes}, {GlobalSettings.Instance.IsVanDerPauwMode}, {GlobalSettings.Instance.IsHallMode}");
+                GlobalSettings.Instance.CurrentMeasurementMode = IsVanderPauwOrHallToggle ? MeasurementMode.HallEffectMeasurement : MeasurementMode.VanDerPauwMethod;
+                Debug.WriteLine($"[DEBUG] Current Measurement Mode set to: {GlobalSettings.Instance.CurrentMeasurementMode}");
 
                 UpdateToggleState();
                 UpdateMeasurementMode();
@@ -904,7 +961,7 @@ namespace Program01
 
         public void UpdateToggleState()
         {
-            TargetPosition = GlobalSettings.Instance.IsModes ? PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width - 1 : 1;
+            TargetPosition = IsVanderPauwOrHallToggle ? PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width - 1 : 1;
             PanelToggleSwitchButton.Location = new Point(TargetPosition, PanelToggleSwitchButton.Location.Y);
 
             if (PanelToggleSwitchButton.Location.X < 0 || PanelToggleSwitchButton.Location.X > PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width)
@@ -915,21 +972,33 @@ namespace Program01
 
         private void UpdateMeasurementMode()
         {
-            string ModeName = GlobalSettings.Instance.IsHallMode ? "Hall Effect" : "Van der Pauw";
-            bool isHallMode = GlobalSettings.Instance.IsHallMode;
-            Debug.WriteLine($"You select: {ModeName} measurement");
+            bool isHallModeSelected = GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.HallEffectMeasurement;
+            string modeName = isHallModeSelected ? "Hall Effect" : "Van der Pauw";
 
-            LabelToggleSwitchVdP.ForeColor = isHallMode ? SystemColors.ActiveCaptionText : Color.FromArgb(144, 198, 101);
-            LabelToggleSwitchHall.ForeColor = isHallMode ? Color.FromArgb(144, 198, 101) : SystemColors.ActiveCaptionText;
-            PanelToggleSwitchButton.BackColor = isHallMode ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
-            PanelToggleSwitchBase.BackColor = isHallMode ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
+            Debug.WriteLine($"[DEBUG] UpdateMeasurementMode - Current Mode: {modeName}");
 
-            UpdateTunerImages(isHallMode);
+            if (!isHallModeSelected)
+            {
+                LabelToggleSwitchVdP.ForeColor = Color.FromArgb(144, 198, 101);
+                LabelToggleSwitchHall.ForeColor = SystemColors.ActiveCaptionText;
+                PanelToggleSwitchButton.BackColor = Color.FromArgb(253, 138, 114);
+                PanelToggleSwitchBase.BackColor = Color.FromArgb(253, 138, 114);
+            }
+            else
+            {
+                LabelToggleSwitchVdP.ForeColor = SystemColors.ActiveCaptionText;
+                LabelToggleSwitchHall.ForeColor = Color.FromArgb(144, 198, 101);
+                PanelToggleSwitchButton.BackColor = Color.FromArgb(95, 77, 221);
+                PanelToggleSwitchBase.BackColor = Color.FromArgb(95, 77, 221);
+            }
+
+            Debug.WriteLine($"[DEBUG] UpdateMeasurementMode - PanelToggleSwitchBase.BackColor: {PanelToggleSwitchBase.BackColor.ToString()}");
+            UpdateTunerImages();
         }
 
-        private void UpdateTunerImages(bool isHallMode)
+        private void UpdateTunerImages()
         {
-            if (isHallMode)
+            if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.HallEffectMeasurement)
             {
                 PictureboxMeasPosition1.Image = Properties.Resources.Hall_MP1;
                 PictureboxMeasPosition2.Image = Properties.Resources.Hall_MP2;
@@ -956,9 +1025,7 @@ namespace Program01
         protected virtual void OnToggleChanged()
         {
             ToggleChanged?.Invoke(this, EventArgs.Empty);
-            ModeChanged?.Invoke(this, GlobalSettings.Instance.IsModes);
-
-            PanelToggleSwitchBase.BackColor = GlobalSettings.Instance.IsModes ? Color.FromArgb(95, 77, 221) : Color.FromArgb(253, 138, 114);
+            ModeChanged?.Invoke(this, GlobalSettings.Instance.CurrentMeasurementMode);
         }
 
         private void PictureboxMeasPosition1_Click(object sender, EventArgs e)
@@ -971,7 +1038,7 @@ namespace Program01
                     return;
                 }
 
-                if (GlobalSettings.Instance.IsModes == false)
+                if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
@@ -979,7 +1046,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
-                else if (GlobalSettings.Instance.IsModes == true)
+                else
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
@@ -1004,7 +1071,7 @@ namespace Program01
                     return;
                 }
 
-                if (GlobalSettings.Instance.IsModes == false)
+                if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
@@ -1012,7 +1079,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
                 }
-                else if (GlobalSettings.Instance.IsModes == true)
+                else
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
@@ -1037,7 +1104,7 @@ namespace Program01
                     return;
                 }
 
-                if (GlobalSettings.Instance.IsModes == false)
+                if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
@@ -1045,7 +1112,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
                 }
-                else if (GlobalSettings.Instance.IsModes == true)
+                else
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
@@ -1070,7 +1137,7 @@ namespace Program01
                     return;
                 }
 
-                if (GlobalSettings.Instance.IsModes == false)
+                if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
@@ -1078,7 +1145,7 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
                 }
-                else if (GlobalSettings.Instance.IsModes == true)
+                else
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
@@ -1103,7 +1170,7 @@ namespace Program01
                     return;
                 }
 
-                if (GlobalSettings.Instance.IsModes == false)
+                if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
@@ -1136,7 +1203,7 @@ namespace Program01
                     return;
                 }
 
-                if (GlobalSettings.Instance.IsModes == false)
+                if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
@@ -1169,7 +1236,7 @@ namespace Program01
                     return;
                 }
 
-                if (GlobalSettings.Instance.IsModes == false)
+                if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
@@ -1202,7 +1269,7 @@ namespace Program01
                     return;
                 }
 
-                if (GlobalSettings.Instance.IsModes == false)
+                if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
                     SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
@@ -1263,7 +1330,7 @@ namespace Program01
                     SMU.WriteString("TRACe:CLEar");
                     SMU.WriteString("TRACe:POINts 1000000, 'defbuffer1'");
 
-                    if (GlobalSettings.Instance.RsenseModeUI == "4-Wires")
+                    if (GlobalSettings.Instance.ResistanceSenseModeUI == "4-Wires")
                     {
                         SMU.WriteString("SENSe:VOLTage:RSENse ON");
                     }
@@ -1275,7 +1342,7 @@ namespace Program01
                     string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
 
-                    string allValues = $"Sense: {GlobalSettings.Instance.RsenseModeUI}, Measure: {GlobalSettings.Instance.MeasureModeUI}, Source: {GlobalSettings.Instance.SourceModeUI}, Start: {GlobalSettings.Instance.StartValueUI} {GlobalSettings.Instance.StartUnitUI}, Step: {GlobalSettings.Instance.StepValueUI} {GlobalSettings.Instance.StepUnitUI}, Source Delay: {GlobalSettings.Instance.SourceDelayValueUI} {GlobalSettings.Instance.SourceDelayUnitUI}, Stop: {GlobalSettings.Instance.StopValueUI} {GlobalSettings.Instance.StopUnitUI}, Source Limit: {GlobalSettings.Instance.SourceLimitTypeUI}, Limit Level: {GlobalSettings.Instance.SourceLimitLevelValueUI} {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Repetition: {GlobalSettings.Instance.RepetitionValueUI}, Thickness: {GlobalSettings.Instance.ThicknessValueUI} {GlobalSettings.Instance.ThicknessUnitUI}, Magnetic Fields: {GlobalSettings.Instance.MagneticFieldsValueUI} {GlobalSettings.Instance.MagneticFieldsUnitUI}";
+                    string allValues = $"Sense: {GlobalSettings.Instance.ResistanceSenseModeUI}, Measure: {GlobalSettings.Instance.MeasureModeUI}, Source: {GlobalSettings.Instance.SourceModeUI}, Start: {GlobalSettings.Instance.StartValueUI} {GlobalSettings.Instance.StartUnitUI}, Step: {GlobalSettings.Instance.StepValueUI} {GlobalSettings.Instance.StepUnitUI}, Source Delay: {GlobalSettings.Instance.SourceDelayValueUI} {GlobalSettings.Instance.SourceDelayUnitUI}, Stop: {GlobalSettings.Instance.StopValueUI} {GlobalSettings.Instance.StopUnitUI}, Source Limit: {GlobalSettings.Instance.SourceLimitModeUI}, Limit Level: {GlobalSettings.Instance.SourceLimitLevelValueUI} {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Repetition: {GlobalSettings.Instance.RepetitionValueUI}, Thickness: {GlobalSettings.Instance.ThicknessValueUI} {GlobalSettings.Instance.ThicknessUnitUI}, Magnetic Fields: {GlobalSettings.Instance.MagneticFieldsValueUI} {GlobalSettings.Instance.MagneticFieldsUnitUI}";
                     Debug.WriteLine($"{allValues}");
 
                     SMU.WriteString(sweepCommand);
@@ -1296,7 +1363,7 @@ namespace Program01
                     SMU.WriteString("TRACe:CLEar");
                     SMU.WriteString("TRACe:POINts 1000000, 'defbuffer1'");
 
-                    if (GlobalSettings.Instance.RsenseModeUI == "4-Wires")
+                    if (GlobalSettings.Instance.ResistanceSenseModeUI == "4-Wires")
                     {
                         SMU.WriteString("SENSe:CURRent:RSENse ON");
                     }
@@ -1308,7 +1375,7 @@ namespace Program01
                     string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
 
-                    string allValues = $"Sense: {GlobalSettings.Instance.RsenseModeUI}, Measure: {GlobalSettings.Instance.MeasureModeUI}, Source: {GlobalSettings.Instance.SourceModeUI}, Start: {GlobalSettings.Instance.StartValueUI} {GlobalSettings.Instance.StartUnitUI}, Step: {GlobalSettings.Instance.StepValueUI} {GlobalSettings.Instance.StepUnitUI}, Source Delay: {GlobalSettings.Instance.SourceDelayValueUI} {GlobalSettings.Instance.SourceDelayUnitUI}, Stop: {GlobalSettings.Instance.StopValueUI} {GlobalSettings.Instance.StopUnitUI}, Source Limit: {GlobalSettings.Instance.SourceLimitTypeUI}, Limit Level: {GlobalSettings.Instance.SourceLimitLevelValueUI} {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Repetition: {GlobalSettings.Instance.RepetitionValueUI}, Thickness: {GlobalSettings.Instance.ThicknessValueUI} {GlobalSettings.Instance.ThicknessUnitUI}, Magnetic Fields: {GlobalSettings.Instance.MagneticFieldsValueUI} {GlobalSettings.Instance.MagneticFieldsUnitUI}";
+                    string allValues = $"Sense: {GlobalSettings.Instance.ResistanceSenseModeUI}, Measure: {GlobalSettings.Instance.MeasureModeUI}, Source: {GlobalSettings.Instance.SourceModeUI}, Start: {GlobalSettings.Instance.StartValueUI} {GlobalSettings.Instance.StartUnitUI}, Step: {GlobalSettings.Instance.StepValueUI} {GlobalSettings.Instance.StepUnitUI}, Source Delay: {GlobalSettings.Instance.SourceDelayValueUI} {GlobalSettings.Instance.SourceDelayUnitUI}, Stop: {GlobalSettings.Instance.StopValueUI} {GlobalSettings.Instance.StopUnitUI}, Source Limit: {GlobalSettings.Instance.SourceLimitModeUI}, Limit Level: {GlobalSettings.Instance.SourceLimitLevelValueUI} {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Repetition: {GlobalSettings.Instance.RepetitionValueUI}, Thickness: {GlobalSettings.Instance.ThicknessValueUI} {GlobalSettings.Instance.ThicknessUnitUI}, Magnetic Fields: {GlobalSettings.Instance.MagneticFieldsValueUI} {GlobalSettings.Instance.MagneticFieldsUnitUI}";
                     Debug.WriteLine($"{allValues}");
                     
 
@@ -1330,7 +1397,7 @@ namespace Program01
                     SMU.WriteString("TRACe:CLEar");
                     SMU.WriteString("TRACe:POINts 1000000, 'defbuffer1'");
 
-                    if (GlobalSettings.Instance.RsenseModeUI == "4-Wires")
+                    if (GlobalSettings.Instance.ResistanceSenseModeUI == "4-Wires")
                     {
                         SMU.WriteString("SENSe:VOLTage:RSENse ON");
                     }
@@ -1342,7 +1409,7 @@ namespace Program01
                     string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
 
-                    string allValues = $"Sense: {GlobalSettings.Instance.RsenseModeUI}, Measure: {GlobalSettings.Instance.MeasureModeUI}, Source: {GlobalSettings.Instance.SourceModeUI}, Start: {GlobalSettings.Instance.StartValueUI} {GlobalSettings.Instance.StartUnitUI}, Step: {GlobalSettings.Instance.StepValueUI} {GlobalSettings.Instance.StepUnitUI}, Source Delay: {GlobalSettings.Instance.SourceDelayValueUI} {GlobalSettings.Instance.SourceDelayUnitUI}, Stop: {GlobalSettings.Instance.StopValueUI} {GlobalSettings.Instance.StopUnitUI}, Source Limit: {GlobalSettings.Instance.SourceLimitTypeUI}, Limit Level: {GlobalSettings.Instance.SourceLimitLevelValueUI} {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Repetition: {GlobalSettings.Instance.RepetitionValueUI}, Thickness: {GlobalSettings.Instance.ThicknessValueUI} {GlobalSettings.Instance.ThicknessUnitUI}, Magnetic Fields: {GlobalSettings.Instance.MagneticFieldsValueUI} {GlobalSettings.Instance.MagneticFieldsUnitUI}";
+                    string allValues = $"Sense: {GlobalSettings.Instance.ResistanceSenseModeUI}, Measure: {GlobalSettings.Instance.MeasureModeUI}, Source: {GlobalSettings.Instance.SourceModeUI}, Start: {GlobalSettings.Instance.StartValueUI} {GlobalSettings.Instance.StartUnitUI}, Step: {GlobalSettings.Instance.StepValueUI} {GlobalSettings.Instance.StepUnitUI}, Source Delay: {GlobalSettings.Instance.SourceDelayValueUI} {GlobalSettings.Instance.SourceDelayUnitUI}, Stop: {GlobalSettings.Instance.StopValueUI} {GlobalSettings.Instance.StopUnitUI}, Source Limit: {GlobalSettings.Instance.SourceLimitModeUI}, Limit Level: {GlobalSettings.Instance.SourceLimitLevelValueUI} {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Repetition: {GlobalSettings.Instance.RepetitionValueUI}, Thickness: {GlobalSettings.Instance.ThicknessValueUI} {GlobalSettings.Instance.ThicknessUnitUI}, Magnetic Fields: {GlobalSettings.Instance.MagneticFieldsValueUI} {GlobalSettings.Instance.MagneticFieldsUnitUI}";
                     Debug.WriteLine($"{allValues}");
                     
 
@@ -1364,7 +1431,7 @@ namespace Program01
                     SMU.WriteString("TRACe:CLEar");
                     SMU.WriteString("TRACe:POINts 1000000, 'defbuffer1'");
 
-                    if (GlobalSettings.Instance.RsenseModeUI == "4-Wires")
+                    if (GlobalSettings.Instance.ResistanceSenseModeUI == "4-Wires")
                     {
                         SMU.WriteString("SENSe:CURRent:RSENse ON");
                     }
@@ -1376,7 +1443,7 @@ namespace Program01
                     string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue},  {repetitionValue}";
                     Debug.WriteLine($"Sending command: {sweepCommand}");
 
-                    string allValues = $"Sense: {GlobalSettings.Instance.RsenseModeUI}, Measure: {GlobalSettings.Instance.MeasureModeUI}, Source: {GlobalSettings.Instance.SourceModeUI}, Start: {GlobalSettings.Instance.StartValueUI} {GlobalSettings.Instance.StartUnitUI}, Step: {GlobalSettings.Instance.StepValueUI} {GlobalSettings.Instance.StepUnitUI}, Source Delay: {GlobalSettings.Instance.SourceDelayValueUI} {GlobalSettings.Instance.SourceDelayUnitUI}, Stop: {GlobalSettings.Instance.StopValueUI} {GlobalSettings.Instance.StopUnitUI}, Source Limit: {GlobalSettings.Instance.SourceLimitTypeUI}, Limit Level: {GlobalSettings.Instance.SourceLimitLevelValueUI} {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Repetition: {GlobalSettings.Instance.RepetitionValueUI}, Thickness: {GlobalSettings.Instance.ThicknessValueUI} {GlobalSettings.Instance.ThicknessUnitUI}, Magnetic Fields: {GlobalSettings.Instance.MagneticFieldsValueUI} {GlobalSettings.Instance.MagneticFieldsUnitUI}";
+                    string allValues = $"Sense: {GlobalSettings.Instance.ResistanceSenseModeUI}, Measure: {GlobalSettings.Instance.MeasureModeUI}, Source: {GlobalSettings.Instance.SourceModeUI}, Start: {GlobalSettings.Instance.StartValueUI} {GlobalSettings.Instance.StartUnitUI}, Step: {GlobalSettings.Instance.StepValueUI} {GlobalSettings.Instance.StepUnitUI}, Source Delay: {GlobalSettings.Instance.SourceDelayValueUI} {GlobalSettings.Instance.SourceDelayUnitUI}, Stop: {GlobalSettings.Instance.StopValueUI} {GlobalSettings.Instance.StopUnitUI}, Source Limit: {GlobalSettings.Instance.SourceLimitModeUI}, Limit Level: {GlobalSettings.Instance.SourceLimitLevelValueUI} {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Repetition: {GlobalSettings.Instance.RepetitionValueUI}, Thickness: {GlobalSettings.Instance.ThicknessValueUI} {GlobalSettings.Instance.ThicknessUnitUI}, Magnetic Fields: {GlobalSettings.Instance.MagneticFieldsValueUI} {GlobalSettings.Instance.MagneticFieldsUnitUI}";
                     Debug.WriteLine($"{allValues}");
 
                     SMU.WriteString(sweepCommand);
@@ -1434,8 +1501,8 @@ namespace Program01
                     if (double.TryParse(dataPairs[i], out double sourceValue) &&
                         double.TryParse(dataPairs[i + 1], out double measuredValue))
                     {
-                        xData.Add(sourceValue);
-                        yData.Add(measuredValue);
+                        xData.Add(measuredValue);
+                        yData.Add(sourceValue);
 
                         Debug.Write($" Source Values: {sourceValue}" + Environment.NewLine);
                         Debug.Write($"Measured Values: {measuredValue}" + Environment.NewLine);
@@ -1449,7 +1516,7 @@ namespace Program01
 
                 if (maxSource != minSource)
                 {
-                    slope = Math.Abs((maxMeasure - minMeasure) / (maxSource - minSource));
+                    slope = Math.Abs(1 / ((maxSource - minSource) / (maxMeasure - minMeasure)));
                 }
 
                 Debug.Write($"Minimum Source Values: {minSource}" + Environment.NewLine);
@@ -1482,45 +1549,63 @@ namespace Program01
 
         private async void IconbuttonRunMeasurement_Click(object sender, EventArgs e)
         {
+            Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - Start");
             DisableEditRun(true);
 
             try
             {
+                Debug.WriteLine($"[DEBUG] IconbuttonRunMeasurement_Click - IsSMUConnected: {GlobalSettings.Instance.IsSMUConnected}, IsSSConnected: {GlobalSettings.Instance.IsSSConnected}");
                 if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
                     MessageBox.Show("ไม่สามารถทำการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการวัด", MessageBoxButtons.OK);
+                    Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เครื่องมือไม่ได้เชื่อมต่อ");
                     return;
                 }
 
                 SMU.WriteString("OUTPut OFF");
+                Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - ส่งคำสั่ง 'OUTPut OFF' ไปยัง SMU");
 
                 if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelevellimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
                 {
+                    Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - การ Validate Inputs ไม่สำเร็จ");
                     return;
                 }
 
                 SaveToGlobalSettings();
+                Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - บันทึกค่าลง GlobalSettings แล้ว");
+                Debug.WriteLine($"[DEBUG] IconbuttonRunMeasurement_Click - CurrentMeasurementMode: {GlobalSettings.Instance.CurrentMeasurementMode}");
 
-                if (GlobalSettings.Instance.IsVanDerPauwMode)
+                if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
+                    Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เริ่มการวัด Van der Pauw");
                     await RunVanDerPauwMeasurement(startValue, stopValue, stepValue, repetitionValue, sourcelevellimitValue, thicknessValue, magneticfieldsValue, delayValue, points);
 
-                    if (GlobalSettings.Instance.IsHallMode)
+                    DialogResult resultHall = MessageBox.Show($"ทำการวัด Van der Pauw เสร็จสิ้นแล้ว ต้องการทำการวัด Hall Effect Measurement ต่อหรือไม่ ?", "การวัดเสร็จสิ้น", MessageBoxButtons.YesNo);
+                    Debug.WriteLine($"[DEBUG] IconbuttonRunMeasurement_Click - ผลลัพธ์ MessageBox Van der Pauw เสร็จสิ้น: {resultHall}");
+
+                    if (resultHall == DialogResult.Yes)
                     {
+                        GlobalSettings.Instance.CurrentMeasurementMode = MeasurementMode.HallEffectMeasurement;
+                        Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เปลี่ยนไปโหมด Hall Effect และเริ่มการวัด");
                         await RunHallMeasurementSequence();
                     }
                 }
-                else if (GlobalSettings.Instance.IsHallMode)
+                else if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.HallEffectMeasurement)
                 {
+                    Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เริ่มการวัด Hall Effect โดยตรง");
                     await RunHallMeasurementSequence();
                 }
                 else
                 {
+                    Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เริ่มการวัด Van der Pauw (default)");
                     await RunVanDerPauwMeasurement(startValue, stopValue, stepValue, repetitionValue, sourcelevellimitValue, thicknessValue, magneticfieldsValue, delayValue, points);
                     DialogResult resultHall = MessageBox.Show($"ทำการวัด Van der Pauw เสร็จสิ้นแล้ว ต้องการทำการวัด Hall Effect Measurement ต่อหรือไม่ ?", "การวัดเสร็จสิ้น", MessageBoxButtons.YesNo);
+                    Debug.WriteLine($"[DEBUG] IconbuttonRunMeasurement_Click - ผลลัพธ์ MessageBox Van der Pauw เสร็จสิ้น (default): {resultHall}");
 
                     if (resultHall == DialogResult.Yes)
                     {
+                        GlobalSettings.Instance.CurrentMeasurementMode = MeasurementMode.HallEffectMeasurement;
+                        Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เปลี่ยนไปโหมด Hall Effect และเริ่มการวัด (default)");
                         await RunHallMeasurementSequence();
                     }
                 }
@@ -1528,27 +1613,33 @@ namespace Program01
             catch (Exception Ex)
             {
                 MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+                Debug.WriteLine($"[ERROR] IconbuttonRunMeasurement_Click - เกิดข้อผิดพลาด: {Ex.Message}");
             }
             finally
             {
                 DisableEditRun(false);
+                Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - End");
             }
         }
 
         private async Task RunVanDerPauwMeasurement(double startValue, double stopValue, double stepValue, int repetitionValue, double sourcelevellimitValue, double thicknessValue, double magneticfieldsValue, double delayValue, int points)
         {
-            GlobalSettings.Instance.IsModes = false;
-            GlobalSettings.Instance.IsVanDerPauwMode = true;
-            GlobalSettings.Instance.IsHallMode = false;
+            Debug.WriteLine("[DEBUG] RunVanDerPauwMeasurement - Start");
+            GlobalSettings.Instance.CurrentMeasurementMode = MeasurementMode.VanDerPauwMethod;
+            Debug.WriteLine($"[DEBUG] RunVanDerPauwMeasurement - CurrentMeasurementMode set to: {GlobalSettings.Instance.CurrentMeasurementMode}");
+
             UpdateToggleState();
             UpdateMeasurementMode();
             OnToggleChanged();
+            Debug.WriteLine("[DEBUG] RunVanDerPauwMeasurement - UI Updated");
 
             CurrentTuner = 1;
             CollectAndCalculateVdPMeasured.Instance.ClearAllData();
+            Debug.WriteLine("[DEBUG] RunVanDerPauwMeasurement - VdP Data Cleared");
 
             while (CurrentTuner <= 8)
             {
+                Debug.WriteLine($"[DEBUG] RunVanDerPauwMeasurement - Processing Tuner: {CurrentTuner}");
                 ConfigureSwitchSystem();
                 await Task.Delay(600);
                 UpdateMeasurementState();
@@ -1560,52 +1651,78 @@ namespace Program01
                 CurrentTuner++;
             }
 
-            Debug.WriteLine("[DEBUG] All tuners completed (Van der Pauw)");
+            Debug.WriteLine("[DEBUG] RunVanDerPauwMeasurement - All tuners completed (Van der Pauw)");
             SMU.WriteString("OUTPut OFF");
             SS.WriteString("*CLS");
+            Debug.WriteLine("[DEBUG] RunVanDerPauwMeasurement - SMU Output Off, SS Cleared");
 
             if (Application.OpenForms.OfType<VdPTotalMeasureValuesForm>().FirstOrDefault() is VdPTotalMeasureValuesForm VdPTotalForm)
             {
                 VdPTotalForm.Invoke((MethodInvoker)delegate { VdPTotalForm.LoadMeasurementData(); });
+                Debug.WriteLine("[DEBUG] RunVanDerPauwMeasurement - VdPTotalForm.LoadMeasurementData() invoked");
             }
 
             CollectAndCalculateVdPMeasured.Instance.CalculateVanderPauw();
+            Debug.WriteLine("[DEBUG] RunVanDerPauwMeasurement - VanderPauw Calculation Done");
+            Debug.WriteLine("[DEBUG] RunVanDerPauwMeasurement - End");
         }
 
         private async Task RunHallMeasurementSequence()
         {
-            GlobalSettings.Instance.IsModes = true;
-            GlobalSettings.Instance.IsHallMode = true;
-            GlobalSettings.Instance.IsVanDerPauwMode = false;
+            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Start");
+            GlobalSettings.Instance.CurrentMeasurementMode = MeasurementMode.HallEffectMeasurement;
+            Debug.WriteLine($"[DEBUG] RunHallMeasurementSequence - CurrentMeasurementMode set to: {GlobalSettings.Instance.CurrentMeasurementMode}");
+
             UpdateToggleState();
             UpdateMeasurementMode();
             OnToggleChanged();
+            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - UI Updated");
 
-            await RunHallMeasurement(false); // วัด Hall ภายนอกสนามแม่เหล็ก
-            DialogResult resultHallSouth = MessageBox.Show($"ทำการวัด Hall Effect Measurement ภายนอกสนามแม่เหล็กเสร็จสิ้นแล้ว ต้องการทำการวัด Hall Effect Measurement ภายใต้สนามแม่เหล็กทิศใต้ต่อหรือไม่ ?", "การวัดเสร็จสิ้น", MessageBoxButtons.YesNo);
+            CollectAndCalculateHallMeasured.Instance.ClearAllData();
+            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Hall Data Cleared in CollectAndCalculateHallMeasured");
+
+            await PerformSingleHallMeasurement(HallMeasurementState.NoMagneticField, false);
+            DialogResult resultHallSouth = MessageBox.Show($"ทำการวัด Hall Effect Measurement ภายนอกสนามแม่เหล็กเสร็จสิ้นแล้ว ต้องการทำการวัด Hall Effect Measurement ภายใต้สนามแม่เหล็กทิศพุ่งออก (ทิศใต้) ต่อหรือไม่ ?", "การวัดต่อเนื่อง", MessageBoxButtons.YesNo);
+            Debug.WriteLine($"[DEBUG] RunHallMeasurementSequence - ผลลัพธ์ MessageBox Hall นอกสนาม: {resultHallSouth}");
 
             if (resultHallSouth == DialogResult.Yes)
             {
-                await RunHallMeasurement(true, "South"); // วัด Hall ใต้สนามแม่เหล็กทิศใต้
-                DialogResult resultHallNorth = MessageBox.Show($"ทำการวัด Hall Effect Measurement ภายใต้สนามแม่เหล็กทิศใต้เสร็จสิ้นแล้ว ทำการกลับด้านของชิ้นงานตัวอย่าง เพื่อทำการวัด Hall Effect Measurement ภายใต้สนามแม่เหล็กทิศเหนือ", "การวัดต่อเนื่อง", MessageBoxButtons.YesNo);
+                await PerformSingleHallMeasurement(HallMeasurementState.OutwardOrSouthMagneticField, true, "South");
+                DialogResult resultHallNorth = MessageBox.Show($"ทำการวัด Hall Effect Measurement ภายใต้สนามแม่เหล็กทิศพุ่งออก (ทิศใต้) เสร็จสิ้นแล้ว โปรดทำการกลับด้านของชิ้นงานตัวอย่าง เพื่อทำการวัด Hall Effect Measurement ภายใต้สนามแม่เหล็กทิศพุ่งเข้า (ทิศเหนือ) ต่อ", "การวัดต่อเนื่อง", MessageBoxButtons.YesNo);
+                Debug.WriteLine($"[DEBUG] RunHallMeasurementSequence - ผลลัพธ์ MessageBox Hall ทิศใต้: {resultHallNorth}");
 
                 if (resultHallNorth == DialogResult.Yes)
                 {
-                    await RunHallMeasurement(true, "North"); // วัด Hall ใต้สนามแม่เหล็กทิศเหนือ
+                    await PerformSingleHallMeasurement(HallMeasurementState.InwardOrNorthMagneticField, true, "North");
                 }
             }
 
             MessageBox.Show("ทำการวัด Hall Effect Measurement เสร็จสิ้นแล้ว", "การวัดเสร็จสิ้น", MessageBoxButtons.OK);
+            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Hall Effect Measurement Completed");
+
+            if (Application.OpenForms.OfType<HallTotalMeasureValuesForm>().FirstOrDefault() is HallTotalMeasureValuesForm HallTotalForm)
+            {
+                var allHallData = CollectAndCalculateHallMeasured.Instance.GetAllHallMeasurements();
+
+                HallTotalForm.Invoke((MethodInvoker)delegate { HallTotalForm.LoadAllHallData(allHallData); });
+                Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Sent all Hall data from CollectAndCalculateHallMeasured to HallTotalForm");
+            }
+            else
+            {
+                Debug.WriteLine("[WARNING] HallTotalMeasureValuesForm is not open, cannot send data.");
+            }
+            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - End");
         }
 
-        private async Task RunHallMeasurement(bool HasMagneticField, string MagneticFieldDirection = "")
+        private async Task PerformSingleHallMeasurement(HallMeasurementState state, bool hasMagneticField, string magneticFieldDirection = "")
         {
+            Debug.WriteLine($"[DEBUG] PerformSingleHallMeasurement - Start (State: {state}, Magnetic Field: {hasMagneticField}, Direction: {magneticFieldDirection})");
             CurrentTuner = 1;
-            CollectAndCalculateHallMeasured.Instance.ClearAllData();
-            Debug.WriteLine($"[DEBUG] Starting Hall Measurement (Magnetic Field: {HasMagneticField}, Direction: {MagneticFieldDirection})");
+            GlobalSettings.Instance.CurrentHallState = state;
 
             while (CurrentTuner <= 4)
             {
+                Debug.WriteLine($"[DEBUG] PerformSingleHallMeasurement - Processing Tuner: {CurrentTuner} (State: {state}, Magnetic Field: {hasMagneticField}, Direction: {magneticFieldDirection})");
                 ConfigureSwitchSystem();
                 await Task.Delay(600);
                 UpdateMeasurementState();
@@ -1617,43 +1734,45 @@ namespace Program01
                 CurrentTuner++;
             }
 
-            Debug.WriteLine($"[DEBUG] Hall Measurement (Magnetic Field: {HasMagneticField}, Direction: {MagneticFieldDirection}) completed for 4 positions.");
+            Debug.WriteLine($"[DEBUG] PerformSingleHallMeasurement - Measurement for state {state} completed.");
             SMU.WriteString("OUTPut OFF");
             SS.WriteString("*CLS");
-
-            if (Application.OpenForms.OfType<HallTotalMeasureValuesForm>().FirstOrDefault() is HallTotalMeasureValuesForm HallTotalForm)
-            {
-                HallTotalForm.Invoke((MethodInvoker)delegate { HallTotalForm.LoadHallMeasurementData(); });
-            }
+            Debug.WriteLine("[DEBUG] PerformSingleHallMeasurement - SMU Output Off, SS Cleared");
+            Debug.WriteLine("[DEBUG] PerformSingleHallMeasurement - End");
         }
 
         private void ConfigureSwitchSystem()
         {
+            Debug.WriteLine($"[DEBUG] ConfigureSwitchSystem - Start (Current Mode: {GlobalSettings.Instance.CurrentMeasurementMode}, Tuner: {CurrentTuner})");
             SS.WriteString("ROUTe:OPEN ALL");
-            bool currentMode = GlobalSettings.Instance.IsModes;
-            var channels = GetChannelConfiguration(CurrentTuner, currentMode);
+            MeasurementMode CurrentMode = GlobalSettings.Instance.CurrentMeasurementMode;
+            var channels = GetChannelConfiguration(CurrentTuner, CurrentMode);
 
-            Debug.WriteLine($"Configuring Switch System in {(currentMode ? "Hall" : "Normal")} Mode for Tuner: {CurrentTuner}");
+            Debug.WriteLine($"[DEBUG] ConfigureSwitchSystem - Channels to configure: {string.Join(", ", channels ?? new List<string>())}");
 
             if (channels != null && channels.Any())
             {
                 foreach (var channel in channels)
                 {
                     SS.WriteString($"ROUTe:CLOSe (@ {channel})");
-                    Debug.WriteLine($"Closing channel: {channel}");
+                    Debug.WriteLine($"[DEBUG] ConfigureSwitchSystem - Closing channel: {channel}");
                 }
             }
             else
             {
-                Debug.WriteLine($"No channels to configure for Tuner: {CurrentTuner} in {(currentMode ? "Hall Effect Measurement" : "Van der Pauw")} Mode");
+                Debug.WriteLine($"[DEBUG] ConfigureSwitchSystem - No channels to configure for Tuner: {CurrentTuner} in {CurrentMode} Mode");
             }
+            Debug.WriteLine("[DEBUG] ConfigureSwitchSystem - End");
         }
 
-        private Dictionary<int, List<string>> GetChannelConfigurations(bool IsMode)
+        private Dictionary<int, List<string>> GetChannelConfigurations(MeasurementMode Mode)
         {
-            if (!IsMode) // Van der Pauw Mode
+            Debug.WriteLine($"[DEBUG] GetChannelConfigurations - Start (Mode: {Mode})");
+            Dictionary<int, List<string>> configurations = new Dictionary<int, List<string>>();
+
+            if (Mode == MeasurementMode.VanDerPauwMethod) // Van der Pauw Mode
             {
-                return new Dictionary<int, List<string>>
+                configurations = new Dictionary<int, List<string>>
         {
             { 1, new List<string> { "1!1!5", "1!2!4", "1!3!3", "1!4!6" }},
             { 2, new List<string> { "1!1!4", "1!2!5", "1!3!3", "1!4!6" }},
@@ -1664,58 +1783,74 @@ namespace Program01
             { 7, new List<string> { "1!1!6", "1!2!5", "1!3!4", "1!4!3" }},
             { 8, new List<string> { "1!1!5", "1!2!6", "1!3!4", "1!4!3" }}
         };
+                Debug.WriteLine("[DEBUG] GetChannelConfigurations - Van der Pauw Mode configurations loaded");
             }
-            else // Hall Effect Measurement Mode
+            else if (Mode == MeasurementMode.HallEffectMeasurement) // Hall Effect Measurement Mode
             {
-                return new Dictionary<int, List<string>>
+                configurations = new Dictionary<int, List<string>>
         {
             { 1, new List<string> { "1!1!5", "1!2!3", "1!3!6", "1!4!4" }},
             { 2, new List<string> { "1!1!3", "1!2!5", "1!3!6", "1!4!4" }},
             { 3, new List<string> { "1!1!4", "1!2!6", "1!3!3", "1!4!5" }},
             { 4, new List<string> { "1!1!6", "1!2!4", "1!3!3", "1!4!5" }}
         };
+                Debug.WriteLine("[DEBUG] GetChannelConfigurations - Hall Effect Measurement Mode configurations loaded");
             }
+            else
+            {
+                Debug.WriteLine($"[WARNING] GetChannelConfigurations - Unknown Measurement Mode: {Mode}");
+            }
+            Debug.WriteLine("[DEBUG] GetChannelConfigurations - End");
+            return configurations;
         }
 
-        private List<string> GetChannelConfiguration(int Position, bool IsMode)
+        private List<string> GetChannelConfiguration(int Position, MeasurementMode Mode)
         {
-            var configurations = GetChannelConfigurations(IsMode);
-            Debug.WriteLine($"Getting Channel Configuration for Position: {Position}, IsMode: {(IsMode ? "Hall" : "Normal")}");
+            Debug.WriteLine($"[DEBUG] GetChannelConfiguration - Start (Position: {Position}, Mode: {Mode})");
+            var configurations = GetChannelConfigurations(Mode);
+            Debug.WriteLine($"[DEBUG] GetChannelConfiguration - Configurations retrieved (Count: {configurations.Count})");
 
             if (configurations.ContainsKey(Position))
             {
-                Debug.WriteLine($"Found configuration for Position {Position}: {string.Join(", ", configurations[Position])}");
+                Debug.WriteLine($"[DEBUG] GetChannelConfiguration - Found configuration for Position {Position}: {string.Join(", ", configurations[Position])}");
+                Debug.WriteLine("[DEBUG] GetChannelConfiguration - End (Found)");
                 return configurations[Position];
             }
             else
             {
-                Debug.WriteLine($"No configuration found for Position {Position} in {(IsMode ? "Hall" : "Normal")} Mode.");
+                Debug.WriteLine($"[DEBUG] GetChannelConfiguration - No configuration found for Position {Position} in {Mode} Mode.");
+                Debug.WriteLine("[DEBUG] GetChannelConfiguration - End (Not Found)");
                 return new List<string>();
             }
         }
 
         private void ConfigureSourceMeasureUnit()
         {
+            Debug.WriteLine("[DEBUG] ConfigureSourceMeasureUnit - Start");
             if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelevellimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
             {
+                Debug.WriteLine("[DEBUG] ConfigureSourceMeasureUnit - ValidateInputs failed");
                 return;
             }
 
             SMU.IO.Timeout = 1000000;
             SMU.WriteString("TRACe:CLEar");
             SMU.WriteString("TRACe:POINts 3000000, 'defbuffer1'");
+            Debug.WriteLine("[DEBUG] ConfigureSourceMeasureUnit - SMU Trace Cleared and Points Set");
 
             if (GlobalSettings.Instance.SourceModeUI == "Current")
             {
                 SMU.WriteString($"SOURce:FUNCtion CURRent");
                 SMU.WriteString($"SOURce:CURRent:RANGe:AUTO ON");
                 SMU.WriteString($"SOURce:CURRent:VLIMit {sourcelevellimitValue}");
+                Debug.WriteLine($"[DEBUG] ConfigureSourceMeasureUnit - SMU Source set to Current (Limit: {sourcelevellimitValue})");
             }
             else
             {
                 SMU.WriteString($"SOURce:FUNCtion VOLTage");
                 SMU.WriteString($"SOURce:VOLTage:RANGe:AUTO ON");
                 SMU.WriteString($"SOURce:VOLTage:ILIMit {sourcelevellimitValue}");
+                Debug.WriteLine($"[DEBUG] ConfigureSourceMeasureUnit - SMU Source set to Current (Limit: {sourcelevellimitValue})");
             }
 
             if (GlobalSettings.Instance.MeasureModeUI == "Current")
@@ -1729,7 +1864,7 @@ namespace Program01
                 SMU.WriteString($"SENSe:VOLTage:RANGe:AUTO ON");
             }
 
-            if (GlobalSettings.Instance.RsenseModeUI == "4-Wires")
+            if (GlobalSettings.Instance.ResistanceSenseModeUI == "4-Wires")
             {
                 SMU.WriteString($"SENSe:{GlobalSettings.Instance.MeasureModeUI}:RSENse ON");
             }
@@ -1741,164 +1876,122 @@ namespace Program01
 
         private async Task ExecuteSweep()
         {
+            Debug.WriteLine("[DEBUG] ExecuteSweep - Start");
             if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelevellimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
             {
+                Debug.WriteLine("[DEBUG] ExecuteSweep - ValidateInputs failed");
                 return;
             }
 
-            if (GlobalSettings.Instance.IsModes == true)
+            if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.HallEffectMeasurement)
             {
-                string allValues = $"Sense: {GlobalSettings.Instance.RsenseModeUI}, Measure: {GlobalSettings.Instance.MeasureModeUI}, Source: {GlobalSettings.Instance.SourceModeUI}, Start: {GlobalSettings.Instance.StartValueUI} {GlobalSettings.Instance.StartUnitUI}, Step: {GlobalSettings.Instance.StepValueUI} {GlobalSettings.Instance.StepUnitUI}, Source Delay: {GlobalSettings.Instance.SourceDelayValueUI} {GlobalSettings.Instance.SourceDelayUnitUI}, Stop: {GlobalSettings.Instance.StopValueUI} {GlobalSettings.Instance.StopUnitUI}, Source Limit: {GlobalSettings.Instance.SourceLimitTypeUI}, Limit Level: {GlobalSettings.Instance.SourceLimitLevelValueUI} {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Repetition: {GlobalSettings.Instance.RepetitionValueUI}, Thickness: {GlobalSettings.Instance.ThicknessValueUI} {GlobalSettings.Instance.ThicknessUnitUI}, Magnetic Fields: {GlobalSettings.Instance.MagneticFieldsValueUI} {GlobalSettings.Instance.MagneticFieldsUnitUI}";
-                Debug.WriteLine($"{allValues}.");
+                string allValues = $"Sense: {GlobalSettings.Instance.ResistanceSenseModeUI}, Measure: {GlobalSettings.Instance.MeasureModeUI}, Source: {GlobalSettings.Instance.SourceModeUI}, Start: {GlobalSettings.Instance.StartValueUI} {GlobalSettings.Instance.StartUnitUI}, Step: {GlobalSettings.Instance.StepValueUI} {GlobalSettings.Instance.StepUnitUI}, Source Delay: {GlobalSettings.Instance.SourceDelayValueUI} {GlobalSettings.Instance.SourceDelayUnitUI}, Stop: {GlobalSettings.Instance.StopValueUI} {GlobalSettings.Instance.StopUnitUI}, Source Limit: {GlobalSettings.Instance.SourceLimitModeUI}, Limit Level: {GlobalSettings.Instance.SourceLimitLevelValueUI} {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Repetition: {GlobalSettings.Instance.RepetitionValueUI}, Thickness: {GlobalSettings.Instance.ThicknessValueUI} {GlobalSettings.Instance.ThicknessUnitUI}, Magnetic Fields: {GlobalSettings.Instance.MagneticFieldsValueUI} {GlobalSettings.Instance.MagneticFieldsUnitUI}";
+                Debug.WriteLine($"[DEBUG] ExecuteSweep (Hall) - Parameters: {allValues}.");
             }
             else
             {
-                string allValues = $"Sense: {GlobalSettings.Instance.RsenseModeUI}, Measure: {GlobalSettings.Instance.MeasureModeUI}, Source: {GlobalSettings.Instance.SourceModeUI}, Start: {GlobalSettings.Instance.StartValueUI} {GlobalSettings.Instance.StartUnitUI}, Step: {GlobalSettings.Instance.StepValueUI} {GlobalSettings.Instance.StepUnitUI}, Source Delay: {GlobalSettings.Instance.SourceDelayValueUI} {GlobalSettings.Instance.SourceDelayUnitUI}, Stop: {GlobalSettings.Instance.StopValueUI} {GlobalSettings.Instance.StopUnitUI}, Source Limit: {GlobalSettings.Instance.SourceLimitTypeUI}, Limit Level: {GlobalSettings.Instance.SourceLimitLevelValueUI} {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Repetition: {GlobalSettings.Instance.RepetitionValueUI}, Thickness: {GlobalSettings.Instance.ThicknessValueUI} {GlobalSettings.Instance.ThicknessUnitUI}, Magnetic Fields: {GlobalSettings.Instance.MagneticFieldsValueUI} {GlobalSettings.Instance.MagneticFieldsUnitUI}";
-                Debug.WriteLine($"{allValues}.");
+                string allValues = $"Sense: {GlobalSettings.Instance.ResistanceSenseModeUI}, Measure: {GlobalSettings.Instance.MeasureModeUI}, Source: {GlobalSettings.Instance.SourceModeUI}, Start: {GlobalSettings.Instance.StartValueUI} {GlobalSettings.Instance.StartUnitUI}, Step: {GlobalSettings.Instance.StepValueUI} {GlobalSettings.Instance.StepUnitUI}, Source Delay: {GlobalSettings.Instance.SourceDelayValueUI} {GlobalSettings.Instance.SourceDelayUnitUI}, Stop: {GlobalSettings.Instance.StopValueUI} {GlobalSettings.Instance.StopUnitUI}, Source Limit: {GlobalSettings.Instance.SourceLimitModeUI}, Limit Level: {GlobalSettings.Instance.SourceLimitLevelValueUI} {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Repetition: {GlobalSettings.Instance.RepetitionValueUI}, Thickness: {GlobalSettings.Instance.ThicknessValueUI} {GlobalSettings.Instance.ThicknessUnitUI}, Magnetic Fields: {GlobalSettings.Instance.MagneticFieldsValueUI} {GlobalSettings.Instance.MagneticFieldsUnitUI}";
+                Debug.WriteLine($"[DEBUG] ExecuteSweep (VdP) - Parameters: {allValues}.");
             }
 
             if (GlobalSettings.Instance.SourceModeUI == "Current")
             {
                 string sweepCommand = $"SOURce:SWEep:CURRent:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                 SMU.WriteString(sweepCommand);
-                Debug.WriteLine($"Sending command: {sweepCommand}");
+                Debug.WriteLine($"[DEBUG] ExecuteSweep - Sending Current Sweep command: {sweepCommand}");
             }
             else
             {
                 string sweepCommand = $"SOURce:SWEep:VOLTage:LINear:STEP {startValue}, {stopValue}, {stepValue}, {delayValue}, {repetitionValue}";
                 SMU.WriteString(sweepCommand);
-                Debug.WriteLine($"Sending command: {sweepCommand}");
+                Debug.WriteLine($"[DEBUG] ExecuteSweep - Sending Voltage Sweep command: {sweepCommand}");
             }
 
             SMU.WriteString("OUTPut ON");
             SMU.WriteString("INITiate");
             SMU.WriteString("*WAI");
             SMU.WriteString("OUTPut OFF");
+            Debug.WriteLine("[DEBUG] ExecuteSweep - Output ON, Initiate, Wait, Output OFF completed");
 
             await Task.Delay(points * repetitionValue * (int)delayValue * 300);
+            Debug.WriteLine($"[DEBUG] ExecuteSweep - Delay completed (Duration: {points * repetitionValue * (int)delayValue * 300} ms)");
+            Debug.WriteLine("[DEBUG] ExecuteSweep - End");
         }
 
         private void UpdateMeasurementState()
         {
-            if (!ValidateInputs(out double startValue, out double stopValue, out double stepValue, out int repetitionValue, out double sourcelevellimitValue, out double thicknessValue, out double magneticfieldsValue, out double delayValue, out int points))
-            {
-                return;
-            }
-
             Debug.WriteLine($"Measuring Tuner {CurrentTuner}");
         }
 
         private void TracingRunMeasurement()
         {
-            string measurementType = "withoutfield"; // Default สำหรับ Hall Out
-
-            if (GlobalSettings.Instance.IsModes) // Check if in Hall Mode
+            Debug.WriteLine("[DEBUG] TracingRunMeasurement - Start");
+            try
             {
-                if (GlobalSettings.Instance.IsHallOutMeasuring)
+                SMU.WriteString("TRACe:ACTual?");
+                string BufferCount = SMU.ReadString().Trim();
+                Debug.WriteLine($"[DEBUG] TracingRunMeasurement - Buffer count read: {BufferCount}");
+
+                if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
                 {
-                    measurementType = "withoutfield";
-                }
-                else if (GlobalSettings.Instance.IsHallInSouthMeasuring)
-                {
-                    measurementType = "southfield";
-                }
-                else if (GlobalSettings.Instance.IsHallInNorthMeasuring)
-                {
-                    measurementType = "northfield";
+                    MessageBox.Show("ไม่สามารถดึงข้อมูลการวัดได้: ไม่มีข้อมูลในบัฟเฟอร์", "ข้อผิดพลาด", MessageBoxButtons.OK);
+                    Debug.WriteLine("[WARNING] TracingRunMeasurement - ไม่สามารถดึงข้อมูล: ไม่มีข้อมูลในบัฟเฟอร์");
+                    return;
                 }
 
-                try
+                SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOURce, READing");
+                string RawData = SMU.ReadString().Trim();
+                Debug.WriteLine($"[DEBUG] TracingRunMeasurement - Raw Data read (Length: {RawData.Length}): {RawData}");
+                Debug.WriteLine($"[DEBUG] TracingRunMeasurement - Buffer contains: {BufferPoints} readings");
+
+                string[] DataPairs = RawData.Split(',');
+                List<(double Source, double Reading)> currentMeasurements = new List<(double, double)>();
+                Debug.WriteLine($"[DEBUG] TracingRunMeasurement - Number of data pairs: {DataPairs.Length}");
+
+                if (DataPairs.Length % 2 != 0)
                 {
-                    SMU.WriteString("TRACe:ACTual?");
-                    string BufferCount = SMU.ReadString().Trim();
-                    Debug.WriteLine($"Buffer count: {BufferCount}");
-
-                    if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
-                    {
-                        MessageBox.Show("ไม่สามารถดึงข้อมูลการวัดได้: ไม่มีข้อมูลในบัฟเฟอร์", "ข้อผิดพลาด", MessageBoxButtons.OK);
-                        return;
-                    }
-
-                    SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOURce, READing");
-                    string RawData = SMU.ReadString().Trim();
-                    Debug.WriteLine($"Buffer contains: {BufferPoints} readings");
-                    Debug.WriteLine($"Raw Data: {RawData}");
-
-                    string[] DataPairs = RawData.Split(',');
-                    List<(double Source, double Reading)> currentMeasurements = new List<(double, double)>(); // สร้าง List สำหรับ Hall Effect
-                    Debug.WriteLine($"Number of data pairs: {DataPairs.Length}");
-
-                    if (DataPairs.Length % 2 != 0)
-                    {
-                        MessageBox.Show("รูปแบบข้อมูลในบัฟเฟอร์ไม่ถูกต้อง", "ข้อผิดพลาด", MessageBoxButtons.OK);
-                        return;
-                    }
-
-                    for (int i = 0; i < DataPairs.Length; i += 2)
-                    {
-                        if (double.TryParse(DataPairs[i], out double SourceValue) && double.TryParse(DataPairs[i + 1], out double MeasuredValue))
-                        {
-                            currentMeasurements.Add((SourceValue, MeasuredValue));
-                        }
-                    }
-
-                    Debug.WriteLine($"[DEBUG] TracingRunMeasurement (Hall) - Tuner: {CurrentTuner}, Type: {measurementType}, Data Points Read: {currentMeasurements.Count}");
-                    GlobalSettings.Instance.CollectedHallMeasurements.StoreMeasurementData(CurrentTuner, currentMeasurements, measurementType); // ส่ง List<(double, double)>
+                    MessageBox.Show("รูปแบบข้อมูลในบัฟเฟอร์ไม่ถูกต้อง", "ข้อผิดพลาด", MessageBoxButtons.OK);
+                    Debug.WriteLine("[ERROR] TracingRunMeasurement - รูปแบบข้อมูลในบัฟเฟอร์ไม่ถูกต้อง");
+                    return;
                 }
-                catch (Exception Ex)
+
+                for (int i = 0; i < DataPairs.Length; i += 2)
                 {
-                    MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+                    if (double.TryParse(DataPairs[i], out double SourceValue) && double.TryParse(DataPairs[i + 1], out double MeasuredValue))
+                    {
+                        currentMeasurements.Add((SourceValue, MeasuredValue));
+                        Debug.WriteLine($"[DEBUG] TracingRunMeasurement - Data Point {i / 2 + 1}: Source={SourceValue}, Reading={MeasuredValue}");
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"[WARNING] TracingRunMeasurement - ไม่สามารถ Parse ค่า Source หรือ Reading ที่ Index {i} หรือ {i + 1} ได้");
+                    }
                 }
-            }
-            else // Van der Pauw Mode
-            {
-                try
+                Debug.WriteLine($"[DEBUG] TracingRunMeasurement - จำนวน Data Points ที่อ่านได้: {currentMeasurements.Count}");
+
+                if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.HallEffectMeasurement)
                 {
-                    SMU.WriteString("TRACe:ACTual?");
-                    string BufferCount = SMU.ReadString().Trim();
-                    Debug.WriteLine($"Buffer count: {BufferCount}");
-
-                    if (!int.TryParse(BufferCount, out int BufferPoints) || BufferPoints == 0)
-                    {
-                        MessageBox.Show("ไม่สามารถทำการดึงข้อมูลการวัดจากเครื่องมือได้ เนื่องจากไม่มีข้อมูลอยู่ในบัฟเฟอร์", "ข้อผิดพลาดในการดึงข้อมูลการวัด", MessageBoxButtons.OK);
-                        return;
-                    }
-
-                    SMU.WriteString($"TRACe:DATA? 1, {BufferPoints}, 'defbuffer1', SOURce, READing");
-                    string RawData = SMU.ReadString().Trim();
-                    Debug.WriteLine($"Buffer contains: {BufferPoints} readings");
-                    Debug.WriteLine($"Raw Data: {RawData}");
-
-                    string[] DataPairs = RawData.Split(',');
-                    List<(double Source, double Reading)> currentMeasurements = new List<(double, double)>();
-                    List<double> XData = new List<double>();
-                    List<double> YData = new List<double>();
-                    Debug.WriteLine($"Number of data pairs: {DataPairs.Length}");
-
-                    if (DataPairs.Length % 2 != 0)
-                    {
-                        MessageBox.Show("รูปแบบของข้อมูลในบัฟเฟอร์ไม่ถูกต้อง", "ข้อผิดพลาดในการดึงข้อมูลการวัด", MessageBoxButtons.OK);
-                        return;
-                    }
-
-                    for (int i = 0; i < DataPairs.Length; i += 2)
-                    {
-                        if (double.TryParse(DataPairs[i], out double SourceValue) && double.TryParse(DataPairs[i + 1], out double MeasuredValue))
-                        {
-                            XData.Add(SourceValue);
-                            YData.Add(MeasuredValue);
-                            currentMeasurements.Add((SourceValue, MeasuredValue));
-                        }
-                    }
-
-                    Debug.WriteLine($"[DEBUG] TracingRunMeasurement (VdP) - Tuner: {CurrentTuner}, Data Points Read: {currentMeasurements.Count}");
+                    string measurementType = GlobalSettings.Instance.CurrentHallState.ToString().ToLower();
+                    Debug.WriteLine($"[DEBUG] TracingRunMeasurement (Hall Effect) - Tuner: {CurrentTuner}, Type: {measurementType}, Data Points Read: {currentMeasurements.Count}");
+                    Debug.WriteLine($"Current Hall State (Lower Case): {measurementType}");
+                    Debug.WriteLine($"Current Hall State: {GlobalSettings.Instance.CurrentHallState}");
+                    GlobalSettings.Instance.CollectedHallMeasurements.StoreMeasurementData(CurrentTuner, currentMeasurements, measurementType);
+                    Debug.WriteLine("[DEBUG] TracingRunMeasurement (Hall Effect) - Data stored in CollectedHallMeasurements");
+                }
+                else if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
+                {
+                    Debug.WriteLine($"[DEBUG] TracingRunMeasurement (Van der Pauw) - Tuner: {CurrentTuner}, Data Points Read: {currentMeasurements.Count}");
                     GlobalSettings.Instance.CollectedVdPMeasurements.StoreMeasurementData(CurrentTuner, currentMeasurements);
-                }
-                catch (Exception Ex)
-                {
-                    MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+                    Debug.WriteLine("[DEBUG] TracingRunMeasurement (Van der Pauw) - Data stored in CollectedVdPMeasurements");
                 }
             }
+            catch (Exception Ex)
+            {
+                MessageBox.Show($"เกิดข้อผิดพลาด: {Ex.Message}", "ข้อผิดพลาด", MessageBoxButtons.OK);
+                Debug.WriteLine($"[ERROR] TracingRunMeasurement - เกิดข้อผิดพลาด: {Ex.Message}");
+            }
+
+            Debug.WriteLine("[DEBUG] TracingRunMeasurement - End");
         }
 
         private void IconbuttonErrorCheck_Click(object sender, EventArgs e)
@@ -1907,27 +2000,45 @@ namespace Program01
             {
                 if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
-                    MessageBox.Show("ไม่สามารถตรวจสอบข้อผิดพลาดจาดเครื่องมือได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการตรวจสอบ", MessageBoxButtons.OK);
+                    MessageBox.Show("ไม่สามารถตรวจสอบข้อผิดพลาดจากเครื่องมือได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการตรวจสอบ", MessageBoxButtons.OK);
                     return;
                 }
 
-                SMU.WriteString("SYSTem:ERRor?");
-                SS.WriteString("SYSTem:ERRor?");
-                string SMUrespones = SMU.ReadString();
-                string SSresponses = SS.ReadString();
+                string smuError = null;
+                string ssError = null;
 
-                if (SMUrespones == null && SSresponses == null)
+                SMU.WriteString("SYSTem:ERRor?");
+                smuError = SMU.ReadString().Trim(); // เพิ่ม .Trim() เพื่อลบช่องว่างหน้าหลัง
+                Debug.WriteLine($"Source Measure Unit error response: {smuError}");
+
+                SS.WriteString("SYSTem:ERRor?");
+                ssError = SS.ReadString().Trim(); // เพิ่ม .Trim() เพื่อลบช่องว่างหน้าหลัง
+                Debug.WriteLine($"Switch System error response: {ssError}");
+
+                if (string.IsNullOrEmpty(smuError) && string.IsNullOrEmpty(ssError))
                 {
-                    MessageBox.Show("ไม่พบข้อผิดพลาดจากเครื่องมือ", "การตรวจสอบเสร็จสิ้น", MessageBoxButtons.OK);
-                    Debug.WriteLine($"There is Source Measure Unit error : {SMUrespones}");
-                    Debug.WriteLine($"There is Switch System error : {SSresponses}");
+                    MessageBox.Show("ไม่พบข้อผิดพลาดจากเครื่องมือใด ๆ", "การตรวจสอบเสร็จสิ้น", MessageBoxButtons.OK);
                 }
-                
-                if (SMUrespones != null || SSresponses != null)
+                else
                 {
-                    MessageBox.Show($"ตรวจพบข้อผิดพลาดจากเครื่องมือ {SMUModelKeyword} {SMUrespones}: {SSModelKeyword} {SSresponses} ? ", "การตรวจสอบเสร็จสิ้น", MessageBoxButtons.OK);   // แก้ไขเงื่อนไขตรงนี้ด้วย
-                    Debug.WriteLine($"There is Source Measure Unit error : {SMUrespones}");
-                    Debug.WriteLine($"There is Switch System error : {SSresponses}");
+                    string errorMessage = "ตรวจพบข้อผิดพลาดจากเครื่องมือ:\n";
+                    if (!string.IsNullOrEmpty(smuError) && !smuError.ToLower().Contains("no error")) // ตรวจสอบว่ามี Error จริง และไม่ใช่ข้อความ "No error"
+                    {
+                        errorMessage += $"Source Measure Unit {SMUModelKeyword}: {smuError}\n";
+                    }
+                    if (!string.IsNullOrEmpty(ssError) && !ssError.ToLower().Contains("no error")) // ตรวจสอบว่ามี Error จริง และไม่ใช่ข้อความ "No error"
+                    {
+                        errorMessage += $"Switch System {SSModelKeyword}: {ssError}\n";
+                    }
+
+                    if (errorMessage.EndsWith(":\n"))
+                    {
+                        MessageBox.Show("ไม่พบข้อผิดพลาดจากเครื่องมือใด ๆ", "การตรวจสอบเสร็จสิ้น", MessageBoxButtons.OK);
+                    }
+                    else
+                    {
+                        MessageBox.Show(errorMessage, "พบข้อผิดพลาด", MessageBoxButtons.OK);
+                    }
                 }
             }
             catch (Exception Ex)
@@ -2060,13 +2171,13 @@ namespace Program01
                     return false;
                 }
 
-                if (string.Equals(GlobalSettings.Instance.SourceLimitTypeUI, "Current", StringComparison.OrdinalIgnoreCase) && (sourcelevellimit > 1.05 || sourcelevellimit < -1.05))
+                if (string.Equals(GlobalSettings.Instance.SourceLimitModeUI, "Current", StringComparison.OrdinalIgnoreCase) && (sourcelevellimit > 1.05 || sourcelevellimit < -1.05))
                 {
                     MessageBox.Show("ควรทำการตั้งค่าระดับขีดจำกัดของกระแสจากแหล่งจ่ายอยู่ในช่วง -1.05 A - 1.05 A กรุณาทำการตั้งค่าการวัดใหม่", "ข้อผิดพลาดในการตั้งค่าการวัด", MessageBoxButtons.OK);
                     return false;
                 }
 
-                if (string.Equals(GlobalSettings.Instance.SourceLimitTypeUI, "Voltage", StringComparison.OrdinalIgnoreCase) && (sourcelevellimit > 21 || sourcelevellimit < -21))
+                if (string.Equals(GlobalSettings.Instance.SourceLimitModeUI, "Voltage", StringComparison.OrdinalIgnoreCase) && (sourcelevellimit > 21 || sourcelevellimit < -21))
                 {
                     MessageBox.Show("ควรทำการตั้งค่าระดับขีดจำกัดของแรงดันจากแหล่งจ่ายอยู่ในช่วง -21 V - 21 V กรุณาทำการตั้งค่าการวัดใหม่", "ข้อผิดพลาดในการตั้งค่าการวัด", MessageBoxButtons.OK);
                     return false;

@@ -21,7 +21,6 @@ namespace Program01
         }
 
         #region Initialization
-
         private void InitializeDataGridViewColumns()
         {
             if (DatagridviewVdPTotalMesure.Columns.Count == 0)
@@ -76,32 +75,29 @@ namespace Program01
 
                 if (GlobalSettings.Instance.SourceModeUI == "Voltage")
                 {
-                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (V)";
+                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.SourceModeUI} (V)";
                 }
                 else
                 {
-                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (A)";
+                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.SourceModeUI} (A)";
                 }
 
-                chart.ChartAreas[0].AxisX.LabelStyle.Angle = 90;
-                chart.ChartAreas[0].AxisX.IsLabelAutoFit = false;
-                chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.FixedCount;
+                chart.ChartAreas[0].AxisY.IsLabelAutoFit = false;
+                chart.ChartAreas[0].AxisY.IntervalAutoMode = IntervalAutoMode.FixedCount;
+                chart.ChartAreas[0].AxisY.LabelStyle.Format = "N6";
 
                 if (GlobalSettings.Instance.MeasureModeUI == "Voltage")
                 {
-                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (V)";
+                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.MeasureModeUI} (V)";
                 }
                 else
                 {
-                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (A)";
+                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.MeasureModeUI} (A)";
                 }
 
-                chart.ChartAreas[0].AxisY.LabelStyle.Angle = 0;
-                chart.ChartAreas[0].AxisY.IsLabelAutoFit= false;
-                chart.ChartAreas[0].AxisY.IntervalAutoMode = IntervalAutoMode.FixedCount;
-
-                chart.ChartAreas[0].AxisX.LabelStyle.Format = "0.#####";
-                chart.ChartAreas[0].AxisY.LabelStyle.Format = "0.#####";
+                chart.ChartAreas[0].AxisX.IsLabelAutoFit= false;
+                chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.FixedCount;
+                chart.ChartAreas[0].AxisX.LabelStyle.Format = "N6";
 
                 chart.Invalidate();
             }
@@ -117,11 +113,9 @@ namespace Program01
             LoadMeasurementData();
             LoadMeasurementDataForCharts();
         }
-
         #endregion
 
         #region Data Loading and Display
-
         public void LoadMeasurementData()
         {
             LoadMeasurementData(null);
@@ -169,6 +163,7 @@ namespace Program01
                             row.Cells[(tunerIndex - 1) * 2 + 1].Value = "";
                         }
                     }
+
                     DatagridviewVdPTotalMesure.Rows.Add(row);
                 }
             }
@@ -198,10 +193,10 @@ namespace Program01
                         {
                             if (AllMeasurements.ContainsKey(i) && AllMeasurements[i] != null && AllMeasurements[i].Count > 0)
                             {
-                                Series series = TotalChart.Series[i - 1]; // เข้าถึง Series ด้วย Index (0 ถึง 7)
-                                series.XValueMember = "Source";
-                                series.YValueMembers = "Reading";
-                                series.Points.DataBind(AllMeasurements[i].Select(data => new { data.Source, data.Reading }).ToList(), "Source", "Reading", null);
+                                Series series = TotalChart.Series[i - 1];
+                                series.XValueMember = "Reading"; // Reading จะอยู่บนแกน X
+                                series.YValueMembers = "Source"; // Source จะอยู่บนแกน Y
+                                series.Points.DataBind(AllMeasurements[i].Select(data => new { data.Reading, data.Source }).ToList(), "Reading", "Source", null);
                             }
                             else
                             {
@@ -215,16 +210,18 @@ namespace Program01
                             TotalChart.Legends[0].Enabled = true;
                         }
 
+                        string sourceUnit = GlobalSettings.Instance.SourceModeUI == "Voltage" ? "V" : "A";
+                        string measureUnit = GlobalSettings.Instance.MeasureModeUI == "Voltage" ? "V" : "A";
+
                         // ตัวอย่างการปรับแต่งแกน X ของ Chart รวม
-                        TotalChart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (Source)    [{GlobalSettings.Instance.StepUnitUI}]"; // กำหนดชื่อแกน X
-                        TotalChart.ChartAreas[0].AxisX.LabelStyle.Format = "F3";
-                        TotalChart.ChartAreas[0].AxisX.Interval = 0;
-                        //TotalChart.ChartAreas[0].AxisX.LabelStyle.Angle = 90;
+                        TotalChart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.SourceModeUI} ({sourceUnit})"; // กำหนดชื่อแกน Y
+                        TotalChart.ChartAreas[0].AxisY.LabelStyle.Format = "N5";
+                        TotalChart.ChartAreas[0].AxisY.Interval = 0;
 
                         // ตัวอย่างการปรับแต่งแกน Y ของ Chart รวม
-                        TotalChart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (Measured)     [{GlobalSettings.Instance.SourceLimitLevelUnitUI}]"; // กำหนดชื่อแกน Y
-                        TotalChart.ChartAreas[0].AxisY.Interval = 0;
-                        TotalChart.ChartAreas[0].AxisY.LabelStyle.Format = "F3";
+                        TotalChart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.MeasureModeUI} ({measureUnit})"; // กำหนดชื่อแกน X
+                        TotalChart.ChartAreas[0].AxisX.Interval = 0;
+                        TotalChart.ChartAreas[0].AxisX.LabelStyle.Format = "N5";
                     }
                     else
                     {
@@ -296,8 +293,6 @@ namespace Program01
                 }
             }
         }
-        
-
         #endregion
 
         #region Event Handlers

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
@@ -113,6 +114,7 @@
             this.Measured_HOut3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Source_HOut4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Measured_HOut4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.BindingSourceHallOutVoltage = new System.Windows.Forms.BindingSource(this.components);
             this.TabpageHallInMeasured = new System.Windows.Forms.TabPage();
             this.TabcontrolHallInTotalMeasured = new System.Windows.Forms.TabControl();
             this.TabpageHallInSouthVoltage = new System.Windows.Forms.TabPage();
@@ -125,6 +127,7 @@
             this.Measured_HInS3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Source_HInS4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Measured_HInS4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.BindingSourceHallInSouthVoltage = new System.Windows.Forms.BindingSource(this.components);
             this.TabpageHallInNorthVoltage = new System.Windows.Forms.TabPage();
             this.DatagridviewHallNorthVoltageTotalMeasured = new System.Windows.Forms.DataGridView();
             this.Source_HInN1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -135,6 +138,7 @@
             this.Measured_HInN3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Source_HInN4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Measured_HInN4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.BindingSourceHallInNorthVoltage = new System.Windows.Forms.BindingSource(this.components);
             this.PanelHallDataChart.SuspendLayout();
             this.TabcontrolHallInTotalChart.SuspendLayout();
             this.TabpageHallInSouthTotalChart.SuspendLayout();
@@ -161,12 +165,15 @@
             this.TabcontrolHallTotalMeasured.SuspendLayout();
             this.TabpageHallOutMeasured.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DatagridviewHallOutVoltageTotalMeasured)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BindingSourceHallOutVoltage)).BeginInit();
             this.TabpageHallInMeasured.SuspendLayout();
             this.TabcontrolHallInTotalMeasured.SuspendLayout();
             this.TabpageHallInSouthVoltage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DatagridviewHallSouthVoltageTotalMeasured)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BindingSourceHallInSouthVoltage)).BeginInit();
             this.TabpageHallInNorthVoltage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DatagridviewHallNorthVoltageTotalMeasured)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BindingSourceHallInNorthVoltage)).BeginInit();
             this.SuspendLayout();
             // 
             // PanelHallDataChart
@@ -245,8 +252,9 @@
             chartArea1.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
             chartArea1.BackSecondaryColor = System.Drawing.Color.MidnightBlue;
             chartArea1.BorderColor = System.Drawing.Color.Transparent;
-            chartArea1.Name = "ChartAreaPosition1";
+            chartArea1.Name = "ChartAreaSouthPosition1";
             this.ChartHallInSouthMeasurementPosition1.ChartAreas.Add(chartArea1);
+            this.ChartHallInSouthMeasurementPosition1.DataSource = this.BindingSourceHallInSouthVoltage;
             this.ChartHallInSouthMeasurementPosition1.Dock = System.Windows.Forms.DockStyle.Fill;
             legend1.Enabled = false;
             legend1.Name = "Legend1";
@@ -254,15 +262,15 @@
             this.ChartHallInSouthMeasurementPosition1.Location = new System.Drawing.Point(0, 0);
             this.ChartHallInSouthMeasurementPosition1.Name = "ChartHallInSouthMeasurementPosition1";
             series1.BorderWidth = 2;
-            series1.ChartArea = "ChartAreaPosition1";
+            series1.ChartArea = "ChartAreaSouthPosition1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Color = System.Drawing.Color.Linen;
+            series1.Color = System.Drawing.Color.Red;
             series1.Legend = "Legend1";
             series1.MarkerColor = System.Drawing.Color.OrangeRed;
             series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-            series1.Name = "SeriesMeasuredP1";
-            series1.XValueMember = "Source";
-            series1.YValueMembers = "Reading";
+            series1.Name = "Position 1";
+            series1.XValueMember = "Reading";
+            series1.YValueMembers = "Source";
             this.ChartHallInSouthMeasurementPosition1.Series.Add(series1);
             this.ChartHallInSouthMeasurementPosition1.Size = new System.Drawing.Size(576, 635);
             this.ChartHallInSouthMeasurementPosition1.TabIndex = 3;
@@ -271,10 +279,10 @@
             // 
             this.TabpageV_hiSouthMP2.Controls.Add(this.ChartHallInSouthMeasurementPosition2);
             this.TabpageV_hiSouthMP2.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageV_hiSouthMP2.Location = new System.Drawing.Point(4, 32);
+            this.TabpageV_hiSouthMP2.Location = new System.Drawing.Point(4, 37);
             this.TabpageV_hiSouthMP2.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageV_hiSouthMP2.Name = "TabpageV_hiSouthMP2";
-            this.TabpageV_hiSouthMP2.Size = new System.Drawing.Size(576, 643);
+            this.TabpageV_hiSouthMP2.Size = new System.Drawing.Size(576, 635);
             this.TabpageV_hiSouthMP2.TabIndex = 8;
             this.TabpageV_hiSouthMP2.Text = "Position 2";
             this.TabpageV_hiSouthMP2.UseVisualStyleBackColor = true;
@@ -296,8 +304,9 @@
             chartArea2.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
             chartArea2.BackSecondaryColor = System.Drawing.Color.MidnightBlue;
             chartArea2.BorderColor = System.Drawing.Color.Transparent;
-            chartArea2.Name = "ChartAreaPosition1";
+            chartArea2.Name = "ChartAreaSouthPosition2";
             this.ChartHallInSouthMeasurementPosition2.ChartAreas.Add(chartArea2);
+            this.ChartHallInSouthMeasurementPosition2.DataSource = this.BindingSourceHallInSouthVoltage;
             this.ChartHallInSouthMeasurementPosition2.Dock = System.Windows.Forms.DockStyle.Fill;
             legend2.Enabled = false;
             legend2.Name = "Legend1";
@@ -305,27 +314,27 @@
             this.ChartHallInSouthMeasurementPosition2.Location = new System.Drawing.Point(0, 0);
             this.ChartHallInSouthMeasurementPosition2.Name = "ChartHallInSouthMeasurementPosition2";
             series2.BorderWidth = 2;
-            series2.ChartArea = "ChartAreaPosition1";
+            series2.ChartArea = "ChartAreaSouthPosition2";
             series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series2.Color = System.Drawing.Color.Linen;
+            series2.Color = System.Drawing.Color.Red;
             series2.Legend = "Legend1";
             series2.MarkerColor = System.Drawing.Color.OrangeRed;
             series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-            series2.Name = "SeriesMeasuredP1";
-            series2.XValueMember = "Source";
-            series2.YValueMembers = "Reading";
+            series2.Name = "Position 2";
+            series2.XValueMember = "Reading";
+            series2.YValueMembers = "Source";
             this.ChartHallInSouthMeasurementPosition2.Series.Add(series2);
-            this.ChartHallInSouthMeasurementPosition2.Size = new System.Drawing.Size(576, 643);
+            this.ChartHallInSouthMeasurementPosition2.Size = new System.Drawing.Size(576, 635);
             this.ChartHallInSouthMeasurementPosition2.TabIndex = 3;
             // 
             // TabpageV_hiSouthMP3
             // 
             this.TabpageV_hiSouthMP3.Controls.Add(this.ChartHallInSouthMeasurementPosition3);
             this.TabpageV_hiSouthMP3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageV_hiSouthMP3.Location = new System.Drawing.Point(4, 32);
+            this.TabpageV_hiSouthMP3.Location = new System.Drawing.Point(4, 37);
             this.TabpageV_hiSouthMP3.Name = "TabpageV_hiSouthMP3";
             this.TabpageV_hiSouthMP3.Padding = new System.Windows.Forms.Padding(3);
-            this.TabpageV_hiSouthMP3.Size = new System.Drawing.Size(576, 643);
+            this.TabpageV_hiSouthMP3.Size = new System.Drawing.Size(576, 635);
             this.TabpageV_hiSouthMP3.TabIndex = 9;
             this.TabpageV_hiSouthMP3.Text = "Position 3";
             this.TabpageV_hiSouthMP3.UseVisualStyleBackColor = true;
@@ -347,8 +356,9 @@
             chartArea3.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
             chartArea3.BackSecondaryColor = System.Drawing.Color.MidnightBlue;
             chartArea3.BorderColor = System.Drawing.Color.Transparent;
-            chartArea3.Name = "ChartAreaPosition1";
+            chartArea3.Name = "ChartAreaSouthPosition3";
             this.ChartHallInSouthMeasurementPosition3.ChartAreas.Add(chartArea3);
+            this.ChartHallInSouthMeasurementPosition3.DataSource = this.BindingSourceHallInSouthVoltage;
             this.ChartHallInSouthMeasurementPosition3.Dock = System.Windows.Forms.DockStyle.Fill;
             legend3.Enabled = false;
             legend3.Name = "Legend1";
@@ -356,27 +366,25 @@
             this.ChartHallInSouthMeasurementPosition3.Location = new System.Drawing.Point(3, 3);
             this.ChartHallInSouthMeasurementPosition3.Name = "ChartHallInSouthMeasurementPosition3";
             series3.BorderWidth = 2;
-            series3.ChartArea = "ChartAreaPosition1";
+            series3.ChartArea = "ChartAreaSouthPosition3";
             series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series3.Color = System.Drawing.Color.Linen;
+            series3.Color = System.Drawing.Color.Red;
             series3.Legend = "Legend1";
             series3.MarkerColor = System.Drawing.Color.OrangeRed;
             series3.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-            series3.Name = "SeriesMeasuredP1";
-            series3.XValueMember = "Source";
-            series3.YValueMembers = "Reading";
+            series3.Name = "Position 3";
             this.ChartHallInSouthMeasurementPosition3.Series.Add(series3);
-            this.ChartHallInSouthMeasurementPosition3.Size = new System.Drawing.Size(570, 637);
+            this.ChartHallInSouthMeasurementPosition3.Size = new System.Drawing.Size(570, 629);
             this.ChartHallInSouthMeasurementPosition3.TabIndex = 3;
             // 
             // TabpageV_hiSouthMP4
             // 
             this.TabpageV_hiSouthMP4.Controls.Add(this.ChartHallInSouthMeasurementPosition4);
             this.TabpageV_hiSouthMP4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageV_hiSouthMP4.Location = new System.Drawing.Point(4, 32);
+            this.TabpageV_hiSouthMP4.Location = new System.Drawing.Point(4, 37);
             this.TabpageV_hiSouthMP4.Name = "TabpageV_hiSouthMP4";
             this.TabpageV_hiSouthMP4.Padding = new System.Windows.Forms.Padding(3);
-            this.TabpageV_hiSouthMP4.Size = new System.Drawing.Size(576, 643);
+            this.TabpageV_hiSouthMP4.Size = new System.Drawing.Size(576, 635);
             this.TabpageV_hiSouthMP4.TabIndex = 10;
             this.TabpageV_hiSouthMP4.Text = "Position 4";
             this.TabpageV_hiSouthMP4.UseVisualStyleBackColor = true;
@@ -398,8 +406,9 @@
             chartArea4.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
             chartArea4.BackSecondaryColor = System.Drawing.Color.MidnightBlue;
             chartArea4.BorderColor = System.Drawing.Color.Transparent;
-            chartArea4.Name = "ChartAreaPosition1";
+            chartArea4.Name = "ChartAreaSouthPosition4";
             this.ChartHallInSouthMeasurementPosition4.ChartAreas.Add(chartArea4);
+            this.ChartHallInSouthMeasurementPosition4.DataSource = this.BindingSourceHallInSouthVoltage;
             this.ChartHallInSouthMeasurementPosition4.Dock = System.Windows.Forms.DockStyle.Fill;
             legend4.Enabled = false;
             legend4.Name = "Legend1";
@@ -407,17 +416,15 @@
             this.ChartHallInSouthMeasurementPosition4.Location = new System.Drawing.Point(3, 3);
             this.ChartHallInSouthMeasurementPosition4.Name = "ChartHallInSouthMeasurementPosition4";
             series4.BorderWidth = 2;
-            series4.ChartArea = "ChartAreaPosition1";
+            series4.ChartArea = "ChartAreaSouthPosition4";
             series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series4.Color = System.Drawing.Color.Linen;
+            series4.Color = System.Drawing.Color.Red;
             series4.Legend = "Legend1";
             series4.MarkerColor = System.Drawing.Color.OrangeRed;
             series4.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-            series4.Name = "SeriesMeasuredP1";
-            series4.XValueMember = "Source";
-            series4.YValueMembers = "Reading";
+            series4.Name = "Position 4";
             this.ChartHallInSouthMeasurementPosition4.Series.Add(series4);
-            this.ChartHallInSouthMeasurementPosition4.Size = new System.Drawing.Size(570, 637);
+            this.ChartHallInSouthMeasurementPosition4.Size = new System.Drawing.Size(570, 629);
             this.ChartHallInSouthMeasurementPosition4.TabIndex = 3;
             // 
             // TabpageHallInNorthTotalChart
@@ -475,8 +482,9 @@
             chartArea5.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
             chartArea5.BackSecondaryColor = System.Drawing.Color.MidnightBlue;
             chartArea5.BorderColor = System.Drawing.Color.Transparent;
-            chartArea5.Name = "ChartAreaPosition1";
+            chartArea5.Name = "ChartAreaNorthPosition1";
             this.ChartHallInNorthMeasurementPosition1.ChartAreas.Add(chartArea5);
+            this.ChartHallInNorthMeasurementPosition1.DataSource = this.BindingSourceHallInNorthVoltage;
             this.ChartHallInNorthMeasurementPosition1.Dock = System.Windows.Forms.DockStyle.Fill;
             legend5.Enabled = false;
             legend5.Name = "Legend1";
@@ -484,15 +492,13 @@
             this.ChartHallInNorthMeasurementPosition1.Location = new System.Drawing.Point(0, 0);
             this.ChartHallInNorthMeasurementPosition1.Name = "ChartHallInNorthMeasurementPosition1";
             series5.BorderWidth = 2;
-            series5.ChartArea = "ChartAreaPosition1";
+            series5.ChartArea = "ChartAreaNorthPosition1";
             series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series5.Color = System.Drawing.Color.Linen;
+            series5.Color = System.Drawing.Color.Lime;
             series5.Legend = "Legend1";
-            series5.MarkerColor = System.Drawing.Color.OrangeRed;
+            series5.MarkerColor = System.Drawing.Color.DarkGreen;
             series5.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-            series5.Name = "SeriesMeasuredP1";
-            series5.XValueMember = "Source";
-            series5.YValueMembers = "Reading";
+            series5.Name = "Position 1";
             this.ChartHallInNorthMeasurementPosition1.Series.Add(series5);
             this.ChartHallInNorthMeasurementPosition1.Size = new System.Drawing.Size(576, 635);
             this.ChartHallInNorthMeasurementPosition1.TabIndex = 3;
@@ -504,7 +510,7 @@
             this.TabpageV_hiNorthMP2.Location = new System.Drawing.Point(4, 37);
             this.TabpageV_hiNorthMP2.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageV_hiNorthMP2.Name = "TabpageV_hiNorthMP2";
-            this.TabpageV_hiNorthMP2.Size = new System.Drawing.Size(576, 629);
+            this.TabpageV_hiNorthMP2.Size = new System.Drawing.Size(576, 635);
             this.TabpageV_hiNorthMP2.TabIndex = 8;
             this.TabpageV_hiNorthMP2.Text = "Position 2";
             this.TabpageV_hiNorthMP2.UseVisualStyleBackColor = true;
@@ -526,8 +532,9 @@
             chartArea6.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
             chartArea6.BackSecondaryColor = System.Drawing.Color.MidnightBlue;
             chartArea6.BorderColor = System.Drawing.Color.Transparent;
-            chartArea6.Name = "ChartAreaPosition1";
+            chartArea6.Name = "ChartAreaNorthPosition2";
             this.ChartHallInNorthMeasurementPosition2.ChartAreas.Add(chartArea6);
+            this.ChartHallInNorthMeasurementPosition2.DataSource = this.BindingSourceHallInNorthVoltage;
             this.ChartHallInNorthMeasurementPosition2.Dock = System.Windows.Forms.DockStyle.Fill;
             legend6.Enabled = false;
             legend6.Name = "Legend1";
@@ -535,17 +542,15 @@
             this.ChartHallInNorthMeasurementPosition2.Location = new System.Drawing.Point(0, 0);
             this.ChartHallInNorthMeasurementPosition2.Name = "ChartHallInNorthMeasurementPosition2";
             series6.BorderWidth = 2;
-            series6.ChartArea = "ChartAreaPosition1";
+            series6.ChartArea = "ChartAreaNorthPosition2";
             series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series6.Color = System.Drawing.Color.Linen;
+            series6.Color = System.Drawing.Color.Lime;
             series6.Legend = "Legend1";
-            series6.MarkerColor = System.Drawing.Color.OrangeRed;
+            series6.MarkerColor = System.Drawing.Color.DarkGreen;
             series6.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-            series6.Name = "SeriesMeasuredP1";
-            series6.XValueMember = "Source";
-            series6.YValueMembers = "Reading";
+            series6.Name = "Position 2";
             this.ChartHallInNorthMeasurementPosition2.Series.Add(series6);
-            this.ChartHallInNorthMeasurementPosition2.Size = new System.Drawing.Size(576, 629);
+            this.ChartHallInNorthMeasurementPosition2.Size = new System.Drawing.Size(576, 635);
             this.ChartHallInNorthMeasurementPosition2.TabIndex = 3;
             // 
             // TabpageV_hiNorthMP3
@@ -555,7 +560,7 @@
             this.TabpageV_hiNorthMP3.Location = new System.Drawing.Point(4, 37);
             this.TabpageV_hiNorthMP3.Name = "TabpageV_hiNorthMP3";
             this.TabpageV_hiNorthMP3.Padding = new System.Windows.Forms.Padding(3);
-            this.TabpageV_hiNorthMP3.Size = new System.Drawing.Size(576, 629);
+            this.TabpageV_hiNorthMP3.Size = new System.Drawing.Size(576, 635);
             this.TabpageV_hiNorthMP3.TabIndex = 9;
             this.TabpageV_hiNorthMP3.Text = "Position 3";
             this.TabpageV_hiNorthMP3.UseVisualStyleBackColor = true;
@@ -577,8 +582,9 @@
             chartArea7.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
             chartArea7.BackSecondaryColor = System.Drawing.Color.MidnightBlue;
             chartArea7.BorderColor = System.Drawing.Color.Transparent;
-            chartArea7.Name = "ChartAreaPosition1";
+            chartArea7.Name = "ChartAreaNorthPosition3";
             this.ChartHallInNorthMeasurementPosition3.ChartAreas.Add(chartArea7);
+            this.ChartHallInNorthMeasurementPosition3.DataSource = this.BindingSourceHallInNorthVoltage;
             this.ChartHallInNorthMeasurementPosition3.Dock = System.Windows.Forms.DockStyle.Fill;
             legend7.Enabled = false;
             legend7.Name = "Legend1";
@@ -586,17 +592,15 @@
             this.ChartHallInNorthMeasurementPosition3.Location = new System.Drawing.Point(3, 3);
             this.ChartHallInNorthMeasurementPosition3.Name = "ChartHallInNorthMeasurementPosition3";
             series7.BorderWidth = 2;
-            series7.ChartArea = "ChartAreaPosition1";
+            series7.ChartArea = "ChartAreaNorthPosition3";
             series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series7.Color = System.Drawing.Color.Linen;
+            series7.Color = System.Drawing.Color.Lime;
             series7.Legend = "Legend1";
-            series7.MarkerColor = System.Drawing.Color.OrangeRed;
+            series7.MarkerColor = System.Drawing.Color.DarkGreen;
             series7.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-            series7.Name = "SeriesMeasuredP1";
-            series7.XValueMember = "Source";
-            series7.YValueMembers = "Reading";
+            series7.Name = "Position 3";
             this.ChartHallInNorthMeasurementPosition3.Series.Add(series7);
-            this.ChartHallInNorthMeasurementPosition3.Size = new System.Drawing.Size(570, 623);
+            this.ChartHallInNorthMeasurementPosition3.Size = new System.Drawing.Size(570, 629);
             this.ChartHallInNorthMeasurementPosition3.TabIndex = 3;
             // 
             // TabpageV_hiNorthMP4
@@ -606,7 +610,7 @@
             this.TabpageV_hiNorthMP4.Location = new System.Drawing.Point(4, 37);
             this.TabpageV_hiNorthMP4.Name = "TabpageV_hiNorthMP4";
             this.TabpageV_hiNorthMP4.Padding = new System.Windows.Forms.Padding(3);
-            this.TabpageV_hiNorthMP4.Size = new System.Drawing.Size(576, 629);
+            this.TabpageV_hiNorthMP4.Size = new System.Drawing.Size(576, 635);
             this.TabpageV_hiNorthMP4.TabIndex = 10;
             this.TabpageV_hiNorthMP4.Text = "Position 4";
             this.TabpageV_hiNorthMP4.UseVisualStyleBackColor = true;
@@ -628,8 +632,9 @@
             chartArea8.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
             chartArea8.BackSecondaryColor = System.Drawing.Color.MidnightBlue;
             chartArea8.BorderColor = System.Drawing.Color.Transparent;
-            chartArea8.Name = "ChartAreaPosition1";
+            chartArea8.Name = "ChartAreaNorthPosition4";
             this.ChartHallInNorthMeasurementPosition4.ChartAreas.Add(chartArea8);
+            this.ChartHallInNorthMeasurementPosition4.DataSource = this.BindingSourceHallInNorthVoltage;
             this.ChartHallInNorthMeasurementPosition4.Dock = System.Windows.Forms.DockStyle.Fill;
             legend8.Enabled = false;
             legend8.Name = "Legend1";
@@ -637,17 +642,15 @@
             this.ChartHallInNorthMeasurementPosition4.Location = new System.Drawing.Point(3, 3);
             this.ChartHallInNorthMeasurementPosition4.Name = "ChartHallInNorthMeasurementPosition4";
             series8.BorderWidth = 2;
-            series8.ChartArea = "ChartAreaPosition1";
+            series8.ChartArea = "ChartAreaNorthPosition4";
             series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series8.Color = System.Drawing.Color.Linen;
+            series8.Color = System.Drawing.Color.Lime;
             series8.Legend = "Legend1";
-            series8.MarkerColor = System.Drawing.Color.OrangeRed;
+            series8.MarkerColor = System.Drawing.Color.DarkGreen;
             series8.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
-            series8.Name = "SeriesMeasuredP1";
-            series8.XValueMember = "Source";
-            series8.YValueMembers = "Reading";
+            series8.Name = "Position 4";
             this.ChartHallInNorthMeasurementPosition4.Series.Add(series8);
-            this.ChartHallInNorthMeasurementPosition4.Size = new System.Drawing.Size(570, 623);
+            this.ChartHallInNorthMeasurementPosition4.Size = new System.Drawing.Size(570, 629);
             this.ChartHallInNorthMeasurementPosition4.TabIndex = 3;
             // 
             // PanelHallDataGridView
@@ -690,6 +693,7 @@
             this.DatagridviewHallOutVoltageTotalMeasured.AllowUserToDeleteRows = false;
             this.DatagridviewHallOutVoltageTotalMeasured.AllowUserToResizeColumns = false;
             this.DatagridviewHallOutVoltageTotalMeasured.AllowUserToResizeRows = false;
+            this.DatagridviewHallOutVoltageTotalMeasured.AutoGenerateColumns = false;
             this.DatagridviewHallOutVoltageTotalMeasured.BackgroundColor = System.Drawing.Color.DarkGray;
             this.DatagridviewHallOutVoltageTotalMeasured.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.DatagridviewHallOutVoltageTotalMeasured.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
@@ -711,6 +715,7 @@
             this.Measured_HOut3,
             this.Source_HOut4,
             this.Measured_HOut4});
+            this.DatagridviewHallOutVoltageTotalMeasured.DataSource = this.BindingSourceHallOutVoltage;
             this.DatagridviewHallOutVoltageTotalMeasured.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DatagridviewHallOutVoltageTotalMeasured.GridColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.DatagridviewHallOutVoltageTotalMeasured.Location = new System.Drawing.Point(0, 0);
@@ -821,10 +826,10 @@
             // 
             this.TabpageHallInMeasured.Controls.Add(this.TabcontrolHallInTotalMeasured);
             this.TabpageHallInMeasured.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TabpageHallInMeasured.Location = new System.Drawing.Point(4, 46);
+            this.TabpageHallInMeasured.Location = new System.Drawing.Point(4, 40);
             this.TabpageHallInMeasured.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageHallInMeasured.Name = "TabpageHallInMeasured";
-            this.TabpageHallInMeasured.Size = new System.Drawing.Size(592, 670);
+            this.TabpageHallInMeasured.Size = new System.Drawing.Size(592, 676);
             this.TabpageHallInMeasured.TabIndex = 8;
             this.TabpageHallInMeasured.Text = "Hall In Voltage";
             this.TabpageHallInMeasured.UseVisualStyleBackColor = true;
@@ -838,7 +843,7 @@
             this.TabcontrolHallInTotalMeasured.Location = new System.Drawing.Point(0, 0);
             this.TabcontrolHallInTotalMeasured.Name = "TabcontrolHallInTotalMeasured";
             this.TabcontrolHallInTotalMeasured.SelectedIndex = 0;
-            this.TabcontrolHallInTotalMeasured.Size = new System.Drawing.Size(592, 670);
+            this.TabcontrolHallInTotalMeasured.Size = new System.Drawing.Size(592, 676);
             this.TabcontrolHallInTotalMeasured.TabIndex = 3;
             // 
             // TabpageHallInSouthVoltage
@@ -848,7 +853,7 @@
             this.TabpageHallInSouthVoltage.Location = new System.Drawing.Point(4, 37);
             this.TabpageHallInSouthVoltage.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageHallInSouthVoltage.Name = "TabpageHallInSouthVoltage";
-            this.TabpageHallInSouthVoltage.Size = new System.Drawing.Size(584, 629);
+            this.TabpageHallInSouthVoltage.Size = new System.Drawing.Size(584, 635);
             this.TabpageHallInSouthVoltage.TabIndex = 7;
             this.TabpageHallInSouthVoltage.Text = "Hall In Voltage (South)";
             this.TabpageHallInSouthVoltage.UseVisualStyleBackColor = true;
@@ -860,6 +865,7 @@
             this.DatagridviewHallSouthVoltageTotalMeasured.AllowUserToDeleteRows = false;
             this.DatagridviewHallSouthVoltageTotalMeasured.AllowUserToResizeColumns = false;
             this.DatagridviewHallSouthVoltageTotalMeasured.AllowUserToResizeRows = false;
+            this.DatagridviewHallSouthVoltageTotalMeasured.AutoGenerateColumns = false;
             this.DatagridviewHallSouthVoltageTotalMeasured.BackgroundColor = System.Drawing.Color.DarkGray;
             this.DatagridviewHallSouthVoltageTotalMeasured.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.DatagridviewHallSouthVoltageTotalMeasured.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
@@ -881,6 +887,7 @@
             this.Measured_HInS3,
             this.Source_HInS4,
             this.Measured_HInS4});
+            this.DatagridviewHallSouthVoltageTotalMeasured.DataSource = this.BindingSourceHallInSouthVoltage;
             this.DatagridviewHallSouthVoltageTotalMeasured.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DatagridviewHallSouthVoltageTotalMeasured.GridColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.DatagridviewHallSouthVoltageTotalMeasured.Location = new System.Drawing.Point(0, 0);
@@ -898,7 +905,7 @@
             this.DatagridviewHallSouthVoltageTotalMeasured.RowHeadersVisible = false;
             this.DatagridviewHallSouthVoltageTotalMeasured.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             this.DatagridviewHallSouthVoltageTotalMeasured.RowTemplate.Height = 24;
-            this.DatagridviewHallSouthVoltageTotalMeasured.Size = new System.Drawing.Size(584, 629);
+            this.DatagridviewHallSouthVoltageTotalMeasured.Size = new System.Drawing.Size(584, 635);
             this.DatagridviewHallSouthVoltageTotalMeasured.TabIndex = 3;
             // 
             // Source_HInS1
@@ -994,7 +1001,7 @@
             this.TabpageHallInNorthVoltage.Location = new System.Drawing.Point(4, 37);
             this.TabpageHallInNorthVoltage.Margin = new System.Windows.Forms.Padding(0);
             this.TabpageHallInNorthVoltage.Name = "TabpageHallInNorthVoltage";
-            this.TabpageHallInNorthVoltage.Size = new System.Drawing.Size(584, 629);
+            this.TabpageHallInNorthVoltage.Size = new System.Drawing.Size(584, 635);
             this.TabpageHallInNorthVoltage.TabIndex = 8;
             this.TabpageHallInNorthVoltage.Text = "Hall In Voltage (North)";
             this.TabpageHallInNorthVoltage.UseVisualStyleBackColor = true;
@@ -1006,6 +1013,7 @@
             this.DatagridviewHallNorthVoltageTotalMeasured.AllowUserToDeleteRows = false;
             this.DatagridviewHallNorthVoltageTotalMeasured.AllowUserToResizeColumns = false;
             this.DatagridviewHallNorthVoltageTotalMeasured.AllowUserToResizeRows = false;
+            this.DatagridviewHallNorthVoltageTotalMeasured.AutoGenerateColumns = false;
             this.DatagridviewHallNorthVoltageTotalMeasured.BackgroundColor = System.Drawing.Color.DarkGray;
             this.DatagridviewHallNorthVoltageTotalMeasured.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.DatagridviewHallNorthVoltageTotalMeasured.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
@@ -1027,6 +1035,7 @@
             this.Measured_HInN3,
             this.Source_HInN4,
             this.Measured_HInN4});
+            this.DatagridviewHallNorthVoltageTotalMeasured.DataSource = this.BindingSourceHallInNorthVoltage;
             this.DatagridviewHallNorthVoltageTotalMeasured.Dock = System.Windows.Forms.DockStyle.Fill;
             this.DatagridviewHallNorthVoltageTotalMeasured.GridColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.DatagridviewHallNorthVoltageTotalMeasured.Location = new System.Drawing.Point(0, 0);
@@ -1044,7 +1053,7 @@
             this.DatagridviewHallNorthVoltageTotalMeasured.RowHeadersVisible = false;
             this.DatagridviewHallNorthVoltageTotalMeasured.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders;
             this.DatagridviewHallNorthVoltageTotalMeasured.RowTemplate.Height = 24;
-            this.DatagridviewHallNorthVoltageTotalMeasured.Size = new System.Drawing.Size(584, 629);
+            this.DatagridviewHallNorthVoltageTotalMeasured.Size = new System.Drawing.Size(584, 635);
             this.DatagridviewHallNorthVoltageTotalMeasured.TabIndex = 4;
             // 
             // Source_HInN1
@@ -1170,12 +1179,15 @@
             this.TabcontrolHallTotalMeasured.ResumeLayout(false);
             this.TabpageHallOutMeasured.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DatagridviewHallOutVoltageTotalMeasured)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BindingSourceHallOutVoltage)).EndInit();
             this.TabpageHallInMeasured.ResumeLayout(false);
             this.TabcontrolHallInTotalMeasured.ResumeLayout(false);
             this.TabpageHallInSouthVoltage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DatagridviewHallSouthVoltageTotalMeasured)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BindingSourceHallInSouthVoltage)).EndInit();
             this.TabpageHallInNorthVoltage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.DatagridviewHallNorthVoltageTotalMeasured)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BindingSourceHallInNorthVoltage)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1237,5 +1249,8 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart ChartHallInNorthMeasurementPosition3;
         private System.Windows.Forms.TabPage TabpageV_hiNorthMP4;
         private System.Windows.Forms.DataVisualization.Charting.Chart ChartHallInNorthMeasurementPosition4;
+        private System.Windows.Forms.BindingSource BindingSourceHallOutVoltage;
+        private System.Windows.Forms.BindingSource BindingSourceHallInSouthVoltage;
+        private System.Windows.Forms.BindingSource BindingSourceHallInNorthVoltage;
     }
 }

@@ -8,10 +8,14 @@ public class CollectAndCalculateHallMeasured
     public static CollectAndCalculateHallMeasured _instance;
     private static readonly object _lock = new object();
 
-    private Dictionary<int, List<(double Source, double Reading)>> _hallMeasurementsWithoutField = new Dictionary<int, List<(double, double)>>();
-    private Dictionary<int, List<(double Source, double Reading)>> _hallMeasurementsWithNorthField = new Dictionary<int, List<(double, double)>>();
-    private Dictionary<int, List<(double Source, double Reading)>> _hallMeasurementsWithSouthField = new Dictionary<int, List<(double, double)>>();
-    
+    public Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>> allHallMeasurements =
+        new Dictionary<HallMeasurementState, Dictionary<int, List<(double, double)>>>()
+        {
+            { HallMeasurementState.NoMagneticField, new Dictionary<int, List<(double, double)>>() },
+            { HallMeasurementState.InwardOrNorthMagneticField, new Dictionary<int, List<(double, double)>>() },
+            { HallMeasurementState.OutwardOrSouthMagneticField, new Dictionary<int, List<(double, double)>>() }
+        };
+
     public event EventHandler DataUpdated;
     public event EventHandler CalculationCompleted;
 
@@ -41,71 +45,58 @@ public class CollectAndCalculateHallMeasured
 
         if (dataPairs != null)
         {
-            Dictionary<int, List<(double Source, double Reading)>> targetDictionary = null;
+            HallMeasurementState state;
 
             switch (measurementType.ToLower())
             {
-                case "withoutfield":
-                    targetDictionary = _hallMeasurementsWithoutField;
+                case "nomagneticfield":
+                    state = HallMeasurementState.NoMagneticField;
                     break;
-                case "northfield":
-                    targetDictionary = _hallMeasurementsWithNorthField;
+                case "inwardornorthmagneticfield":
+                    state = HallMeasurementState.InwardOrNorthMagneticField;
                     break;
-                case "southfield":
-                    targetDictionary = _hallMeasurementsWithSouthField;
+                case "outwardorsouthmagneticfield":
+                    state = HallMeasurementState.OutwardOrSouthMagneticField;
                     break;
                 default:
                     Debug.WriteLine($"[WARNING] Unknown Measurement Type: {measurementType}");
                     return;
             }
 
-            if (targetDictionary != null)
+            if (!allHallMeasurements[state].ContainsKey(tunerPosition))
             {
-                if (!targetDictionary.ContainsKey(tunerPosition))
-                {
-                    targetDictionary[tunerPosition] = new List<(double Source, double Reading)>();
-                }
-                targetDictionary[tunerPosition].AddRange(dataPairs);
-                DataUpdated?.Invoke(this, EventArgs.Empty);
+                allHallMeasurements[state][tunerPosition] = new List<(double Source, double Reading)>();
             }
+            allHallMeasurements[state][tunerPosition].AddRange(dataPairs);
+            Debug.WriteLine($"[DEBUG] StoreMeasurementData - Data stored for State: {state}, Tuner: {tunerPosition}, Total Data Points: {allHallMeasurements[state].Sum(kvp => kvp.Value.Count)}");
+            DataUpdated?.Invoke(this, EventArgs.Empty);
         }
     }
 
-    public Dictionary<int, List<(double Source, double Reading)>> GetHallMeasurementsWithoutField()
+    public Dictionary<int, List<(double Source, double Reading)>> GetHallMeasurements(HallMeasurementState state)
     {
-        return _hallMeasurementsWithoutField.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
+        Debug.WriteLine($"[DEBUG] GetHallMeasurements - Retrieving data for State: {state}");
+        return allHallMeasurements[state].ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
     }
 
-    public Dictionary<int, List<(double Source, double Reading)>> GetHallMeasurementsWithNorthField()
+    public Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>> GetAllHallMeasurements()
     {
-        return _hallMeasurementsWithNorthField.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
-    }
-
-    public Dictionary<int, List<(double Source, double Reading)>> GetHallMeasurementsWithSouthField()
-    {
-        return _hallMeasurementsWithSouthField.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
-    }
-
-    public Dictionary<int, List<(double Source, double Reading)>> GetAllHallMeasurementsByType(string measurementType)
-    {
-        switch (measurementType.ToLower())
-        {
-            case "withoutfield":
-                return _hallMeasurementsWithoutField.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
-            case "northfield":
-                return _hallMeasurementsWithNorthField.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
-            case "southfield":
-                return _hallMeasurementsWithSouthField.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
-            default:
-                Debug.WriteLine($"[WARNING] Unknown Measurement Type: {measurementType}");
-                return new Dictionary<int, List<(double Source, double Reading)>>();
-        }
+        Debug.WriteLine("[DEBUG] GetAllHallMeasurements - Retrieving all Hall measurement data.");
+        return allHallMeasurements.ToDictionary(
+            kvp => kvp.Key,
+            kvp => kvp.Value.ToDictionary(
+                innerKvp => innerKvp.Key,
+                innerKvp => innerKvp.Value.ToList()
+            )
+        );
     }
 
     public void ClearAllData()
     {
-        _hallMeasurementsWithoutField.Clear();
-        _hallMeasurementsWithNorthField.Clear();
-        _hallMeasurementsWithSouthField.Clear();
+        Debug.WriteLine("[DEBUG] ClearAllData - Clearing all stored Hall measurement data.");
+        foreach (var state in allHallMeasurements.Keys)
+        {
+            allHallMeasurements[state].Clear();
+        }
     }
 }

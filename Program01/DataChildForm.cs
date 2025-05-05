@@ -31,30 +31,27 @@ namespace Program01
 
             if (GlobalSettings.Instance.SourceModeUI == "Voltage" && GlobalSettings.Instance.MeasureModeUI == "Voltage")
             {
-                ChartAreas.AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (Source) [{GlobalSettings.Instance.StepUnitUI}]";
-                ChartAreas.AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (Source) [{GlobalSettings.Instance.StepUnitUI}]";
+                ChartAreas.AxisY.Title = $"{GlobalSettings.Instance.SourceModeUI} (Source) [{GlobalSettings.Instance.StepUnitUI}]";
+                ChartAreas.AxisX.Title = $"{GlobalSettings.Instance.MeasureModeUI} (Source) [{GlobalSettings.Instance.StepUnitUI}]";
             }
             else if (GlobalSettings.Instance.SourceModeUI == "Voltage" && GlobalSettings.Instance.MeasureModeUI == "Current")
             {
-                ChartAreas.AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (Source) [V]";
-                ChartAreas.AxisY.Title = $"Current (Measure) [{GlobalSettings.Instance.SourceLimitLevelUnitUI}]";
+                ChartAreas.AxisY.Title = $"{GlobalSettings.Instance.SourceModeUI} (Source) [V]";
+                ChartAreas.AxisX.Title = $"Current (Measure) [{GlobalSettings.Instance.SourceLimitLevelUnitUI}]";
             }
             else if (GlobalSettings.Instance.SourceModeUI == "Current" && GlobalSettings.Instance.MeasureModeUI == "Voltage")
             {
-                ChartAreas.AxisX.Title = $"Current (Source) [{GlobalSettings.Instance.StepUnitUI}]";
-                ChartAreas.AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (Measure) [V]";
+                ChartAreas.AxisY.Title = $"Current (Source) [{GlobalSettings.Instance.StepUnitUI}]";
+                ChartAreas.AxisX.Title = $"{GlobalSettings.Instance.MeasureModeUI} (Measure) [V]";
             }
             else if (GlobalSettings.Instance.SourceModeUI == "Current" && GlobalSettings.Instance.MeasureModeUI == "Current")
             {
-                ChartAreas.AxisX.Title = $"Current (Source) [{GlobalSettings.Instance.StepUnitUI}]";
-                ChartAreas.AxisY.Title = $"Current (Measure) [{GlobalSettings.Instance.StepUnitUI}]";
+                ChartAreas.AxisY.Title = $"Current (Source) [{GlobalSettings.Instance.StepUnitUI}]";
+                ChartAreas.AxisX.Title = $"Current (Measure) [{GlobalSettings.Instance.StepUnitUI}]";
             }
 
-            ChartAreas.AxisX.LabelStyle.Angle = 90;
-            ChartAreas.AxisY.LabelStyle.Angle = 0;
             ChartAreas.AxisX.IsLabelAutoFit = false;
             ChartAreas.AxisY.IsLabelAutoFit = false;
-
             ChartAreas.AxisX.IntervalAutoMode = IntervalAutoMode.FixedCount;
             ChartAreas.AxisY.IntervalAutoMode = IntervalAutoMode.FixedCount;
 
@@ -63,8 +60,8 @@ namespace Program01
                 ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i], YData[i]);
             }
 
-            ChartAreas.AxisX.LabelStyle.Format = "0.#####";
-            ChartAreas.AxisY.LabelStyle.Format = "0.#####";
+            ChartAreas.AxisX.LabelStyle.Format = "N3";
+            ChartAreas.AxisY.LabelStyle.Format = "N4";
             ChartTunerTesting.Invalidate();
 
         }
@@ -77,11 +74,11 @@ namespace Program01
                 return;
             }
 
-            TextboxMaxMeasureValue.Text = MaxMeasure.ToString("0.######");
-            TextboxMinMeasureValue.Text = MinMeasure.ToString("0.######");
-            TextboxMaxSourceValue.Text = MaxSource.ToString("0.######");
-            TextboxMinSourceValue.Text = MinSource.ToString("0.######");
-            TextboxSlopeValue.Text = Slope.ToString("0.######");
+            TextboxMaxMeasureValue.Text = MaxMeasure.ToString("N6");
+            TextboxMinMeasureValue.Text = MinMeasure.ToString("N6");
+            TextboxMaxSourceValue.Text = MaxSource.ToString("N6");
+            TextboxMinSourceValue.Text = MinSource.ToString("N6");
+            TextboxSlopeValue.Text = Slope.ToString("N6");
 
             if (GlobalSettings.Instance.SourceModeUI == "Voltage" && GlobalSettings.Instance.MeasureModeUI == "Voltage")
             {

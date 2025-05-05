@@ -723,7 +723,7 @@
             this.LabelToggleSwitchHall.Name = "LabelToggleSwitchHall";
             this.LabelToggleSwitchHall.Size = new System.Drawing.Size(94, 23);
             this.LabelToggleSwitchHall.TabIndex = 45;
-            this.LabelToggleSwitchHall.Text = "Hall effect";
+            this.LabelToggleSwitchHall.Text = "Hall Effect";
             // 
             // LabelToggleSwitchMeasurementMode
             // 
@@ -807,7 +807,7 @@
             this.IconbuttonErrorCheck.Name = "IconbuttonErrorCheck";
             this.IconbuttonErrorCheck.Size = new System.Drawing.Size(120, 40);
             this.IconbuttonErrorCheck.TabIndex = 47;
-            this.IconbuttonErrorCheck.Text = "ERROR ?";
+            this.IconbuttonErrorCheck.Text = "ERROR";
             this.IconbuttonErrorCheck.UseVisualStyleBackColor = false;
             this.IconbuttonErrorCheck.Click += new System.EventHandler(this.IconbuttonErrorCheck_Click);
             // 
@@ -816,9 +816,9 @@
             this.IconbuttonRunMeasurement.BackColor = System.Drawing.Color.Snow;
             this.IconbuttonRunMeasurement.FlatAppearance.BorderColor = System.Drawing.Color.White;
             this.IconbuttonRunMeasurement.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IconbuttonRunMeasurement.IconChar = FontAwesome.Sharp.IconChar.Running;
-            this.IconbuttonRunMeasurement.IconColor = System.Drawing.Color.Black;
-            this.IconbuttonRunMeasurement.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.IconbuttonRunMeasurement.IconChar = FontAwesome.Sharp.IconChar.None;
+            this.IconbuttonRunMeasurement.IconColor = System.Drawing.Color.Transparent;
+            this.IconbuttonRunMeasurement.IconFont = FontAwesome.Sharp.IconFont.Regular;
             this.IconbuttonRunMeasurement.IconSize = 36;
             this.IconbuttonRunMeasurement.Location = new System.Drawing.Point(1060, 750);
             this.IconbuttonRunMeasurement.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -826,7 +826,6 @@
             this.IconbuttonRunMeasurement.Size = new System.Drawing.Size(120, 40);
             this.IconbuttonRunMeasurement.TabIndex = 30;
             this.IconbuttonRunMeasurement.Text = "RUN";
-            this.IconbuttonRunMeasurement.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.IconbuttonRunMeasurement.UseVisualStyleBackColor = false;
             this.IconbuttonRunMeasurement.Click += new System.EventHandler(this.IconbuttonRunMeasurement_Click);
             // 
@@ -843,7 +842,7 @@
             this.IconbuttonClearSettings.Name = "IconbuttonClearSettings";
             this.IconbuttonClearSettings.Size = new System.Drawing.Size(120, 40);
             this.IconbuttonClearSettings.TabIndex = 29;
-            this.IconbuttonClearSettings.Text = "CLEAR";
+            this.IconbuttonClearSettings.Text = "RESET";
             this.IconbuttonClearSettings.UseVisualStyleBackColor = false;
             this.IconbuttonClearSettings.Click += new System.EventHandler(this.IconbuttonClearSettings_Click);
             // 

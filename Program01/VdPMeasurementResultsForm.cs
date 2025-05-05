@@ -38,24 +38,34 @@ namespace Program01
             RichTextboxResB.Text = "RB :";
             RichTextboxAvgRes.Text = "RAverage :";
             RichTextboxSheetRes.Text = "RSheet :";
-            RichTextboxResistivity.Text = "Resistivity (ρ) :";
-            RichTextboxConductivity.Text = "Conductivity (σ) :";
 
-            RichTextboxResMP1N.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            RichTextboxResMP1P.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            RichTextboxResMP2N.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            RichTextboxResMP2P.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            RichTextboxResMP3N.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            RichTextboxResMP3P.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            RichTextboxResMP4N.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            RichTextboxResMP4P.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            RichTextboxResMP1N.Location = new Point(120, 20);
+            RichTextboxResMP1P.Location = new Point(120, 70);
+            RichTextboxResMP2N.Location = new Point(120, 120);
+            RichTextboxResMP2P.Location = new Point(120, 170);
+            RichTextboxResMP3N.Location = new Point(120, 220);
+            RichTextboxResMP3P.Location = new Point(120, 270);
+            RichTextboxResMP4N.Location = new Point(120, 320);
+            RichTextboxResMP4P.Location = new Point(120, 370);
 
-            RichTextboxResA.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            RichTextboxResB.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point); ;
-            RichTextboxAvgRes.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            RichTextboxSheetRes.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            RichTextboxResistivity.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
-            RichTextboxConductivity.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold, GraphicsUnit.Point);
+            RichTextboxResA.Location = new Point(120, 420);
+            RichTextboxResB.Location = new Point(120, 470); ;
+            RichTextboxAvgRes.Location = new Point(103, 520);
+            RichTextboxSheetRes.Location = new Point(100, 620);
+
+            RichTextboxResMP1N.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
+            RichTextboxResMP1P.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
+            RichTextboxResMP2N.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
+            RichTextboxResMP2P.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
+            RichTextboxResMP3N.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
+            RichTextboxResMP3P.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
+            RichTextboxResMP4N.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
+            RichTextboxResMP4P.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
+
+            RichTextboxResA.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
+            RichTextboxResB.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point); ;
+            RichTextboxAvgRes.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
+            RichTextboxSheetRes.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
 
             RichTextboxResMP1N.Select(1, 4);
             RichTextboxResMP1P.Select(1, 4);
@@ -70,31 +80,31 @@ namespace Program01
             RichTextboxAvgRes.Select(1, 7);
             RichTextboxSheetRes.Select(1, 5);
 
-            RichTextboxResMP1N.SelectionCharOffset = -10;
-            RichTextboxResMP1P.SelectionCharOffset = -10;
-            RichTextboxResMP2N.SelectionCharOffset = -10;
-            RichTextboxResMP2P.SelectionCharOffset = -10;
-            RichTextboxResMP3N.SelectionCharOffset = -10;
-            RichTextboxResMP3P.SelectionCharOffset = -10;
-            RichTextboxResMP4N.SelectionCharOffset = -10;
-            RichTextboxResMP4P.SelectionCharOffset = -10;
-            RichTextboxResA.SelectionCharOffset = -10;
-            RichTextboxResB.SelectionCharOffset = -10;
-            RichTextboxAvgRes.SelectionCharOffset = -10;
-            RichTextboxSheetRes.SelectionCharOffset = -10;
+            RichTextboxResMP1N.SelectionCharOffset = -8;
+            RichTextboxResMP1P.SelectionCharOffset = -8;
+            RichTextboxResMP2N.SelectionCharOffset = -8;
+            RichTextboxResMP2P.SelectionCharOffset = -8;
+            RichTextboxResMP3N.SelectionCharOffset = -8;
+            RichTextboxResMP3P.SelectionCharOffset = -8;
+            RichTextboxResMP4N.SelectionCharOffset = -8;
+            RichTextboxResMP4P.SelectionCharOffset = -8;
+            RichTextboxResA.SelectionCharOffset = -8;
+            RichTextboxResB.SelectionCharOffset = -8;
+            RichTextboxAvgRes.SelectionCharOffset = -8;
+            RichTextboxSheetRes.SelectionCharOffset = -8;
 
-            RichTextboxResMP1N.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            RichTextboxResMP1P.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            RichTextboxResMP2N.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            RichTextboxResMP2P.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            RichTextboxResMP3N.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            RichTextboxResMP3P.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            RichTextboxResMP4N.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            RichTextboxResMP4P.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            RichTextboxResA.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            RichTextboxResB.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            RichTextboxAvgRes.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-            RichTextboxSheetRes.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
+            RichTextboxResMP1N.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
+            RichTextboxResMP1P.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
+            RichTextboxResMP2N.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
+            RichTextboxResMP2P.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
+            RichTextboxResMP3N.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
+            RichTextboxResMP3P.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
+            RichTextboxResMP4N.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
+            RichTextboxResMP4P.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
+            RichTextboxResA.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
+            RichTextboxResB.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
+            RichTextboxAvgRes.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
+            RichTextboxSheetRes.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
         }
 
         public void LoadMeasurementResults ()

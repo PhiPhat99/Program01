@@ -3,6 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
+public enum MeasurementMode
+{
+    VanDerPauwMethod,
+    HallEffectMeasurement
+}
+
+public enum HallMeasurementState
+{
+    None,
+    NoMagneticField,
+    InwardOrNorthMagneticField,
+    OutwardOrSouthMagneticField
+}
+
 public class GlobalSettings
 {
     private static GlobalSettings _instance;
@@ -11,7 +25,6 @@ public class GlobalSettings
 
     public CollectAndCalculateVdPMeasured CollectedVdPMeasurements { get; private set; } = CollectAndCalculateVdPMeasured.Instance;
     public CollectAndCalculateHallMeasured CollectedHallMeasurements { get; private set; } = CollectAndCalculateHallMeasured.Instance;
-
 
     public static GlobalSettings Instance
     {
@@ -34,129 +47,30 @@ public class GlobalSettings
 
     public event Action OnSettingsChanged;
 
+    #region Connection Status
     private bool _isSMUConnected;
     public bool IsSMUConnected
     {
         get => _isSMUConnected;
-        set
-        {
-            if (_isSMUConnected != value)
-            {
-                _isSMUConnected = value;
-
-                OnSettingsChanged?.Invoke();
-            }
-        }
+        set => SetProperty(ref _isSMUConnected, value);
     }
 
     private bool _isSSConnected;
     public bool IsSSConnected
-
     {
         get => _isSSConnected;
-        set
-        {
-            if (_isSSConnected != value)
-            {
-                _isSSConnected = value;
-
-                OnSettingsChanged?.Invoke();
-            }
-        }
+        set => SetProperty(ref _isSSConnected, value);
     }
+    #endregion
 
-    private bool _isModes;
-    public bool IsModes
-    {
-        get => _isModes;
-        set
-        {
-            if (_isModes != value)
-            {
-                _isModes = value;
+    #region Measurement Modes
+    public MeasurementMode CurrentMeasurementMode { get; set; } = MeasurementMode.VanDerPauwMethod;
+    public HallMeasurementState CurrentHallState { get; set; } = HallMeasurementState.None;
+    #endregion
 
-                OnSettingsChanged?.Invoke();
-            }
-        }
-    }
-
-    private bool _isHallMode;
-    public bool IsHallMode
-    {
-        get => _isHallMode;
-        set
-        {
-            if (_isHallMode != value)
-            {
-                _isHallMode = value;
-
-                OnSettingsChanged?.Invoke();
-            }
-        }
-    }
-
-    private bool _isHallOutMeasuring;
-    public bool IsHallOutMeasuring
-    {
-        get => _isHallOutMeasuring;
-        set
-        {
-            if (_isHallOutMeasuring != value)
-            {
-                _isHallOutMeasuring = value;
-
-                OnSettingsChanged?.Invoke();
-            }
-        }
-    }
-
-    private bool _isHallInSouthMeasuring;
-    public bool IsHallInSouthMeasuring
-    {
-        get => _isHallOutMeasuring;
-        set
-        {
-            if (_isHallInSouthMeasuring != value)
-            {
-                _isHallInSouthMeasuring = value;
-
-                OnSettingsChanged?.Invoke();
-            }
-        }
-    }
-
-    private bool _isHallInNorthMeasuring;
-    public bool IsHallInNorthMeasuring
-    {
-        get => _isHallInNorthMeasuring;
-        set
-        {
-            if (_isHallInNorthMeasuring != value)
-            {
-                _isHallInNorthMeasuring = value;
-
-                OnSettingsChanged?.Invoke();
-            }
-        }
-    }
-
-    private bool _isVanDerPauwMode;
-    public bool IsVanDerPauwMode
-    {
-        get => _isVanDerPauwMode;
-        set
-        {
-            if (_isVanDerPauwMode != value)
-            {
-                _isVanDerPauwMode = value;
-
-                OnSettingsChanged?.Invoke();
-            }
-        }
-    }
-
+    #region UI Input Values
     private string _rsenseModeUI = "4-Wires";
-    public string RsenseModeUI
+    public string ResistanceSenseModeUI
     {
         get => _rsenseModeUI;
         set => SetProperty(ref _rsenseModeUI, value);
@@ -177,7 +91,7 @@ public class GlobalSettings
     }
 
     private string _sourceLimitTypeUI = "Voltage";
-    public string SourceLimitTypeUI
+    public string SourceLimitModeUI
     {
         get => _sourceLimitTypeUI;
         set => SetProperty(ref _sourceLimitTypeUI, value);
@@ -260,7 +174,7 @@ public class GlobalSettings
         set => SetProperty(ref _thicknessValueUI, value);
     }
 
-    private string _thicknessUnitUI = "m";
+    private string _thicknessUnitUI = "µm";
     public string ThicknessUnitUI
     {
         get => _thicknessUnitUI;
@@ -287,7 +201,9 @@ public class GlobalSettings
         get => _magneticFieldsUnitUI;
         set => SetProperty(ref _magneticFieldsUnitUI, value);
     }
+    #endregion
 
+    #region Data Buffer Values
     public readonly List<List<double[]>> _allMeasuredValues = new List<List<double[]>>();
 
     private readonly List<double> _xDataBuffer = new List<double>();
@@ -326,7 +242,9 @@ public class GlobalSettings
 
         OnSettingsChanged?.Invoke();
     }
+    #endregion
 
+    #region Input Values in Standard Unit
     private double _startStd = 0;
     public double StartValueStd
     {
@@ -375,7 +293,9 @@ public class GlobalSettings
         get => _magneticfieldsStd;
         set => _magneticfieldsStd = value;
     }
+    #endregion
 
+    #region Calculation Values
     public int Repetition { get; set; }
     public Dictionary<int, double> ResistancesByPosition { get; set; }
     public double ResistanceA { get; set; }
@@ -384,13 +304,9 @@ public class GlobalSettings
     public double SheetResistance { get; set; }
     public double Resistivity { get; set; }
     public double Conductivity { get; set; }
+    #endregion
 
-    private GlobalSettings()
-    {
-        _allMeasuredValues = new List<List<double[]>>();
-    }
-
-    public void AddMeasuredValues(List<double[]> values, int position)
+    /*public void AddMeasuredValues(List<double[]> values, int position)
     {
         while (_allMeasuredValues.Count < position)
         {
@@ -398,6 +314,15 @@ public class GlobalSettings
         }
 
         _allMeasuredValues[position - 1] = values;
+    }*/
+
+    private GlobalSettings()
+    {
+        CollectedVdPMeasurements = CollectAndCalculateVdPMeasured.Instance;
+        CollectedHallMeasurements = CollectAndCalculateHallMeasured.Instance;
+        _allMeasuredValues = new List<List<double[]>>();
+        _xDataBuffer = new List<double>();
+        _yDataBuffer = new List<double>();
     }
 
     protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string PropertyName = null)

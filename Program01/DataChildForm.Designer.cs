@@ -58,7 +58,7 @@
             this.LabelMeasureValue.AutoSize = true;
             this.LabelMeasureValue.BackColor = System.Drawing.Color.Transparent;
             this.LabelMeasureValue.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.LabelMeasureValue.Location = new System.Drawing.Point(525, 80);
+            this.LabelMeasureValue.Location = new System.Drawing.Point(535, 80);
             this.LabelMeasureValue.Name = "LabelMeasureValue";
             this.LabelMeasureValue.Size = new System.Drawing.Size(172, 28);
             this.LabelMeasureValue.TabIndex = 6;
@@ -69,7 +69,7 @@
             this.LabelSlope.AutoSize = true;
             this.LabelSlope.BackColor = System.Drawing.Color.Transparent;
             this.LabelSlope.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSlope.Location = new System.Drawing.Point(525, 406);
+            this.LabelSlope.Location = new System.Drawing.Point(535, 406);
             this.LabelSlope.Name = "LabelSlope";
             this.LabelSlope.Size = new System.Drawing.Size(116, 28);
             this.LabelSlope.TabIndex = 8;
@@ -78,7 +78,7 @@
             // TextboxMaxMeasureValue
             // 
             this.TextboxMaxMeasureValue.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxMaxMeasureValue.Location = new System.Drawing.Point(635, 130);
+            this.TextboxMaxMeasureValue.Location = new System.Drawing.Point(645, 130);
             this.TextboxMaxMeasureValue.Multiline = true;
             this.TextboxMaxMeasureValue.Name = "TextboxMaxMeasureValue";
             this.TextboxMaxMeasureValue.ReadOnly = true;
@@ -130,7 +130,7 @@
             series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Diamond;
             series1.Name = "MeasurementData";
             this.ChartTunerTesting.Series.Add(series1);
-            this.ChartTunerTesting.Size = new System.Drawing.Size(520, 550);
+            this.ChartTunerTesting.Size = new System.Drawing.Size(530, 550);
             this.ChartTunerTesting.TabIndex = 11;
             this.ChartTunerTesting.Text = "Tuner Testing";
             // 
@@ -139,7 +139,7 @@
             this.LabelMaxMeasureValue.AutoSize = true;
             this.LabelMaxMeasureValue.BackColor = System.Drawing.Color.Transparent;
             this.LabelMaxMeasureValue.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelMaxMeasureValue.Location = new System.Drawing.Point(525, 133);
+            this.LabelMaxMeasureValue.Location = new System.Drawing.Point(535, 133);
             this.LabelMaxMeasureValue.Name = "LabelMaxMeasureValue";
             this.LabelMaxMeasureValue.Size = new System.Drawing.Size(97, 23);
             this.LabelMaxMeasureValue.TabIndex = 13;
@@ -150,7 +150,7 @@
             this.LabelMaxMeasureUnit.AutoSize = true;
             this.LabelMaxMeasureUnit.BackColor = System.Drawing.Color.Transparent;
             this.LabelMaxMeasureUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelMaxMeasureUnit.Location = new System.Drawing.Point(730, 133);
+            this.LabelMaxMeasureUnit.Location = new System.Drawing.Point(740, 133);
             this.LabelMaxMeasureUnit.Name = "LabelMaxMeasureUnit";
             this.LabelMaxMeasureUnit.Size = new System.Drawing.Size(49, 23);
             this.LabelMaxMeasureUnit.TabIndex = 14;
@@ -161,7 +161,7 @@
             this.LabelMinMeasureUnit.AutoSize = true;
             this.LabelMinMeasureUnit.BackColor = System.Drawing.Color.Transparent;
             this.LabelMinMeasureUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelMinMeasureUnit.Location = new System.Drawing.Point(730, 189);
+            this.LabelMinMeasureUnit.Location = new System.Drawing.Point(740, 189);
             this.LabelMinMeasureUnit.Name = "LabelMinMeasureUnit";
             this.LabelMinMeasureUnit.Size = new System.Drawing.Size(49, 23);
             this.LabelMinMeasureUnit.TabIndex = 17;
@@ -172,7 +172,7 @@
             this.LabelMinMeasureValue.AutoSize = true;
             this.LabelMinMeasureValue.BackColor = System.Drawing.Color.Transparent;
             this.LabelMinMeasureValue.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelMinMeasureValue.Location = new System.Drawing.Point(525, 189);
+            this.LabelMinMeasureValue.Location = new System.Drawing.Point(535, 189);
             this.LabelMinMeasureValue.Name = "LabelMinMeasureValue";
             this.LabelMinMeasureValue.Size = new System.Drawing.Size(93, 23);
             this.LabelMinMeasureValue.TabIndex = 16;
@@ -181,7 +181,7 @@
             // TextboxMinMeasureValue
             // 
             this.TextboxMinMeasureValue.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxMinMeasureValue.Location = new System.Drawing.Point(635, 186);
+            this.TextboxMinMeasureValue.Location = new System.Drawing.Point(645, 186);
             this.TextboxMinMeasureValue.Multiline = true;
             this.TextboxMinMeasureValue.Name = "TextboxMinMeasureValue";
             this.TextboxMinMeasureValue.ReadOnly = true;
@@ -193,7 +193,7 @@
             this.LabelMinSourceUnit.AutoSize = true;
             this.LabelMinSourceUnit.BackColor = System.Drawing.Color.Transparent;
             this.LabelMinSourceUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelMinSourceUnit.Location = new System.Drawing.Point(730, 356);
+            this.LabelMinSourceUnit.Location = new System.Drawing.Point(740, 356);
             this.LabelMinSourceUnit.Name = "LabelMinSourceUnit";
             this.LabelMinSourceUnit.Size = new System.Drawing.Size(49, 23);
             this.LabelMinSourceUnit.TabIndex = 24;
@@ -204,7 +204,7 @@
             this.LabelMinSourceValue.AutoSize = true;
             this.LabelMinSourceValue.BackColor = System.Drawing.Color.Transparent;
             this.LabelMinSourceValue.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelMinSourceValue.Location = new System.Drawing.Point(525, 356);
+            this.LabelMinSourceValue.Location = new System.Drawing.Point(535, 356);
             this.LabelMinSourceValue.Name = "LabelMinSourceValue";
             this.LabelMinSourceValue.Size = new System.Drawing.Size(93, 23);
             this.LabelMinSourceValue.TabIndex = 23;
@@ -213,7 +213,7 @@
             // TextboxMinSourceValue
             // 
             this.TextboxMinSourceValue.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxMinSourceValue.Location = new System.Drawing.Point(635, 353);
+            this.TextboxMinSourceValue.Location = new System.Drawing.Point(645, 353);
             this.TextboxMinSourceValue.Multiline = true;
             this.TextboxMinSourceValue.Name = "TextboxMinSourceValue";
             this.TextboxMinSourceValue.ReadOnly = true;
@@ -225,7 +225,7 @@
             this.LabelMaxSourceUnit.AutoSize = true;
             this.LabelMaxSourceUnit.BackColor = System.Drawing.Color.Transparent;
             this.LabelMaxSourceUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelMaxSourceUnit.Location = new System.Drawing.Point(730, 300);
+            this.LabelMaxSourceUnit.Location = new System.Drawing.Point(740, 300);
             this.LabelMaxSourceUnit.Name = "LabelMaxSourceUnit";
             this.LabelMaxSourceUnit.Size = new System.Drawing.Size(49, 23);
             this.LabelMaxSourceUnit.TabIndex = 21;
@@ -236,7 +236,7 @@
             this.LabelMaxSourceValue.AutoSize = true;
             this.LabelMaxSourceValue.BackColor = System.Drawing.Color.Transparent;
             this.LabelMaxSourceValue.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelMaxSourceValue.Location = new System.Drawing.Point(525, 300);
+            this.LabelMaxSourceValue.Location = new System.Drawing.Point(535, 300);
             this.LabelMaxSourceValue.Name = "LabelMaxSourceValue";
             this.LabelMaxSourceValue.Size = new System.Drawing.Size(97, 23);
             this.LabelMaxSourceValue.TabIndex = 20;
@@ -245,7 +245,7 @@
             // TextboxMaxSourceValue
             // 
             this.TextboxMaxSourceValue.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxMaxSourceValue.Location = new System.Drawing.Point(635, 297);
+            this.TextboxMaxSourceValue.Location = new System.Drawing.Point(645, 297);
             this.TextboxMaxSourceValue.Multiline = true;
             this.TextboxMaxSourceValue.Name = "TextboxMaxSourceValue";
             this.TextboxMaxSourceValue.ReadOnly = true;
@@ -257,7 +257,7 @@
             this.LabelSourceValue.AutoSize = true;
             this.LabelSourceValue.BackColor = System.Drawing.Color.Transparent;
             this.LabelSourceValue.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.LabelSourceValue.Location = new System.Drawing.Point(525, 247);
+            this.LabelSourceValue.Location = new System.Drawing.Point(535, 247);
             this.LabelSourceValue.Name = "LabelSourceValue";
             this.LabelSourceValue.Size = new System.Drawing.Size(155, 28);
             this.LabelSourceValue.TabIndex = 18;
@@ -268,7 +268,7 @@
             this.LabelSlopeUnit.AutoSize = true;
             this.LabelSlopeUnit.BackColor = System.Drawing.Color.Transparent;
             this.LabelSlopeUnit.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSlopeUnit.Location = new System.Drawing.Point(730, 450);
+            this.LabelSlopeUnit.Location = new System.Drawing.Point(740, 450);
             this.LabelSlopeUnit.Name = "LabelSlopeUnit";
             this.LabelSlopeUnit.Size = new System.Drawing.Size(49, 23);
             this.LabelSlopeUnit.TabIndex = 27;
@@ -279,7 +279,7 @@
             this.LabelSlopeValue.AutoSize = true;
             this.LabelSlopeValue.BackColor = System.Drawing.Color.Transparent;
             this.LabelSlopeValue.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelSlopeValue.Location = new System.Drawing.Point(560, 450);
+            this.LabelSlopeValue.Location = new System.Drawing.Point(570, 450);
             this.LabelSlopeValue.Name = "LabelSlopeValue";
             this.LabelSlopeValue.Size = new System.Drawing.Size(58, 23);
             this.LabelSlopeValue.TabIndex = 26;
@@ -288,7 +288,7 @@
             // TextboxSlopeValue
             // 
             this.TextboxSlopeValue.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxSlopeValue.Location = new System.Drawing.Point(635, 447);
+            this.TextboxSlopeValue.Location = new System.Drawing.Point(645, 447);
             this.TextboxSlopeValue.Multiline = true;
             this.TextboxSlopeValue.Name = "TextboxSlopeValue";
             this.TextboxSlopeValue.ReadOnly = true;

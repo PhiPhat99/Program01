@@ -10,6 +10,8 @@ namespace Program01
 {
     public partial class VdPTotalMeasureValuesForm : Form
     {
+        private const int NumberOfVdPPositions = 8;
+
         public VdPTotalMeasureValuesForm()
         {
             InitializeComponent();
@@ -25,7 +27,7 @@ namespace Program01
         {
             if (DatagridviewVdPTotalMesure.Columns.Count == 0)
             {
-                for (int i = 1; i <= 8; i++)
+                for (int i = 1; i <= NumberOfVdPPositions; i++)
                 {
                     DatagridviewVdPTotalMesure.Columns.Add($"SourceValue{i - 1}", $"Source {i}");
                     DatagridviewVdPTotalMesure.Columns.Add($"MeasuredValue{i - 1}", $"Measured {i}");
@@ -33,33 +35,36 @@ namespace Program01
             }
         }
 
-        private void InitializeChartsInTabControl()
+        private Chart GetChartControl(string tabPageName, string chartName)
         {
-            if (TabcontrolVdPTotalCharts.TabPages.ContainsKey("TotalMeasuredValuesTabPage") &&
-                TabcontrolVdPTotalCharts.TabPages["TotalMeasuredValuesTabPage"].Controls.ContainsKey("ChartTotalPositions"))
+            if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey(tabPageName) &&
+                TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls.ContainsKey(chartName))
             {
-                Chart totalChart = (Chart)TabcontrolVdPTotalCharts.TabPages["TotalMeasuredValuesTabPage"].Controls["ChartTotalPositions"];
-                SetupIVChart(totalChart, "I-V Graph of Total Positions");
+                return (Chart)TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls[chartName];
             }
             else
             {
-                Debug.WriteLine("[WARNING] InitializeChartsInTabControl - ChartTotalPositions not found in TotalMeasuredValuesTabPage!");
+                Debug.WriteLine($"[WARNING] GetChartControl - Chart '{chartName}' not found in TabPage '{tabPageName}'!");
+                return null;
+            }
+        }
+
+        private void InitializeChartsInTabControl()
+        {
+            Chart totalChart = GetChartControl("TotalMeasuredValuesTabPage", "ChartTotalPositions");
+            if (totalChart != null)
+            {
+                SetupIVChart(totalChart, "I-V Graph of Total Positions");
             }
 
-            for (int i = 1; i <= 8; i++)
+            for (int i = 1; i <= NumberOfVdPPositions; i++)
             {
                 string tabPageName = $"TabpageMeasuredPosition{i}";
                 string chartName = $"ChartPosition{i}";
-
-                if (TabcontrolVdPTotalCharts.TabPages.ContainsKey(tabPageName) &&
-                    TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls.ContainsKey(chartName))
+                Chart measuredChart = GetChartControl(tabPageName, chartName);
+                if (measuredChart != null)
                 {
-                    Chart measuredChart = (Chart)TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls[chartName];
                     SetupIVChart(measuredChart, $"I-V Graph of Position {i}");
-                }
-                else
-                {
-                    Debug.WriteLine($"[WARNING] InitializeChartsInTabControl - {chartName} not found in {tabPageName}!");
                 }
             }
 
@@ -130,44 +135,36 @@ namespace Program01
             Debug.WriteLine("[DEBUG] LoadMeasurementData - Data from CollectVdPMeasured:");
             foreach (var kvp in dataToDisplay)
             {
-                Debug.WriteLine($"[DEBUG]    Tuner {kvp.Key}: {kvp.Value.Count} measurements");
+                Debug.WriteLine($"[DEBUG]     Tuner {kvp.Key}: {kvp.Value.Count} measurements");
             }
 
-            int maxSteps = 0;
-            if (dataToDisplay != null && dataToDisplay.Count > 0)
+            int maxSteps = dataToDisplay?.Values.Max(list => list?.Count ?? 0) ?? 0;
+            Debug.WriteLine($"[DEBUG] LoadMeasurementData - maxSteps: {maxSteps}");
+
+            DatagridviewVdPTotalMesure.ColumnCount = NumberOfVdPPositions * 2; // ใช้ค่าคงที่
+
+            for (int i = 0; i < maxSteps; i++)
             {
-                for (int i = 1; i <= 8; i++)
+                DataGridViewRow row = new DataGridViewRow();
+                row.CreateCells(DatagridviewVdPTotalMesure);
+
+                for (int tunerIndex = 1; tunerIndex <= NumberOfVdPPositions; tunerIndex++)
                 {
-                    maxSteps = Math.Max(maxSteps, dataToDisplay.ContainsKey(i) ? dataToDisplay[i].Count : 0);
-                }
-
-                Debug.WriteLine($"[DEBUG] LoadMeasurementData - maxSteps: {maxSteps}");
-
-                DatagridviewVdPTotalMesure.ColumnCount = 16;
-
-                for (int i = 0; i < maxSteps; i++)
-                {
-                    DataGridViewRow row = new DataGridViewRow();
-                    row.CreateCells(DatagridviewVdPTotalMesure);
-
-                    for (int tunerIndex = 1; tunerIndex <= 8; tunerIndex++)
+                    if (dataToDisplay.ContainsKey(tunerIndex) && dataToDisplay[tunerIndex].Count > i)
                     {
-                        if (dataToDisplay.ContainsKey(tunerIndex) && dataToDisplay[tunerIndex].Count > i)
-                        {
-                            row.Cells[(tunerIndex - 1) * 2].Value = dataToDisplay[tunerIndex][i].Source;
-                            row.Cells[(tunerIndex - 1) * 2 + 1].Value = dataToDisplay[tunerIndex][i].Reading;
-                        }
-                        else
-                        {
-                            row.Cells[(tunerIndex - 1) * 2].Value = "";
-                            row.Cells[(tunerIndex - 1) * 2 + 1].Value = "";
-                        }
+                        row.Cells[(tunerIndex - 1) * 2].Value = dataToDisplay[tunerIndex][i].Source;
+                        row.Cells[(tunerIndex - 1) * 2 + 1].Value = dataToDisplay[tunerIndex][i].Reading;
                     }
-
-                    DatagridviewVdPTotalMesure.Rows.Add(row);
+                    else
+                    {
+                        row.Cells[(tunerIndex - 1) * 2].Value = "";
+                        row.Cells[(tunerIndex - 1) * 2 + 1].Value = "";
+                    }
                 }
+                DatagridviewVdPTotalMesure.Rows.Add(row);
             }
-            else
+
+            if (dataToDisplay == null || dataToDisplay.Count == 0)
             {
                 Debug.WriteLine("[DEBUG] LoadMeasurementData - No data to display in DataGridView");
             }

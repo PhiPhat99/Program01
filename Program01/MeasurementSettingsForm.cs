@@ -1971,10 +1971,28 @@ namespace Program01
 
                 if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.HallEffectMeasurement)
                 {
-                    string measurementType = GlobalSettings.Instance.CurrentHallState.ToString().ToLower();
+                    MeasurementType measurementType;
+                    HallMeasurementState currentHallState = GlobalSettings.Instance.CurrentHallState;
+
+                    switch (currentHallState)
+                    {
+                        case HallMeasurementState.NoMagneticField:
+                            measurementType = MeasurementType.NoMagneticField;
+                            break;
+                        case HallMeasurementState.InwardOrNorthMagneticField:
+                            measurementType = MeasurementType.InwardOrNorthMagneticField;
+                            break;
+                        case HallMeasurementState.OutwardOrSouthMagneticField:
+                            measurementType = MeasurementType.OutwardOrSouthMagneticField;
+                            break;
+                        default:
+                            Debug.WriteLine($"[WARNING] TracingRunMeasurement (Hall Effect) - Unknown CurrentHallState: {currentHallState}, defaulting to NoMagneticField");
+                            measurementType = MeasurementType.NoMagneticField;
+                            break;
+                    }
+
                     Debug.WriteLine($"[DEBUG] TracingRunMeasurement (Hall Effect) - Tuner: {CurrentTuner}, Type: {measurementType}, Data Points Read: {currentMeasurements.Count}");
-                    Debug.WriteLine($"Current Hall State (Lower Case): {measurementType}");
-                    Debug.WriteLine($"Current Hall State: {GlobalSettings.Instance.CurrentHallState}");
+                    Debug.WriteLine($"Current Hall State: {currentHallState}, Measurement Type: {measurementType}");
                     GlobalSettings.Instance.CollectedHallMeasurements.StoreMeasurementData(CurrentTuner, currentMeasurements, measurementType);
                     Debug.WriteLine("[DEBUG] TracingRunMeasurement (Hall Effect) - Data stored in CollectedHallMeasurements");
                 }
@@ -2008,16 +2026,16 @@ namespace Program01
                 string ssError = null;
 
                 SMU.WriteString("SYSTem:ERRor?");
-                smuError = SMU.ReadString().Trim(); // เพิ่ม .Trim() เพื่อลบช่องว่างหน้าหลัง
+                smuError = SMU.ReadString().Trim();
                 Debug.WriteLine($"Source Measure Unit error response: {smuError}");
 
                 SS.WriteString("SYSTem:ERRor?");
-                ssError = SS.ReadString().Trim(); // เพิ่ม .Trim() เพื่อลบช่องว่างหน้าหลัง
+                ssError = SS.ReadString().Trim();
                 Debug.WriteLine($"Switch System error response: {ssError}");
 
                 if (string.IsNullOrEmpty(smuError) && string.IsNullOrEmpty(ssError))
                 {
-                    MessageBox.Show("ไม่พบข้อผิดพลาดจากเครื่องมือใด ๆ", "การตรวจสอบเสร็จสิ้น", MessageBoxButtons.OK);
+                    MessageBox.Show("ไม่พบข้อผิดพลาดจากเครื่องมือ", "การตรวจสอบเสร็จสิ้น", MessageBoxButtons.OK);
                 }
                 else
                 {

@@ -1707,10 +1707,9 @@ namespace Program01
                 HallTotalForm.Invoke((MethodInvoker)delegate { HallTotalForm.LoadAllHallData(allHallData); });
                 Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Sent all Hall data from CollectAndCalculateHallMeasured to HallTotalForm");
             }
-            else
-            {
-                Debug.WriteLine("[WARNING] HallTotalMeasureValuesForm is not open, cannot send data.");
-            }
+
+            CollectAndCalculateHallMeasured.Instance.CalculateHall();
+            Debug.WriteLine("[DEBUG] RunHallEffectMeasurement - Hall Effect Calculation Done");
             Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - End");
         }
 

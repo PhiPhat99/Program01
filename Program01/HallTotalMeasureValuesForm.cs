@@ -1,23 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
-using System.Windows.Forms.DataVisualization.Charting;
 using System.Windows.Forms;
-using System;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace Program01
 {
     public partial class HallTotalMeasureValuesForm : Form
     {
         private Dictionary<string, Chart> chartDictionary = new Dictionary<string, Chart>();
-        private string[] directions = new string[] { "Hall In North", "Hall In South" };
         private const int NumberOfHallPositions = 4;
         private List<DataGridView> _hallDataGridViews;
         private Dictionary<string, BindingSource> _hallBindingSources = new Dictionary<string, BindingSource>();
         private TabControl tabControlHallTotalMeasuredCharts;
         private readonly string sourceUnit = GlobalSettings.Instance.SourceModeUI == "Voltage" ? "V" : "A";
         private readonly string measureUnit = GlobalSettings.Instance.MeasureModeUI == "Voltage" ? "V" : "A";
+        private Dictionary<string, Color> seriesColorMap = new Dictionary<string, Color>()
+{
+    { "Out1", Color.GreenYellow }, { "Out2", Color.GreenYellow }, { "Out3", Color.GreenYellow }, { "Out4", Color.GreenYellow },
+    { "South1", Color.OrangeRed }, { "South2", Color.OrangeRed }, { "South3", Color.OrangeRed }, { "South4", Color.OrangeRed },
+    { "North1", Color.DeepSkyBlue }, { "North2", Color.DeepSkyBlue }, { "North3", Color.DeepSkyBlue }, { "North4", Color.DeepSkyBlue }
+};
 
         public HallTotalMeasureValuesForm()
         {
@@ -162,6 +168,65 @@ namespace Program01
             Debug.WriteLine($"[INFO] Chart mapping complete. Total charts mapped: {chartDictionary.Count}");
         }
 
+        private void UpdateTotalChart(Dictionary<string, Dictionary<int, List<(double Source, double Reading)>>> allChartData)
+        {
+            Chart totalChart;
+            if (!chartDictionary.TryGetValue("ChartTotalMeasPos", out totalChart)) return;
+            totalChart.Series.Clear();
+
+            ChartArea area = totalChart.ChartAreas[0];
+            area.AxisX.Title = $"{GlobalSettings.Instance.MeasureModeUI} ({measureUnit})";
+            area.AxisY.Title = $"{GlobalSettings.Instance.SourceModeUI} ({sourceUnit})";
+            area.AxisX.LabelStyle.Format = "F6";
+            area.AxisY.LabelStyle.Format = "F6";
+            area.AxisX.LabelStyle.Font = new Font("Segoe UI", 9);
+            area.AxisY.LabelStyle.Font = new Font("Segoe UI", 9);
+            area.AxisX.MajorGrid.LineColor = Color.LightGray;
+            area.AxisX.MinorGrid.Enabled = true;
+            area.AxisX.MinorGrid.LineColor = Color.DimGray;
+            area.AxisX.MinorGrid.LineDashStyle = ChartDashStyle.Dash;
+            area.AxisY.MajorGrid.LineColor = Color.LightGray;
+            area.AxisY.MinorGrid.Enabled = true;
+            area.AxisY.MinorGrid.LineColor = Color.DimGray;
+            area.AxisY.MinorGrid.LineDashStyle = ChartDashStyle.Dash;
+
+            foreach (var statePair in allChartData)
+            {
+                string stateKey = statePair.Key;
+                var dataDict = statePair.Value;
+
+                foreach (var dataEntry in dataDict)
+                {
+                    int position = dataEntry.Key;
+                    var dataList = dataEntry.Value;
+                    string chartKey = stateKey == "NoMagnetic" ? $"Out{position}" : $"{stateKey}{position}";
+                    string seriesName = chartKey;
+
+                    Color colorToUse = seriesColorMap.ContainsKey(chartKey) ? seriesColorMap[chartKey] : Color.Black;
+
+                    var series = new Series(seriesName)
+                    {
+                        ChartType = SeriesChartType.Line,
+                        BorderWidth = 2,
+                        MarkerStyle = MarkerStyle.Circle,
+                        MarkerSize = 6,
+                        Color = colorToUse
+                    };
+
+                    foreach (var pair in dataList)
+                    {
+                        series.Points.AddXY(pair.Reading, pair.Source);
+                    }
+
+                    totalChart.Series.Add(series);
+                }
+            }
+
+            area.RecalculateAxesScale();
+            totalChart.Invalidate();
+            Debug.WriteLine($"[DEBUG] Total Chart updated with {totalChart.Series.Count} series.");
+        }
+
         private void UpdateIndividualChart(Chart chart, List<(double Source, double Reading)> data, string seriesName)
         {
             if (chart == null || data == null || data.Count == 0)
@@ -170,65 +235,57 @@ namespace Program01
                 return;
             }
 
-            chart.Series.Clear();
-            var series = new Series(seriesName)
+            Chart totalChart;
+            if (!chartDictionary.TryGetValue("ChartTotalMeasPos", out totalChart))
             {
-                ChartType = SeriesChartType.Line,
-                BorderWidth = 2
-            };
-
-            foreach (var (Source, Reading) in data)
-            {
-                series.Points.AddXY(Source, Reading);
-            }
-
-            chart.Series.Add(series);
-            chart.ChartAreas[0].RecalculateAxesScale();
-            chart.Invalidate();
-
-            Debug.WriteLine($"[DEBUG] Chart '{seriesName}' updated with {data.Count} points.");
-        }
-
-        private void UpdateTotalChart(Dictionary<string, Dictionary<int, List<(double Source, double Reading)>>> allChartData)
-        {
-            if (!chartDictionary.TryGetValue("ChartTotalMeasPos", out var totalChart))
-            {
+                Debug.WriteLine("[WARNING] TotalChart not found. Skipping individual formatting.");
                 return;
             }
 
-            totalChart.Series.Clear();
+            ChartArea totalArea = totalChart.ChartAreas[0];
+            chart.Series.Clear();
 
-            // 🔁 แทน var (stateKey, dataDict) ➜ ใช้ KeyValuePair ตรง ๆ
-            foreach (var kvp in allChartData)
+            Color lineColor = seriesColorMap.ContainsKey(seriesName) ? seriesColorMap[seriesName] : Color.Black;
+
+            Series newSeries = new Series(seriesName)
             {
-                string stateKey = kvp.Key;
-                var dataDict = kvp.Value;
+                ChartType = SeriesChartType.Line,
+                BorderWidth = 2,
+                MarkerStyle = MarkerStyle.Diamond,
+                MarkerSize = 6,
+                Color = lineColor
+            };
 
-                foreach (var dataEntry in dataDict)
-                {
-                    int position = dataEntry.Key;
-                    var dataList = dataEntry.Value;
-
-                    string label = $"Pos {position} ({stateKey})";
-                    var series = new Series(label)
-                    {
-                        ChartType = SeriesChartType.Line
-                    };
-
-                    foreach (var (Source, Reading) in dataList)
-                    {
-                        series.Points.AddXY(Source, Reading);
-                    }
-
-                    totalChart.Series.Add(series);
-                }
+            foreach (var pair in data)
+            {
+                newSeries.Points.AddXY(pair.Reading, pair.Source);
             }
 
-            totalChart.ChartAreas[0].RecalculateAxesScale();
+            chart.Series.Add(newSeries);
 
-            totalChart.Invalidate(); // บังคับวาดใหม่
+            ChartArea targetArea = chart.ChartAreas.Count > 0 ? chart.ChartAreas[0] : new ChartArea("Default");
+            if (chart.ChartAreas.Count == 0)
+                chart.ChartAreas.Add(targetArea);
 
-            Debug.WriteLine($"[DEBUG] Total Chart updated with {totalChart.Series.Count} series.");
+            targetArea.AxisX.Title = totalArea.AxisX.Title;
+            targetArea.AxisY.Title = totalArea.AxisY.Title;
+            targetArea.AxisX.LabelStyle.Format = totalArea.AxisX.LabelStyle.Format;
+            targetArea.AxisY.LabelStyle.Format = totalArea.AxisY.LabelStyle.Format;
+            targetArea.AxisX.LabelStyle.Font = totalArea.AxisX.LabelStyle.Font;
+            targetArea.AxisY.LabelStyle.Font = totalArea.AxisY.LabelStyle.Font;
+            targetArea.AxisX.MajorGrid.LineColor = totalArea.AxisX.MajorGrid.LineColor;
+            targetArea.AxisX.MinorGrid.Enabled = totalArea.AxisX.MinorGrid.Enabled;
+            targetArea.AxisX.MinorGrid.LineColor = totalArea.AxisX.MinorGrid.LineColor;
+            targetArea.AxisX.MinorGrid.LineDashStyle = totalArea.AxisX.MinorGrid.LineDashStyle;
+            targetArea.AxisY.MajorGrid.LineColor = totalArea.AxisY.MajorGrid.LineColor;
+            targetArea.AxisY.MinorGrid.Enabled = totalArea.AxisY.MinorGrid.Enabled;
+            targetArea.AxisY.MinorGrid.LineColor = totalArea.AxisY.MinorGrid.LineColor;
+            targetArea.AxisY.MinorGrid.LineDashStyle = totalArea.AxisY.MinorGrid.LineDashStyle;
+
+            targetArea.RecalculateAxesScale();
+            chart.Invalidate();
+
+            Debug.WriteLine($"[DEBUG] Chart '{seriesName}' updated with {data.Count} points and color {lineColor.Name}.");
         }
 
         public void LoadAllHallData(Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>> allHallData)

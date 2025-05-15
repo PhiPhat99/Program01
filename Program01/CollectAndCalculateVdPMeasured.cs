@@ -59,7 +59,7 @@ namespace Program01
             return _measurementsByPosition;
         }
 
-        public List<(double Source, double Reading)> GetAllData()
+        /*public List<(double Source, double Reading)> GetAllData()
         {
             List<(double Source, double Reading)> allData = new List<(double, double)>();
 
@@ -69,7 +69,7 @@ namespace Program01
             }
 
             return allData;
-        }
+        }*/
 
         public void ClearAllData()
         {
@@ -90,7 +90,7 @@ namespace Program01
 
         public void CalculateVanderPauw()
         {
-            ClearResults();
+            ClearVdPResults();
             Debug.WriteLine("[DEBUG] CalculateVanderPauw() called");
 
             for (int i = 1; i <= 8; i++)
@@ -269,7 +269,7 @@ namespace Program01
             return double.NaN;
         }
 
-        public void ClearResults()
+        public void ClearVdPResults()
         {
             _resistancesByPosition.Clear();
             Debug.WriteLine("[DEBUG] ClearResults() called");

@@ -63,6 +63,8 @@
             this.TextboxResistivityUnit = new System.Windows.Forms.TextBox();
             this.TextboxConductivityUnit = new System.Windows.Forms.TextBox();
             this.PanelResults = new System.Windows.Forms.Panel();
+            this.LabelConductivity = new System.Windows.Forms.Label();
+            this.LabelResistivity = new System.Windows.Forms.Label();
             this.RichTextboxSheetRes = new System.Windows.Forms.RichTextBox();
             this.RichTextboxAvgRes = new System.Windows.Forms.RichTextBox();
             this.RichTextboxResB = new System.Windows.Forms.RichTextBox();
@@ -82,8 +84,6 @@
             this.LabelSourceMode = new System.Windows.Forms.Label();
             this.PanelResultsChart = new System.Windows.Forms.Panel();
             this.ChartTotalResistances = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.LabelResistivity = new System.Windows.Forms.Label();
-            this.LabelConductivity = new System.Windows.Forms.Label();
             this.PanelResults.SuspendLayout();
             this.PanelMeasureAndSource.SuspendLayout();
             this.PanelResultsChart.SuspendLayout();
@@ -455,6 +455,28 @@
             this.PanelResults.Size = new System.Drawing.Size(420, 820);
             this.PanelResults.TabIndex = 124;
             // 
+            // LabelConductivity
+            // 
+            this.LabelConductivity.AutoSize = true;
+            this.LabelConductivity.BackColor = System.Drawing.Color.Transparent;
+            this.LabelConductivity.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelConductivity.Location = new System.Drawing.Point(20, 720);
+            this.LabelConductivity.Name = "LabelConductivity";
+            this.LabelConductivity.Size = new System.Drawing.Size(168, 28);
+            this.LabelConductivity.TabIndex = 138;
+            this.LabelConductivity.Text = "Conductivity (σ) :";
+            // 
+            // LabelResistivity
+            // 
+            this.LabelResistivity.AutoSize = true;
+            this.LabelResistivity.BackColor = System.Drawing.Color.Transparent;
+            this.LabelResistivity.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelResistivity.Location = new System.Drawing.Point(44, 670);
+            this.LabelResistivity.Name = "LabelResistivity";
+            this.LabelResistivity.Size = new System.Drawing.Size(144, 28);
+            this.LabelResistivity.TabIndex = 137;
+            this.LabelResistivity.Text = "Resistivity (ρ) :";
+            // 
             // RichTextboxSheetRes
             // 
             this.RichTextboxSheetRes.BackColor = System.Drawing.Color.DarkGray;
@@ -709,28 +731,6 @@
             this.ChartTotalResistances.Series.Add(series1);
             this.ChartTotalResistances.Size = new System.Drawing.Size(720, 640);
             this.ChartTotalResistances.TabIndex = 124;
-            // 
-            // LabelResistivity
-            // 
-            this.LabelResistivity.AutoSize = true;
-            this.LabelResistivity.BackColor = System.Drawing.Color.Transparent;
-            this.LabelResistivity.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelResistivity.Location = new System.Drawing.Point(44, 670);
-            this.LabelResistivity.Name = "LabelResistivity";
-            this.LabelResistivity.Size = new System.Drawing.Size(144, 28);
-            this.LabelResistivity.TabIndex = 137;
-            this.LabelResistivity.Text = "Resistivity (ρ) :";
-            // 
-            // LabelConductivity
-            // 
-            this.LabelConductivity.AutoSize = true;
-            this.LabelConductivity.BackColor = System.Drawing.Color.Transparent;
-            this.LabelConductivity.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelConductivity.Location = new System.Drawing.Point(20, 720);
-            this.LabelConductivity.Name = "LabelConductivity";
-            this.LabelConductivity.Size = new System.Drawing.Size(168, 28);
-            this.LabelConductivity.TabIndex = 138;
-            this.LabelConductivity.Text = "Conductivity (σ) :";
             // 
             // VdPMeasurementResultsForm
             // 

@@ -59,7 +59,6 @@
             this.LabelProgramTitle = new System.Windows.Forms.Label();
             this.PanelHome = new System.Windows.Forms.Panel();
             this.IconpictureboxLogo = new System.Windows.Forms.PictureBox();
-            this.IconbuttonHelp = new FontAwesome.Sharp.IconButton();
             this.PanelSideMenu = new System.Windows.Forms.Panel();
             this.PanelHallMeasurementSubMenu = new System.Windows.Forms.Panel();
             this.ButtonHallMeasurementResults = new System.Windows.Forms.Button();
@@ -485,29 +484,6 @@
             this.IconpictureboxLogo.TabStop = false;
             this.IconpictureboxLogo.Click += new System.EventHandler(this.IconpictureboxLogo_Click);
             // 
-            // IconbuttonHelp
-            // 
-            this.IconbuttonHelp.Dock = System.Windows.Forms.DockStyle.Top;
-            this.IconbuttonHelp.FlatAppearance.BorderSize = 0;
-            this.IconbuttonHelp.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.IconbuttonHelp.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.IconbuttonHelp.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.IconbuttonHelp.IconChar = FontAwesome.Sharp.IconChar.CircleInfo;
-            this.IconbuttonHelp.IconColor = System.Drawing.Color.WhiteSmoke;
-            this.IconbuttonHelp.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.IconbuttonHelp.IconSize = 30;
-            this.IconbuttonHelp.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.IconbuttonHelp.Location = new System.Drawing.Point(0, 180);
-            this.IconbuttonHelp.Margin = new System.Windows.Forms.Padding(0);
-            this.IconbuttonHelp.Name = "IconbuttonHelp";
-            this.IconbuttonHelp.Size = new System.Drawing.Size(240, 60);
-            this.IconbuttonHelp.TabIndex = 1;
-            this.IconbuttonHelp.Text = "Help";
-            this.IconbuttonHelp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.IconbuttonHelp.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.IconbuttonHelp.UseVisualStyleBackColor = true;
-            this.IconbuttonHelp.Click += new System.EventHandler(this.IconbuttonHelp_Click);
-            // 
             // PanelSideMenu
             // 
             this.PanelSideMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(33)))), ((int)(((byte)(80)))));
@@ -516,7 +492,6 @@
             this.PanelSideMenu.Controls.Add(this.PanelVanderPauwSubMenu);
             this.PanelSideMenu.Controls.Add(this.IconbuttonVanderPauwMethod);
             this.PanelSideMenu.Controls.Add(this.IconbuttonMeasurementSettings);
-            this.PanelSideMenu.Controls.Add(this.IconbuttonHelp);
             this.PanelSideMenu.Controls.Add(this.PanelHome);
             this.PanelSideMenu.Dock = System.Windows.Forms.DockStyle.Left;
             this.PanelSideMenu.Location = new System.Drawing.Point(0, 0);
@@ -531,7 +506,7 @@
             this.PanelHallMeasurementSubMenu.Controls.Add(this.ButtonHallTotalMeasure);
             this.PanelHallMeasurementSubMenu.Dock = System.Windows.Forms.DockStyle.Top;
             this.PanelHallMeasurementSubMenu.ForeColor = System.Drawing.Color.Snow;
-            this.PanelHallMeasurementSubMenu.Location = new System.Drawing.Point(0, 510);
+            this.PanelHallMeasurementSubMenu.Location = new System.Drawing.Point(0, 450);
             this.PanelHallMeasurementSubMenu.Name = "PanelHallMeasurementSubMenu";
             this.PanelHallMeasurementSubMenu.Size = new System.Drawing.Size(240, 90);
             this.PanelHallMeasurementSubMenu.TabIndex = 17;
@@ -580,7 +555,7 @@
             this.IconbuttonHalleffectMeasurement.IconColor = System.Drawing.Color.WhiteSmoke;
             this.IconbuttonHalleffectMeasurement.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.IconbuttonHalleffectMeasurement.IconSize = 30;
-            this.IconbuttonHalleffectMeasurement.Location = new System.Drawing.Point(0, 450);
+            this.IconbuttonHalleffectMeasurement.Location = new System.Drawing.Point(0, 390);
             this.IconbuttonHalleffectMeasurement.Margin = new System.Windows.Forms.Padding(0);
             this.IconbuttonHalleffectMeasurement.Name = "IconbuttonHalleffectMeasurement";
             this.IconbuttonHalleffectMeasurement.Size = new System.Drawing.Size(240, 60);
@@ -596,7 +571,7 @@
             this.PanelVanderPauwSubMenu.Controls.Add(this.ButtonVdPMeasurementResults);
             this.PanelVanderPauwSubMenu.Controls.Add(this.ButtonVdPTotalMeasure);
             this.PanelVanderPauwSubMenu.Dock = System.Windows.Forms.DockStyle.Top;
-            this.PanelVanderPauwSubMenu.Location = new System.Drawing.Point(0, 360);
+            this.PanelVanderPauwSubMenu.Location = new System.Drawing.Point(0, 300);
             this.PanelVanderPauwSubMenu.Name = "PanelVanderPauwSubMenu";
             this.PanelVanderPauwSubMenu.Size = new System.Drawing.Size(240, 90);
             this.PanelVanderPauwSubMenu.TabIndex = 15;
@@ -645,7 +620,7 @@
             this.IconbuttonVanderPauwMethod.IconColor = System.Drawing.Color.WhiteSmoke;
             this.IconbuttonVanderPauwMethod.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.IconbuttonVanderPauwMethod.IconSize = 30;
-            this.IconbuttonVanderPauwMethod.Location = new System.Drawing.Point(0, 300);
+            this.IconbuttonVanderPauwMethod.Location = new System.Drawing.Point(0, 240);
             this.IconbuttonVanderPauwMethod.Margin = new System.Windows.Forms.Padding(0);
             this.IconbuttonVanderPauwMethod.Name = "IconbuttonVanderPauwMethod";
             this.IconbuttonVanderPauwMethod.Size = new System.Drawing.Size(240, 60);
@@ -668,7 +643,7 @@
             this.IconbuttonMeasurementSettings.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.IconbuttonMeasurementSettings.IconSize = 30;
             this.IconbuttonMeasurementSettings.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.IconbuttonMeasurementSettings.Location = new System.Drawing.Point(0, 240);
+            this.IconbuttonMeasurementSettings.Location = new System.Drawing.Point(0, 180);
             this.IconbuttonMeasurementSettings.Margin = new System.Windows.Forms.Padding(0);
             this.IconbuttonMeasurementSettings.Name = "IconbuttonMeasurementSettings";
             this.IconbuttonMeasurementSettings.Size = new System.Drawing.Size(240, 60);
@@ -724,7 +699,6 @@
         private System.Windows.Forms.Panel PanelDesktop;
         private System.Windows.Forms.Panel PanelHome;
         private System.Windows.Forms.PictureBox IconpictureboxLogo;
-        private FontAwesome.Sharp.IconButton IconbuttonHelp;
         private System.Windows.Forms.Panel PanelSideMenu;
         private FontAwesome.Sharp.IconButton IconbuttonMeasurementSettings;
         private System.Windows.Forms.Panel PanelHallMeasurementSubMenu;

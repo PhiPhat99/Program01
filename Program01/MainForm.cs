@@ -241,28 +241,6 @@ namespace Program01
 
         private void IconpictureboxMinimizeProgram_Click(object sender, EventArgs e) => WindowState = FormWindowState.Minimized;
 
-        private void IconbuttonHelp_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!IsLoggedIn)
-                {
-                    MessageBox.Show("กรุณาเข้าสู่ระบบก่อนดำเนินการต่อ", "การเข้าถึงล้มเหลว", MessageBoxButtons.OK);
-                }
-                else
-                {
-                    ActivateButton(sender, RGBColors.Color1);
-                    UpdatePath("Help");
-                    OpenChildForm(new HelpForm());
-                    ToggleSubMenuVisibility(null);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error: {ex.Message}");
-            }
-        }
-
         private void IconbuttonMeasurementSettings_Click(object sender, EventArgs e)
         {
             try

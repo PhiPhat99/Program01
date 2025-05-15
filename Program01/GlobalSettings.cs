@@ -304,6 +304,8 @@ public class GlobalSettings
     public double SheetResistance { get; set; }
     public double Resistivity { get; set; }
     public double Conductivity { get; set; }
+    public double Concentration { get; set; }
+    public double Mobility { get; set; }
     #endregion
 
     /*public void AddMeasuredValues(List<double[]> values, int position)

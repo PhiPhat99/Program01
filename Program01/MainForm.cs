@@ -252,7 +252,7 @@ namespace Program01
                 else
                 {
                     ActivateButton(sender, RGBColors.Color2);
-                    UpdatePath("Measurement Settings");
+                    UpdatePath("Measurement And Settings");
                     OpenChildForm(new MeasurementSettingsForm());
                     ToggleSubMenuVisibility(null);
                 }
@@ -300,7 +300,7 @@ namespace Program01
 
         private void ButtonVdPMeasurementResults_Click(object sender, EventArgs e)
         {
-            UpdatePath("Van der Pauw Method", "Measurement Results");
+            UpdatePath("Van der Pauw Method", "Results");
             OpenChildForm(new VdPMeasurementResultsForm());
         }
 
@@ -341,7 +341,7 @@ namespace Program01
 
         private void ButtonHallMeasurementResults_Click(object sender, EventArgs e)
         {
-            UpdatePath("Hall Effect Measurement", "Measurement Results");
+            UpdatePath("Hall Effect Measurement", "Results");
             OpenChildForm(new HallMeasurementResultsForm());
         }
 

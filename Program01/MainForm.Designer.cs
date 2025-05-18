@@ -524,7 +524,7 @@
             this.ButtonHallMeasurementResults.Name = "ButtonHallMeasurementResults";
             this.ButtonHallMeasurementResults.Size = new System.Drawing.Size(240, 45);
             this.ButtonHallMeasurementResults.TabIndex = 4;
-            this.ButtonHallMeasurementResults.Text = "Measurement Results";
+            this.ButtonHallMeasurementResults.Text = "Results";
             this.ButtonHallMeasurementResults.UseVisualStyleBackColor = true;
             this.ButtonHallMeasurementResults.Click += new System.EventHandler(this.ButtonHallMeasurementResults_Click);
             // 
@@ -589,7 +589,7 @@
             this.ButtonVdPMeasurementResults.Name = "ButtonVdPMeasurementResults";
             this.ButtonVdPMeasurementResults.Size = new System.Drawing.Size(240, 45);
             this.ButtonVdPMeasurementResults.TabIndex = 4;
-            this.ButtonVdPMeasurementResults.Text = "Measurement Results";
+            this.ButtonVdPMeasurementResults.Text = "Results";
             this.ButtonVdPMeasurementResults.UseVisualStyleBackColor = true;
             this.ButtonVdPMeasurementResults.Click += new System.EventHandler(this.ButtonVdPMeasurementResults_Click);
             // 
@@ -648,7 +648,7 @@
             this.IconbuttonMeasurementSettings.Name = "IconbuttonMeasurementSettings";
             this.IconbuttonMeasurementSettings.Size = new System.Drawing.Size(240, 60);
             this.IconbuttonMeasurementSettings.TabIndex = 2;
-            this.IconbuttonMeasurementSettings.Text = "Measurement Settings";
+            this.IconbuttonMeasurementSettings.Text = "Measurement And Settings";
             this.IconbuttonMeasurementSettings.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.IconbuttonMeasurementSettings.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.IconbuttonMeasurementSettings.UseVisualStyleBackColor = true;

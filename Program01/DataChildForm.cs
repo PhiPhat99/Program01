@@ -31,23 +31,23 @@ namespace Program01
 
             if (GlobalSettings.Instance.SourceModeUI == "Voltage" && GlobalSettings.Instance.MeasureModeUI == "Voltage")
             {
-                ChartAreas.AxisY.Title = $"{GlobalSettings.Instance.SourceModeUI} (Source) [{GlobalSettings.Instance.StepUnitUI}]";
-                ChartAreas.AxisX.Title = $"{GlobalSettings.Instance.MeasureModeUI} (Source) [{GlobalSettings.Instance.StepUnitUI}]";
+                ChartAreas.AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (Measure) [V]";
+                ChartAreas.AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (Source) [V]";
             }
             else if (GlobalSettings.Instance.SourceModeUI == "Voltage" && GlobalSettings.Instance.MeasureModeUI == "Current")
             {
-                ChartAreas.AxisY.Title = $"{GlobalSettings.Instance.SourceModeUI} (Source) [V]";
-                ChartAreas.AxisX.Title = $"Current (Measure) [{GlobalSettings.Instance.SourceLimitLevelUnitUI}]";
+                ChartAreas.AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (Measure) [A]";
+                ChartAreas.AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (Source) [V]";
             }
             else if (GlobalSettings.Instance.SourceModeUI == "Current" && GlobalSettings.Instance.MeasureModeUI == "Voltage")
             {
-                ChartAreas.AxisY.Title = $"Current (Source) [{GlobalSettings.Instance.StepUnitUI}]";
-                ChartAreas.AxisX.Title = $"{GlobalSettings.Instance.MeasureModeUI} (Measure) [V]";
+                ChartAreas.AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (Measure) [V]";
+                ChartAreas.AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (Source) [A]";
             }
             else if (GlobalSettings.Instance.SourceModeUI == "Current" && GlobalSettings.Instance.MeasureModeUI == "Current")
             {
-                ChartAreas.AxisY.Title = $"Current (Source) [{GlobalSettings.Instance.StepUnitUI}]";
-                ChartAreas.AxisX.Title = $"Current (Measure) [{GlobalSettings.Instance.StepUnitUI}]";
+                ChartAreas.AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (Measure) [A]";
+                ChartAreas.AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (Source) [A]";
             }
 
             ChartAreas.AxisX.IsLabelAutoFit = false;
@@ -60,8 +60,8 @@ namespace Program01
                 ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i], YData[i]);
             }
 
-            ChartAreas.AxisX.LabelStyle.Format = "N3";
-            ChartAreas.AxisY.LabelStyle.Format = "N4";
+            ChartAreas.AxisX.LabelStyle.Format = "N5";
+            ChartAreas.AxisY.LabelStyle.Format = "N5";
             ChartTunerTesting.Invalidate();
 
         }

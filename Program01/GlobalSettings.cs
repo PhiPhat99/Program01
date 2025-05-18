@@ -304,19 +304,13 @@ public class GlobalSettings
     public double SheetResistance { get; set; }
     public double Resistivity { get; set; }
     public double Conductivity { get; set; }
-    public double Concentration { get; set; }
+    public Dictionary<int, double> HallVoltagesByPosition { get; set; } = new Dictionary<int, double>();
+    public double TotalHallVoltage { get; set; }
+    public double HallCoefficient { get; set; }
+    public double BulkConcentration { get; set; }
+    public double SheetConcentration { get; set; }
     public double Mobility { get; set; }
     #endregion
-
-    /*public void AddMeasuredValues(List<double[]> values, int position)
-    {
-        while (_allMeasuredValues.Count < position)
-        {
-            _allMeasuredValues.Add(null);
-        }
-
-        _allMeasuredValues[position - 1] = values;
-    }*/
 
     private GlobalSettings()
     {

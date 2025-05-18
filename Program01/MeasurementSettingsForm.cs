@@ -1708,6 +1708,7 @@ namespace Program01
                 Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Sent all Hall data from CollectAndCalculateHallMeasured to HallTotalForm");
             }
 
+            Debug.WriteLine(">> Call CalculateHall()");
             CollectAndCalculateHallMeasured.Instance.CalculateHall();
             Debug.WriteLine("[DEBUG] RunHallEffectMeasurement - Hall Effect Calculation Done");
             Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - End");
@@ -1970,29 +1971,29 @@ namespace Program01
 
                 if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.HallEffectMeasurement)
                 {
-                    MeasurementType measurementType;
+                    HallMeasurementState States;
                     HallMeasurementState currentHallState = GlobalSettings.Instance.CurrentHallState;
 
                     switch (currentHallState)
                     {
                         case HallMeasurementState.NoMagneticField:
-                            measurementType = MeasurementType.NoMagneticField;
+                            States = HallMeasurementState.NoMagneticField;
                             break;
                         case HallMeasurementState.InwardOrNorthMagneticField:
-                            measurementType = MeasurementType.InwardOrNorthMagneticField;
+                            States = HallMeasurementState.InwardOrNorthMagneticField;
                             break;
                         case HallMeasurementState.OutwardOrSouthMagneticField:
-                            measurementType = MeasurementType.OutwardOrSouthMagneticField;
+                            States = HallMeasurementState.OutwardOrSouthMagneticField;
                             break;
                         default:
                             Debug.WriteLine($"[WARNING] TracingRunMeasurement (Hall Effect) - Unknown CurrentHallState: {currentHallState}, defaulting to NoMagneticField");
-                            measurementType = MeasurementType.NoMagneticField;
+                            States = HallMeasurementState.NoMagneticField;
                             break;
                     }
 
-                    Debug.WriteLine($"[DEBUG] TracingRunMeasurement (Hall Effect) - Tuner: {CurrentTuner}, Type: {measurementType}, Data Points Read: {currentMeasurements.Count}");
-                    Debug.WriteLine($"Current Hall State: {currentHallState}, Measurement Type: {measurementType}");
-                    GlobalSettings.Instance.CollectedHallMeasurements.StoreMeasurementData(CurrentTuner, currentMeasurements, measurementType);
+                    Debug.WriteLine($"[DEBUG] TracingRunMeasurement (Hall Effect) - Tuner: {CurrentTuner}, Type: {States}, Data Points Read: {currentMeasurements.Count}");
+                    Debug.WriteLine($"Current Hall State: {currentHallState}, Measurement Type: {States}");
+                    GlobalSettings.Instance.CollectedHallMeasurements.StoreMeasurementData(CurrentTuner, currentMeasurements, States);
                     Debug.WriteLine("[DEBUG] TracingRunMeasurement (Hall Effect) - Data stored in CollectedHallMeasurements");
                 }
                 else if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)

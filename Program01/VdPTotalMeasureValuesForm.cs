@@ -17,9 +17,10 @@ namespace Program01
             InitializeComponent();
             InitializeDataGridViewColumns();
             InitializeChartsInTabControl();
-
             CollectAndCalculateVdPMeasured.Instance.DataUpdated += CollectAndCalculateVdPMeasured_DataUpdated;
-            this.Load += VdPTotalMeasureValuesForm_Load;
+
+            Load += VdPTotalMeasureValuesForm_Load;
+            FormClosing += VdPTotalMeasureValuesForm_FormClosing;
         }
 
         #region Initialization
@@ -80,29 +81,30 @@ namespace Program01
 
                 if (GlobalSettings.Instance.SourceModeUI == "Voltage")
                 {
-                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.SourceModeUI} (V)";
+                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (V)";
                 }
                 else
                 {
-                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.SourceModeUI} (A)";
+                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (A)";
                 }
 
-                chart.ChartAreas[0].AxisY.IsLabelAutoFit = false;
-                chart.ChartAreas[0].AxisY.IntervalAutoMode = IntervalAutoMode.FixedCount;
-                chart.ChartAreas[0].AxisY.LabelStyle.Format = "N6";
+                chart.ChartAreas[0].AxisX.IsLabelAutoFit = false;
+                chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.FixedCount;
+                chart.ChartAreas[0].AxisX.LabelStyle.Format = "N6";
+                chart.ChartAreas[0].AxisX.LabelStyle.Angle = 90;
 
                 if (GlobalSettings.Instance.MeasureModeUI == "Voltage")
                 {
-                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.MeasureModeUI} (V)";
+                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (V)";
                 }
                 else
                 {
-                    chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.MeasureModeUI} (A)";
+                    chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (A)";
                 }
 
-                chart.ChartAreas[0].AxisX.IsLabelAutoFit= false;
-                chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.FixedCount;
-                chart.ChartAreas[0].AxisX.LabelStyle.Format = "N6";
+                chart.ChartAreas[0].AxisY.IsLabelAutoFit= false;
+                chart.ChartAreas[0].AxisY.IntervalAutoMode = IntervalAutoMode.FixedCount;
+                chart.ChartAreas[0].AxisY.LabelStyle.Format = "N6";
 
                 chart.Invalidate();
             }
@@ -117,6 +119,13 @@ namespace Program01
             Debug.WriteLine("[DEBUG] VdPTotalMeasureValuesForm_Load called");
             LoadMeasurementData();
             LoadMeasurementDataForCharts();
+
+            CollectAndCalculateVdPMeasured.Instance.DataUpdated += CollectAndCalculateVdPMeasured_DataUpdated;
+        }
+
+        private void VdPTotalMeasureValuesForm_FormClosing(object sender, EventArgs e)
+        {
+            CollectAndCalculateVdPMeasured.Instance.DataUpdated -= CollectAndCalculateVdPMeasured_DataUpdated;
         }
         #endregion
 
@@ -141,7 +150,7 @@ namespace Program01
             int maxSteps = dataToDisplay?.Values.Max(list => list?.Count ?? 0) ?? 0;
             Debug.WriteLine($"[DEBUG] LoadMeasurementData - maxSteps: {maxSteps}");
 
-            DatagridviewVdPTotalMesure.ColumnCount = NumberOfVdPPositions * 2; // ใช้ค่าคงที่
+            DatagridviewVdPTotalMesure.ColumnCount = NumberOfVdPPositions * 2;
 
             for (int i = 0; i < maxSteps; i++)
             {
@@ -161,6 +170,7 @@ namespace Program01
                         row.Cells[(tunerIndex - 1) * 2 + 1].Value = "";
                     }
                 }
+
                 DatagridviewVdPTotalMesure.Rows.Add(row);
             }
 
@@ -176,10 +186,10 @@ namespace Program01
             Dictionary<int, List<(double Source, double Reading)>> AllMeasurements = CollectAndCalculateVdPMeasured.Instance.GetAllMeasurementsByTuner();
             Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - Total Measurements Count: {AllMeasurements.Count}");
 
-            // --- ส่วนการจัดการ Chart รวม (Total Chart) ---
             if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey("TabpageTotalVdPMeasuredPosition"))
             {
                 TabPage totalTabPage = TabcontrolVdPTotalCharts.TabPages["TabpageTotalVdPMeasuredPosition"];
+                
                 if (totalTabPage != null && totalTabPage.Controls.ContainsKey("ChartTotalPositions"))
                 {
                     Chart TotalChart = (Chart)totalTabPage.Controls["ChartTotalPositions"];
@@ -191,9 +201,9 @@ namespace Program01
                             if (AllMeasurements.ContainsKey(i) && AllMeasurements[i] != null && AllMeasurements[i].Count > 0)
                             {
                                 Series series = TotalChart.Series[i - 1];
-                                series.XValueMember = "Reading"; // Reading จะอยู่บนแกน X
-                                series.YValueMembers = "Source"; // Source จะอยู่บนแกน Y
-                                series.Points.DataBind(AllMeasurements[i].Select(data => new { data.Reading, data.Source }).ToList(), "Reading", "Source", null);
+                                series.XValueMember = "Source";
+                                series.YValueMembers = "Reading";
+                                series.Points.DataBind(AllMeasurements[i].Select(data => new { data.Source, data.Reading }).ToList(), "Source", "Reading", null);
                             }
                             else
                             {
@@ -210,15 +220,14 @@ namespace Program01
                         string sourceUnit = GlobalSettings.Instance.SourceModeUI == "Voltage" ? "V" : "A";
                         string measureUnit = GlobalSettings.Instance.MeasureModeUI == "Voltage" ? "V" : "A";
 
-                        // ตัวอย่างการปรับแต่งแกน X ของ Chart รวม
-                        TotalChart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.SourceModeUI} ({sourceUnit})"; // กำหนดชื่อแกน Y
-                        TotalChart.ChartAreas[0].AxisY.LabelStyle.Format = "N5";
-                        TotalChart.ChartAreas[0].AxisY.Interval = 0;
-
-                        // ตัวอย่างการปรับแต่งแกน Y ของ Chart รวม
-                        TotalChart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.MeasureModeUI} ({measureUnit})"; // กำหนดชื่อแกน X
+                        TotalChart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} ({sourceUnit})"; // กำหนดชื่อแกน Y
+                        TotalChart.ChartAreas[0].AxisX.LabelStyle.Format = "N6";
                         TotalChart.ChartAreas[0].AxisX.Interval = 0;
-                        TotalChart.ChartAreas[0].AxisX.LabelStyle.Format = "N5";
+                        TotalChart.ChartAreas[0].AxisX.LabelStyle.Angle = 90;
+
+                        TotalChart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} ({measureUnit})"; // กำหนดชื่อแกน X
+                        TotalChart.ChartAreas[0].AxisY.Interval = 0;
+                        TotalChart.ChartAreas[0].AxisY.LabelStyle.Format = "N6";
                     }
                     else
                     {
@@ -235,11 +244,10 @@ namespace Program01
                 Debug.WriteLine("[WARNING] LoadMeasurementDataForCharts - TabpageTotalVdPMeasuredPosition not found");
             }
 
-            // --- ส่วนการจัดการ Chart แยกตาม Position และ TabPage ---
-            if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey("TabpageTotalVdPMeasuredPosition") &&
-                TabcontrolVdPTotalCharts.TabPages["TabpageTotalVdPMeasuredPosition"].Controls.ContainsKey("ChartTotalPositions"))
+            if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey("TabpageTotalVdPMeasuredPosition") && TabcontrolVdPTotalCharts.TabPages["TabpageTotalVdPMeasuredPosition"].Controls.ContainsKey("ChartTotalPositions"))
             {
                 Chart TotalChart = (Chart)TabcontrolVdPTotalCharts.TabPages["TabpageTotalVdPMeasuredPosition"].Controls["ChartTotalPositions"];
+                
                 if (TotalChart != null && TotalChart.ChartAreas.Count > 0)
                 {
                     for (int i = 1; i <= 8; i++)
@@ -247,24 +255,20 @@ namespace Program01
                         string tabPageName = $"TabpageVdPMeasuredPosition{i}";
                         string chartName = $"ChartPosition{i}";
 
-                        if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey(tabPageName) &&
-                            TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls.ContainsKey(chartName) && AllMeasurements.ContainsKey(i))
+                        if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey(tabPageName) && TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls.ContainsKey(chartName) && AllMeasurements.ContainsKey(i))
                         {
                             Chart measuredChart = (Chart)TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls[chartName];
 
                             if (measuredChart != null && measuredChart.ChartAreas.Count > 0)
                             {
-                                // คัดลอกการตั้งค่าแกน X จาก TotalChart
                                 measuredChart.ChartAreas[0].AxisX.Title = TotalChart.ChartAreas[0].AxisX.Title;
                                 measuredChart.ChartAreas[0].AxisX.LabelStyle.Format = TotalChart.ChartAreas[0].AxisX.LabelStyle.Format;
                                 measuredChart.ChartAreas[0].AxisX.Interval = TotalChart.ChartAreas[0].AxisX.Interval;
-                                // คัดลอก Properties อื่นๆ ของแกน X ที่คุณต้องการให้เหมือนกัน
+                                measuredChart.ChartAreas[0].AxisX.LabelStyle.Angle = TotalChart.ChartAreas[0].AxisX.LabelStyle.Angle;
 
-                                // คัดลอกการตั้งค่าแกน Y จาก TotalChart
                                 measuredChart.ChartAreas[0].AxisY.Title = TotalChart.ChartAreas[0].AxisY.Title;
                                 measuredChart.ChartAreas[0].AxisY.LabelStyle.Format = TotalChart.ChartAreas[0].AxisY.LabelStyle.Format;
                                 measuredChart.ChartAreas[0].AxisY.Interval = TotalChart.ChartAreas[0].AxisY.Interval;
-                                // คัดลอก Properties อื่นๆ ของแกน Y ที่คุณต้องการให้เหมือนกัน
                             }
 
                             if (measuredChart != null && measuredChart.Series.Count > 0 && AllMeasurements[i] != null && AllMeasurements[i].Count > 0)
@@ -276,6 +280,7 @@ namespace Program01
                             else
                             {
                                 Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - No data or Chart/Series issue for Position {i} in {tabPageName}/{chartName}.");
+                                
                                 if (measuredChart != null && measuredChart.Series.Count > 0)
                                 {
                                     measuredChart.Series[0].Points.Clear();
@@ -293,19 +298,17 @@ namespace Program01
         #endregion
 
         #region Event Handlers
-
         private void CollectAndCalculateVdPMeasured_DataUpdated(object sender, EventArgs e)
         {
             if (InvokeRequired)
             {
-                Invoke((MethodInvoker)LoadMeasurementDataForCharts); // เรียกเมธอดแยกสำหรับโหลด Chart
+                Invoke((MethodInvoker)LoadMeasurementDataForCharts);
             }
             else
             {
-                LoadMeasurementDataForCharts(); // เรียกเมธอดแยกสำหรับโหลด Chart
+                LoadMeasurementDataForCharts();
             }
         }
-
         #endregion
     }
 }

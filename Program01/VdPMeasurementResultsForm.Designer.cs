@@ -99,6 +99,7 @@
             this.TextboxRes1.ReadOnly = true;
             this.TextboxRes1.Size = new System.Drawing.Size(100, 27);
             this.TextboxRes1.TabIndex = 57;
+            this.TextboxRes1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes2
             // 
@@ -109,6 +110,7 @@
             this.TextboxRes2.ReadOnly = true;
             this.TextboxRes2.Size = new System.Drawing.Size(100, 27);
             this.TextboxRes2.TabIndex = 60;
+            this.TextboxRes2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes3
             // 
@@ -119,6 +121,7 @@
             this.TextboxRes3.ReadOnly = true;
             this.TextboxRes3.Size = new System.Drawing.Size(100, 27);
             this.TextboxRes3.TabIndex = 68;
+            this.TextboxRes3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes4
             // 
@@ -129,6 +132,7 @@
             this.TextboxRes4.ReadOnly = true;
             this.TextboxRes4.Size = new System.Drawing.Size(100, 27);
             this.TextboxRes4.TabIndex = 70;
+            this.TextboxRes4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes7
             // 
@@ -139,6 +143,7 @@
             this.TextboxRes7.ReadOnly = true;
             this.TextboxRes7.Size = new System.Drawing.Size(100, 27);
             this.TextboxRes7.TabIndex = 80;
+            this.TextboxRes7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes8
             // 
@@ -149,6 +154,7 @@
             this.TextboxRes8.ReadOnly = true;
             this.TextboxRes8.Size = new System.Drawing.Size(100, 27);
             this.TextboxRes8.TabIndex = 82;
+            this.TextboxRes8.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes5
             // 
@@ -159,6 +165,7 @@
             this.TextboxRes5.ReadOnly = true;
             this.TextboxRes5.Size = new System.Drawing.Size(100, 27);
             this.TextboxRes5.TabIndex = 74;
+            this.TextboxRes5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes6
             // 
@@ -169,6 +176,7 @@
             this.TextboxRes6.ReadOnly = true;
             this.TextboxRes6.Size = new System.Drawing.Size(100, 27);
             this.TextboxRes6.TabIndex = 76;
+            this.TextboxRes6.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxResB
             // 
@@ -179,6 +187,7 @@
             this.TextboxResB.ReadOnly = true;
             this.TextboxResB.Size = new System.Drawing.Size(100, 27);
             this.TextboxResB.TabIndex = 89;
+            this.TextboxResB.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxAvgRes
             // 
@@ -189,6 +198,7 @@
             this.TextboxAvgRes.ReadOnly = true;
             this.TextboxAvgRes.Size = new System.Drawing.Size(100, 27);
             this.TextboxAvgRes.TabIndex = 91;
+            this.TextboxAvgRes.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxResA
             // 
@@ -199,6 +209,7 @@
             this.TextboxResA.ReadOnly = true;
             this.TextboxResA.Size = new System.Drawing.Size(100, 27);
             this.TextboxResA.TabIndex = 86;
+            this.TextboxResA.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxThickness
             // 
@@ -209,6 +220,7 @@
             this.TextboxThickness.ReadOnly = true;
             this.TextboxThickness.Size = new System.Drawing.Size(100, 27);
             this.TextboxThickness.TabIndex = 95;
+            this.TextboxThickness.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // LabelThickness
             // 
@@ -230,6 +242,7 @@
             this.TextboxSheetRes.ReadOnly = true;
             this.TextboxSheetRes.Size = new System.Drawing.Size(100, 27);
             this.TextboxSheetRes.TabIndex = 97;
+            this.TextboxSheetRes.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxResistivity
             // 
@@ -240,6 +253,7 @@
             this.TextboxResistivity.ReadOnly = true;
             this.TextboxResistivity.Size = new System.Drawing.Size(100, 27);
             this.TextboxResistivity.TabIndex = 103;
+            this.TextboxResistivity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxConductivity
             // 
@@ -250,6 +264,7 @@
             this.TextboxConductivity.ReadOnly = true;
             this.TextboxConductivity.Size = new System.Drawing.Size(100, 27);
             this.TextboxConductivity.TabIndex = 106;
+            this.TextboxConductivity.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes1Unit
             // 
@@ -260,6 +275,7 @@
             this.TextboxRes1Unit.ReadOnly = true;
             this.TextboxRes1Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxRes1Unit.TabIndex = 108;
+            this.TextboxRes1Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes2Unit
             // 
@@ -270,6 +286,7 @@
             this.TextboxRes2Unit.ReadOnly = true;
             this.TextboxRes2Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxRes2Unit.TabIndex = 109;
+            this.TextboxRes2Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes4Unit
             // 
@@ -280,6 +297,7 @@
             this.TextboxRes4Unit.ReadOnly = true;
             this.TextboxRes4Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxRes4Unit.TabIndex = 111;
+            this.TextboxRes4Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes3Unit
             // 
@@ -290,6 +308,7 @@
             this.TextboxRes3Unit.ReadOnly = true;
             this.TextboxRes3Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxRes3Unit.TabIndex = 110;
+            this.TextboxRes3Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes8Unit
             // 
@@ -300,6 +319,7 @@
             this.TextboxRes8Unit.ReadOnly = true;
             this.TextboxRes8Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxRes8Unit.TabIndex = 115;
+            this.TextboxRes8Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes7Unit
             // 
@@ -310,6 +330,7 @@
             this.TextboxRes7Unit.ReadOnly = true;
             this.TextboxRes7Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxRes7Unit.TabIndex = 114;
+            this.TextboxRes7Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes6Unit
             // 
@@ -320,6 +341,7 @@
             this.TextboxRes6Unit.ReadOnly = true;
             this.TextboxRes6Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxRes6Unit.TabIndex = 113;
+            this.TextboxRes6Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxRes5Unit
             // 
@@ -330,6 +352,7 @@
             this.TextboxRes5Unit.ReadOnly = true;
             this.TextboxRes5Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxRes5Unit.TabIndex = 112;
+            this.TextboxRes5Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxThicknessUnit
             // 
@@ -340,6 +363,7 @@
             this.TextboxThicknessUnit.ReadOnly = true;
             this.TextboxThicknessUnit.Size = new System.Drawing.Size(50, 27);
             this.TextboxThicknessUnit.TabIndex = 119;
+            this.TextboxThicknessUnit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxAvgResUnit
             // 
@@ -350,6 +374,7 @@
             this.TextboxAvgResUnit.ReadOnly = true;
             this.TextboxAvgResUnit.Size = new System.Drawing.Size(50, 27);
             this.TextboxAvgResUnit.TabIndex = 118;
+            this.TextboxAvgResUnit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxResBUnit
             // 
@@ -360,6 +385,7 @@
             this.TextboxResBUnit.ReadOnly = true;
             this.TextboxResBUnit.Size = new System.Drawing.Size(50, 27);
             this.TextboxResBUnit.TabIndex = 117;
+            this.TextboxResBUnit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxResAUnit
             // 
@@ -370,6 +396,7 @@
             this.TextboxResAUnit.ReadOnly = true;
             this.TextboxResAUnit.Size = new System.Drawing.Size(50, 27);
             this.TextboxResAUnit.TabIndex = 116;
+            this.TextboxResAUnit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxSheetResUnit
             // 
@@ -380,6 +407,7 @@
             this.TextboxSheetResUnit.ReadOnly = true;
             this.TextboxSheetResUnit.Size = new System.Drawing.Size(50, 27);
             this.TextboxSheetResUnit.TabIndex = 120;
+            this.TextboxSheetResUnit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxResistivityUnit
             // 
@@ -390,6 +418,7 @@
             this.TextboxResistivityUnit.ReadOnly = true;
             this.TextboxResistivityUnit.Size = new System.Drawing.Size(50, 27);
             this.TextboxResistivityUnit.TabIndex = 121;
+            this.TextboxResistivityUnit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxConductivityUnit
             // 
@@ -400,6 +429,7 @@
             this.TextboxConductivityUnit.ReadOnly = true;
             this.TextboxConductivityUnit.Size = new System.Drawing.Size(50, 27);
             this.TextboxConductivityUnit.TabIndex = 122;
+            this.TextboxConductivityUnit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // PanelResults
             // 

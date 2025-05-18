@@ -59,18 +59,6 @@ namespace Program01
             return _measurementsByPosition;
         }
 
-        /*public List<(double Source, double Reading)> GetAllData()
-        {
-            List<(double Source, double Reading)> allData = new List<(double, double)>();
-
-            foreach (var measurements in _measurementsByPosition.Values)
-            {
-                allData.AddRange(measurements);
-            }
-
-            return allData;
-        }*/
-
         public void ClearAllData()
         {
             _measurementsByPosition.Clear();

@@ -28,16 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.PanelResultsChart = new System.Windows.Forms.Panel();
+            this.ChartTotalHallMeasurement = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.PanelMeasureAndSource = new System.Windows.Forms.Panel();
             this.TextboxSourceMode = new System.Windows.Forms.TextBox();
             this.TextboxMeasureMode = new System.Windows.Forms.TextBox();
             this.LabelMeasureMode = new System.Windows.Forms.Label();
             this.LabelSourceMode = new System.Windows.Forms.Label();
-            this.ChartTotalHallVoltages = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.TextboxHallOut1Unit = new System.Windows.Forms.TextBox();
             this.TextboxHallOut2Unit = new System.Windows.Forms.TextBox();
             this.TextboxHallOut3Unit = new System.Windows.Forms.TextBox();
@@ -65,6 +65,24 @@
             this.RichTextboxHallInSouthPos3 = new System.Windows.Forms.RichTextBox();
             this.RichTextboxHallInSouthPos4 = new System.Windows.Forms.RichTextBox();
             this.PanelResults = new System.Windows.Forms.Panel();
+            this.IconbuttonPType = new FontAwesome.Sharp.IconButton();
+            this.IconbuttonNType = new FontAwesome.Sharp.IconButton();
+            this.LabelTypes = new System.Windows.Forms.Label();
+            this.RichTextboxMobilityUnit = new System.Windows.Forms.RichTextBox();
+            this.RichTextboxMobility = new System.Windows.Forms.RichTextBox();
+            this.TextboxMobility = new System.Windows.Forms.TextBox();
+            this.RichTextboxSheetConcentrationUnit = new System.Windows.Forms.RichTextBox();
+            this.RichTextboxBulkConcentrationUnit = new System.Windows.Forms.RichTextBox();
+            this.RichTextboxBulkConcentration = new System.Windows.Forms.RichTextBox();
+            this.TextboxBulkConcentration = new System.Windows.Forms.TextBox();
+            this.RichTextboxSheetConcentration = new System.Windows.Forms.RichTextBox();
+            this.TextboxSheetConcentration = new System.Windows.Forms.TextBox();
+            this.RichTextboxHallCoefficient = new System.Windows.Forms.RichTextBox();
+            this.TextboxHallCoefficient = new System.Windows.Forms.TextBox();
+            this.RichTextboxHallVoltage = new System.Windows.Forms.RichTextBox();
+            this.TextboxHallVoltage = new System.Windows.Forms.TextBox();
+            this.TextboxHallVoltageUnit = new System.Windows.Forms.TextBox();
+            this.LabelHallPropertiesHeader = new System.Windows.Forms.Label();
             this.RichTextboxHallInNorthPos4 = new System.Windows.Forms.RichTextBox();
             this.RichTextboxHallInNorthPos3 = new System.Windows.Forms.RichTextBox();
             this.RichTextboxHallInNorthPos2 = new System.Windows.Forms.RichTextBox();
@@ -77,56 +95,65 @@
             this.TextboxHallInNorth3Unit = new System.Windows.Forms.TextBox();
             this.TextboxHallInNorth2Unit = new System.Windows.Forms.TextBox();
             this.TextboxHallInNorth1Unit = new System.Windows.Forms.TextBox();
-            this.RichTextboxHallVoltage1 = new System.Windows.Forms.RichTextBox();
-            this.TextboxHallVoltage1 = new System.Windows.Forms.TextBox();
-            this.TextboxHallVoltage1Unit = new System.Windows.Forms.TextBox();
-            this.LabelHallVoltageHeader = new System.Windows.Forms.Label();
-            this.RichTextboxHallVoltage2 = new System.Windows.Forms.RichTextBox();
-            this.TextboxHallVoltage2 = new System.Windows.Forms.TextBox();
-            this.TextboxHallVoltage2Unit = new System.Windows.Forms.TextBox();
-            this.RichTextboxHallVoltage4 = new System.Windows.Forms.RichTextBox();
-            this.TextboxHallVoltage4 = new System.Windows.Forms.TextBox();
-            this.TextboxHallVoltage4Unit = new System.Windows.Forms.TextBox();
-            this.RichTextboxHallVoltage3 = new System.Windows.Forms.RichTextBox();
-            this.TextboxHallVoltage3 = new System.Windows.Forms.TextBox();
-            this.TextboxHallVoltage3Unit = new System.Windows.Forms.TextBox();
-            this.RichTextboxHallVoltage = new System.Windows.Forms.RichTextBox();
-            this.TextboxHallVoltage = new System.Windows.Forms.TextBox();
-            this.TextboxHallVoltageUnit = new System.Windows.Forms.TextBox();
-            this.RichTextboxHallCoefficient = new System.Windows.Forms.RichTextBox();
-            this.TextboxHallCoefficient = new System.Windows.Forms.TextBox();
-            this.TextboxHallCoefficientUnit = new System.Windows.Forms.TextBox();
-            this.RichTextboxConcentration = new System.Windows.Forms.RichTextBox();
-            this.TextboxConcentration = new System.Windows.Forms.TextBox();
-            this.TextboxConcentrationUnit = new System.Windows.Forms.TextBox();
-            this.RichTextboxMobility = new System.Windows.Forms.RichTextBox();
-            this.TextboxMobility = new System.Windows.Forms.TextBox();
-            this.TextboxMobilityUnit = new System.Windows.Forms.TextBox();
-            this.LabelTypes = new System.Windows.Forms.Label();
-            this.IconbuttonNType = new FontAwesome.Sharp.IconButton();
-            this.IconbuttonPType = new FontAwesome.Sharp.IconButton();
+            this.RichTextboxHallCoefficientUnit = new System.Windows.Forms.RichTextBox();
             this.PanelResultsChart.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ChartTotalHallMeasurement)).BeginInit();
             this.PanelMeasureAndSource.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ChartTotalHallVoltages)).BeginInit();
             this.PanelResults.SuspendLayout();
             this.SuspendLayout();
             // 
             // PanelResultsChart
             // 
             this.PanelResultsChart.BackColor = System.Drawing.Color.Transparent;
-            this.PanelResultsChart.Controls.Add(this.ChartTotalHallVoltages);
+            this.PanelResultsChart.Controls.Add(this.ChartTotalHallMeasurement);
             this.PanelResultsChart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PanelResultsChart.Location = new System.Drawing.Point(0, 80);
             this.PanelResultsChart.Name = "PanelResultsChart";
             this.PanelResultsChart.Size = new System.Drawing.Size(840, 740);
             this.PanelResultsChart.TabIndex = 129;
             // 
+            // ChartTotalHallMeasurement
+            // 
+            this.ChartTotalHallMeasurement.BackColor = System.Drawing.Color.Transparent;
+            this.ChartTotalHallMeasurement.BorderlineColor = System.Drawing.Color.Transparent;
+            chartArea1.AxisX.MajorGrid.LineWidth = 2;
+            chartArea1.AxisX.MinorGrid.Enabled = true;
+            chartArea1.AxisX.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+            chartArea1.AxisX.Title = "Current (A)";
+            chartArea1.AxisX.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisY.MajorGrid.LineWidth = 2;
+            chartArea1.AxisY.MinorGrid.Enabled = true;
+            chartArea1.AxisY.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+            chartArea1.AxisY.Title = "Hall Voltage (V)";
+            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.BackColor = System.Drawing.Color.Black;
+            chartArea1.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
+            chartArea1.BackSecondaryColor = System.Drawing.Color.DarkGray;
+            chartArea1.BorderColor = System.Drawing.Color.Transparent;
+            chartArea1.BorderWidth = 0;
+            chartArea1.Name = "ChartAreaTotalHallVoltages";
+            this.ChartTotalHallMeasurement.ChartAreas.Add(chartArea1);
+            legend1.Alignment = System.Drawing.StringAlignment.Center;
+            legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
+            legend1.Enabled = false;
+            legend1.IsDockedInsideChartArea = false;
+            legend1.Name = "LegendTotalHallVoltages";
+            this.ChartTotalHallMeasurement.Legends.Add(legend1);
+            this.ChartTotalHallMeasurement.Location = new System.Drawing.Point(60, 50);
+            this.ChartTotalHallMeasurement.Name = "ChartTotalHallMeasurement";
+            series1.ChartArea = "ChartAreaTotalHallVoltages";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Color = System.Drawing.Color.DarkBlue;
+            series1.Legend = "LegendTotalHallVoltages";
+            series1.Name = "SeriesHallVoltageTotalPosition";
+            series1.YValuesPerPoint = 2;
+            this.ChartTotalHallMeasurement.Series.Add(series1);
+            this.ChartTotalHallMeasurement.Size = new System.Drawing.Size(720, 640);
+            this.ChartTotalHallMeasurement.TabIndex = 125;
+            // 
             // PanelMeasureAndSource
             // 
             this.PanelMeasureAndSource.BackColor = System.Drawing.Color.DimGray;
-            this.PanelMeasureAndSource.Controls.Add(this.IconbuttonPType);
-            this.PanelMeasureAndSource.Controls.Add(this.IconbuttonNType);
-            this.PanelMeasureAndSource.Controls.Add(this.LabelTypes);
             this.PanelMeasureAndSource.Controls.Add(this.TextboxSourceMode);
             this.PanelMeasureAndSource.Controls.Add(this.TextboxMeasureMode);
             this.PanelMeasureAndSource.Controls.Add(this.LabelMeasureMode);
@@ -177,45 +204,6 @@
             this.LabelSourceMode.TabIndex = 56;
             this.LabelSourceMode.Text = "SOURCE :";
             // 
-            // ChartTotalHallVoltages
-            // 
-            this.ChartTotalHallVoltages.BackColor = System.Drawing.Color.Transparent;
-            this.ChartTotalHallVoltages.BorderlineColor = System.Drawing.Color.Transparent;
-            chartArea3.AxisX.MajorGrid.LineWidth = 2;
-            chartArea3.AxisX.MinorGrid.Enabled = true;
-            chartArea3.AxisX.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-            chartArea3.AxisX.Title = "Hall Voltage (V)";
-            chartArea3.AxisX.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea3.AxisY.MajorGrid.LineWidth = 2;
-            chartArea3.AxisY.MinorGrid.Enabled = true;
-            chartArea3.AxisY.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-            chartArea3.AxisY.Title = "Current (A)";
-            chartArea3.AxisY.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea3.BackColor = System.Drawing.Color.Black;
-            chartArea3.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
-            chartArea3.BackSecondaryColor = System.Drawing.Color.DarkGray;
-            chartArea3.BorderColor = System.Drawing.Color.Transparent;
-            chartArea3.BorderWidth = 0;
-            chartArea3.Name = "ChartAreaTotalHallVoltages";
-            this.ChartTotalHallVoltages.ChartAreas.Add(chartArea3);
-            legend3.Alignment = System.Drawing.StringAlignment.Center;
-            legend3.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
-            legend3.Enabled = false;
-            legend3.IsDockedInsideChartArea = false;
-            legend3.Name = "LegendTotalHallVoltages";
-            this.ChartTotalHallVoltages.Legends.Add(legend3);
-            this.ChartTotalHallVoltages.Location = new System.Drawing.Point(60, 50);
-            this.ChartTotalHallVoltages.Name = "ChartTotalHallVoltages";
-            series3.ChartArea = "ChartAreaTotalHallVoltages";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series3.Color = System.Drawing.Color.DarkBlue;
-            series3.Legend = "LegendTotalHallVoltages";
-            series3.Name = "SeriesHallVoltageTotalPosition";
-            series3.YValuesPerPoint = 2;
-            this.ChartTotalHallVoltages.Series.Add(series3);
-            this.ChartTotalHallVoltages.Size = new System.Drawing.Size(720, 640);
-            this.ChartTotalHallVoltages.TabIndex = 125;
-            // 
             // TextboxHallOut1Unit
             // 
             this.TextboxHallOut1Unit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -225,6 +213,7 @@
             this.TextboxHallOut1Unit.ReadOnly = true;
             this.TextboxHallOut1Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxHallOut1Unit.TabIndex = 108;
+            this.TextboxHallOut1Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallOut2Unit
             // 
@@ -235,6 +224,7 @@
             this.TextboxHallOut2Unit.ReadOnly = true;
             this.TextboxHallOut2Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxHallOut2Unit.TabIndex = 109;
+            this.TextboxHallOut2Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallOut3Unit
             // 
@@ -245,6 +235,7 @@
             this.TextboxHallOut3Unit.ReadOnly = true;
             this.TextboxHallOut3Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxHallOut3Unit.TabIndex = 110;
+            this.TextboxHallOut3Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallOut4Unit
             // 
@@ -255,6 +246,7 @@
             this.TextboxHallOut4Unit.ReadOnly = true;
             this.TextboxHallOut4Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxHallOut4Unit.TabIndex = 111;
+            this.TextboxHallOut4Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallOut3
             // 
@@ -265,6 +257,7 @@
             this.TextboxHallOut3.ReadOnly = true;
             this.TextboxHallOut3.Size = new System.Drawing.Size(100, 27);
             this.TextboxHallOut3.TabIndex = 68;
+            this.TextboxHallOut3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallOut4
             // 
@@ -275,6 +268,7 @@
             this.TextboxHallOut4.ReadOnly = true;
             this.TextboxHallOut4.Size = new System.Drawing.Size(100, 27);
             this.TextboxHallOut4.TabIndex = 70;
+            this.TextboxHallOut4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallOut2
             // 
@@ -285,6 +279,7 @@
             this.TextboxHallOut2.ReadOnly = true;
             this.TextboxHallOut2.Size = new System.Drawing.Size(100, 27);
             this.TextboxHallOut2.TabIndex = 60;
+            this.TextboxHallOut2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallOut1
             // 
@@ -295,6 +290,7 @@
             this.TextboxHallOut1.ReadOnly = true;
             this.TextboxHallOut1.Size = new System.Drawing.Size(100, 27);
             this.TextboxHallOut1.TabIndex = 57;
+            this.TextboxHallOut1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInSouth1Unit
             // 
@@ -305,6 +301,7 @@
             this.TextboxHallInSouth1Unit.ReadOnly = true;
             this.TextboxHallInSouth1Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxHallInSouth1Unit.TabIndex = 133;
+            this.TextboxHallInSouth1Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInSouth2Unit
             // 
@@ -315,6 +312,7 @@
             this.TextboxHallInSouth2Unit.ReadOnly = true;
             this.TextboxHallInSouth2Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxHallInSouth2Unit.TabIndex = 134;
+            this.TextboxHallInSouth2Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInSouth3Unit
             // 
@@ -325,6 +323,7 @@
             this.TextboxHallInSouth3Unit.ReadOnly = true;
             this.TextboxHallInSouth3Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxHallInSouth3Unit.TabIndex = 135;
+            this.TextboxHallInSouth3Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInSouth4Unit
             // 
@@ -335,6 +334,7 @@
             this.TextboxHallInSouth4Unit.ReadOnly = true;
             this.TextboxHallInSouth4Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxHallInSouth4Unit.TabIndex = 136;
+            this.TextboxHallInSouth4Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInSouth3
             // 
@@ -345,6 +345,7 @@
             this.TextboxHallInSouth3.ReadOnly = true;
             this.TextboxHallInSouth3.Size = new System.Drawing.Size(100, 27);
             this.TextboxHallInSouth3.TabIndex = 128;
+            this.TextboxHallInSouth3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInSouth4
             // 
@@ -355,6 +356,7 @@
             this.TextboxHallInSouth4.ReadOnly = true;
             this.TextboxHallInSouth4.Size = new System.Drawing.Size(100, 27);
             this.TextboxHallInSouth4.TabIndex = 130;
+            this.TextboxHallInSouth4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInSouth2
             // 
@@ -365,6 +367,7 @@
             this.TextboxHallInSouth2.ReadOnly = true;
             this.TextboxHallInSouth2.Size = new System.Drawing.Size(100, 27);
             this.TextboxHallInSouth2.TabIndex = 126;
+            this.TextboxHallInSouth2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInSouth1
             // 
@@ -375,15 +378,16 @@
             this.TextboxHallInSouth1.ReadOnly = true;
             this.TextboxHallInSouth1.Size = new System.Drawing.Size(100, 27);
             this.TextboxHallInSouth1.TabIndex = 124;
+            this.TextboxHallInSouth1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // LabelHallInVoltageHeader
             // 
             this.LabelHallInVoltageHeader.AutoSize = true;
             this.LabelHallInVoltageHeader.BackColor = System.Drawing.Color.Transparent;
-            this.LabelHallInVoltageHeader.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelHallInVoltageHeader.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LabelHallInVoltageHeader.Location = new System.Drawing.Point(30, 185);
             this.LabelHallInVoltageHeader.Name = "LabelHallInVoltageHeader";
-            this.LabelHallInVoltageHeader.Size = new System.Drawing.Size(130, 23);
+            this.LabelHallInVoltageHeader.Size = new System.Drawing.Size(161, 28);
             this.LabelHallInVoltageHeader.TabIndex = 138;
             this.LabelHallInVoltageHeader.Text = "Hall In Voltages";
             // 
@@ -391,10 +395,10 @@
             // 
             this.LabelHallOutVoltageHeader.AutoSize = true;
             this.LabelHallOutVoltageHeader.BackColor = System.Drawing.Color.Transparent;
-            this.LabelHallOutVoltageHeader.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelHallOutVoltageHeader.Location = new System.Drawing.Point(30, 15);
+            this.LabelHallOutVoltageHeader.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelHallOutVoltageHeader.Location = new System.Drawing.Point(30, 10);
             this.LabelHallOutVoltageHeader.Name = "LabelHallOutVoltageHeader";
-            this.LabelHallOutVoltageHeader.Size = new System.Drawing.Size(144, 23);
+            this.LabelHallOutVoltageHeader.Size = new System.Drawing.Size(178, 28);
             this.LabelHallOutVoltageHeader.TabIndex = 139;
             this.LabelHallOutVoltageHeader.Text = "Hall Out Voltages";
             // 
@@ -488,32 +492,27 @@
             // 
             // PanelResults
             // 
+            this.PanelResults.AutoScroll = true;
             this.PanelResults.BackColor = System.Drawing.Color.DarkGray;
+            this.PanelResults.Controls.Add(this.RichTextboxHallCoefficientUnit);
+            this.PanelResults.Controls.Add(this.IconbuttonPType);
+            this.PanelResults.Controls.Add(this.IconbuttonNType);
+            this.PanelResults.Controls.Add(this.LabelTypes);
+            this.PanelResults.Controls.Add(this.RichTextboxMobilityUnit);
             this.PanelResults.Controls.Add(this.RichTextboxMobility);
             this.PanelResults.Controls.Add(this.TextboxMobility);
-            this.PanelResults.Controls.Add(this.TextboxMobilityUnit);
-            this.PanelResults.Controls.Add(this.RichTextboxConcentration);
-            this.PanelResults.Controls.Add(this.TextboxConcentration);
-            this.PanelResults.Controls.Add(this.TextboxConcentrationUnit);
+            this.PanelResults.Controls.Add(this.RichTextboxSheetConcentrationUnit);
+            this.PanelResults.Controls.Add(this.RichTextboxBulkConcentrationUnit);
+            this.PanelResults.Controls.Add(this.RichTextboxBulkConcentration);
+            this.PanelResults.Controls.Add(this.TextboxBulkConcentration);
+            this.PanelResults.Controls.Add(this.RichTextboxSheetConcentration);
+            this.PanelResults.Controls.Add(this.TextboxSheetConcentration);
             this.PanelResults.Controls.Add(this.RichTextboxHallCoefficient);
             this.PanelResults.Controls.Add(this.TextboxHallCoefficient);
-            this.PanelResults.Controls.Add(this.TextboxHallCoefficientUnit);
             this.PanelResults.Controls.Add(this.RichTextboxHallVoltage);
             this.PanelResults.Controls.Add(this.TextboxHallVoltage);
             this.PanelResults.Controls.Add(this.TextboxHallVoltageUnit);
-            this.PanelResults.Controls.Add(this.RichTextboxHallVoltage4);
-            this.PanelResults.Controls.Add(this.TextboxHallVoltage4);
-            this.PanelResults.Controls.Add(this.TextboxHallVoltage4Unit);
-            this.PanelResults.Controls.Add(this.RichTextboxHallVoltage3);
-            this.PanelResults.Controls.Add(this.TextboxHallVoltage3);
-            this.PanelResults.Controls.Add(this.TextboxHallVoltage3Unit);
-            this.PanelResults.Controls.Add(this.RichTextboxHallVoltage2);
-            this.PanelResults.Controls.Add(this.TextboxHallVoltage2);
-            this.PanelResults.Controls.Add(this.TextboxHallVoltage2Unit);
-            this.PanelResults.Controls.Add(this.LabelHallVoltageHeader);
-            this.PanelResults.Controls.Add(this.RichTextboxHallVoltage1);
-            this.PanelResults.Controls.Add(this.TextboxHallVoltage1);
-            this.PanelResults.Controls.Add(this.TextboxHallVoltage1Unit);
+            this.PanelResults.Controls.Add(this.LabelHallPropertiesHeader);
             this.PanelResults.Controls.Add(this.RichTextboxHallInNorthPos4);
             this.PanelResults.Controls.Add(this.RichTextboxHallInNorthPos3);
             this.PanelResults.Controls.Add(this.RichTextboxHallInNorthPos2);
@@ -557,6 +556,216 @@
             this.PanelResults.Name = "PanelResults";
             this.PanelResults.Size = new System.Drawing.Size(420, 820);
             this.PanelResults.TabIndex = 127;
+            // 
+            // IconbuttonPType
+            // 
+            this.IconbuttonPType.BackColor = System.Drawing.Color.Snow;
+            this.IconbuttonPType.Enabled = false;
+            this.IconbuttonPType.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.IconbuttonPType.IconChar = FontAwesome.Sharp.IconChar.P;
+            this.IconbuttonPType.IconColor = System.Drawing.Color.DarkGray;
+            this.IconbuttonPType.IconFont = FontAwesome.Sharp.IconFont.Brands;
+            this.IconbuttonPType.IconSize = 24;
+            this.IconbuttonPType.Location = new System.Drawing.Point(250, 745);
+            this.IconbuttonPType.Name = "IconbuttonPType";
+            this.IconbuttonPType.Size = new System.Drawing.Size(100, 50);
+            this.IconbuttonPType.TabIndex = 223;
+            this.IconbuttonPType.UseVisualStyleBackColor = false;
+            // 
+            // IconbuttonNType
+            // 
+            this.IconbuttonNType.BackColor = System.Drawing.Color.Snow;
+            this.IconbuttonNType.Enabled = false;
+            this.IconbuttonNType.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.IconbuttonNType.IconChar = FontAwesome.Sharp.IconChar.N;
+            this.IconbuttonNType.IconColor = System.Drawing.Color.DarkGray;
+            this.IconbuttonNType.IconFont = FontAwesome.Sharp.IconFont.Brands;
+            this.IconbuttonNType.IconSize = 24;
+            this.IconbuttonNType.Location = new System.Drawing.Point(150, 745);
+            this.IconbuttonNType.Name = "IconbuttonNType";
+            this.IconbuttonNType.Size = new System.Drawing.Size(100, 50);
+            this.IconbuttonNType.TabIndex = 222;
+            this.IconbuttonNType.UseVisualStyleBackColor = false;
+            // 
+            // LabelTypes
+            // 
+            this.LabelTypes.AutoSize = true;
+            this.LabelTypes.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelTypes.Location = new System.Drawing.Point(30, 755);
+            this.LabelTypes.Name = "LabelTypes";
+            this.LabelTypes.Size = new System.Drawing.Size(66, 28);
+            this.LabelTypes.TabIndex = 221;
+            this.LabelTypes.Text = "Types";
+            // 
+            // RichTextboxMobilityUnit
+            // 
+            this.RichTextboxMobilityUnit.BackColor = System.Drawing.SystemColors.Control;
+            this.RichTextboxMobilityUnit.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.RichTextboxMobilityUnit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RichTextboxMobilityUnit.ForeColor = System.Drawing.Color.Black;
+            this.RichTextboxMobilityUnit.Location = new System.Drawing.Point(325, 679);
+            this.RichTextboxMobilityUnit.Name = "RichTextboxMobilityUnit";
+            this.RichTextboxMobilityUnit.ReadOnly = true;
+            this.RichTextboxMobilityUnit.Size = new System.Drawing.Size(50, 27);
+            this.RichTextboxMobilityUnit.TabIndex = 220;
+            this.RichTextboxMobilityUnit.Text = "";
+            // 
+            // RichTextboxMobility
+            // 
+            this.RichTextboxMobility.BackColor = System.Drawing.Color.DarkGray;
+            this.RichTextboxMobility.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.RichTextboxMobility.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RichTextboxMobility.Location = new System.Drawing.Point(160, 675);
+            this.RichTextboxMobility.Name = "RichTextboxMobility";
+            this.RichTextboxMobility.Size = new System.Drawing.Size(30, 35);
+            this.RichTextboxMobility.TabIndex = 219;
+            this.RichTextboxMobility.Text = "µ:";
+            // 
+            // TextboxMobility
+            // 
+            this.TextboxMobility.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TextboxMobility.Location = new System.Drawing.Point(200, 679);
+            this.TextboxMobility.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.TextboxMobility.Name = "TextboxMobility";
+            this.TextboxMobility.ReadOnly = true;
+            this.TextboxMobility.Size = new System.Drawing.Size(100, 27);
+            this.TextboxMobility.TabIndex = 218;
+            this.TextboxMobility.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // RichTextboxSheetConcentrationUnit
+            // 
+            this.RichTextboxSheetConcentrationUnit.BackColor = System.Drawing.SystemColors.Control;
+            this.RichTextboxSheetConcentrationUnit.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.RichTextboxSheetConcentrationUnit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RichTextboxSheetConcentrationUnit.Location = new System.Drawing.Point(325, 609);
+            this.RichTextboxSheetConcentrationUnit.Name = "RichTextboxSheetConcentrationUnit";
+            this.RichTextboxSheetConcentrationUnit.ReadOnly = true;
+            this.RichTextboxSheetConcentrationUnit.Size = new System.Drawing.Size(50, 27);
+            this.RichTextboxSheetConcentrationUnit.TabIndex = 217;
+            this.RichTextboxSheetConcentrationUnit.Text = "";
+            // 
+            // RichTextboxBulkConcentrationUnit
+            // 
+            this.RichTextboxBulkConcentrationUnit.BackColor = System.Drawing.SystemColors.Control;
+            this.RichTextboxBulkConcentrationUnit.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.RichTextboxBulkConcentrationUnit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RichTextboxBulkConcentrationUnit.ForeColor = System.Drawing.Color.Black;
+            this.RichTextboxBulkConcentrationUnit.Location = new System.Drawing.Point(325, 644);
+            this.RichTextboxBulkConcentrationUnit.Name = "RichTextboxBulkConcentrationUnit";
+            this.RichTextboxBulkConcentrationUnit.ReadOnly = true;
+            this.RichTextboxBulkConcentrationUnit.Size = new System.Drawing.Size(50, 27);
+            this.RichTextboxBulkConcentrationUnit.TabIndex = 216;
+            this.RichTextboxBulkConcentrationUnit.Text = "";
+            // 
+            // RichTextboxBulkConcentration
+            // 
+            this.RichTextboxBulkConcentration.BackColor = System.Drawing.Color.DarkGray;
+            this.RichTextboxBulkConcentration.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.RichTextboxBulkConcentration.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RichTextboxBulkConcentration.Location = new System.Drawing.Point(140, 640);
+            this.RichTextboxBulkConcentration.Name = "RichTextboxBulkConcentration";
+            this.RichTextboxBulkConcentration.Size = new System.Drawing.Size(60, 35);
+            this.RichTextboxBulkConcentration.TabIndex = 215;
+            this.RichTextboxBulkConcentration.Text = "n_b:";
+            // 
+            // TextboxBulkConcentration
+            // 
+            this.TextboxBulkConcentration.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TextboxBulkConcentration.Location = new System.Drawing.Point(200, 644);
+            this.TextboxBulkConcentration.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.TextboxBulkConcentration.Name = "TextboxBulkConcentration";
+            this.TextboxBulkConcentration.ReadOnly = true;
+            this.TextboxBulkConcentration.Size = new System.Drawing.Size(100, 27);
+            this.TextboxBulkConcentration.TabIndex = 213;
+            this.TextboxBulkConcentration.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // RichTextboxSheetConcentration
+            // 
+            this.RichTextboxSheetConcentration.BackColor = System.Drawing.Color.DarkGray;
+            this.RichTextboxSheetConcentration.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.RichTextboxSheetConcentration.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RichTextboxSheetConcentration.Location = new System.Drawing.Point(120, 605);
+            this.RichTextboxSheetConcentration.Name = "RichTextboxSheetConcentration";
+            this.RichTextboxSheetConcentration.Size = new System.Drawing.Size(72, 35);
+            this.RichTextboxSheetConcentration.TabIndex = 212;
+            this.RichTextboxSheetConcentration.Text = "n_s:";
+            // 
+            // TextboxSheetConcentration
+            // 
+            this.TextboxSheetConcentration.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TextboxSheetConcentration.Location = new System.Drawing.Point(200, 609);
+            this.TextboxSheetConcentration.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.TextboxSheetConcentration.Name = "TextboxSheetConcentration";
+            this.TextboxSheetConcentration.ReadOnly = true;
+            this.TextboxSheetConcentration.Size = new System.Drawing.Size(100, 27);
+            this.TextboxSheetConcentration.TabIndex = 210;
+            this.TextboxSheetConcentration.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // RichTextboxHallCoefficient
+            // 
+            this.RichTextboxHallCoefficient.BackColor = System.Drawing.Color.DarkGray;
+            this.RichTextboxHallCoefficient.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.RichTextboxHallCoefficient.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RichTextboxHallCoefficient.Location = new System.Drawing.Point(150, 575);
+            this.RichTextboxHallCoefficient.Name = "RichTextboxHallCoefficient";
+            this.RichTextboxHallCoefficient.Size = new System.Drawing.Size(40, 35);
+            this.RichTextboxHallCoefficient.TabIndex = 209;
+            this.RichTextboxHallCoefficient.Text = "R_H:";
+            // 
+            // TextboxHallCoefficient
+            // 
+            this.TextboxHallCoefficient.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TextboxHallCoefficient.Location = new System.Drawing.Point(200, 574);
+            this.TextboxHallCoefficient.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.TextboxHallCoefficient.Name = "TextboxHallCoefficient";
+            this.TextboxHallCoefficient.ReadOnly = true;
+            this.TextboxHallCoefficient.Size = new System.Drawing.Size(100, 27);
+            this.TextboxHallCoefficient.TabIndex = 207;
+            this.TextboxHallCoefficient.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // RichTextboxHallVoltage
+            // 
+            this.RichTextboxHallVoltage.BackColor = System.Drawing.Color.DarkGray;
+            this.RichTextboxHallVoltage.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.RichTextboxHallVoltage.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RichTextboxHallVoltage.Location = new System.Drawing.Point(150, 540);
+            this.RichTextboxHallVoltage.Name = "RichTextboxHallVoltage";
+            this.RichTextboxHallVoltage.Size = new System.Drawing.Size(40, 35);
+            this.RichTextboxHallVoltage.TabIndex = 206;
+            this.RichTextboxHallVoltage.Text = "V_H:";
+            // 
+            // TextboxHallVoltage
+            // 
+            this.TextboxHallVoltage.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TextboxHallVoltage.Location = new System.Drawing.Point(200, 539);
+            this.TextboxHallVoltage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.TextboxHallVoltage.Name = "TextboxHallVoltage";
+            this.TextboxHallVoltage.ReadOnly = true;
+            this.TextboxHallVoltage.Size = new System.Drawing.Size(100, 27);
+            this.TextboxHallVoltage.TabIndex = 204;
+            this.TextboxHallVoltage.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // TextboxHallVoltageUnit
+            // 
+            this.TextboxHallVoltageUnit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TextboxHallVoltageUnit.Location = new System.Drawing.Point(325, 539);
+            this.TextboxHallVoltageUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.TextboxHallVoltageUnit.Name = "TextboxHallVoltageUnit";
+            this.TextboxHallVoltageUnit.ReadOnly = true;
+            this.TextboxHallVoltageUnit.Size = new System.Drawing.Size(50, 27);
+            this.TextboxHallVoltageUnit.TabIndex = 205;
+            this.TextboxHallVoltageUnit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // LabelHallPropertiesHeader
+            // 
+            this.LabelHallPropertiesHeader.AutoSize = true;
+            this.LabelHallPropertiesHeader.BackColor = System.Drawing.Color.Transparent;
+            this.LabelHallPropertiesHeader.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelHallPropertiesHeader.Location = new System.Drawing.Point(30, 500);
+            this.LabelHallPropertiesHeader.Name = "LabelHallPropertiesHeader";
+            this.LabelHallPropertiesHeader.Size = new System.Drawing.Size(154, 28);
+            this.LabelHallPropertiesHeader.TabIndex = 194;
+            this.LabelHallPropertiesHeader.Text = "Hall Properties";
             // 
             // RichTextboxHallInNorthPos4
             // 
@@ -611,6 +820,7 @@
             this.TextboxHallInNorth1.ReadOnly = true;
             this.TextboxHallInNorth1.Size = new System.Drawing.Size(100, 27);
             this.TextboxHallInNorth1.TabIndex = 178;
+            this.TextboxHallInNorth1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInNorth2
             // 
@@ -621,6 +831,7 @@
             this.TextboxHallInNorth2.ReadOnly = true;
             this.TextboxHallInNorth2.Size = new System.Drawing.Size(100, 27);
             this.TextboxHallInNorth2.TabIndex = 179;
+            this.TextboxHallInNorth2.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInNorth4
             // 
@@ -631,6 +842,7 @@
             this.TextboxHallInNorth4.ReadOnly = true;
             this.TextboxHallInNorth4.Size = new System.Drawing.Size(100, 27);
             this.TextboxHallInNorth4.TabIndex = 181;
+            this.TextboxHallInNorth4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInNorth3
             // 
@@ -641,6 +853,7 @@
             this.TextboxHallInNorth3.ReadOnly = true;
             this.TextboxHallInNorth3.Size = new System.Drawing.Size(100, 27);
             this.TextboxHallInNorth3.TabIndex = 180;
+            this.TextboxHallInNorth3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInNorth4Unit
             // 
@@ -651,6 +864,7 @@
             this.TextboxHallInNorth4Unit.ReadOnly = true;
             this.TextboxHallInNorth4Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxHallInNorth4Unit.TabIndex = 185;
+            this.TextboxHallInNorth4Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInNorth3Unit
             // 
@@ -661,6 +875,7 @@
             this.TextboxHallInNorth3Unit.ReadOnly = true;
             this.TextboxHallInNorth3Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxHallInNorth3Unit.TabIndex = 184;
+            this.TextboxHallInNorth3Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInNorth2Unit
             // 
@@ -671,6 +886,7 @@
             this.TextboxHallInNorth2Unit.ReadOnly = true;
             this.TextboxHallInNorth2Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxHallInNorth2Unit.TabIndex = 183;
+            this.TextboxHallInNorth2Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxHallInNorth1Unit
             // 
@@ -681,305 +897,19 @@
             this.TextboxHallInNorth1Unit.ReadOnly = true;
             this.TextboxHallInNorth1Unit.Size = new System.Drawing.Size(50, 27);
             this.TextboxHallInNorth1Unit.TabIndex = 182;
+            this.TextboxHallInNorth1Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // RichTextboxHallVoltage1
+            // RichTextboxHallCoefficientUnit
             // 
-            this.RichTextboxHallVoltage1.BackColor = System.Drawing.Color.DarkGray;
-            this.RichTextboxHallVoltage1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.RichTextboxHallVoltage1.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxHallVoltage1.Location = new System.Drawing.Point(120, 535);
-            this.RichTextboxHallVoltage1.Name = "RichTextboxHallVoltage1";
-            this.RichTextboxHallVoltage1.Size = new System.Drawing.Size(60, 35);
-            this.RichTextboxHallVoltage1.TabIndex = 193;
-            this.RichTextboxHallVoltage1.Text = "V_H1:";
-            // 
-            // TextboxHallVoltage1
-            // 
-            this.TextboxHallVoltage1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxHallVoltage1.Location = new System.Drawing.Point(200, 534);
-            this.TextboxHallVoltage1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxHallVoltage1.Name = "TextboxHallVoltage1";
-            this.TextboxHallVoltage1.ReadOnly = true;
-            this.TextboxHallVoltage1.Size = new System.Drawing.Size(100, 27);
-            this.TextboxHallVoltage1.TabIndex = 190;
-            // 
-            // TextboxHallVoltage1Unit
-            // 
-            this.TextboxHallVoltage1Unit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxHallVoltage1Unit.Location = new System.Drawing.Point(325, 534);
-            this.TextboxHallVoltage1Unit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxHallVoltage1Unit.Name = "TextboxHallVoltage1Unit";
-            this.TextboxHallVoltage1Unit.ReadOnly = true;
-            this.TextboxHallVoltage1Unit.Size = new System.Drawing.Size(50, 27);
-            this.TextboxHallVoltage1Unit.TabIndex = 191;
-            // 
-            // LabelHallVoltageHeader
-            // 
-            this.LabelHallVoltageHeader.AutoSize = true;
-            this.LabelHallVoltageHeader.BackColor = System.Drawing.Color.Transparent;
-            this.LabelHallVoltageHeader.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelHallVoltageHeader.Location = new System.Drawing.Point(30, 500);
-            this.LabelHallVoltageHeader.Name = "LabelHallVoltageHeader";
-            this.LabelHallVoltageHeader.Size = new System.Drawing.Size(110, 23);
-            this.LabelHallVoltageHeader.TabIndex = 194;
-            this.LabelHallVoltageHeader.Text = "Hall Voltages";
-            // 
-            // RichTextboxHallVoltage2
-            // 
-            this.RichTextboxHallVoltage2.BackColor = System.Drawing.Color.DarkGray;
-            this.RichTextboxHallVoltage2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.RichTextboxHallVoltage2.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxHallVoltage2.Location = new System.Drawing.Point(120, 570);
-            this.RichTextboxHallVoltage2.Name = "RichTextboxHallVoltage2";
-            this.RichTextboxHallVoltage2.Size = new System.Drawing.Size(60, 35);
-            this.RichTextboxHallVoltage2.TabIndex = 197;
-            this.RichTextboxHallVoltage2.Text = "V_H2:";
-            // 
-            // TextboxHallVoltage2
-            // 
-            this.TextboxHallVoltage2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxHallVoltage2.Location = new System.Drawing.Point(200, 569);
-            this.TextboxHallVoltage2.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxHallVoltage2.Name = "TextboxHallVoltage2";
-            this.TextboxHallVoltage2.ReadOnly = true;
-            this.TextboxHallVoltage2.Size = new System.Drawing.Size(100, 27);
-            this.TextboxHallVoltage2.TabIndex = 195;
-            // 
-            // TextboxHallVoltage2Unit
-            // 
-            this.TextboxHallVoltage2Unit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxHallVoltage2Unit.Location = new System.Drawing.Point(325, 569);
-            this.TextboxHallVoltage2Unit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxHallVoltage2Unit.Name = "TextboxHallVoltage2Unit";
-            this.TextboxHallVoltage2Unit.ReadOnly = true;
-            this.TextboxHallVoltage2Unit.Size = new System.Drawing.Size(50, 27);
-            this.TextboxHallVoltage2Unit.TabIndex = 196;
-            // 
-            // RichTextboxHallVoltage4
-            // 
-            this.RichTextboxHallVoltage4.BackColor = System.Drawing.Color.DarkGray;
-            this.RichTextboxHallVoltage4.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.RichTextboxHallVoltage4.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxHallVoltage4.Location = new System.Drawing.Point(120, 640);
-            this.RichTextboxHallVoltage4.Name = "RichTextboxHallVoltage4";
-            this.RichTextboxHallVoltage4.Size = new System.Drawing.Size(60, 35);
-            this.RichTextboxHallVoltage4.TabIndex = 203;
-            this.RichTextboxHallVoltage4.Text = "V_H4:";
-            // 
-            // TextboxHallVoltage4
-            // 
-            this.TextboxHallVoltage4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxHallVoltage4.Location = new System.Drawing.Point(200, 639);
-            this.TextboxHallVoltage4.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxHallVoltage4.Name = "TextboxHallVoltage4";
-            this.TextboxHallVoltage4.ReadOnly = true;
-            this.TextboxHallVoltage4.Size = new System.Drawing.Size(100, 27);
-            this.TextboxHallVoltage4.TabIndex = 201;
-            // 
-            // TextboxHallVoltage4Unit
-            // 
-            this.TextboxHallVoltage4Unit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxHallVoltage4Unit.Location = new System.Drawing.Point(325, 639);
-            this.TextboxHallVoltage4Unit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxHallVoltage4Unit.Name = "TextboxHallVoltage4Unit";
-            this.TextboxHallVoltage4Unit.ReadOnly = true;
-            this.TextboxHallVoltage4Unit.Size = new System.Drawing.Size(50, 27);
-            this.TextboxHallVoltage4Unit.TabIndex = 202;
-            // 
-            // RichTextboxHallVoltage3
-            // 
-            this.RichTextboxHallVoltage3.BackColor = System.Drawing.Color.DarkGray;
-            this.RichTextboxHallVoltage3.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.RichTextboxHallVoltage3.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxHallVoltage3.Location = new System.Drawing.Point(120, 605);
-            this.RichTextboxHallVoltage3.Name = "RichTextboxHallVoltage3";
-            this.RichTextboxHallVoltage3.Size = new System.Drawing.Size(60, 35);
-            this.RichTextboxHallVoltage3.TabIndex = 200;
-            this.RichTextboxHallVoltage3.Text = "V_H3:";
-            // 
-            // TextboxHallVoltage3
-            // 
-            this.TextboxHallVoltage3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxHallVoltage3.Location = new System.Drawing.Point(200, 604);
-            this.TextboxHallVoltage3.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxHallVoltage3.Name = "TextboxHallVoltage3";
-            this.TextboxHallVoltage3.ReadOnly = true;
-            this.TextboxHallVoltage3.Size = new System.Drawing.Size(100, 27);
-            this.TextboxHallVoltage3.TabIndex = 198;
-            // 
-            // TextboxHallVoltage3Unit
-            // 
-            this.TextboxHallVoltage3Unit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxHallVoltage3Unit.Location = new System.Drawing.Point(325, 604);
-            this.TextboxHallVoltage3Unit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxHallVoltage3Unit.Name = "TextboxHallVoltage3Unit";
-            this.TextboxHallVoltage3Unit.ReadOnly = true;
-            this.TextboxHallVoltage3Unit.Size = new System.Drawing.Size(50, 27);
-            this.TextboxHallVoltage3Unit.TabIndex = 199;
-            // 
-            // RichTextboxHallVoltage
-            // 
-            this.RichTextboxHallVoltage.BackColor = System.Drawing.Color.DarkGray;
-            this.RichTextboxHallVoltage.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.RichTextboxHallVoltage.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxHallVoltage.Location = new System.Drawing.Point(120, 675);
-            this.RichTextboxHallVoltage.Name = "RichTextboxHallVoltage";
-            this.RichTextboxHallVoltage.Size = new System.Drawing.Size(60, 35);
-            this.RichTextboxHallVoltage.TabIndex = 206;
-            this.RichTextboxHallVoltage.Text = "V_H:";
-            // 
-            // TextboxHallVoltage
-            // 
-            this.TextboxHallVoltage.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxHallVoltage.Location = new System.Drawing.Point(200, 674);
-            this.TextboxHallVoltage.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxHallVoltage.Name = "TextboxHallVoltage";
-            this.TextboxHallVoltage.ReadOnly = true;
-            this.TextboxHallVoltage.Size = new System.Drawing.Size(100, 27);
-            this.TextboxHallVoltage.TabIndex = 204;
-            // 
-            // TextboxHallVoltageUnit
-            // 
-            this.TextboxHallVoltageUnit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxHallVoltageUnit.Location = new System.Drawing.Point(325, 674);
-            this.TextboxHallVoltageUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxHallVoltageUnit.Name = "TextboxHallVoltageUnit";
-            this.TextboxHallVoltageUnit.ReadOnly = true;
-            this.TextboxHallVoltageUnit.Size = new System.Drawing.Size(50, 27);
-            this.TextboxHallVoltageUnit.TabIndex = 205;
-            // 
-            // RichTextboxHallCoefficient
-            // 
-            this.RichTextboxHallCoefficient.BackColor = System.Drawing.Color.DarkGray;
-            this.RichTextboxHallCoefficient.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.RichTextboxHallCoefficient.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxHallCoefficient.Location = new System.Drawing.Point(120, 715);
-            this.RichTextboxHallCoefficient.Name = "RichTextboxHallCoefficient";
-            this.RichTextboxHallCoefficient.Size = new System.Drawing.Size(50, 35);
-            this.RichTextboxHallCoefficient.TabIndex = 209;
-            this.RichTextboxHallCoefficient.Text = "R_H:";
-            // 
-            // TextboxHallCoefficient
-            // 
-            this.TextboxHallCoefficient.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxHallCoefficient.Location = new System.Drawing.Point(200, 714);
-            this.TextboxHallCoefficient.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxHallCoefficient.Name = "TextboxHallCoefficient";
-            this.TextboxHallCoefficient.ReadOnly = true;
-            this.TextboxHallCoefficient.Size = new System.Drawing.Size(100, 27);
-            this.TextboxHallCoefficient.TabIndex = 207;
-            // 
-            // TextboxHallCoefficientUnit
-            // 
-            this.TextboxHallCoefficientUnit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxHallCoefficientUnit.Location = new System.Drawing.Point(325, 714);
-            this.TextboxHallCoefficientUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxHallCoefficientUnit.Name = "TextboxHallCoefficientUnit";
-            this.TextboxHallCoefficientUnit.ReadOnly = true;
-            this.TextboxHallCoefficientUnit.Size = new System.Drawing.Size(50, 27);
-            this.TextboxHallCoefficientUnit.TabIndex = 208;
-            // 
-            // RichTextboxConcentration
-            // 
-            this.RichTextboxConcentration.BackColor = System.Drawing.Color.DarkGray;
-            this.RichTextboxConcentration.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.RichTextboxConcentration.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxConcentration.Location = new System.Drawing.Point(16, 750);
-            this.RichTextboxConcentration.Name = "RichTextboxConcentration";
-            this.RichTextboxConcentration.Size = new System.Drawing.Size(180, 35);
-            this.RichTextboxConcentration.TabIndex = 212;
-            this.RichTextboxConcentration.Text = "Concentration (n):";
-            // 
-            // TextboxConcentration
-            // 
-            this.TextboxConcentration.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxConcentration.Location = new System.Drawing.Point(200, 749);
-            this.TextboxConcentration.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxConcentration.Name = "TextboxConcentration";
-            this.TextboxConcentration.ReadOnly = true;
-            this.TextboxConcentration.Size = new System.Drawing.Size(100, 27);
-            this.TextboxConcentration.TabIndex = 210;
-            // 
-            // TextboxConcentrationUnit
-            // 
-            this.TextboxConcentrationUnit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxConcentrationUnit.Location = new System.Drawing.Point(325, 749);
-            this.TextboxConcentrationUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxConcentrationUnit.Name = "TextboxConcentrationUnit";
-            this.TextboxConcentrationUnit.ReadOnly = true;
-            this.TextboxConcentrationUnit.Size = new System.Drawing.Size(50, 27);
-            this.TextboxConcentrationUnit.TabIndex = 211;
-            // 
-            // RichTextboxMobility
-            // 
-            this.RichTextboxMobility.BackColor = System.Drawing.Color.DarkGray;
-            this.RichTextboxMobility.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.RichTextboxMobility.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxMobility.Location = new System.Drawing.Point(70, 785);
-            this.RichTextboxMobility.Name = "RichTextboxMobility";
-            this.RichTextboxMobility.Size = new System.Drawing.Size(120, 35);
-            this.RichTextboxMobility.TabIndex = 215;
-            this.RichTextboxMobility.Text = "Mobility (µ):";
-            // 
-            // TextboxMobility
-            // 
-            this.TextboxMobility.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxMobility.Location = new System.Drawing.Point(200, 784);
-            this.TextboxMobility.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxMobility.Name = "TextboxMobility";
-            this.TextboxMobility.ReadOnly = true;
-            this.TextboxMobility.Size = new System.Drawing.Size(100, 27);
-            this.TextboxMobility.TabIndex = 213;
-            // 
-            // TextboxMobilityUnit
-            // 
-            this.TextboxMobilityUnit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxMobilityUnit.Location = new System.Drawing.Point(325, 784);
-            this.TextboxMobilityUnit.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.TextboxMobilityUnit.Name = "TextboxMobilityUnit";
-            this.TextboxMobilityUnit.ReadOnly = true;
-            this.TextboxMobilityUnit.Size = new System.Drawing.Size(50, 27);
-            this.TextboxMobilityUnit.TabIndex = 214;
-            // 
-            // LabelTypes
-            // 
-            this.LabelTypes.AutoSize = true;
-            this.LabelTypes.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelTypes.Location = new System.Drawing.Point(640, 24);
-            this.LabelTypes.Name = "LabelTypes";
-            this.LabelTypes.Size = new System.Drawing.Size(68, 28);
-            this.LabelTypes.TabIndex = 62;
-            this.LabelTypes.Text = "TYPE :";
-            // 
-            // IconbuttonNType
-            // 
-            this.IconbuttonNType.BackColor = System.Drawing.Color.Snow;
-            this.IconbuttonNType.Enabled = false;
-            this.IconbuttonNType.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.IconbuttonNType.IconChar = FontAwesome.Sharp.IconChar.N;
-            this.IconbuttonNType.IconColor = System.Drawing.Color.DarkGray;
-            this.IconbuttonNType.IconFont = FontAwesome.Sharp.IconFont.Brands;
-            this.IconbuttonNType.IconSize = 24;
-            this.IconbuttonNType.Location = new System.Drawing.Point(715, 17);
-            this.IconbuttonNType.Name = "IconbuttonNType";
-            this.IconbuttonNType.Size = new System.Drawing.Size(50, 50);
-            this.IconbuttonNType.TabIndex = 63;
-            this.IconbuttonNType.UseVisualStyleBackColor = false;
-            // 
-            // IconbuttonPType
-            // 
-            this.IconbuttonPType.BackColor = System.Drawing.Color.Snow;
-            this.IconbuttonPType.Enabled = false;
-            this.IconbuttonPType.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.IconbuttonPType.IconChar = FontAwesome.Sharp.IconChar.P;
-            this.IconbuttonPType.IconColor = System.Drawing.Color.DarkGray;
-            this.IconbuttonPType.IconFont = FontAwesome.Sharp.IconFont.Brands;
-            this.IconbuttonPType.IconSize = 24;
-            this.IconbuttonPType.Location = new System.Drawing.Point(764, 17);
-            this.IconbuttonPType.Name = "IconbuttonPType";
-            this.IconbuttonPType.Size = new System.Drawing.Size(50, 50);
-            this.IconbuttonPType.TabIndex = 64;
-            this.IconbuttonPType.UseVisualStyleBackColor = false;
+            this.RichTextboxHallCoefficientUnit.BackColor = System.Drawing.SystemColors.Control;
+            this.RichTextboxHallCoefficientUnit.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.RichTextboxHallCoefficientUnit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RichTextboxHallCoefficientUnit.Location = new System.Drawing.Point(325, 574);
+            this.RichTextboxHallCoefficientUnit.Name = "RichTextboxHallCoefficientUnit";
+            this.RichTextboxHallCoefficientUnit.ReadOnly = true;
+            this.RichTextboxHallCoefficientUnit.Size = new System.Drawing.Size(50, 27);
+            this.RichTextboxHallCoefficientUnit.TabIndex = 224;
+            this.RichTextboxHallCoefficientUnit.Text = "";
             // 
             // HallMeasurementResultsForm
             // 
@@ -994,9 +924,9 @@
             this.Name = "HallMeasurementResultsForm";
             this.Text = "Hall effect Measurement Measurement Results Form";
             this.PanelResultsChart.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.ChartTotalHallMeasurement)).EndInit();
             this.PanelMeasureAndSource.ResumeLayout(false);
             this.PanelMeasureAndSource.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ChartTotalHallVoltages)).EndInit();
             this.PanelResults.ResumeLayout(false);
             this.PanelResults.PerformLayout();
             this.ResumeLayout(false);
@@ -1011,7 +941,7 @@
         private System.Windows.Forms.TextBox TextboxMeasureMode;
         private System.Windows.Forms.Label LabelMeasureMode;
         private System.Windows.Forms.Label LabelSourceMode;
-        private System.Windows.Forms.DataVisualization.Charting.Chart ChartTotalHallVoltages;
+        private System.Windows.Forms.DataVisualization.Charting.Chart ChartTotalHallMeasurement;
         private System.Windows.Forms.TextBox TextboxHallOut1Unit;
         private System.Windows.Forms.TextBox TextboxHallOut2Unit;
         private System.Windows.Forms.TextBox TextboxHallOut3Unit;
@@ -1051,33 +981,24 @@
         private System.Windows.Forms.TextBox TextboxHallInNorth3Unit;
         private System.Windows.Forms.TextBox TextboxHallInNorth2Unit;
         private System.Windows.Forms.TextBox TextboxHallInNorth1Unit;
-        private System.Windows.Forms.RichTextBox RichTextboxHallVoltage1;
-        private System.Windows.Forms.TextBox TextboxHallVoltage1;
-        private System.Windows.Forms.TextBox TextboxHallVoltage1Unit;
-        private System.Windows.Forms.Label LabelHallVoltageHeader;
+        private System.Windows.Forms.Label LabelHallPropertiesHeader;
         private System.Windows.Forms.RichTextBox RichTextboxHallVoltage;
         private System.Windows.Forms.TextBox TextboxHallVoltage;
         private System.Windows.Forms.TextBox TextboxHallVoltageUnit;
-        private System.Windows.Forms.RichTextBox RichTextboxHallVoltage4;
-        private System.Windows.Forms.TextBox TextboxHallVoltage4;
-        private System.Windows.Forms.TextBox TextboxHallVoltage4Unit;
-        private System.Windows.Forms.RichTextBox RichTextboxHallVoltage3;
-        private System.Windows.Forms.TextBox TextboxHallVoltage3;
-        private System.Windows.Forms.TextBox TextboxHallVoltage3Unit;
-        private System.Windows.Forms.RichTextBox RichTextboxHallVoltage2;
-        private System.Windows.Forms.TextBox TextboxHallVoltage2;
-        private System.Windows.Forms.TextBox TextboxHallVoltage2Unit;
         private System.Windows.Forms.RichTextBox RichTextboxHallCoefficient;
         private System.Windows.Forms.TextBox TextboxHallCoefficient;
-        private System.Windows.Forms.TextBox TextboxHallCoefficientUnit;
+        private System.Windows.Forms.RichTextBox RichTextboxBulkConcentration;
+        private System.Windows.Forms.TextBox TextboxBulkConcentration;
+        private System.Windows.Forms.RichTextBox RichTextboxSheetConcentration;
+        private System.Windows.Forms.TextBox TextboxSheetConcentration;
+        private System.Windows.Forms.RichTextBox RichTextboxBulkConcentrationUnit;
+        private System.Windows.Forms.RichTextBox RichTextboxSheetConcentrationUnit;
+        private System.Windows.Forms.RichTextBox RichTextboxMobilityUnit;
         private System.Windows.Forms.RichTextBox RichTextboxMobility;
         private System.Windows.Forms.TextBox TextboxMobility;
-        private System.Windows.Forms.TextBox TextboxMobilityUnit;
-        private System.Windows.Forms.RichTextBox RichTextboxConcentration;
-        private System.Windows.Forms.TextBox TextboxConcentration;
-        private System.Windows.Forms.TextBox TextboxConcentrationUnit;
+        private FontAwesome.Sharp.IconButton IconbuttonPType;
         private FontAwesome.Sharp.IconButton IconbuttonNType;
         private System.Windows.Forms.Label LabelTypes;
-        private FontAwesome.Sharp.IconButton IconbuttonPType;
+        private System.Windows.Forms.RichTextBox RichTextboxHallCoefficientUnit;
     }
 }

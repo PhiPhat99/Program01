@@ -10,14 +10,19 @@ namespace Program01
 {
     public partial class HallMeasurementResultsForm : Form
     {
+        private readonly string sourceUnit = GlobalSettings.Instance.SourceModeUI == "Voltage" ? "V" : "A";
+        private readonly string measureUnit = GlobalSettings.Instance.MeasureModeUI == "Voltage" ? "V" : "A";
+
         public HallMeasurementResultsForm()
         {
             InitializeComponent();
             RichTextBoxSettings();
             LoadMeasurementResults();
+            UpdateSemiconductorTypeButtons();
 
             CollectAndCalculateHallMeasured.Instance.HallVoltageCalculated += OnHallVoltageCalculatedHandler;
             CollectAndCalculateHallMeasured.Instance.HallPropertiesCalculated += OnHallPropertiesCalculatedHandler;
+            CollectAndCalculateHallMeasured.Instance.HallIVHDataCalculated += OnHallIVHDataCalculatedHandler; // Subscribe Event ใหม่
         }
 
         private void RichTextBoxSettings()
@@ -233,10 +238,125 @@ namespace Program01
             }
         }
 
+        /*private void LoadHallVoltageResultsChart()
+        {
+            // ตรวจสอบและสร้าง Chart Control (สมมติว่าชื่อ chartHallVoltageResults)
+            Chart chart = this.Controls.Find("chartHallVoltageResults", true).FirstOrDefault() as Chart;
+            if (chart == null)
+            {
+                chart = new Chart();
+                chart.Name = "chartHallVoltageResults";
+                this.Controls.Add(chart);
+
+                // ตั้งค่า Area ให้กับ Chart
+                ChartArea chartArea = new ChartArea("HallVoltageArea");
+                chart.ChartAreas.Add(chartArea);
+
+                // ตั้งค่า Title ให้กับ Chart
+                Title title = new Title($"Hall Voltage vs. {GlobalSettings.Instance.SourceModeUI}");
+                chart.Titles.Add(title);
+
+                // ตั้งค่าแกน X
+                chartArea.AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} ({sourceUnit})";
+                chartArea.AxisX.LabelStyle.Format = "E2"; // รูปแบบตัวเลขวิทยาศาสตร์
+
+                // ตั้งค่าแกน Y
+                chartArea.AxisY.Title = "Hall Voltage (V)";
+                chartArea.AxisY.LabelStyle.Format = "E2"; // รูปแบบตัวเลขวิทยาศาสตร์
+            }
+            else
+            {
+                // เคลียร์ Series เก่าออกก่อน (ถ้ามี)
+                chart.Series.Clear();
+            }
+
+            // ดึงข้อมูลการวัดทั้งหมดจาก Singleton Instance
+            var measurements = CollectAndCalculateHallMeasured.Instance.GetAllHallMeasurements();
+
+            // วนลูปผ่านแต่ละตำแหน่ง Tuner (สมมติว่ามีตำแหน่ง 1 ถึง 4)
+            for (int tunerPosition = 1; tunerPosition <= 4; tunerPosition++)
+            {
+                // ตรวจสอบว่ามีข้อมูลสำหรับทุกสถานะแม่เหล็กและตำแหน่ง Tuner นี้หรือไม่
+                if (measurements.ContainsKey(HallMeasurementState.NoMagneticField) &&
+                    measurements[HallMeasurementState.NoMagneticField].ContainsKey(tunerPosition) &&
+                    measurements.ContainsKey(HallMeasurementState.InwardOrNorthMagneticField) &&
+                    measurements[HallMeasurementState.InwardOrNorthMagneticField].ContainsKey(tunerPosition) &&
+                    measurements.ContainsKey(HallMeasurementState.OutwardOrSouthMagneticField) &&
+                    measurements[HallMeasurementState.OutwardOrSouthMagneticField].ContainsKey(tunerPosition))
+                {
+                    var noFieldData = measurements[HallMeasurementState.NoMagneticField][tunerPosition];
+                    var northFieldData = measurements[HallMeasurementState.InwardOrNorthMagneticField][tunerPosition];
+                    var southFieldData = measurements[HallMeasurementState.OutwardOrSouthMagneticField][tunerPosition];
+
+                    // สร้าง Series สำหรับ Hall Voltage ที่เกิดจากสนามแม่เหล็กเหนือ (North)
+                    Series northHallSeries = new Series($"North (Pos {tunerPosition})");
+                    northHallSeries.ChartType = SeriesChartType.Line;
+
+                    // สร้าง Series สำหรับ Hall Voltage ที่เกิดจากสนามแม่เหล็กใต้ (South)
+                    Series southHallSeries = new Series($"South (Pos {tunerPosition})");
+                    southHallSeries.ChartType = SeriesChartType.Line;
+
+                    // คำนวณและเพิ่ม Data Point ให้กับแต่ละ Series
+                    for (int i = 0; i < Math.Max(northFieldData.Count, southFieldData.Count); i++)
+                    {
+                        double sourceNorth = (i < northFieldData.Count) ? northData[i].Source : double.NaN;
+                        double readingNorth = (i < northFieldData.Count) ? northData[i].Reading : double.NaN;
+                        double vHallNorth = (i < noFieldData.Count && i < northFieldData.Count) ? readingNorth - noFieldData[i].Reading : double.NaN;
+
+                        double sourceSouth = (i < southFieldData.Count) ? southData[i].Source : double.NaN;
+                        double readingSouth = (i < southFieldData.Count) ? southData[i].Reading : double.NaN;
+                        double vHallSouth = (i < noFieldData.Count && i < southFieldData.Count) ? readingSouth - noFieldData[i].Reading : double.NaN;
+
+                        if (!double.IsNaN(sourceNorth) && !double.IsNaN(vHallNorth))
+                        {
+                            northHallSeries.Points.AddXY(sourceNorth, vHallNorth);
+                        }
+
+                        if (!double.IsNaN(sourceSouth) && !double.IsNaN(vHallSouth))
+                        {
+                            southHallSeries.Points.AddXY(sourceSouth, vHallSouth);
+                        }
+                    }
+
+                    // เพิ่ม Series ลงใน Chart
+                    chart.Series.Add(northHallSeries);
+                    chart.Series.Add(southHallSeries);
+                }
+            }
+        }*/
+
         private void OnHallVoltageCalculatedHandler(object sender, Dictionary<int, double> hallVoltages)
         {
             LoadMeasurementResults();
         }
+
+        private void OnHallIVHDataCalculatedHandler(object sender, Dictionary<int, List<(double Current, double HallVoltage)>> ivhDataByPosition)
+        {
+            ChartHallVoltageResults.Series.Clear();
+
+            foreach (var positionData in ivhDataByPosition)
+            {
+                int position = positionData.Key;
+                List<(double Current, double HallVoltage)> dataPoints = positionData.Value;
+
+                Series series = new Series();
+                series.ChartType = SeriesChartType.Line;
+                series.Name = $"Position {position}";
+                series.XValueMember = "Current";
+                series.YValueMembers = "HallVoltage";
+                series.IsVisibleInLegend = true;
+                series.MarkerStyle = MarkerStyle.Circle;
+
+                series.Points.DataBind(dataPoints, "Current", "HallVoltage", null);
+                ChartHallVoltageResults.Series.Add(series);
+            }
+
+            ChartHallVoltageResults.ChartAreas[0].AxisX.Title = GlobalSettings.Instance.SourceModeUI == "Voltage" ? "Voltage (V)" : "Current (A)";
+            ChartHallVoltageResults.ChartAreas[0].AxisY.Title = "Hall Voltage (V)"; // หรือหน่วยที่เหมาะสม
+
+            // อาจมีการตั้งค่าอื่นๆ เพิ่มเติม เช่น Scale ของแกน, Legend, ฯลฯ
+        }
+
         private void OnHallPropertiesCalculatedHandler(object sender, ( double HallCoefficient, double SheetConcentration, double BulkConcentration, double Mobility) properties)
         {
             TextboxHallCoefficient.Text = properties.HallCoefficient.ToString("E3");
@@ -245,6 +365,41 @@ namespace Program01
             TextboxMobility.Text = properties.Mobility.ToString("E3");
         }
 
+        private void UpdateSemiconductorTypeButtons(CollectAndCalculateHallMeasured.SemiconductorType type = CollectAndCalculateHallMeasured.SemiconductorType.Unknown)
+        {
+            Color nTypeBackColor = Color.Snow;
+            Color pTypeBackColor = Color.Snow;
+            Color nTypeCharColor = Color.LightGray;
+            Color pTypeCharColor = Color.LightGray;
+
+            if (type == CollectAndCalculateHallMeasured.SemiconductorType.NType)
+            {
+                nTypeCharColor = Color.LightSteelBlue;
+                nTypeBackColor = Color.Navy;
+            }
+            else if (type == CollectAndCalculateHallMeasured.SemiconductorType.PType)
+            {
+                pTypeCharColor = Color.LightCoral;
+                pTypeBackColor = Color.DarkRed;
+            }
+
+            IconbuttonNType.BackColor = nTypeBackColor;
+            IconbuttonPType.BackColor = pTypeBackColor;
+            IconbuttonNType.IconColor = nTypeCharColor;
+            IconbuttonPType.IconColor = pTypeCharColor;
+        }
+
+        private void OnSemiconductorTypeCalculatedHandler(object sender, CollectAndCalculateHallMeasured.SemiconductorType type)
+        {
+            // ทำงานบน UI Thread
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => UpdateSemiconductorTypeButtons(type)));
+                return;
+            }
+
+            UpdateSemiconductorTypeButtons(type);
+        }
     }
 }
 

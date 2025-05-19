@@ -32,7 +32,7 @@
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.PanelResultsChart = new System.Windows.Forms.Panel();
-            this.ChartTotalHallMeasurement = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.ChartHallVoltageResults = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.PanelMeasureAndSource = new System.Windows.Forms.Panel();
             this.TextboxSourceMode = new System.Windows.Forms.TextBox();
             this.TextboxMeasureMode = new System.Windows.Forms.TextBox();
@@ -65,6 +65,7 @@
             this.RichTextboxHallInSouthPos3 = new System.Windows.Forms.RichTextBox();
             this.RichTextboxHallInSouthPos4 = new System.Windows.Forms.RichTextBox();
             this.PanelResults = new System.Windows.Forms.Panel();
+            this.RichTextboxHallCoefficientUnit = new System.Windows.Forms.RichTextBox();
             this.IconbuttonPType = new FontAwesome.Sharp.IconButton();
             this.IconbuttonNType = new FontAwesome.Sharp.IconButton();
             this.LabelTypes = new System.Windows.Forms.Label();
@@ -95,9 +96,8 @@
             this.TextboxHallInNorth3Unit = new System.Windows.Forms.TextBox();
             this.TextboxHallInNorth2Unit = new System.Windows.Forms.TextBox();
             this.TextboxHallInNorth1Unit = new System.Windows.Forms.TextBox();
-            this.RichTextboxHallCoefficientUnit = new System.Windows.Forms.RichTextBox();
             this.PanelResultsChart.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ChartTotalHallMeasurement)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ChartHallVoltageResults)).BeginInit();
             this.PanelMeasureAndSource.SuspendLayout();
             this.PanelResults.SuspendLayout();
             this.SuspendLayout();
@@ -105,17 +105,17 @@
             // PanelResultsChart
             // 
             this.PanelResultsChart.BackColor = System.Drawing.Color.Transparent;
-            this.PanelResultsChart.Controls.Add(this.ChartTotalHallMeasurement);
+            this.PanelResultsChart.Controls.Add(this.ChartHallVoltageResults);
             this.PanelResultsChart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.PanelResultsChart.Location = new System.Drawing.Point(0, 80);
             this.PanelResultsChart.Name = "PanelResultsChart";
             this.PanelResultsChart.Size = new System.Drawing.Size(840, 740);
             this.PanelResultsChart.TabIndex = 129;
             // 
-            // ChartTotalHallMeasurement
+            // ChartHallVoltageResults
             // 
-            this.ChartTotalHallMeasurement.BackColor = System.Drawing.Color.Transparent;
-            this.ChartTotalHallMeasurement.BorderlineColor = System.Drawing.Color.Transparent;
+            this.ChartHallVoltageResults.BackColor = System.Drawing.Color.Transparent;
+            this.ChartHallVoltageResults.BorderlineColor = System.Drawing.Color.Transparent;
             chartArea1.AxisX.MajorGrid.LineWidth = 2;
             chartArea1.AxisX.MinorGrid.Enabled = true;
             chartArea1.AxisX.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
@@ -132,24 +132,24 @@
             chartArea1.BorderColor = System.Drawing.Color.Transparent;
             chartArea1.BorderWidth = 0;
             chartArea1.Name = "ChartAreaTotalHallVoltages";
-            this.ChartTotalHallMeasurement.ChartAreas.Add(chartArea1);
+            this.ChartHallVoltageResults.ChartAreas.Add(chartArea1);
             legend1.Alignment = System.Drawing.StringAlignment.Center;
             legend1.Docking = System.Windows.Forms.DataVisualization.Charting.Docking.Bottom;
             legend1.Enabled = false;
             legend1.IsDockedInsideChartArea = false;
             legend1.Name = "LegendTotalHallVoltages";
-            this.ChartTotalHallMeasurement.Legends.Add(legend1);
-            this.ChartTotalHallMeasurement.Location = new System.Drawing.Point(60, 50);
-            this.ChartTotalHallMeasurement.Name = "ChartTotalHallMeasurement";
+            this.ChartHallVoltageResults.Legends.Add(legend1);
+            this.ChartHallVoltageResults.Location = new System.Drawing.Point(60, 50);
+            this.ChartHallVoltageResults.Name = "ChartHallVoltageResults";
             series1.ChartArea = "ChartAreaTotalHallVoltages";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             series1.Color = System.Drawing.Color.DarkBlue;
             series1.Legend = "LegendTotalHallVoltages";
             series1.Name = "SeriesHallVoltageTotalPosition";
             series1.YValuesPerPoint = 2;
-            this.ChartTotalHallMeasurement.Series.Add(series1);
-            this.ChartTotalHallMeasurement.Size = new System.Drawing.Size(720, 640);
-            this.ChartTotalHallMeasurement.TabIndex = 125;
+            this.ChartHallVoltageResults.Series.Add(series1);
+            this.ChartHallVoltageResults.Size = new System.Drawing.Size(720, 640);
+            this.ChartHallVoltageResults.TabIndex = 125;
             // 
             // PanelMeasureAndSource
             // 
@@ -557,6 +557,18 @@
             this.PanelResults.Size = new System.Drawing.Size(420, 820);
             this.PanelResults.TabIndex = 127;
             // 
+            // RichTextboxHallCoefficientUnit
+            // 
+            this.RichTextboxHallCoefficientUnit.BackColor = System.Drawing.SystemColors.Control;
+            this.RichTextboxHallCoefficientUnit.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.RichTextboxHallCoefficientUnit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.RichTextboxHallCoefficientUnit.Location = new System.Drawing.Point(325, 574);
+            this.RichTextboxHallCoefficientUnit.Name = "RichTextboxHallCoefficientUnit";
+            this.RichTextboxHallCoefficientUnit.ReadOnly = true;
+            this.RichTextboxHallCoefficientUnit.Size = new System.Drawing.Size(50, 27);
+            this.RichTextboxHallCoefficientUnit.TabIndex = 224;
+            this.RichTextboxHallCoefficientUnit.Text = "";
+            // 
             // IconbuttonPType
             // 
             this.IconbuttonPType.BackColor = System.Drawing.Color.Snow;
@@ -899,18 +911,6 @@
             this.TextboxHallInNorth1Unit.TabIndex = 182;
             this.TextboxHallInNorth1Unit.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // RichTextboxHallCoefficientUnit
-            // 
-            this.RichTextboxHallCoefficientUnit.BackColor = System.Drawing.SystemColors.Control;
-            this.RichTextboxHallCoefficientUnit.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.RichTextboxHallCoefficientUnit.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxHallCoefficientUnit.Location = new System.Drawing.Point(325, 574);
-            this.RichTextboxHallCoefficientUnit.Name = "RichTextboxHallCoefficientUnit";
-            this.RichTextboxHallCoefficientUnit.ReadOnly = true;
-            this.RichTextboxHallCoefficientUnit.Size = new System.Drawing.Size(50, 27);
-            this.RichTextboxHallCoefficientUnit.TabIndex = 224;
-            this.RichTextboxHallCoefficientUnit.Text = "";
-            // 
             // HallMeasurementResultsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -924,7 +924,7 @@
             this.Name = "HallMeasurementResultsForm";
             this.Text = "Hall effect Measurement Measurement Results Form";
             this.PanelResultsChart.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.ChartTotalHallMeasurement)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ChartHallVoltageResults)).EndInit();
             this.PanelMeasureAndSource.ResumeLayout(false);
             this.PanelMeasureAndSource.PerformLayout();
             this.PanelResults.ResumeLayout(false);
@@ -941,7 +941,7 @@
         private System.Windows.Forms.TextBox TextboxMeasureMode;
         private System.Windows.Forms.Label LabelMeasureMode;
         private System.Windows.Forms.Label LabelSourceMode;
-        private System.Windows.Forms.DataVisualization.Charting.Chart ChartTotalHallMeasurement;
+        private System.Windows.Forms.DataVisualization.Charting.Chart ChartHallVoltageResults;
         private System.Windows.Forms.TextBox TextboxHallOut1Unit;
         private System.Windows.Forms.TextBox TextboxHallOut2Unit;
         private System.Windows.Forms.TextBox TextboxHallOut3Unit;

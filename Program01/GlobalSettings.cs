@@ -25,6 +25,7 @@ public class GlobalSettings
 
     public CollectAndCalculateVdPMeasured CollectedVdPMeasurements { get; private set; } = CollectAndCalculateVdPMeasured.Instance;
     public CollectAndCalculateHallMeasured CollectedHallMeasurements { get; private set; } = CollectAndCalculateHallMeasured.Instance;
+    public CollectAndCalculateHallMeasured.SemiconductorType SemiconductorType { get; set; } = CollectAndCalculateHallMeasured.SemiconductorType.Unknown;
 
     public static GlobalSettings Instance
     {

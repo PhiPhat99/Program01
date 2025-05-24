@@ -10,19 +10,68 @@ namespace Program01
 {
     public partial class HallMeasurementResultsForm : Form
     {
+        private ToolTip chartToolTip = new ToolTip();
         private readonly string sourceUnit = GlobalSettings.Instance.SourceModeUI == "Voltage" ? "V" : "A";
         private readonly string measureUnit = GlobalSettings.Instance.MeasureModeUI == "Voltage" ? "V" : "A";
+        private const int NumberOfHallPositions = 4;
+        private Dictionary<string, Chart> measurementCharts = new Dictionary<string, Chart>();
+
 
         public HallMeasurementResultsForm()
         {
             InitializeComponent();
             RichTextBoxSettings();
             LoadMeasurementResults();
-            UpdateSemiconductorTypeButtons();
+            InitializeMeasurementCharts();
+            UpdateButtonsUI();
 
+            CollectAndCalculateHallMeasured.Instance.AllHallDataUpdated += OnAllHallDataUpdatedHandler;
+            Debug.WriteLine("[DEBUG - HallResultsForm] Subscribed to AllHallDataUpdated event.");
+
+            // *** ดึงข้อมูลและอัปเดตกราฟเมื่อ Form ถูกสร้าง ***
+            var lastData = CollectAndCalculateHallMeasured.Instance.GetLastMeasurements();
+            if (lastData != null)
+            {
+                Debug.WriteLine("[DEBUG - HallResultsForm] Last measurement data found, updating chart.");
+                UpdateMeasurementCharts(lastData);
+            }
             CollectAndCalculateHallMeasured.Instance.HallVoltageCalculated += OnHallVoltageCalculatedHandler;
             CollectAndCalculateHallMeasured.Instance.HallPropertiesCalculated += OnHallPropertiesCalculatedHandler;
-            CollectAndCalculateHallMeasured.Instance.HallIVHDataCalculated += OnHallIVHDataCalculatedHandler; // Subscribe Event ใหม่
+            ChartHallVoltageResults.MouseMove += ChartHallVoltageResults_MouseMove;
+        }
+
+        private void InitializeMeasurementCharts()
+        {
+            Debug.WriteLine("[DEBUG] Starting InitializeMeasurementCharts");
+            measurementCharts.Clear();
+
+            // ค้นหา ChartHallVoltageResults โดยตรง
+            ChartHallVoltageResults = Controls.Find("ChartHallVoltageResults", true).FirstOrDefault() as Chart;
+            if (ChartHallVoltageResults != null)
+            {
+                measurementCharts["HallVoltageResults"] = ChartHallVoltageResults;
+                Debug.WriteLine($"[DEBUG] Found single chart '{ChartHallVoltageResults.Name}'");
+            }
+            else
+            {
+                Debug.WriteLine("[DEBUG] Warning: ChartHallVoltageResults not found!");
+            }
+            Debug.WriteLine("[DEBUG] Ending InitializeMeasurementCharts");
+        }
+
+        private string GetStatePrefix(HallMeasurementState state)
+        {
+            switch (state)
+            {
+                case HallMeasurementState.NoMagneticField:
+                    return "Out";
+                case HallMeasurementState.OutwardOrSouthMagneticField:
+                    return "South";
+                case HallMeasurementState.InwardOrNorthMagneticField:
+                    return "North";
+                default:
+                    return state.ToString();
+            }
         }
 
         private void RichTextBoxSettings()
@@ -42,6 +91,7 @@ namespace Program01
             RichTextboxHallInNorthPos4.Text = "VNorth4 :";
 
             RichTextboxHallVoltage.Text = "VH :";
+            RichTextboxHallRes.Text = "RHall :";
             RichTextboxHallCoefficient.Text = "RH :";
             RichTextboxSheetConcentration.Text = "nSheet :";
             RichTextboxBulkConcentration.Text = "nBulk :";
@@ -71,11 +121,12 @@ namespace Program01
             RichTextboxHallInNorthPos3.Location = new Point(110, 425);
             RichTextboxHallInNorthPos4.Location = new Point(110, 460);
 
-            RichTextboxHallVoltage.Location = new Point(140, 535);
-            RichTextboxHallCoefficient.Location = new Point(140, 570);
-            RichTextboxSheetConcentration.Location = new Point(120, 605);
-            RichTextboxBulkConcentration.Location = new Point(125, 640);
-            RichTextboxMobility.Location = new Point(148, 675);
+            RichTextboxHallVoltage.Location = new Point(138, 535);
+            RichTextboxHallRes.Location = new Point(125, 570);
+            RichTextboxHallCoefficient.Location = new Point(138, 605);
+            RichTextboxSheetConcentration.Location = new Point(118, 640);
+            RichTextboxBulkConcentration.Location = new Point(124, 675);
+            RichTextboxMobility.Location = new Point(146, 710);
 
 
             RichTextboxHallOutPos1.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
@@ -93,6 +144,7 @@ namespace Program01
             RichTextboxHallInNorthPos4.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
 
             RichTextboxHallVoltage.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
+            RichTextboxHallRes.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
             RichTextboxHallCoefficient.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
             RichTextboxSheetConcentration.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
             RichTextboxBulkConcentration.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
@@ -113,6 +165,7 @@ namespace Program01
             RichTextboxHallInNorthPos4.Select(1, 6);
 
             RichTextboxHallVoltage.Select(1, 1);
+            RichTextboxHallRes.Select(1, 4);
             RichTextboxHallCoefficient.Select(1, 1);
             RichTextboxSheetConcentration.Select(1, 5);
             RichTextboxBulkConcentration.Select(1, 4);
@@ -122,29 +175,30 @@ namespace Program01
             RichTextboxBulkConcentrationUnit.Select(1, 2);
             RichTextboxMobilityUnit.Select(1, 1);
 
-            RichTextboxHallOutPos1.SelectionCharOffset = -8;
-            RichTextboxHallOutPos2.SelectionCharOffset = -8;
-            RichTextboxHallOutPos3.SelectionCharOffset = -8;
-            RichTextboxHallOutPos4.SelectionCharOffset = -8;
+            RichTextboxHallOutPos1.SelectionCharOffset -= 8;
+            RichTextboxHallOutPos2.SelectionCharOffset -= 8;
+            RichTextboxHallOutPos3.SelectionCharOffset -= 8;
+            RichTextboxHallOutPos4.SelectionCharOffset -= 8;
 
-            RichTextboxHallInSouthPos1.SelectionCharOffset = -8;
-            RichTextboxHallInSouthPos2.SelectionCharOffset = -8;
-            RichTextboxHallInSouthPos3.SelectionCharOffset = -8;
-            RichTextboxHallInSouthPos4.SelectionCharOffset = -8;
-            RichTextboxHallInNorthPos1.SelectionCharOffset = -8;
-            RichTextboxHallInNorthPos2.SelectionCharOffset = -8;
-            RichTextboxHallInNorthPos3.SelectionCharOffset = -8;
-            RichTextboxHallInNorthPos4.SelectionCharOffset = -8;
+            RichTextboxHallInSouthPos1.SelectionCharOffset -= 8;
+            RichTextboxHallInSouthPos2.SelectionCharOffset -= 8;
+            RichTextboxHallInSouthPos3.SelectionCharOffset -= 8;
+            RichTextboxHallInSouthPos4.SelectionCharOffset -= 8;
+            RichTextboxHallInNorthPos1.SelectionCharOffset -= 8;
+            RichTextboxHallInNorthPos2.SelectionCharOffset -= 8;
+            RichTextboxHallInNorthPos3.SelectionCharOffset -= 8;
+            RichTextboxHallInNorthPos4.SelectionCharOffset -= 8;
 
-            RichTextboxHallVoltage.SelectionCharOffset = -8;
-            RichTextboxHallCoefficient.SelectionCharOffset = -8;
-            RichTextboxSheetConcentration.SelectionCharOffset = -8;
-            RichTextboxBulkConcentration.SelectionCharOffset = -8;
+            RichTextboxHallVoltage.SelectionCharOffset -= 8;
+            RichTextboxHallRes.SelectionCharOffset -= 8;
+            RichTextboxHallCoefficient.SelectionCharOffset -= 8;
+            RichTextboxSheetConcentration.SelectionCharOffset -= 8;
+            RichTextboxBulkConcentration.SelectionCharOffset -= 8;
 
-            RichTextboxHallCoefficientUnit.SelectionCharOffset = +8;
-            RichTextboxSheetConcentrationUnit.SelectionCharOffset = +8;
-            RichTextboxBulkConcentrationUnit.SelectionCharOffset = +8;
-            RichTextboxMobilityUnit.SelectionCharOffset = +8;
+            RichTextboxHallCoefficientUnit.SelectionCharOffset += 8;
+            RichTextboxSheetConcentrationUnit.SelectionCharOffset += 8;
+            RichTextboxBulkConcentrationUnit.SelectionCharOffset += 8;
+            RichTextboxMobilityUnit.SelectionCharOffset += 8;
 
             RichTextboxHallOutPos1.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
             RichTextboxHallOutPos2.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
@@ -161,6 +215,7 @@ namespace Program01
             RichTextboxHallInNorthPos4.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
 
             RichTextboxHallVoltage.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
+            RichTextboxHallRes.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
             RichTextboxHallCoefficient.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
             RichTextboxSheetConcentration.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
             RichTextboxBulkConcentration.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
@@ -169,7 +224,6 @@ namespace Program01
             RichTextboxSheetConcentrationUnit.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
             RichTextboxBulkConcentrationUnit.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
             RichTextboxMobilityUnit.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
-
         }
 
         private void LoadMeasurementResults()
@@ -177,32 +231,39 @@ namespace Program01
             TextboxSourceMode.Text = GlobalSettings.Instance.SourceModeUI;
             TextboxMeasureMode.Text = GlobalSettings.Instance.MeasureModeUI;
 
-            var voltages = GlobalSettings.Instance.HallVoltagesByPosition;
+            var hallOutVoltages = GlobalSettings.Instance.HallVoltagesByPosition;
+            var avgNoFieldVoltages = CollectAndCalculateHallMeasured.Instance.GetAverageNoFieldVoltagesByPosition();
+            var avgSouthVoltages = CollectAndCalculateHallMeasured.Instance.GetAverageSouthFieldVoltagesByPosition();
+            var avgNorthVoltages = CollectAndCalculateHallMeasured.Instance.GetAverageNorthFieldVoltagesByPosition();
 
-            void SetText(TextBox box, int index)
+            void SetText(System.Windows.Forms.TextBox box, int index, Dictionary<int, double> data)
             {
-                if (voltages.TryGetValue(index, out double value))
+                if (data.TryGetValue(index, out double value))
                     box.Text = value.ToString("E3");
                 else
                     box.Text = "N/A";
             }
 
-            SetText(TextboxHallOut1, 1);
-            SetText(TextboxHallOut2, 2);
-            SetText(TextboxHallOut3, 3);
-            SetText(TextboxHallOut4, 4);
+            // แสดง Hall Out Voltages
+            SetText(TextboxHallOut1, 1, hallOutVoltages);
+            SetText(TextboxHallOut2, 2, hallOutVoltages);
+            SetText(TextboxHallOut3, 3, hallOutVoltages);
+            SetText(TextboxHallOut4, 4, hallOutVoltages);
 
-            SetText(TextboxHallInSouth1, 5);
-            SetText(TextboxHallInSouth2, 6);
-            SetText(TextboxHallInSouth3, 7);
-            SetText(TextboxHallInSouth4, 8);
+            // แสดงค่าเฉลี่ย Hall In Voltages จาก South Field
+            SetText(TextboxHallInSouth1, 1, avgSouthVoltages);
+            SetText(TextboxHallInSouth2, 2, avgSouthVoltages);
+            SetText(TextboxHallInSouth3, 3, avgSouthVoltages);
+            SetText(TextboxHallInSouth4, 4, avgSouthVoltages);
 
-            SetText(TextboxHallInNorth1, 9);
-            SetText(TextboxHallInNorth2, 10);
-            SetText(TextboxHallInNorth3, 11);
-            SetText(TextboxHallInNorth4, 12);
+            // แสดงค่าเฉลี่ย Hall In Voltages จาก North Field
+            SetText(TextboxHallInNorth1, 1, avgNorthVoltages);
+            SetText(TextboxHallInNorth2, 2, avgNorthVoltages);
+            SetText(TextboxHallInNorth3, 3, avgNorthVoltages);
+            SetText(TextboxHallInNorth4, 4, avgNorthVoltages);
 
             TextboxHallVoltage.Text = GlobalSettings.Instance.TotalHallVoltage.ToString("E3");
+            TextboxHallRes.Text = GlobalSettings.Instance.HallResistance.ToString("E3");
             TextboxHallCoefficient.Text = GlobalSettings.Instance.HallCoefficient.ToString("E3");
             TextboxSheetConcentration.Text = GlobalSettings.Instance.SheetConcentration.ToString("E3");
             TextboxBulkConcentration.Text = GlobalSettings.Instance.BulkConcentration.ToString("E3");
@@ -212,22 +273,19 @@ namespace Program01
             SetUnit("TextboxHallOut2Unit", "V");
             SetUnit("TextboxHallOut3Unit", "V");
             SetUnit("TextboxHallOut4Unit", "V");
-
             SetUnit("TextboxHallInSouth1Unit", "V");
             SetUnit("TextboxHallInSouth2Unit", "V");
             SetUnit("TextboxHallInSouth3Unit", "V");
             SetUnit("TextboxHallInSouth4Unit", "V");
-
             SetUnit("TextboxHallInNorth1Unit", "V");
             SetUnit("TextboxHallInNorth2Unit", "V");
             SetUnit("TextboxHallInNorth3Unit", "V");
             SetUnit("TextboxHallInNorth4Unit", "V");
 
-            SetUnit("TextboxHallVoltage1Unit", "V");
-            SetUnit("TextboxHallVoltage2Unit", "V");
-            SetUnit("TextboxHallVoltage3Unit", "V");
-            SetUnit("TextboxHallVoltage4Unit", "V");
             SetUnit("TextboxHallVoltageUnit", "V");
+            SetUnit("TextboxHallResUnit", "Ω");
+
+            UpdateSemiconductorTypeButtons();
         }
 
         private void SetUnit(string controlName, string unit)
@@ -238,167 +296,180 @@ namespace Program01
             }
         }
 
-        /*private void LoadHallVoltageResultsChart()
+        private void OnAllHallDataUpdatedHandler(object sender, Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>> allHallData)
         {
-            // ตรวจสอบและสร้าง Chart Control (สมมติว่าชื่อ chartHallVoltageResults)
-            Chart chart = this.Controls.Find("chartHallVoltageResults", true).FirstOrDefault() as Chart;
-            if (chart == null)
+            if (InvokeRequired)
             {
-                chart = new Chart();
-                chart.Name = "chartHallVoltageResults";
-                this.Controls.Add(chart);
+                Invoke(new Action<object, Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>>>(OnAllHallDataUpdatedHandler), sender, allHallData);
+                return;
+            }
 
-                // ตั้งค่า Area ให้กับ Chart
-                ChartArea chartArea = new ChartArea("HallVoltageArea");
-                chart.ChartAreas.Add(chartArea);
+            Debug.WriteLine("[DEBUG - HallResultsForm] OnAllHallDataUpdatedHandler called.");
+            UpdateMeasurementCharts(allHallData);
+        }
 
-                // ตั้งค่า Title ให้กับ Chart
-                Title title = new Title($"Hall Voltage vs. {GlobalSettings.Instance.SourceModeUI}");
-                chart.Titles.Add(title);
+        private void UpdateMeasurementCharts(Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>> allHallData)
+        {
+            if (ChartHallVoltageResults == null)
+            {
+                Debug.WriteLine("[DEBUG - HallResultsForm] ChartHallVoltageResults is null in UpdateMeasurementCharts!");
+                return;
+            }
 
-                // ตั้งค่าแกน X
-                chartArea.AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} ({sourceUnit})";
-                chartArea.AxisX.LabelStyle.Format = "E2"; // รูปแบบตัวเลขวิทยาศาสตร์
+            Debug.WriteLine("[DEBUG - HallResultsForm] UpdateMeasurementCharts called with data. Number of states: {allHallData?.Count}");
 
-                // ตั้งค่าแกน Y
-                chartArea.AxisY.Title = "Hall Voltage (V)";
-                chartArea.AxisY.LabelStyle.Format = "E2"; // รูปแบบตัวเลขวิทยาศาสตร์
+            ChartHallVoltageResults.Series.Clear();
+            ChartHallVoltageResults.ChartAreas.Clear();
+            ChartHallVoltageResults.ChartAreas.Add(new ChartArea("DefaultArea"));
+            ChartArea area = ChartHallVoltageResults.ChartAreas["DefaultArea"];
+
+            area.AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} ({sourceUnit})";
+            area.AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} ({measureUnit})";
+            area.AxisX.TitleFont = new Font("Segoe UI", 9, FontStyle.Bold);
+            area.AxisY.TitleFont = new Font("Segoe UI", 9, FontStyle.Bold);
+
+            area.AxisX.LabelStyle.Format = "0.000";
+            area.AxisY.LabelStyle.Format = "E2";
+
+            area.BackColor = Color.Black;
+            area.BackSecondaryColor = Color.Silver;
+            area.BackGradientStyle = GradientStyle.TopBottom;
+
+            area.AxisX.MinorGrid.Enabled = true;
+            area.AxisX.MinorGrid.LineColor = Color.LightGray;
+            area.AxisX.MinorGrid.LineDashStyle = ChartDashStyle.Dash;
+
+            area.AxisY.MinorGrid.Enabled = true;
+            area.AxisY.MinorGrid.LineColor = Color.LightGray;
+            area.AxisY.MinorGrid.LineDashStyle = ChartDashStyle.Dash;
+
+            ChartHallVoltageResults.Legends.Clear();
+            ChartHallVoltageResults.Legends.Add(new Legend("DefaultLegend"));
+            ChartHallVoltageResults.Legends["DefaultLegend"].Docking = Docking.Bottom;
+            ChartHallVoltageResults.Legends["DefaultLegend"].Alignment = System.Drawing.StringAlignment.Center;
+
+            foreach (var statePair in allHallData)
+            {
+                HallMeasurementState state = statePair.Key;
+                var dataByPosition = statePair.Value;
+                string statePrefix = GetStatePrefix(state);
+                Color seriesColor = Color.Black;
+
+                switch (state)
+                {
+                    case HallMeasurementState.NoMagneticField:
+                        seriesColor = Color.GreenYellow;
+                        break;
+                    case HallMeasurementState.OutwardOrSouthMagneticField:
+                        seriesColor = Color.OrangeRed;
+                        break;
+                    case HallMeasurementState.InwardOrNorthMagneticField:
+                        seriesColor = Color.DeepSkyBlue;
+                        break;
+                }
+
+                for (int position = 1; position <= NumberOfHallPositions; position++)
+                {
+                    if (dataByPosition.ContainsKey(position))
+                    {
+                        var dataList = dataByPosition[position];
+                        string seriesName = $"{statePrefix} Pos {position}";
+                        Debug.WriteLine($"[DEBUG - HallResultsForm] Creating Series: {seriesName} with {dataList.Count} data points and color {seriesColor}");
+
+                        var series = new Series(seriesName)
+                        {
+                            ChartType = SeriesChartType.Line,
+                            BorderWidth = 2,
+                            MarkerStyle = MarkerStyle.Circle,
+                            MarkerSize = 5,
+                            Color = seriesColor
+                        };
+
+                        foreach (var dataPoint in dataList)
+                        {
+                            series.Points.AddXY(dataPoint.Source, dataPoint.Reading);
+                        }
+
+                        ChartHallVoltageResults.Series.Add(series);
+                        Debug.WriteLine($"[DEBUG - HallResultsForm] Added Series '{seriesName}' to Chart");
+                    }
+                }
+            }
+
+            area.RecalculateAxesScale();
+            ChartHallVoltageResults.Invalidate();
+            Debug.WriteLine("[DEBUG - HallResultsForm] Chart updated.");
+        }
+
+        private void ChartHallVoltageResults_MouseMove(object sender, MouseEventArgs e)
+        {
+            var hitResult = ChartHallVoltageResults.HitTest(e.X, e.Y);
+
+            if (hitResult.ChartElementType == ChartElementType.DataPoint)
+            {
+                DataPoint dataPoint = hitResult.Object as DataPoint;
+                if (dataPoint != null && hitResult.Series != null)
+                {
+                    string toolTipText = $"Series: {hitResult.Series.Name}\n" +
+                                         $"Current: {dataPoint.XValue:E3} A\n" +
+                                         $"Hall Voltage: {dataPoint.YValues[0]:E3} V";
+                    chartToolTip.Show(toolTipText, ChartHallVoltageResults, e.X, e.Y - 20);
+                }
+                else
+                {
+                    chartToolTip.Hide(ChartHallVoltageResults);
+                }
             }
             else
             {
-                // เคลียร์ Series เก่าออกก่อน (ถ้ามี)
-                chart.Series.Clear();
+                chartToolTip.Hide(ChartHallVoltageResults);
             }
+        }
 
-            // ดึงข้อมูลการวัดทั้งหมดจาก Singleton Instance
-            var measurements = CollectAndCalculateHallMeasured.Instance.GetAllHallMeasurements();
-
-            // วนลูปผ่านแต่ละตำแหน่ง Tuner (สมมติว่ามีตำแหน่ง 1 ถึง 4)
-            for (int tunerPosition = 1; tunerPosition <= 4; tunerPosition++)
+        private void UpdateSemiconductorTypeButtons()
+        {
+            if (GlobalSettings.Instance.HallCoefficient < 0)
             {
-                // ตรวจสอบว่ามีข้อมูลสำหรับทุกสถานะแม่เหล็กและตำแหน่ง Tuner นี้หรือไม่
-                if (measurements.ContainsKey(HallMeasurementState.NoMagneticField) &&
-                    measurements[HallMeasurementState.NoMagneticField].ContainsKey(tunerPosition) &&
-                    measurements.ContainsKey(HallMeasurementState.InwardOrNorthMagneticField) &&
-                    measurements[HallMeasurementState.InwardOrNorthMagneticField].ContainsKey(tunerPosition) &&
-                    measurements.ContainsKey(HallMeasurementState.OutwardOrSouthMagneticField) &&
-                    measurements[HallMeasurementState.OutwardOrSouthMagneticField].ContainsKey(tunerPosition))
-                {
-                    var noFieldData = measurements[HallMeasurementState.NoMagneticField][tunerPosition];
-                    var northFieldData = measurements[HallMeasurementState.InwardOrNorthMagneticField][tunerPosition];
-                    var southFieldData = measurements[HallMeasurementState.OutwardOrSouthMagneticField][tunerPosition];
-
-                    // สร้าง Series สำหรับ Hall Voltage ที่เกิดจากสนามแม่เหล็กเหนือ (North)
-                    Series northHallSeries = new Series($"North (Pos {tunerPosition})");
-                    northHallSeries.ChartType = SeriesChartType.Line;
-
-                    // สร้าง Series สำหรับ Hall Voltage ที่เกิดจากสนามแม่เหล็กใต้ (South)
-                    Series southHallSeries = new Series($"South (Pos {tunerPosition})");
-                    southHallSeries.ChartType = SeriesChartType.Line;
-
-                    // คำนวณและเพิ่ม Data Point ให้กับแต่ละ Series
-                    for (int i = 0; i < Math.Max(northFieldData.Count, southFieldData.Count); i++)
-                    {
-                        double sourceNorth = (i < northFieldData.Count) ? northData[i].Source : double.NaN;
-                        double readingNorth = (i < northFieldData.Count) ? northData[i].Reading : double.NaN;
-                        double vHallNorth = (i < noFieldData.Count && i < northFieldData.Count) ? readingNorth - noFieldData[i].Reading : double.NaN;
-
-                        double sourceSouth = (i < southFieldData.Count) ? southData[i].Source : double.NaN;
-                        double readingSouth = (i < southFieldData.Count) ? southData[i].Reading : double.NaN;
-                        double vHallSouth = (i < noFieldData.Count && i < southFieldData.Count) ? readingSouth - noFieldData[i].Reading : double.NaN;
-
-                        if (!double.IsNaN(sourceNorth) && !double.IsNaN(vHallNorth))
-                        {
-                            northHallSeries.Points.AddXY(sourceNorth, vHallNorth);
-                        }
-
-                        if (!double.IsNaN(sourceSouth) && !double.IsNaN(vHallSouth))
-                        {
-                            southHallSeries.Points.AddXY(sourceSouth, vHallSouth);
-                        }
-                    }
-
-                    // เพิ่ม Series ลงใน Chart
-                    chart.Series.Add(northHallSeries);
-                    chart.Series.Add(southHallSeries);
-                }
+                GlobalSettings.Instance.SemiconductorType = CollectAndCalculateHallMeasured.SemiconductorType.N;
             }
-        }*/
+            else if (GlobalSettings.Instance.HallCoefficient > 0)
+            {
+                GlobalSettings.Instance.SemiconductorType = CollectAndCalculateHallMeasured.SemiconductorType.P;
+            }
+            else
+            {
+                GlobalSettings.Instance.SemiconductorType = CollectAndCalculateHallMeasured.SemiconductorType.Unknown; // หรือค่า Default อื่นๆ
+            }
+            Debug.WriteLine($"[DEBUG] Semiconductor Type set to: {GlobalSettings.Instance.SemiconductorType}-Type");
+            UpdateButtonsUI(); 
+        }
+
+        private void UpdateButtonsUI()
+        {
+            if (IconbuttonNType != null)
+            {
+                IconbuttonNType.BackColor = (GlobalSettings.Instance.SemiconductorType == CollectAndCalculateHallMeasured.SemiconductorType.N) ? Color.LightGreen : Color.Snow;
+                IconbuttonNType.IconColor = (GlobalSettings.Instance.SemiconductorType == CollectAndCalculateHallMeasured.SemiconductorType.N) ? Color.Blue : Color.LightGray;
+            }
+
+            if (IconbuttonPType != null)
+            {
+                IconbuttonPType.BackColor = (GlobalSettings.Instance.SemiconductorType == CollectAndCalculateHallMeasured.SemiconductorType.P) ? Color.LightGreen : Color.Snow;
+                IconbuttonPType.IconColor = (GlobalSettings.Instance.SemiconductorType == CollectAndCalculateHallMeasured.SemiconductorType.P) ? Color.Red : Color.LightGray;
+            }
+        }
 
         private void OnHallVoltageCalculatedHandler(object sender, Dictionary<int, double> hallVoltages)
         {
             LoadMeasurementResults();
         }
 
-        private void OnHallIVHDataCalculatedHandler(object sender, Dictionary<int, List<(double Current, double HallVoltage)>> ivhDataByPosition)
-        {
-            ChartHallVoltageResults.Series.Clear();
-
-            foreach (var positionData in ivhDataByPosition)
-            {
-                int position = positionData.Key;
-                List<(double Current, double HallVoltage)> dataPoints = positionData.Value;
-
-                Series series = new Series();
-                series.ChartType = SeriesChartType.Line;
-                series.Name = $"Position {position}";
-                series.XValueMember = "Current";
-                series.YValueMembers = "HallVoltage";
-                series.IsVisibleInLegend = true;
-                series.MarkerStyle = MarkerStyle.Circle;
-
-                series.Points.DataBind(dataPoints, "Current", "HallVoltage", null);
-                ChartHallVoltageResults.Series.Add(series);
-            }
-
-            ChartHallVoltageResults.ChartAreas[0].AxisX.Title = GlobalSettings.Instance.SourceModeUI == "Voltage" ? "Voltage (V)" : "Current (A)";
-            ChartHallVoltageResults.ChartAreas[0].AxisY.Title = "Hall Voltage (V)"; // หรือหน่วยที่เหมาะสม
-
-            // อาจมีการตั้งค่าอื่นๆ เพิ่มเติม เช่น Scale ของแกน, Legend, ฯลฯ
-        }
-
-        private void OnHallPropertiesCalculatedHandler(object sender, ( double HallCoefficient, double SheetConcentration, double BulkConcentration, double Mobility) properties)
+        private void OnHallPropertiesCalculatedHandler(object sender, (double HallCoefficient, double SheetConcentration, double BulkConcentration, double Mobility) properties)
         {
             TextboxHallCoefficient.Text = properties.HallCoefficient.ToString("E3");
-            TextboxSheetConcentration.Text = properties.SheetConcentration.ToString("E3");
             TextboxBulkConcentration.Text = properties.BulkConcentration.ToString("E3");
             TextboxMobility.Text = properties.Mobility.ToString("E3");
-        }
-
-        private void UpdateSemiconductorTypeButtons(CollectAndCalculateHallMeasured.SemiconductorType type = CollectAndCalculateHallMeasured.SemiconductorType.Unknown)
-        {
-            Color nTypeBackColor = Color.Snow;
-            Color pTypeBackColor = Color.Snow;
-            Color nTypeCharColor = Color.LightGray;
-            Color pTypeCharColor = Color.LightGray;
-
-            if (type == CollectAndCalculateHallMeasured.SemiconductorType.NType)
-            {
-                nTypeCharColor = Color.LightSteelBlue;
-                nTypeBackColor = Color.Navy;
-            }
-            else if (type == CollectAndCalculateHallMeasured.SemiconductorType.PType)
-            {
-                pTypeCharColor = Color.LightCoral;
-                pTypeBackColor = Color.DarkRed;
-            }
-
-            IconbuttonNType.BackColor = nTypeBackColor;
-            IconbuttonPType.BackColor = pTypeBackColor;
-            IconbuttonNType.IconColor = nTypeCharColor;
-            IconbuttonPType.IconColor = pTypeCharColor;
-        }
-
-        private void OnSemiconductorTypeCalculatedHandler(object sender, CollectAndCalculateHallMeasured.SemiconductorType type)
-        {
-            // ทำงานบน UI Thread
-            if (InvokeRequired)
-            {
-                Invoke(new Action(() => UpdateSemiconductorTypeButtons(type)));
-                return;
-            }
-
-            UpdateSemiconductorTypeButtons(type);
+            UpdateSemiconductorTypeButtons();
         }
     }
 }

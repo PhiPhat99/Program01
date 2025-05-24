@@ -1,10 +1,11 @@
-﻿using System;
+﻿using FontAwesome.Sharp;
+using OfficeOpenXml;
+using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using FontAwesome.Sharp;
-using OfficeOpenXml;
 
 namespace Program01
 {
@@ -13,11 +14,18 @@ namespace Program01
         private IconButton CurrentButton;
         private Form CurrentChildForm;
         private bool IsLoggedIn = false;
+        private bool IsExcelLicenseSet = false;
 
         public MainForm()
         {
             InitializeComponent();
             InitializeUI();
+
+            if (!IsExcelLicenseSet)
+            {
+                ExcelPackage.License.SetNonCommercialOrganization("KMITL");
+                IsExcelLicenseSet = true;
+            }
         }
 
         private void InitializeUI()
@@ -424,114 +432,150 @@ namespace Program01
                 if (!IsLoggedIn)
                 {
                     MessageBox.Show("กรุณาเข้าสู่ระบบก่อนดำเนินการต่อ", "การบันทึกล้มเหลว", MessageBoxButtons.OK);
+                    return;
                 }
-                else
+
+                string vdpFilePath = TextboxFileVdPDataPath.Text;
+
+                if (string.IsNullOrWhiteSpace(vdpFilePath))
                 {
-                    ExcelPackage.License.SetNonCommercialOrganization("KMITL");
-                    string VdPFilePath = TextboxFileVdPDataPath.Text;
-
-                    if (string.IsNullOrWhiteSpace(VdPFilePath))
-                    {
-                        MessageBox.Show("กรุณาเลือกที่อยู่ในการบันทึกไฟล์ก่อน!", "การบันทึกล้มเหลว", MessageBoxButtons.OK);
-                        return;
-                    }
-
-                    string directory = VdPFilePath;
-
-                    if (!Directory.Exists(directory))
-                    {
-                        Directory.CreateDirectory(directory);
-                        MessageBox.Show($"ไดเรกทอรีได้ถูกสร้างไว้แล้ว: {directory}", "การแจ้งเตือนข้อมูล");
-                    }
-
-                    string newFileName = "VanderPauwResultsData.xlsx";
-                    string newFilePath = Path.Combine(directory, newFileName);
-                    string FirstName = TextboxUserFirstName.Text.Trim();
-                    string LastName = TextboxUserLastname.Text.Trim();
-                    string UserFullName = $"{FirstName} {LastName}";
-
-                    using (ExcelPackage package = new ExcelPackage())
-                    {
-                        var worksheet = package.Workbook.Worksheets.Add("ResultsDataSheet");
-                        worksheet.Cells[1, 1].Value = "Username (Firstname - Lastname)";
-                        worksheet.Cells[1, 1, 1, 5].Merge = true;
-                        worksheet.Cells[1, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[1, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-
-                        worksheet.Cells[1, 6].Value = "Date and Time";
-                        worksheet.Cells[1, 6, 1, 8].Merge = true;
-                        worksheet.Cells[1, 6].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[1, 6].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-
-                        worksheet.Cells[2, 1].Value = UserFullName;
-                        worksheet.Cells[2, 1, 2, 5].Merge = true;
-                        worksheet.Cells[2, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[2, 1].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-                        
-                        worksheet.Cells[2, 6].Value = DateTime.Now.ToString("dd/MM/yyyy   HH:mm:ss");
-                        worksheet.Cells[2, 6, 2, 8].Merge = true;
-                        worksheet.Cells[2, 6].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[2, 6].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-                        
-                        worksheet.Cells[1, 11].Value = "Total Current Source & Voltage Measured";
-                        worksheet.Cells[1, 11, 2, 28].Merge = true;
-                        worksheet.Cells[1, 11].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[1, 11].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-
-                        worksheet.Cells[3, 11].Value = "I_s (A)";
-                        worksheet.Cells[3, 11, 3, 12].Merge = true;
-                        worksheet.Cells[3, 11].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[3, 11].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-
-                        worksheet.Cells[3, 13].Value = "V_MP1 (V)";
-                        worksheet.Cells[3, 13, 3, 14].Merge = true;
-                        worksheet.Cells[3, 13].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[3, 13].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-
-                        worksheet.Cells[3, 15].Value = "V_MP2 (V)";
-                        worksheet.Cells[3, 15, 3, 16].Merge = true;
-                        worksheet.Cells[3, 15].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[3, 15].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-
-                        worksheet.Cells[3, 17].Value = "V_MP3 (V)";
-                        worksheet.Cells[3, 17, 3, 18].Merge = true;
-                        worksheet.Cells[3, 17].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[3, 17].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-
-                        worksheet.Cells[3, 19].Value = "V_MP4 (V)";
-                        worksheet.Cells[3, 19, 3, 20].Merge = true;
-                        worksheet.Cells[3, 19].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[3, 19].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-
-                        worksheet.Cells[3, 21].Value = "V_MP5 (V)";
-                        worksheet.Cells[3, 21, 3, 22].Merge = true;
-                        worksheet.Cells[3, 21].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[3, 21].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-
-                        worksheet.Cells[3, 23].Value = "V_MP6 (V)";
-                        worksheet.Cells[3, 23, 3, 24].Merge = true;
-                        worksheet.Cells[3, 23].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[3, 23].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-
-                        worksheet.Cells[3, 25].Value = "V_MP7 (V)";
-                        worksheet.Cells[3, 25, 3, 26].Merge = true;
-                        worksheet.Cells[3, 25].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[3, 25].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-
-                        worksheet.Cells[3, 27].Value = "V_MP8 (V)";
-                        worksheet.Cells[3, 27, 3, 28].Merge = true;
-                        worksheet.Cells[3, 27].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[3, 27].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-
-                        package.SaveAs(new FileInfo(newFilePath));
-                    }
-
-                    MessageBox.Show($"ไฟล์ได้ถูกสร้างขึ้น และถูกจัดเก็บไว้ที่: {newFilePath}", "การบันทึกเสร็จสิ้น", MessageBoxButtons.OK);
+                    MessageBox.Show("กรุณาเลือกที่อยู่ในการบันทึกไฟล์ก่อน!", "การบันทึกล้มเหลว", MessageBoxButtons.OK);
+                    return;
                 }
+
+                if (!Directory.Exists(vdpFilePath))
+                {
+                    Directory.CreateDirectory(vdpFilePath);
+                    MessageBox.Show($"ไดเรกทอรีได้ถูกสร้างไว้แล้ว: {vdpFilePath}", "การแจ้งเตือนข้อมูล");
+                }
+
+                string newFileName = "VanderPauwResultsData.xlsx";
+                string newFilePath = Path.Combine(vdpFilePath, newFileName);
+                string firstName = TextboxUserFirstName.Text.Trim();
+                string lastName = TextboxUserLastname.Text.Trim();
+                string userFullName = $"{firstName} {lastName}";
+
+                var vdpCalculator = CollectAndCalculateVdPMeasured.Instance;
+                var allVdPMeasurements = vdpCalculator.GetAllMeasurementsByTuner();
+                var resistancesByPosition = GlobalSettings.Instance.ResistancesByPosition;
+                double resistanceA = GlobalSettings.Instance.ResistanceA;
+                double resistanceB = GlobalSettings.Instance.ResistanceB;
+                double averageResistanceAll = GlobalSettings.Instance.AverageResistanceAll;
+                double sheetResistance = GlobalSettings.Instance.SheetResistance;
+                double resistivity = GlobalSettings.Instance.Resistivity;
+                double conductivity = GlobalSettings.Instance.Conductivity;
+                double thickness = GlobalSettings.Instance.ThicknessValueStd;
+
+                using (ExcelPackage package = new ExcelPackage())
+                {
+                    var worksheet = package.Workbook.Worksheets.Add("VdPDataSheet");
+
+                    // Helper method สำหรับการกำหนด Style การจัดแนวกึ่งกลาง
+                    Action<ExcelRange> SetAlignCenterStyle = (range) =>
+                    {
+                        range.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        range.Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                    };
+
+                    int currentRow = 1;
+                    int currentColumn = 1;
+
+                    // **Start: Writing Raw VdP Measurement Data (ค่า Source/Reading ในแถวเดียว)**
+                    worksheet.Cells[currentRow, currentColumn].Value = "Vander Pauw Raw Measurement Data";
+                    worksheet.Cells[currentRow, currentColumn, currentRow, currentColumn + (allVdPMeasurements.Count * 2) - 1].Merge = true;
+                    SetAlignCenterStyle(worksheet.Cells[currentRow, currentColumn]);
+                    currentRow++;
+
+                    worksheet.Cells[currentRow, currentColumn].Value = "ตำแหน่งที่ทำการวัด";
+                    foreach (var tunerData in allVdPMeasurements.OrderBy(k => k.Key))
+                    {
+                        worksheet.Cells[currentRow, currentColumn + (tunerData.Key - 1) * 2 + 1].Value = tunerData.Key;
+                        worksheet.Cells[currentRow, currentColumn + (tunerData.Key - 1) * 2 + 1, currentRow, currentColumn + (tunerData.Key - 1) * 2 + 2].Merge = true;
+                        SetAlignCenterStyle(worksheet.Cells[currentRow, currentColumn + (tunerData.Key - 1) * 2 + 1]);
+                    }
+                    currentRow++;
+
+                    // เขียน Header "Source" และ "Reading" ในแถวเดียวกัน
+                    foreach (var tunerData in allVdPMeasurements.OrderBy(k => k.Key))
+                    {
+                        worksheet.Cells[currentRow, currentColumn + (tunerData.Key - 1) * 2 + 1].Value = "Source";
+                        worksheet.Cells[currentRow, currentColumn + (tunerData.Key - 1) * 2 + 2].Value = "Reading";
+                    }
+                    currentRow++;
+
+                    // เขียนค่า Source และ Reading ในแถวเดียวกัน
+                    foreach (var tunerData in allVdPMeasurements.OrderBy(k => k.Key))
+                    {
+                        // สมมติว่ามีข้อมูล Source และ Reading เพียงชุดเดียวต่อตำแหน่งเพื่อให้แสดงในแถวเดียว
+                        if (tunerData.Value.Count > 0)
+                        {
+                            worksheet.Cells[currentRow, currentColumn + (tunerData.Key - 1) * 2 + 1].Value = tunerData.Value.First().Source;
+                            worksheet.Cells[currentRow, currentColumn + (tunerData.Key - 1) * 2 + 2].Value = tunerData.Value.First().Reading;
+                        }
+                    }
+                    currentRow++;
+                    // **End: Writing Raw VdP Measurement Data**
+
+                    // **Start: Writing Calculated Van der Pauw Properties (ด้านขวา)**
+                    int calculatedDataStartColumn = currentColumn + (allVdPMeasurements.Count * 2) + 2;
+                    int calculatedDataStartRow = 1;
+
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Calculated Van der Pauw Properties";
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn, calculatedDataStartRow, calculatedDataStartColumn + 1].Merge = true;
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]);
+                    calculatedDataStartRow++;
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Parameter";
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = "Value";
+                    calculatedDataStartRow++;
+
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Resistance A (Ohm)";
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = resistanceA;
+                    calculatedDataStartRow++;
+
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Resistance B (Ohm)";
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = resistanceB;
+                    calculatedDataStartRow++;
+
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Average Resistance (All) (Ohm)";
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = averageResistanceAll;
+                    calculatedDataStartRow++;
+
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Sheet Resistance (Ohm/sq)";
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = sheetResistance;
+                    calculatedDataStartRow++;
+
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Resistivity (Ohm-m)";
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = resistivity;
+                    calculatedDataStartRow++;
+
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Conductivity (S/m)";
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = conductivity;
+                    calculatedDataStartRow++;
+
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Thickness (m)";
+                    worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = thickness;
+                    calculatedDataStartRow++;
+                    // **End: Writing Calculated Van der Pauw Properties**
+
+                    // **Start: Writing User Information and Time (ด้านล่างขวา)**
+                    int userInfoStartColumn = calculatedDataStartColumn;
+                    int userInfoStartRow = calculatedDataStartRow + 2;
+
+                    worksheet.Cells[userInfoStartRow, userInfoStartColumn].Value = $"User:";
+                    worksheet.Cells[userInfoStartRow, userInfoStartColumn + 1].Value = userFullName;
+                    userInfoStartRow++;
+                    worksheet.Cells[userInfoStartRow, userInfoStartColumn].Value = $"Date and Time:";
+                    worksheet.Cells[userInfoStartRow, userInfoStartColumn + 1].Value = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+                    // **End: Writing User Information and Time**
+
+                    package.SaveAs(new FileInfo(newFilePath));
+                }
+
+                MessageBox.Show($"ไฟล์ได้ถูกสร้างขึ้น และถูกจัดเก็บไว้ที่: {newFilePath}", "การบันทึกเสร็จสิ้น", MessageBoxButtons.OK);
             }
-            catch (Exception Ex)
+            catch (Exception ex)
             {
-                MessageBox.Show($"Error: {Ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}");
             }
         }
 

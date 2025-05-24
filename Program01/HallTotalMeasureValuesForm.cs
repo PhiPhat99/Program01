@@ -33,7 +33,7 @@ namespace Program01
             InitializeAllDataGridViewColumns();
             tabControlHallTotalMeasuredCharts = TabcontrolHallTotalMeasCharts;
             CollectAndCalculateHallMeasured.Instance.DataUpdated += CollectAndCalculateHallMeasured_DataUpdated;
-           
+
             Load += HallTotalMeasureValuesForm_Load;
             FormClosing += HallTotalMeasureValuesForm_FormClosing;
         }
@@ -117,46 +117,62 @@ namespace Program01
         private void InitializeChartDictionary()
         {
             chartDictionary.Clear();
+            Debug.WriteLine("[DEBUG] Starting InitializeChartDictionary");
 
-            var totalTabPage = tabControlHallTotalMeasuredCharts.TabPages[0];
-            var totalChart = totalTabPage.Controls.OfType<Chart>().FirstOrDefault();
-            if (totalChart != null)
+            // Map Out charts (TabPages 0 to 3)
+            for (int i = 0; i < 4; i++)
             {
-                chartDictionary["ChartTotalMeasPos"] = totalChart;
-            }
-
-            for (int i = 1; i <= 4; i++)
-            {
+                Debug.WriteLine($"[DEBUG] Processing Out TabPage index: {i}");
                 var tabPage = tabControlHallTotalMeasuredCharts.TabPages[i];
-                var chart = tabPage.Controls.OfType<Chart>().FirstOrDefault();
-                
+                var chart = tabPage?.Controls.OfType<Chart>().FirstOrDefault();
+
                 if (chart != null)
                 {
-                    chartDictionary[$"Out{i}"] = chart;
+                    int position = i + 1;
+                    chartDictionary[$"Out{position}"] = chart;
+                    Debug.WriteLine($"[DEBUG] Found Out chart at position {position}, Key: Out{position}");
+                }
+                else
+                {
+                    Debug.WriteLine($"[DEBUG] No Out chart found in TabPage index: {i}");
                 }
             }
 
-            for (int i = 5; i <= 8; i++)
+            // Map South charts (TabPages 4 to 7)
+            for (int i = 4; i < 8; i++)
             {
+                Debug.WriteLine($"[DEBUG] Processing South TabPage index: {i}");
                 var tabPage = tabControlHallTotalMeasuredCharts.TabPages[i];
-                var chart = tabPage.Controls.OfType<Chart>().FirstOrDefault();
-                
+                var chart = tabPage?.Controls.OfType<Chart>().FirstOrDefault();
+
                 if (chart != null)
                 {
-                    int position = i - 4; // เปลี่ยนจาก 5–8 → 1–4
+                    int position = i - 3;
                     chartDictionary[$"South{position}"] = chart;
+                    Debug.WriteLine($"[DEBUG] Found South chart at position {position}, Key: South{position}");
+                }
+                else
+                {
+                    Debug.WriteLine($"[DEBUG] No South chart found in TabPage index: {i}");
                 }
             }
 
-            for (int i = 9; i <= 12; i++)
+            // Map North charts (TabPages 8 to 11)
+            for (int i = 8; i < 12; i++)
             {
+                Debug.WriteLine($"[DEBUG] Processing North TabPage index: {i}");
                 var tabPage = tabControlHallTotalMeasuredCharts.TabPages[i];
-                var chart = tabPage.Controls.OfType<Chart>().FirstOrDefault();
-                
+                var chart = tabPage?.Controls.OfType<Chart>().FirstOrDefault();
+
                 if (chart != null)
                 {
-                    int position = i - 8; // เปลี่ยนจาก 9–12 → 1–4
+                    int position = i - 7;
                     chartDictionary[$"North{position}"] = chart;
+                    Debug.WriteLine($"[DEBUG] Found North chart at position {position}, Key: North{position}");
+                }
+                else
+                {
+                    Debug.WriteLine($"[DEBUG] No North chart found in TabPage index: {i}");
                 }
             }
 
@@ -166,74 +182,7 @@ namespace Program01
             }
 
             Debug.WriteLine($"[INFO] Chart mapping complete. Total charts mapped: {chartDictionary.Count}");
-        }
-
-        private void UpdateTotalChart(Dictionary<string, Dictionary<int, List<(double Source, double Reading)>>> allChartData)
-        {
-            if (!chartDictionary.TryGetValue("ChartTotalMeasPos", out Chart totalChart))
-            {
-                return;
-            }
-
-            totalChart.Series.Clear();
-            ChartArea area = totalChart.ChartAreas[0];
-
-            area.AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} ({sourceUnit})";
-            area.AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} ({measureUnit})";
-
-            area.AxisX.LabelStyle.Angle = 90;
-            area.AxisY.LabelStyle.Angle = 0;
-            area.AxisX.LabelStyle.Format = "N6";
-            area.AxisY.LabelStyle.Format = "N6";
-            area.AxisX.LabelStyle.Font = new Font("Segoe UI", 9);
-            area.AxisY.LabelStyle.Font = new Font("Segoe UI", 9);
-
-            area.AxisX.MajorGrid.LineColor = Color.LightGray;
-            area.AxisX.MinorGrid.Enabled = true;
-            area.AxisX.MinorGrid.LineColor = Color.DimGray;
-            area.AxisX.MinorGrid.LineDashStyle = ChartDashStyle.Dash;
-            
-            area.AxisY.MajorGrid.LineColor = Color.LightGray;
-            area.AxisY.MinorGrid.Enabled = true;
-            area.AxisY.MinorGrid.LineColor = Color.DimGray;
-            area.AxisY.MinorGrid.LineDashStyle = ChartDashStyle.Dash;
-
-            foreach (var statePair in allChartData)
-            {
-                string stateKey = statePair.Key;
-                var dataDict = statePair.Value;
-
-                foreach (var dataEntry in dataDict)
-                {
-                    int position = dataEntry.Key;
-                    var dataList = dataEntry.Value;
-                    string chartKey = stateKey == "NoMagnetic" ? $"Out{position}" : $"{stateKey}{position}";
-                    string seriesName = chartKey;
-
-                    Color colorToUse = seriesColorMap.ContainsKey(chartKey) ? seriesColorMap[chartKey] : Color.Black;
-
-                    var series = new Series(seriesName)
-                    {
-                        ChartType = SeriesChartType.Line,
-                        BorderWidth = 2,
-                        MarkerStyle = MarkerStyle.Circle,
-                        MarkerSize = 6,
-                        Color = colorToUse
-                    };
-
-                    foreach (var pair in dataList)
-                    {
-                        series.Points.AddXY(pair.Source, pair.Reading);
-                    }
-
-                    totalChart.Series.Add(series);
-                }
-            }
-
-            area.RecalculateAxesScale();
-            totalChart.Invalidate();
-
-            Debug.WriteLine($"[DEBUG] Total Chart updated with {totalChart.Series.Count} series");
+            Debug.WriteLine("[DEBUG] Ending InitializeChartDictionary");
         }
 
         private void UpdateIndividualChart(Chart chart, List<(double Source, double Reading)> data, string seriesName)
@@ -244,13 +193,6 @@ namespace Program01
                 return;
             }
 
-            if (!chartDictionary.TryGetValue("ChartTotalMeasPos", out Chart totalChart))
-            {
-                Debug.WriteLine("[WARNING] TotalChart not found. Skipping individual formatting.");
-                return;
-            }
-
-            ChartArea totalArea = totalChart.ChartAreas[0];
             chart.Series.Clear();
             Color lineColor = seriesColorMap.ContainsKey(seriesName) ? seriesColorMap[seriesName] : Color.Black;
 
@@ -269,33 +211,35 @@ namespace Program01
             }
 
             chart.Series.Add(newSeries);
-
             ChartArea targetArea = chart.ChartAreas.Count > 0 ? chart.ChartAreas[0] : new ChartArea("Default");
-            
+
             if (chart.ChartAreas.Count == 0)
             {
                 chart.ChartAreas.Add(targetArea);
             }
 
-            targetArea.AxisX.Title = totalArea.AxisX.Title;
-            targetArea.AxisY.Title = totalArea.AxisY.Title;
+            targetArea.AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} ({sourceUnit})";
+            targetArea.AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} ({measureUnit})";
 
-            targetArea.AxisX.LabelStyle.Angle = totalArea.AxisX.LabelStyle.Angle;
-            targetArea.AxisY.LabelStyle.Angle = totalArea.AxisY.LabelStyle.Angle;
-            targetArea.AxisX.LabelStyle.Format = totalArea.AxisX.LabelStyle.Format;
-            targetArea.AxisY.LabelStyle.Format = totalArea.AxisY.LabelStyle.Format;
-            targetArea.AxisX.LabelStyle.Font = totalArea.AxisX.LabelStyle.Font;
-            targetArea.AxisY.LabelStyle.Font = totalArea.AxisY.LabelStyle.Font;
+            targetArea.AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} ({sourceUnit})";
+            targetArea.AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} ({measureUnit})";
 
-            targetArea.AxisX.MajorGrid.LineColor = totalArea.AxisX.MajorGrid.LineColor;
-            targetArea.AxisX.MinorGrid.Enabled = totalArea.AxisX.MinorGrid.Enabled;
-            targetArea.AxisX.MinorGrid.LineColor = totalArea.AxisX.MinorGrid.LineColor;
-            targetArea.AxisX.MinorGrid.LineDashStyle = totalArea.AxisX.MinorGrid.LineDashStyle;
+            targetArea.AxisX.LabelStyle.Angle = 90;
+            targetArea.AxisY.LabelStyle.Angle = 0;
+            targetArea.AxisX.LabelStyle.Format = "E3";
+            targetArea.AxisY.LabelStyle.Format = "E3";
+            targetArea.AxisX.LabelStyle.Font = new Font("Segoe UI, Bold", 9);
+            targetArea.AxisY.LabelStyle.Font = new Font("Segoe UI, Bold", 9);
 
-            targetArea.AxisY.MajorGrid.LineColor = totalArea.AxisY.MajorGrid.LineColor;
-            targetArea.AxisY.MinorGrid.Enabled = totalArea.AxisY.MinorGrid.Enabled;
-            targetArea.AxisY.MinorGrid.LineColor = totalArea.AxisY.MinorGrid.LineColor;
-            targetArea.AxisY.MinorGrid.LineDashStyle = totalArea.AxisY.MinorGrid.LineDashStyle;
+            targetArea.AxisX.MajorGrid.LineColor = Color.LightGray;
+            targetArea.AxisX.MinorGrid.Enabled = true;
+            targetArea.AxisX.MinorGrid.LineColor = Color.DimGray;
+            targetArea.AxisX.MinorGrid.LineDashStyle = ChartDashStyle.Dash;
+
+            targetArea.AxisY.MajorGrid.LineColor = Color.LightGray;
+            targetArea.AxisY.MinorGrid.Enabled = true;
+            targetArea.AxisY.MinorGrid.LineColor = Color.DimGray;
+            targetArea.AxisY.MinorGrid.LineDashStyle = ChartDashStyle.Dash;
 
             targetArea.RecalculateAxesScale();
             chart.Invalidate();
@@ -336,8 +280,6 @@ namespace Program01
                 { "North", northData }
             };
 
-            UpdateTotalChart(allChartData);
-
             foreach (var state in allChartData)
             {
                 string stateKey = state.Key;
@@ -362,7 +304,7 @@ namespace Program01
                 }
 
                 var stateData = state.Value;
-                
+
                 foreach (var entry in stateData)
                 {
                     int position = entry.Key;
@@ -399,15 +341,15 @@ namespace Program01
         private DataTable ConvertHallDataToDataTable(Dictionary<int, List<(double Source, double Reading)>> data)
         {
             DataTable dataTable = CreateHallDataTable().Clone();
-            
+
             if (data != null && data.Any())
             {
                 int maxRows = data.Max(kvp => kvp.Value.Count);
-                
+
                 for (int i = 0; i < maxRows; i++)
                 {
                     DataRow row = dataTable.NewRow();
-                    
+
                     for (int j = 1; j <= NumberOfHallPositions; j++)
                     {
                         if (data.ContainsKey(j) && i < data[j].Count)
@@ -451,8 +393,6 @@ namespace Program01
                     { "South", args.SouthVoltageMeasurements },
                     { "North", args.NorthVoltageMeasurements }
                 };
-
-                UpdateTotalChart(allChartData);
 
                 Debug.WriteLine($"[DEBUG] Event args: State={args.IndividualChartState}, Pos={args.IndividualChartPosition}, DataCount={args.IndividualChartData?.Count ?? 0}");
 

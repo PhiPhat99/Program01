@@ -26,32 +26,32 @@ namespace Program01
 
         private void RichTextBoxSettings()
         {
-            RichTextboxResMP1N.Text = "RMP1 :";
-            RichTextboxResMP1P.Text = "RMP2 :";
-            RichTextboxResMP2N.Text = "RMP3 :";
-            RichTextboxResMP2P.Text = "RMP4 :";
-            RichTextboxResMP3N.Text = "RMP5 :";
-            RichTextboxResMP3P.Text = "RMP6 :";
-            RichTextboxResMP4N.Text = "RMP7 :";
-            RichTextboxResMP4P.Text = "RMP8 :";
+            RichTextboxResMP1N.Text = "RA1 :";
+            RichTextboxResMP1P.Text = "RA2 :";
+            RichTextboxResMP2N.Text = "RA3 :";
+            RichTextboxResMP2P.Text = "RA4 :";
+            RichTextboxResMP3N.Text = "RB1 :";
+            RichTextboxResMP3P.Text = "RB2 :";
+            RichTextboxResMP4N.Text = "RB3 :";
+            RichTextboxResMP4P.Text = "RB4 :";
             RichTextboxResA.Text = "RA :";
             RichTextboxResB.Text = "RB :";
             RichTextboxAvgRes.Text = "RAverage :";
             RichTextboxSheetRes.Text = "RSheet :";
 
-            RichTextboxResMP1N.Location = new Point(120, 20);
-            RichTextboxResMP1P.Location = new Point(120, 70);
-            RichTextboxResMP2N.Location = new Point(120, 120);
-            RichTextboxResMP2P.Location = new Point(120, 170);
-            RichTextboxResMP3N.Location = new Point(120, 220);
-            RichTextboxResMP3P.Location = new Point(120, 270);
-            RichTextboxResMP4N.Location = new Point(120, 320);
-            RichTextboxResMP4P.Location = new Point(120, 370);
+            RichTextboxResMP1N.Location = new Point(135, 20);
+            RichTextboxResMP1P.Location = new Point(135, 70);
+            RichTextboxResMP2N.Location = new Point(135, 120);
+            RichTextboxResMP2P.Location = new Point(135, 170);
+            RichTextboxResMP3N.Location = new Point(135, 220);
+            RichTextboxResMP3P.Location = new Point(135, 270);
+            RichTextboxResMP4N.Location = new Point(135, 320);
+            RichTextboxResMP4P.Location = new Point(135, 370);
 
-            RichTextboxResA.Location = new Point(120, 420);
-            RichTextboxResB.Location = new Point(120, 470); ;
-            RichTextboxAvgRes.Location = new Point(103, 520);
-            RichTextboxSheetRes.Location = new Point(100, 620);
+            RichTextboxResA.Location = new Point(138, 420);
+            RichTextboxResB.Location = new Point(138, 470); ;
+            RichTextboxAvgRes.Location = new Point(100, 520);
+            RichTextboxSheetRes.Location = new Point(110, 620);
 
             RichTextboxResMP1N.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
             RichTextboxResMP1P.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
@@ -67,14 +67,14 @@ namespace Program01
             RichTextboxAvgRes.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
             RichTextboxSheetRes.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold, GraphicsUnit.Point);
 
-            RichTextboxResMP1N.Select(1, 4);
-            RichTextboxResMP1P.Select(1, 4);
-            RichTextboxResMP2N.Select(1, 4);
-            RichTextboxResMP2P.Select(1, 4);
-            RichTextboxResMP3N.Select(1, 4);
-            RichTextboxResMP3P.Select(1, 4);
-            RichTextboxResMP4N.Select(1, 4);
-            RichTextboxResMP4P.Select(1, 4);
+            RichTextboxResMP1N.Select(1, 2);
+            RichTextboxResMP1P.Select(1, 2);
+            RichTextboxResMP2N.Select(1, 2);
+            RichTextboxResMP2P.Select(1, 2);
+            RichTextboxResMP3N.Select(1, 2);
+            RichTextboxResMP3P.Select(1, 2);
+            RichTextboxResMP4N.Select(1, 2);
+            RichTextboxResMP4P.Select(1, 2);
             RichTextboxResA.Select(1, 1);
             RichTextboxResB.Select(1, 1);
             RichTextboxAvgRes.Select(1, 7);
@@ -118,7 +118,7 @@ namespace Program01
                 {
                     if (GlobalSettings.Instance.ResistancesByPosition.ContainsKey(i) && !double.IsNaN(GlobalSettings.Instance.ResistancesByPosition[i]))
                     {
-                        resistanceTextBox.Text = GlobalSettings.Instance.ResistancesByPosition[i].ToString("F5");
+                        resistanceTextBox.Text = GlobalSettings.Instance.ResistancesByPosition[i].ToString("F6");
                     }
                     else
                     {
@@ -231,7 +231,12 @@ namespace Program01
 
             if (ChartTotalResistances.ChartAreas.Count > 0)
             {
+                ChartTotalResistances.ChartAreas[0].AxisY.LabelStyle.Format = "E3";
+                ChartTotalResistances.ChartAreas[0].AxisX.LabelStyle.Font = new Font("Segoe UI", 9);
+                ChartTotalResistances.ChartAreas[0].AxisY.LabelStyle.Font = new Font("Segoe UI", 9);
+                
                 ChartTotalResistances.ChartAreas[0].RecalculateAxesScale();
+                ChartTotalResistances.Invalidate();
             }
         }
     }

@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.TextboxRes1 = new System.Windows.Forms.TextBox();
             this.TextboxRes2 = new System.Windows.Forms.TextBox();
             this.TextboxRes3 = new System.Windows.Forms.TextBox();
@@ -227,7 +227,7 @@
             this.LabelThickness.AutoSize = true;
             this.LabelThickness.BackColor = System.Drawing.Color.Transparent;
             this.LabelThickness.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelThickness.Location = new System.Drawing.Point(76, 570);
+            this.LabelThickness.Location = new System.Drawing.Point(65, 573);
             this.LabelThickness.Name = "LabelThickness";
             this.LabelThickness.Size = new System.Drawing.Size(112, 28);
             this.LabelThickness.TabIndex = 94;
@@ -490,29 +490,29 @@
             this.LabelConductivity.AutoSize = true;
             this.LabelConductivity.BackColor = System.Drawing.Color.Transparent;
             this.LabelConductivity.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelConductivity.Location = new System.Drawing.Point(20, 720);
+            this.LabelConductivity.Location = new System.Drawing.Point(142, 720);
             this.LabelConductivity.Name = "LabelConductivity";
-            this.LabelConductivity.Size = new System.Drawing.Size(168, 28);
+            this.LabelConductivity.Size = new System.Drawing.Size(35, 28);
             this.LabelConductivity.TabIndex = 138;
-            this.LabelConductivity.Text = "Conductivity (σ) :";
+            this.LabelConductivity.Text = "σ :";
             // 
             // LabelResistivity
             // 
             this.LabelResistivity.AutoSize = true;
             this.LabelResistivity.BackColor = System.Drawing.Color.Transparent;
             this.LabelResistivity.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelResistivity.Location = new System.Drawing.Point(44, 670);
+            this.LabelResistivity.Location = new System.Drawing.Point(142, 670);
             this.LabelResistivity.Name = "LabelResistivity";
-            this.LabelResistivity.Size = new System.Drawing.Size(144, 28);
+            this.LabelResistivity.Size = new System.Drawing.Size(35, 28);
             this.LabelResistivity.TabIndex = 137;
-            this.LabelResistivity.Text = "Resistivity (ρ) :";
+            this.LabelResistivity.Text = "ρ :";
             // 
             // RichTextboxSheetRes
             // 
             this.RichTextboxSheetRes.BackColor = System.Drawing.Color.DarkGray;
             this.RichTextboxSheetRes.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.RichTextboxSheetRes.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxSheetRes.Location = new System.Drawing.Point(100, 620);
+            this.RichTextboxSheetRes.Location = new System.Drawing.Point(92, 621);
             this.RichTextboxSheetRes.Name = "RichTextboxSheetRes";
             this.RichTextboxSheetRes.ReadOnly = true;
             this.RichTextboxSheetRes.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -538,7 +538,7 @@
             this.RichTextboxResB.BackColor = System.Drawing.Color.DarkGray;
             this.RichTextboxResB.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.RichTextboxResB.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxResB.Location = new System.Drawing.Point(140, 470);
+            this.RichTextboxResB.Location = new System.Drawing.Point(130, 470);
             this.RichTextboxResB.Name = "RichTextboxResB";
             this.RichTextboxResB.ReadOnly = true;
             this.RichTextboxResB.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -551,7 +551,7 @@
             this.RichTextboxResA.BackColor = System.Drawing.Color.DarkGray;
             this.RichTextboxResA.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.RichTextboxResA.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxResA.Location = new System.Drawing.Point(140, 420);
+            this.RichTextboxResA.Location = new System.Drawing.Point(130, 420);
             this.RichTextboxResA.Name = "RichTextboxResA";
             this.RichTextboxResA.ReadOnly = true;
             this.RichTextboxResA.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
@@ -564,104 +564,104 @@
             this.RichTextboxResMP4P.BackColor = System.Drawing.Color.DarkGray;
             this.RichTextboxResMP4P.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.RichTextboxResMP4P.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxResMP4P.Location = new System.Drawing.Point(100, 370);
+            this.RichTextboxResMP4P.Location = new System.Drawing.Point(120, 370);
             this.RichTextboxResMP4P.Name = "RichTextboxResMP4P";
             this.RichTextboxResMP4P.ReadOnly = true;
             this.RichTextboxResMP4P.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.RichTextboxResMP4P.Size = new System.Drawing.Size(70, 35);
             this.RichTextboxResMP4P.TabIndex = 130;
-            this.RichTextboxResMP4P.Text = "RMP8 :";
+            this.RichTextboxResMP4P.Text = "RB4 :";
             // 
             // RichTextboxResMP4N
             // 
             this.RichTextboxResMP4N.BackColor = System.Drawing.Color.DarkGray;
             this.RichTextboxResMP4N.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.RichTextboxResMP4N.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxResMP4N.Location = new System.Drawing.Point(100, 320);
+            this.RichTextboxResMP4N.Location = new System.Drawing.Point(120, 320);
             this.RichTextboxResMP4N.Name = "RichTextboxResMP4N";
             this.RichTextboxResMP4N.ReadOnly = true;
             this.RichTextboxResMP4N.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.RichTextboxResMP4N.Size = new System.Drawing.Size(70, 35);
             this.RichTextboxResMP4N.TabIndex = 129;
-            this.RichTextboxResMP4N.Text = "RMP7 :";
+            this.RichTextboxResMP4N.Text = "RB3 :";
             // 
             // RichTextboxResMP3P
             // 
             this.RichTextboxResMP3P.BackColor = System.Drawing.Color.DarkGray;
             this.RichTextboxResMP3P.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.RichTextboxResMP3P.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxResMP3P.Location = new System.Drawing.Point(100, 270);
+            this.RichTextboxResMP3P.Location = new System.Drawing.Point(120, 270);
             this.RichTextboxResMP3P.Name = "RichTextboxResMP3P";
             this.RichTextboxResMP3P.ReadOnly = true;
             this.RichTextboxResMP3P.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.RichTextboxResMP3P.Size = new System.Drawing.Size(70, 35);
             this.RichTextboxResMP3P.TabIndex = 128;
-            this.RichTextboxResMP3P.Text = "RMP6 :";
+            this.RichTextboxResMP3P.Text = "RB2 :";
             // 
             // RichTextboxResMP3N
             // 
             this.RichTextboxResMP3N.BackColor = System.Drawing.Color.DarkGray;
             this.RichTextboxResMP3N.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.RichTextboxResMP3N.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxResMP3N.Location = new System.Drawing.Point(100, 220);
+            this.RichTextboxResMP3N.Location = new System.Drawing.Point(120, 220);
             this.RichTextboxResMP3N.Name = "RichTextboxResMP3N";
             this.RichTextboxResMP3N.ReadOnly = true;
             this.RichTextboxResMP3N.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.RichTextboxResMP3N.Size = new System.Drawing.Size(70, 35);
             this.RichTextboxResMP3N.TabIndex = 127;
-            this.RichTextboxResMP3N.Text = "RMP5 :";
+            this.RichTextboxResMP3N.Text = "RB1 :";
             // 
             // RichTextboxResMP2P
             // 
             this.RichTextboxResMP2P.BackColor = System.Drawing.Color.DarkGray;
             this.RichTextboxResMP2P.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.RichTextboxResMP2P.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxResMP2P.Location = new System.Drawing.Point(100, 170);
+            this.RichTextboxResMP2P.Location = new System.Drawing.Point(120, 170);
             this.RichTextboxResMP2P.Name = "RichTextboxResMP2P";
             this.RichTextboxResMP2P.ReadOnly = true;
             this.RichTextboxResMP2P.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.RichTextboxResMP2P.Size = new System.Drawing.Size(70, 35);
             this.RichTextboxResMP2P.TabIndex = 126;
-            this.RichTextboxResMP2P.Text = "RMP4 :";
+            this.RichTextboxResMP2P.Text = "RA4 :";
             // 
             // RichTextboxResMP2N
             // 
             this.RichTextboxResMP2N.BackColor = System.Drawing.Color.DarkGray;
             this.RichTextboxResMP2N.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.RichTextboxResMP2N.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxResMP2N.Location = new System.Drawing.Point(100, 120);
+            this.RichTextboxResMP2N.Location = new System.Drawing.Point(120, 120);
             this.RichTextboxResMP2N.Name = "RichTextboxResMP2N";
             this.RichTextboxResMP2N.ReadOnly = true;
             this.RichTextboxResMP2N.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.RichTextboxResMP2N.Size = new System.Drawing.Size(70, 35);
             this.RichTextboxResMP2N.TabIndex = 125;
-            this.RichTextboxResMP2N.Text = "RMP3 :";
+            this.RichTextboxResMP2N.Text = "RA3 :";
             // 
             // RichTextboxResMP1P
             // 
             this.RichTextboxResMP1P.BackColor = System.Drawing.Color.DarkGray;
             this.RichTextboxResMP1P.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.RichTextboxResMP1P.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxResMP1P.Location = new System.Drawing.Point(100, 70);
+            this.RichTextboxResMP1P.Location = new System.Drawing.Point(120, 70);
             this.RichTextboxResMP1P.Name = "RichTextboxResMP1P";
             this.RichTextboxResMP1P.ReadOnly = true;
             this.RichTextboxResMP1P.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.RichTextboxResMP1P.Size = new System.Drawing.Size(70, 35);
             this.RichTextboxResMP1P.TabIndex = 124;
-            this.RichTextboxResMP1P.Text = "RMP2 :";
+            this.RichTextboxResMP1P.Text = "RA2 :";
             // 
             // RichTextboxResMP1N
             // 
             this.RichTextboxResMP1N.BackColor = System.Drawing.Color.DarkGray;
             this.RichTextboxResMP1N.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.RichTextboxResMP1N.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.RichTextboxResMP1N.Location = new System.Drawing.Point(100, 20);
+            this.RichTextboxResMP1N.Location = new System.Drawing.Point(120, 20);
             this.RichTextboxResMP1N.Name = "RichTextboxResMP1N";
             this.RichTextboxResMP1N.ReadOnly = true;
             this.RichTextboxResMP1N.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
             this.RichTextboxResMP1N.Size = new System.Drawing.Size(70, 35);
             this.RichTextboxResMP1N.TabIndex = 123;
-            this.RichTextboxResMP1N.Text = "RMP1 :";
+            this.RichTextboxResMP1N.Text = "RA1 :";
             // 
             // PanelMeasureAndSource
             // 
@@ -679,28 +679,30 @@
             // TextboxSourceMode
             // 
             this.TextboxSourceMode.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxSourceMode.Location = new System.Drawing.Point(536, 26);
+            this.TextboxSourceMode.Location = new System.Drawing.Point(530, 24);
             this.TextboxSourceMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TextboxSourceMode.Name = "TextboxSourceMode";
             this.TextboxSourceMode.ReadOnly = true;
-            this.TextboxSourceMode.Size = new System.Drawing.Size(110, 30);
+            this.TextboxSourceMode.Size = new System.Drawing.Size(150, 30);
             this.TextboxSourceMode.TabIndex = 61;
+            this.TextboxSourceMode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // TextboxMeasureMode
             // 
             this.TextboxMeasureMode.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TextboxMeasureMode.Location = new System.Drawing.Point(190, 26);
+            this.TextboxMeasureMode.Location = new System.Drawing.Point(210, 24);
             this.TextboxMeasureMode.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.TextboxMeasureMode.Name = "TextboxMeasureMode";
             this.TextboxMeasureMode.ReadOnly = true;
-            this.TextboxMeasureMode.Size = new System.Drawing.Size(110, 30);
+            this.TextboxMeasureMode.Size = new System.Drawing.Size(150, 30);
             this.TextboxMeasureMode.TabIndex = 60;
+            this.TextboxMeasureMode.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // LabelMeasureMode
             // 
             this.LabelMeasureMode.AutoSize = true;
             this.LabelMeasureMode.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelMeasureMode.Location = new System.Drawing.Point(60, 25);
+            this.LabelMeasureMode.Location = new System.Drawing.Point(90, 25);
             this.LabelMeasureMode.Name = "LabelMeasureMode";
             this.LabelMeasureMode.Size = new System.Drawing.Size(111, 28);
             this.LabelMeasureMode.TabIndex = 58;
@@ -730,35 +732,35 @@
             // 
             this.ChartTotalResistances.BackColor = System.Drawing.Color.Transparent;
             this.ChartTotalResistances.BorderlineColor = System.Drawing.Color.Transparent;
-            chartArea1.AxisX.MajorGrid.LineWidth = 2;
-            chartArea1.AxisX.MinorGrid.Enabled = true;
-            chartArea1.AxisX.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-            chartArea1.AxisX.Title = "Position (n)";
-            chartArea1.AxisX.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea1.AxisY.MajorGrid.LineWidth = 2;
-            chartArea1.AxisY.MinorGrid.Enabled = true;
-            chartArea1.AxisY.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
-            chartArea1.AxisY.Title = "Resistance (Ω)";
-            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            chartArea1.BackColor = System.Drawing.Color.Black;
-            chartArea1.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
-            chartArea1.BackSecondaryColor = System.Drawing.Color.DarkGray;
-            chartArea1.BorderColor = System.Drawing.Color.Transparent;
-            chartArea1.Name = "ChartAreaTotalResistances";
-            this.ChartTotalResistances.ChartAreas.Add(chartArea1);
-            legend1.Enabled = false;
-            legend1.Name = "LegendTotalResistances";
-            this.ChartTotalResistances.Legends.Add(legend1);
+            chartArea2.AxisX.MajorGrid.LineWidth = 2;
+            chartArea2.AxisX.MinorGrid.Enabled = true;
+            chartArea2.AxisX.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+            chartArea2.AxisX.Title = "Position (n)";
+            chartArea2.AxisX.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea2.AxisY.MajorGrid.LineWidth = 2;
+            chartArea2.AxisY.MinorGrid.Enabled = true;
+            chartArea2.AxisY.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
+            chartArea2.AxisY.Title = "Resistance (Ω)";
+            chartArea2.AxisY.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea2.BackColor = System.Drawing.Color.Black;
+            chartArea2.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
+            chartArea2.BackSecondaryColor = System.Drawing.Color.DarkGray;
+            chartArea2.BorderColor = System.Drawing.Color.Transparent;
+            chartArea2.Name = "ChartAreaTotalResistances";
+            this.ChartTotalResistances.ChartAreas.Add(chartArea2);
+            legend2.Enabled = false;
+            legend2.Name = "LegendTotalResistances";
+            this.ChartTotalResistances.Legends.Add(legend2);
             this.ChartTotalResistances.Location = new System.Drawing.Point(60, 50);
             this.ChartTotalResistances.Name = "ChartTotalResistances";
-            series1.ChartArea = "ChartAreaTotalResistances";
-            series1.Color = System.Drawing.Color.DarkBlue;
-            series1.Legend = "LegendTotalResistances";
-            series1.Name = "SeriesResTotalPosition";
-            series1.XValueMember = "Position";
-            series1.YValueMembers = "Resistance";
-            series1.YValuesPerPoint = 2;
-            this.ChartTotalResistances.Series.Add(series1);
+            series2.ChartArea = "ChartAreaTotalResistances";
+            series2.Color = System.Drawing.Color.DarkBlue;
+            series2.Legend = "LegendTotalResistances";
+            series2.Name = "SeriesResTotalPosition";
+            series2.XValueMember = "Position";
+            series2.YValueMembers = "Resistance";
+            series2.YValuesPerPoint = 2;
+            this.ChartTotalResistances.Series.Add(series2);
             this.ChartTotalResistances.Size = new System.Drawing.Size(720, 640);
             this.ChartTotalResistances.TabIndex = 124;
             // 

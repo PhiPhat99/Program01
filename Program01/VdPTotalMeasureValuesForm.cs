@@ -90,7 +90,7 @@ namespace Program01
 
                 chart.ChartAreas[0].AxisX.IsLabelAutoFit = false;
                 chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.FixedCount;
-                chart.ChartAreas[0].AxisX.LabelStyle.Format = "N6";
+                chart.ChartAreas[0].AxisX.LabelStyle.Format = "E3";
                 chart.ChartAreas[0].AxisX.LabelStyle.Angle = 90;
 
                 if (GlobalSettings.Instance.MeasureModeUI == "Voltage")
@@ -104,7 +104,7 @@ namespace Program01
 
                 chart.ChartAreas[0].AxisY.IsLabelAutoFit= false;
                 chart.ChartAreas[0].AxisY.IntervalAutoMode = IntervalAutoMode.FixedCount;
-                chart.ChartAreas[0].AxisY.LabelStyle.Format = "N6";
+                chart.ChartAreas[0].AxisY.LabelStyle.Format = "E3";
 
                 chart.Invalidate();
             }
@@ -221,13 +221,13 @@ namespace Program01
                         string measureUnit = GlobalSettings.Instance.MeasureModeUI == "Voltage" ? "V" : "A";
 
                         TotalChart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} ({sourceUnit})"; // กำหนดชื่อแกน Y
-                        TotalChart.ChartAreas[0].AxisX.LabelStyle.Format = "N6";
+                        TotalChart.ChartAreas[0].AxisX.LabelStyle.Format = "E3";
                         TotalChart.ChartAreas[0].AxisX.Interval = 0;
                         TotalChart.ChartAreas[0].AxisX.LabelStyle.Angle = 90;
 
                         TotalChart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} ({measureUnit})"; // กำหนดชื่อแกน X
                         TotalChart.ChartAreas[0].AxisY.Interval = 0;
-                        TotalChart.ChartAreas[0].AxisY.LabelStyle.Format = "N6";
+                        TotalChart.ChartAreas[0].AxisY.LabelStyle.Format = "E3";
                     }
                     else
                     {

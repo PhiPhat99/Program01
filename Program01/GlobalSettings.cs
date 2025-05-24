@@ -1,5 +1,4 @@
-﻿using Program01;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -307,6 +306,7 @@ public class GlobalSettings
     public double Conductivity { get; set; }
     public Dictionary<int, double> HallVoltagesByPosition { get; set; } = new Dictionary<int, double>();
     public double TotalHallVoltage { get; set; }
+    public double HallResistance { get; set; }
     public double HallCoefficient { get; set; }
     public double BulkConcentration { get; set; }
     public double SheetConcentration { get; set; }

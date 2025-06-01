@@ -11,6 +11,8 @@ namespace Program01
     public partial class VdPTotalMeasureValuesForm : Form
     {
         private const int NumberOfVdPPositions = 8;
+        private readonly string sourceUnit = GlobalSettings.Instance.SourceModeUI == "Voltage" ? "V" : "A";
+        private readonly string measureUnit = GlobalSettings.Instance.MeasureModeUI == "Voltage" ? "V" : "A";
 
         public VdPTotalMeasureValuesForm()
         {
@@ -30,8 +32,22 @@ namespace Program01
             {
                 for (int i = 1; i <= NumberOfVdPPositions; i++)
                 {
-                    DatagridviewVdPTotalMesure.Columns.Add($"SourceValue{i - 1}", $"Source {i}");
-                    DatagridviewVdPTotalMesure.Columns.Add($"MeasuredValue{i - 1}", $"Measured {i}");
+                    DatagridviewVdPTotalMesure.Columns.Add(new DataGridViewTextBoxColumn
+                    {
+                        DataPropertyName = $"SourceValue{i - 1}",
+                        HeaderText = $"{GlobalSettings.Instance.SourceModeUI} {i} ({sourceUnit})",
+                        DefaultCellStyle = new DataGridViewCellStyle { Format = "E5", Alignment = DataGridViewContentAlignment.MiddleCenter }
+                    });
+
+                    DatagridviewVdPTotalMesure.Columns.Add(new DataGridViewTextBoxColumn
+                    {
+                        DataPropertyName = $"MeasuredValue{i - 1}",
+                        HeaderText = $"{GlobalSettings.Instance.MeasureModeUI} {i} ({measureUnit})",
+                        DefaultCellStyle = new DataGridViewCellStyle { Format = "E5", Alignment = DataGridViewContentAlignment.MiddleCenter }
+                    });
+
+                    /*DatagridviewVdPTotalMesure.Columns.Add($"SourceValue{i - 1}", $"{GlobalSettings.Instance.SourceModeUI} {i}");
+                    DatagridviewVdPTotalMesure.Columns.Add($"MeasuredValue{i - 1}", $"{GlobalSettings.Instance.MeasureModeUI} {i}");*/
                 }
             }
         }
@@ -90,7 +106,7 @@ namespace Program01
 
                 chart.ChartAreas[0].AxisX.IsLabelAutoFit = false;
                 chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.FixedCount;
-                chart.ChartAreas[0].AxisX.LabelStyle.Format = "E3";
+                chart.ChartAreas[0].AxisX.LabelStyle.Format = "E2";
                 chart.ChartAreas[0].AxisX.LabelStyle.Angle = 90;
 
                 if (GlobalSettings.Instance.MeasureModeUI == "Voltage")
@@ -104,7 +120,7 @@ namespace Program01
 
                 chart.ChartAreas[0].AxisY.IsLabelAutoFit= false;
                 chart.ChartAreas[0].AxisY.IntervalAutoMode = IntervalAutoMode.FixedCount;
-                chart.ChartAreas[0].AxisY.LabelStyle.Format = "E3";
+                chart.ChartAreas[0].AxisY.LabelStyle.Format = "E2";
 
                 chart.Invalidate();
             }
@@ -140,8 +156,8 @@ namespace Program01
             DatagridviewVdPTotalMesure.Rows.Clear();
 
             Dictionary<int, List<(double Source, double Reading)>> dataToDisplay = CollectAndCalculateVdPMeasured.Instance.GetAllMeasurementsByTuner();
-
             Debug.WriteLine("[DEBUG] LoadMeasurementData - Data from CollectVdPMeasured:");
+
             foreach (var kvp in dataToDisplay)
             {
                 Debug.WriteLine($"[DEBUG]     Tuner {kvp.Key}: {kvp.Value.Count} measurements");
@@ -149,7 +165,6 @@ namespace Program01
 
             int maxSteps = dataToDisplay?.Values.Max(list => list?.Count ?? 0) ?? 0;
             Debug.WriteLine($"[DEBUG] LoadMeasurementData - maxSteps: {maxSteps}");
-
             DatagridviewVdPTotalMesure.ColumnCount = NumberOfVdPPositions * 2;
 
             for (int i = 0; i < maxSteps; i++)
@@ -221,13 +236,13 @@ namespace Program01
                         string measureUnit = GlobalSettings.Instance.MeasureModeUI == "Voltage" ? "V" : "A";
 
                         TotalChart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} ({sourceUnit})"; // กำหนดชื่อแกน Y
-                        TotalChart.ChartAreas[0].AxisX.LabelStyle.Format = "E3";
+                        TotalChart.ChartAreas[0].AxisX.LabelStyle.Format = "E2";
                         TotalChart.ChartAreas[0].AxisX.Interval = 0;
                         TotalChart.ChartAreas[0].AxisX.LabelStyle.Angle = 90;
 
                         TotalChart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} ({measureUnit})"; // กำหนดชื่อแกน X
                         TotalChart.ChartAreas[0].AxisY.Interval = 0;
-                        TotalChart.ChartAreas[0].AxisY.LabelStyle.Format = "E3";
+                        TotalChart.ChartAreas[0].AxisY.LabelStyle.Format = "E2";
                     }
                     else
                     {

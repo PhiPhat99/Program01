@@ -99,14 +99,14 @@ namespace Program01
                 {
                     DataPropertyName = $"Source{i}",
                     HeaderText = $"{GlobalSettings.Instance.SourceModeUI} {i} ({sourceUnit})",
-                    DefaultCellStyle = new DataGridViewCellStyle { Format = "F6", Alignment = DataGridViewContentAlignment.MiddleCenter }
+                    DefaultCellStyle = new DataGridViewCellStyle { Format = "E5", Alignment = DataGridViewContentAlignment.MiddleCenter }
                 });
 
                 dataGridView.Columns.Add(new DataGridViewTextBoxColumn
                 {
                     DataPropertyName = $"Reading{i}",
                     HeaderText = $"{GlobalSettings.Instance.MeasureModeUI} {i} ({measureUnit})",
-                    DefaultCellStyle = new DataGridViewCellStyle { Format = "F6", Alignment = DataGridViewContentAlignment.MiddleCenter }
+                    DefaultCellStyle = new DataGridViewCellStyle { Format = "E5", Alignment = DataGridViewContentAlignment.MiddleCenter }
                 });
             }
 
@@ -226,8 +226,8 @@ namespace Program01
 
             targetArea.AxisX.LabelStyle.Angle = 90;
             targetArea.AxisY.LabelStyle.Angle = 0;
-            targetArea.AxisX.LabelStyle.Format = "E3";
-            targetArea.AxisY.LabelStyle.Format = "E3";
+            targetArea.AxisX.LabelStyle.Format = "E5";
+            targetArea.AxisY.LabelStyle.Format = "E5";
             targetArea.AxisX.LabelStyle.Font = new Font("Segoe UI, Bold", 9);
             targetArea.AxisY.LabelStyle.Font = new Font("Segoe UI, Bold", 9);
 

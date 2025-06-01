@@ -84,37 +84,40 @@
             this.TextboxMaxMeasureValue.ReadOnly = true;
             this.TextboxMaxMeasureValue.Size = new System.Drawing.Size(80, 30);
             this.TextboxMaxMeasureValue.TabIndex = 10;
+            this.TextboxMaxMeasureValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // ChartTunerTesting
             // 
             this.ChartTunerTesting.BackColor = System.Drawing.Color.Transparent;
             this.ChartTunerTesting.BorderlineColor = System.Drawing.Color.Transparent;
+            chartArea1.AxisX.IsLabelAutoFit = false;
             chartArea1.AxisX.MinorGrid.Enabled = true;
             chartArea1.AxisX.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
             chartArea1.AxisX.Title = "Source Values";
-            chartArea1.AxisX.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisX.TitleFont = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisY.IsLabelAutoFit = false;
             chartArea1.AxisY.MinorGrid.Enabled = true;
             chartArea1.AxisY.MinorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dash;
             chartArea1.AxisY.Title = "Measure Values";
-            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             chartArea1.BackColor = System.Drawing.Color.DimGray;
             chartArea1.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.TopBottom;
             chartArea1.BackSecondaryColor = System.Drawing.Color.Silver;
             chartArea1.InnerPlotPosition.Auto = false;
             chartArea1.InnerPlotPosition.Height = 90F;
             chartArea1.InnerPlotPosition.Width = 90F;
-            chartArea1.InnerPlotPosition.X = 10F;
+            chartArea1.InnerPlotPosition.X = 8F;
             chartArea1.Name = "ChartAreaTunerTesting";
             chartArea1.Position.Auto = false;
             chartArea1.Position.Height = 90F;
-            chartArea1.Position.Width = 90F;
-            chartArea1.Position.X = 6F;
+            chartArea1.Position.Width = 84F;
+            chartArea1.Position.X = 16F;
             chartArea1.Position.Y = 2F;
             this.ChartTunerTesting.ChartAreas.Add(chartArea1);
             legend1.Enabled = false;
             legend1.Name = "Legend1";
             this.ChartTunerTesting.Legends.Add(legend1);
-            this.ChartTunerTesting.Location = new System.Drawing.Point(0, 30);
+            this.ChartTunerTesting.Location = new System.Drawing.Point(20, 30);
             this.ChartTunerTesting.Name = "ChartTunerTesting";
             series1.BorderWidth = 2;
             series1.ChartArea = "ChartAreaTunerTesting";
@@ -130,7 +133,7 @@
             series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Diamond;
             series1.Name = "MeasurementData";
             this.ChartTunerTesting.Series.Add(series1);
-            this.ChartTunerTesting.Size = new System.Drawing.Size(530, 550);
+            this.ChartTunerTesting.Size = new System.Drawing.Size(520, 550);
             this.ChartTunerTesting.TabIndex = 11;
             this.ChartTunerTesting.Text = "Tuner Testing";
             // 
@@ -187,6 +190,7 @@
             this.TextboxMinMeasureValue.ReadOnly = true;
             this.TextboxMinMeasureValue.Size = new System.Drawing.Size(80, 30);
             this.TextboxMinMeasureValue.TabIndex = 15;
+            this.TextboxMinMeasureValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // LabelMinSourceUnit
             // 
@@ -219,6 +223,7 @@
             this.TextboxMinSourceValue.ReadOnly = true;
             this.TextboxMinSourceValue.Size = new System.Drawing.Size(80, 30);
             this.TextboxMinSourceValue.TabIndex = 22;
+            this.TextboxMinSourceValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // LabelMaxSourceUnit
             // 
@@ -251,6 +256,7 @@
             this.TextboxMaxSourceValue.ReadOnly = true;
             this.TextboxMaxSourceValue.Size = new System.Drawing.Size(80, 30);
             this.TextboxMaxSourceValue.TabIndex = 19;
+            this.TextboxMaxSourceValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // LabelSourceValue
             // 
@@ -294,6 +300,7 @@
             this.TextboxSlopeValue.ReadOnly = true;
             this.TextboxSlopeValue.Size = new System.Drawing.Size(80, 30);
             this.TextboxSlopeValue.TabIndex = 25;
+            this.TextboxSlopeValue.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // DataChildForm
             // 

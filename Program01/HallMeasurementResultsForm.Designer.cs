@@ -582,7 +582,7 @@
             this.IconbuttonPType.Enabled = false;
             this.IconbuttonPType.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.IconbuttonPType.IconChar = FontAwesome.Sharp.IconChar.P;
-            this.IconbuttonPType.IconColor = System.Drawing.Color.DarkGray;
+            this.IconbuttonPType.IconColor = System.Drawing.Color.Snow;
             this.IconbuttonPType.IconFont = FontAwesome.Sharp.IconFont.Brands;
             this.IconbuttonPType.IconSize = 24;
             this.IconbuttonPType.Location = new System.Drawing.Point(248, 768);
@@ -597,7 +597,7 @@
             this.IconbuttonNType.Enabled = false;
             this.IconbuttonNType.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
             this.IconbuttonNType.IconChar = FontAwesome.Sharp.IconChar.N;
-            this.IconbuttonNType.IconColor = System.Drawing.Color.DarkGray;
+            this.IconbuttonNType.IconColor = System.Drawing.Color.Snow;
             this.IconbuttonNType.IconFont = FontAwesome.Sharp.IconFont.Brands;
             this.IconbuttonNType.IconSize = 24;
             this.IconbuttonNType.Location = new System.Drawing.Point(148, 768);

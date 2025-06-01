@@ -231,7 +231,6 @@ namespace Program01
             TextboxSourceMode.Text = GlobalSettings.Instance.SourceModeUI;
             TextboxMeasureMode.Text = GlobalSettings.Instance.MeasureModeUI;
 
-            var hallOutVoltages = GlobalSettings.Instance.HallVoltagesByPosition;
             var avgNoFieldVoltages = CollectAndCalculateHallMeasured.Instance.GetAverageNoFieldVoltagesByPosition();
             var avgSouthVoltages = CollectAndCalculateHallMeasured.Instance.GetAverageSouthFieldVoltagesByPosition();
             var avgNorthVoltages = CollectAndCalculateHallMeasured.Instance.GetAverageNorthFieldVoltagesByPosition();
@@ -239,16 +238,16 @@ namespace Program01
             void SetText(System.Windows.Forms.TextBox box, int index, Dictionary<int, double> data)
             {
                 if (data.TryGetValue(index, out double value))
-                    box.Text = value.ToString("E3");
+                    box.Text = value.ToString("E5");
                 else
                     box.Text = "N/A";
             }
 
             // แสดง Hall Out Voltages
-            SetText(TextboxHallOut1, 1, hallOutVoltages);
-            SetText(TextboxHallOut2, 2, hallOutVoltages);
-            SetText(TextboxHallOut3, 3, hallOutVoltages);
-            SetText(TextboxHallOut4, 4, hallOutVoltages);
+            SetText(TextboxHallOut1, 1, avgNoFieldVoltages);
+            SetText(TextboxHallOut2, 2, avgNoFieldVoltages);
+            SetText(TextboxHallOut3, 3, avgNoFieldVoltages);
+            SetText(TextboxHallOut4, 4, avgNoFieldVoltages);
 
             // แสดงค่าเฉลี่ย Hall In Voltages จาก South Field
             SetText(TextboxHallInSouth1, 1, avgSouthVoltages);
@@ -262,12 +261,12 @@ namespace Program01
             SetText(TextboxHallInNorth3, 3, avgNorthVoltages);
             SetText(TextboxHallInNorth4, 4, avgNorthVoltages);
 
-            TextboxHallVoltage.Text = GlobalSettings.Instance.TotalHallVoltage.ToString("E3");
-            TextboxHallRes.Text = GlobalSettings.Instance.HallResistance.ToString("E3");
-            TextboxHallCoefficient.Text = GlobalSettings.Instance.HallCoefficient.ToString("E3");
-            TextboxSheetConcentration.Text = GlobalSettings.Instance.SheetConcentration.ToString("E3");
-            TextboxBulkConcentration.Text = GlobalSettings.Instance.BulkConcentration.ToString("E3");
-            TextboxMobility.Text = GlobalSettings.Instance.Mobility.ToString("E3");
+            TextboxHallVoltage.Text = GlobalSettings.Instance.TotalHallVoltage.ToString("E5");
+            TextboxHallRes.Text = GlobalSettings.Instance.HallResistance.ToString("E5");
+            TextboxHallCoefficient.Text = GlobalSettings.Instance.HallCoefficient.ToString("E5");
+            TextboxSheetConcentration.Text = GlobalSettings.Instance.SheetConcentration.ToString("E5");
+            TextboxBulkConcentration.Text = GlobalSettings.Instance.BulkConcentration.ToString("E5");
+            TextboxMobility.Text = GlobalSettings.Instance.Mobility.ToString("E5");
 
             SetUnit("TextboxHallOut1Unit", "V");
             SetUnit("TextboxHallOut2Unit", "V");
@@ -438,7 +437,7 @@ namespace Program01
             }
             else
             {
-                GlobalSettings.Instance.SemiconductorType = CollectAndCalculateHallMeasured.SemiconductorType.Unknown; // หรือค่า Default อื่นๆ
+                GlobalSettings.Instance.SemiconductorType = CollectAndCalculateHallMeasured.SemiconductorType.Unknown;
             }
             Debug.WriteLine($"[DEBUG] Semiconductor Type set to: {GlobalSettings.Instance.SemiconductorType}-Type");
             UpdateButtonsUI(); 
@@ -449,13 +448,13 @@ namespace Program01
             if (IconbuttonNType != null)
             {
                 IconbuttonNType.BackColor = (GlobalSettings.Instance.SemiconductorType == CollectAndCalculateHallMeasured.SemiconductorType.N) ? Color.LightGreen : Color.Snow;
-                IconbuttonNType.IconColor = (GlobalSettings.Instance.SemiconductorType == CollectAndCalculateHallMeasured.SemiconductorType.N) ? Color.Blue : Color.LightGray;
+                //IconbuttonNType.IconColor = (GlobalSettings.Instance.SemiconductorType == CollectAndCalculateHallMeasured.SemiconductorType.N) ? Color.Blue : Color.LightGray;
             }
 
             if (IconbuttonPType != null)
             {
                 IconbuttonPType.BackColor = (GlobalSettings.Instance.SemiconductorType == CollectAndCalculateHallMeasured.SemiconductorType.P) ? Color.LightGreen : Color.Snow;
-                IconbuttonPType.IconColor = (GlobalSettings.Instance.SemiconductorType == CollectAndCalculateHallMeasured.SemiconductorType.P) ? Color.Red : Color.LightGray;
+                //IconbuttonPType.IconColor = (GlobalSettings.Instance.SemiconductorType == CollectAndCalculateHallMeasured.SemiconductorType.P) ? Color.Red : Color.LightGray;
             }
         }
 

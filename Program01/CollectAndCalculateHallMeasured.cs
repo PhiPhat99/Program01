@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
 public class HallVoltageDataUpdatedEventArgs : EventArgs
 {
-    // สำหรับ Chart แต่ละแบบ
     public string StateKey { get; }
     public int TunerPosition { get; }
     public List<(double Source, double Reading)> IndividualData { get; }
@@ -38,8 +36,7 @@ public class CollectAndCalculateHallMeasured
     private static CollectAndCalculateHallMeasured _instance;
     private static readonly object _lock = new object();
 
-    // เก็บข้อมูลการวัดสำหรับสถานะแม่เหล็กแต่ละแบบ
-    private readonly Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>> _measurements =
+    private readonly Dictionary<HallMeasurementState, Dictionary<int, List<(double, double)>>> _measurements =
         new Dictionary<HallMeasurementState, Dictionary<int, List<(double, double)>>>()
         {
             { HallMeasurementState.NoMagneticField, new Dictionary<int, List<(double, double)>>() },
@@ -61,6 +58,8 @@ public class CollectAndCalculateHallMeasured
         private set { _hallIVHNorthData = value; }
     }
 
+    private readonly Dictionary<int, double> _averageCurrentByPosition = new Dictionary<int, double>(); // เก็บค่ากระแสเฉลี่ยสำหรับแต่ละตำแหน่ง
+
     public enum SemiconductorType
     {
         Unknown,
@@ -72,7 +71,7 @@ public class CollectAndCalculateHallMeasured
     public event EventHandler<Dictionary<int, List<(double Current, double HallVoltage)>>> HallIVHNorthDataCalculated;
     private Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>> lastMeasurements;
     private readonly Dictionary<int, double> _hallVoltageByPosition = new Dictionary<int, double>();
-    public double ElementaryCharge { get; set; } = 1.602176634E-19;
+    public double ElementaryCharge { get; set; } = 1.602176634E-19; // ประจุอิเล็กตรอน (C)
 
     // Event
     public event EventHandler<HallVoltageDataUpdatedEventArgs> DataUpdated;
@@ -81,8 +80,6 @@ public class CollectAndCalculateHallMeasured
     public event EventHandler<Dictionary<int, List<(double Current, double HallVoltage)>>> HallIVHDataCalculated;
     public event EventHandler<(double HallCoefficient, double SheetConcentration, double BulkConcentration, double Mobility)> HallPropertiesCalculated;
     public event EventHandler<SemiconductorType> SemiconductorTypeCalculated;
-
-    // *** นี่คือ Event ที่เพิ่มเข้ามา ***
     public event EventHandler<Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>>> AllHallDataUpdated;
 
     private CollectAndCalculateHallMeasured() { }
@@ -102,7 +99,6 @@ public class CollectAndCalculateHallMeasured
         }
     }
 
-
     public void StoreMeasurementData(int tuner, List<(double Source, double Reading)> data, HallMeasurementState state)
     {
         if (data == null || data.Count == 0) return;
@@ -112,7 +108,12 @@ public class CollectAndCalculateHallMeasured
 
         _measurements[state][tuner].AddRange(data);
 
-        // Raise Event สำหรับกราฟแต่ละ Tab
+        Debug.WriteLine($"[DEBUG - StoreMeasurementData] State: {state}, Tuner: {tuner}, Data Count: {data.Count}");
+        foreach (var item in data)
+        {
+            Debug.WriteLine($"[DEBUG - StoreMeasurementData]    Source: {item.Source}, Reading: {item.Reading}");
+        }
+
         OnDataUpdated(new HallVoltageDataUpdatedEventArgs(state.ToString(), tuner, new List<(double, double)>(data)));
     }
 
@@ -146,6 +147,7 @@ public class CollectAndCalculateHallMeasured
     public void ClearHallResults()
     {
         _hallVoltageByPosition.Clear();
+        _averageCurrentByPosition.Clear(); // ล้างค่ากระแสเฉลี่ย
         GlobalSettings.Instance.TotalHallVoltage = double.NaN;
         GlobalSettings.Instance.HallCoefficient = double.NaN;
         GlobalSettings.Instance.SheetConcentration = double.NaN;
@@ -165,7 +167,7 @@ public class CollectAndCalculateHallMeasured
 
         double numerator = sumXY - (sumX * sumY / n);
         double denominator = sumX2 - (sumX * sumX / n);
-        return denominator == 0 ? double.NaN : numerator / denominator;
+        return denominator == 0 ? double.NaN : numerator / denominator; // คำนวณความชันจากข้อมูล (X, Y) โดยใช้ Linear Regression
     }
 
     public void CalculateHall()
@@ -173,11 +175,16 @@ public class CollectAndCalculateHallMeasured
         ClearHallResults();
         var slopes = new Dictionary<int, double>();
         var hallVoltagesByPosition = new Dictionary<int, double>();
+        var averageCurrentsByPosition = new Dictionary<int, double>(); // เก็บค่ากระแสเฉลี่ยต่อตำแหน่ง
         var ivhSouthDataByPosition = new Dictionary<int, List<(double Current, double HallVoltage)>>();
         var ivhNorthDataByPosition = new Dictionary<int, List<(double Current, double HallVoltage)>>();
 
         double sumHallVoltage = 0;
         int validHallVoltageCount = 0;
+
+        // เก็บค่า VHS และ VHN สำหรับแต่ละตำแหน่ง
+        var vhsValues = new Dictionary<int, List<double>>();
+        var vhnValues = new Dictionary<int, List<double>>();
 
         for (int pos = 1; pos <= 4; pos++)
         {
@@ -193,51 +200,94 @@ public class CollectAndCalculateHallMeasured
             var ivhNorthList = new List<(double Current, double HallVoltage)>();
 
             double currentHallVoltageSum = 0;
+            double currentSum = 0; // ผลรวมของค่ากระแสเพื่อหาค่าเฉลี่ย
             int validHallVoltageForPositionCount = 0;
+            int currentCount = 0; // จำนวนจุดข้อมูลกระแส
+
+            vhsValues[pos] = new List<double>();
+            vhnValues[pos] = new List<double>();
 
             for (int i = 0; i < outData.Count; i++)
             {
-                double current = outData[i].Source;
-                double deltaVhSouth = i < southData.Count ? southData[i].Reading - outData[i].Reading : double.NaN;
-                double deltaVhNorth = i < northData.Count ? northData[i].Reading - outData[i].Reading : double.NaN;
+                double current = outData[i].Item1;
+                double vhs = i < southData.Count ? southData[i].Item2 - outData[i].Item2 : double.NaN; // VHS
+                double vhn = i < northData.Count ? northData[i].Item2 - outData[i].Item2 : double.NaN; // VHN
 
-                if (!double.IsNaN(deltaVhSouth))
+                Debug.WriteLine($"[DEBUG - CalculateHall - Pos {pos}, Index {i}] Current: {current}, VHS: {vhs}, VHN: {vhn}");
+
+                if (!double.IsNaN(vhs))
                 {
-                    southHall.Add((current, deltaVhSouth));
-                    ivhSouthList.Add((current, deltaVhSouth));
+                    southHall.Add((current, vhs));
+                    ivhSouthList.Add((current, vhs));
+                    vhsValues[pos].Add(vhs);
                 }
-                if (!double.IsNaN(deltaVhNorth))
+                if (!double.IsNaN(vhn))
                 {
-                    northHall.Add((current, deltaVhNorth));
-                    ivhNorthList.Add((current, deltaVhNorth));
+                    northHall.Add((current, vhn));
+                    ivhNorthList.Add((current, vhn));
+                    vhnValues[pos].Add(vhn);
                 }
 
-                double hallVoltage = !double.IsNaN(deltaVhSouth) && !double.IsNaN(deltaVhNorth)
-                    ? (deltaVhSouth + deltaVhNorth) / 2
-                    : !double.IsNaN(deltaVhSouth) ? deltaVhSouth : deltaVhNorth;
+                // คำนวณ Hall Voltage (VH) แบบใหม่ - ยังไม่เฉลี่ยรวมทุกตำแหน่ง
+                double hallVoltage = (!double.IsNaN(vhs) && !double.IsNaN(vhn)) ? (vhs + vhn) / 2 : !double.IsNaN(vhs) ? vhs : vhn;
+                Debug.WriteLine($"[DEBUG - CalculateHall - Pos {pos}, Index {i}] Hall Voltage (VH individual): {hallVoltage}");
 
                 if (!double.IsNaN(hallVoltage))
                 {
                     currentHallVoltageSum += hallVoltage;
+                    currentSum += current; // สะสมค่ากระแส
                     validHallVoltageForPositionCount++;
+                    currentCount++; // นับจำนวนจุดข้อมูลกระแส
                 }
             }
 
-            double averageHallVoltage = validHallVoltageForPositionCount > 0 ? currentHallVoltageSum / validHallVoltageForPositionCount : double.NaN;
-            hallVoltagesByPosition[pos] = averageHallVoltage;
-            if (!double.IsNaN(averageHallVoltage))
+            double averageHallVoltageForPosition = validHallVoltageForPositionCount > 0 ? currentHallVoltageSum / validHallVoltageForPositionCount : double.NaN;
+            hallVoltagesByPosition[pos] = averageHallVoltageForPosition;
+            double averageCurrentForPosition = currentCount > 0 ? currentSum / currentCount : double.NaN; // คำนวณกระแสเฉลี่ยต่อตำแหน่ง
+            averageCurrentsByPosition[pos] = averageCurrentForPosition;
+            Debug.WriteLine($"[DEBUG - CalculateHall - Pos {pos}] Average Hall Voltage (VH per pos): {averageHallVoltageForPosition}, Average Current (I avg per pos): {averageCurrentForPosition}");
+
+            if (!double.IsNaN(averageHallVoltageForPosition))
             {
-                sumHallVoltage += averageHallVoltage;
+                sumHallVoltage += averageHallVoltageForPosition;
                 validHallVoltageCount++;
             }
 
+            // คำนวณ Slope (R_Hall เบื้องต้น) สำหรับแต่ละทิศทางและตำแหน่ง
             double slopeS = CalculateSlope(southHall);
             double slopeN = CalculateSlope(northHall);
-            slopes[pos] = (!double.IsNaN(slopeS) && !double.IsNaN(slopeN)) ? (slopeS + slopeN) / 2 : double.NaN;
+            slopes[pos] = (!double.IsNaN(slopeS) && !double.IsNaN(slopeN)) ? (slopeS + slopeN) / 2 : double.NaN; // R_Hall เบื้องต้นต่อตำแหน่ง (เฉลี่ย South/North)
+            Debug.WriteLine($"[DEBUG - CalculateHall - Pos {pos}] Slope South (R_Hall_S): {slopeS}, Slope North (R_Hall_N): {slopeN}, Average Slope (R_Hall_avg_SN_per_pos): {slopes[pos]}");
 
-            if (ivhSouthList.Count > 0) ivhSouthDataByPosition[pos] = ivhSouthList;
-            if (ivhNorthList.Count > 0) ivhNorthDataByPosition[pos] = ivhNorthList;
+            if (ivhSouthList.Count > 0)
+            {
+                ivhSouthDataByPosition[pos] = ivhSouthList;
+            }
+            if (ivhNorthList.Count > 0)
+            {
+                ivhNorthDataByPosition[pos] = ivhNorthList;
+            }
         }
+
+        // คำนวณ VH ตามสมการที่ 3
+        double totalVh = 0;
+        totalVh += vhsValues.TryGetValue(1, out var listVHS1) && listVHS1.Any() ? listVHS1.Average() : 0;
+        totalVh -= vhsValues.TryGetValue(2, out var listVHS2) && listVHS2.Any() ? listVHS2.Average() : 0;
+        totalVh += vhsValues.TryGetValue(3, out var listVHS3) && listVHS3.Any() ? listVHS3.Average() : 0;
+        totalVh -= vhsValues.TryGetValue(4, out var listVHS4) && listVHS4.Any() ? listVHS4.Average() : 0;
+        totalVh += vhnValues.TryGetValue(1, out var listVHN1) && listVHN1.Any() ? listVHN1.Average() : 0;
+        totalVh -= vhnValues.TryGetValue(2, out var listVHN2) && listVHN2.Any() ? listVHN2.Average() : 0;
+        totalVh += vhnValues.TryGetValue(3, out var listVHN3) && listVHN3.Any() ? listVHN3.Average() : 0;
+        totalVh -= vhnValues.TryGetValue(4, out var listVHN4) && listVHN4.Any() ? listVHN4.Average() : 0;
+        double averageVh = totalVh / 8.0;
+        GlobalSettings.Instance.TotalHallVoltage = averageVh;
+        Debug.WriteLine($"[DEBUG - CalculateHall] Total Average VH (Equation 3): {averageVh}");
+
+        // คำนวณ RHall ตามสมการที่ 5 (VH / I(avg)) โดยใช้ค่าเฉลี่ยกระแสจากทุกตำแหน่ง
+        double totalAverageCurrent = averageCurrentsByPosition.Values.Sum() / averageCurrentsByPosition.Count;
+        double rHall = double.IsNaN(averageVh) || totalAverageCurrent == 0 ? double.NaN : averageVh / totalAverageCurrent;
+        GlobalSettings.Instance.HallResistance = rHall;
+        Debug.WriteLine($"[DEBUG - CalculateHall] Hall Resistance (R_Hall - Equation 5): {rHall}");
 
         lastMeasurements = _measurements.ToDictionary(
             kvp => kvp.Key,
@@ -246,123 +296,204 @@ public class CollectAndCalculateHallMeasured
                 innerKvp => innerKvp.Value.ToList()
             )
         );
-        Debug.WriteLine("[DEBUG - CollectAndCalculate] Hall calculation done, data stored.");
+        Debug.WriteLine("[DEBUG - CalculateHall] Hall calculation done, data stored.");
 
         HallIVHSouthData = ivhSouthDataByPosition;
         HallIVHNorthData = ivhNorthDataByPosition;
         GlobalSettings.Instance.HallVoltagesByPosition = hallVoltagesByPosition;
+        GlobalSettings.Instance.AverageCurrentsByPosition = averageCurrentsByPosition; // เก็บค่ากระแสเฉลี่ย
         OnHallVoltageCalculated(hallVoltagesByPosition);
+        Debug.WriteLine($"[DEBUG - CalculateHall] Hall Voltages by Position: {string.Join(", ", hallVoltagesByPosition)}");
+        Debug.WriteLine($"[DEBUG - CalculateHall] Average Currents by Position: {string.Join(", ", averageCurrentsByPosition)}");
         OnHallIVHSouthDataCalculated(ivhSouthDataByPosition);
         OnHallIVHNorthDataCalculated(ivhNorthDataByPosition);
 
-        GlobalSettings.Instance.TotalHallVoltage = validHallVoltageCount > 0 ? sumHallVoltage / validHallVoltageCount : double.NaN;
-
-        CalculateHallProperties(slopes);
+        Debug.WriteLine($"[DEBUG - CalculateHall] Total Average Hall Voltage (เดิม): {GlobalSettings.Instance.TotalHallVoltage}"); // แสดงค่าเดิมด้วย
+        CalculateHallProperties(slopes); // ส่งค่า slopes ไปคำนวณ RH และอื่นๆ
         OnCalculationCompleted();
-        Debug.WriteLine("[DEBUG - CollectAndCalculate] Triggering AllHallDataUpdated event.");
+        Debug.WriteLine("[DEBUG - CalculateHall] Triggering AllHallDataUpdated event");
     }
 
     private void CalculateHallProperties(Dictionary<int, double> slopes)
     {
-        var validSlopes = slopes.Values.Where(s => !double.IsNaN(s)).ToList();
-        double avgSlope = validSlopes.Count > 0 ? validSlopes.Average() : double.NaN;
+        // คำนวณ R_H ตามสมการที่ 6: R_H = R_Hall / B
+        double rHallCoefficient = double.IsNaN(GlobalSettings.Instance.HallResistance) || GlobalSettings.Instance.MagneticFieldsValueStd == 0
+            ? double.NaN
+            : GlobalSettings.Instance.HallResistance / GlobalSettings.Instance.MagneticFieldsValueStd;
+        GlobalSettings.Instance.HallCoefficient = rHallCoefficient;
+        Debug.WriteLine($"[DEBUG - CalculateHallProperties] Hall Coefficient (R_H - Equation 6): {rHallCoefficient}");
 
-        double hallResistance = avgSlope;
-        GlobalSettings.Instance.HallResistance = hallResistance;
-        Debug.WriteLine($"[DEBUG] Hall Resistance (RH): {hallResistance} Ohm");
+        // คำนวณ nb ตามสมการที่ 8: nb = B / (q * t * RHall)
+        double nb = (GlobalSettings.Instance.MagneticFieldsValueStd != 0 && ElementaryCharge != 0 && GlobalSettings.Instance.ThicknessValueStd != 0 && !double.IsNaN(GlobalSettings.Instance.HallResistance))
+            ? GlobalSettings.Instance.MagneticFieldsValueStd / (ElementaryCharge * GlobalSettings.Instance.ThicknessValueStd * GlobalSettings.Instance.HallResistance)
+            : double.NaN;
+        GlobalSettings.Instance.BulkConcentration = nb;
+        Debug.WriteLine($"[DEBUG - CalculateHallProperties] Bulk Concentration (nb - Equation 8): {nb}");
 
-        double rHallCoefficient = CalculateHallCoefficient(avgSlope);
-        double ns = CalculateSheetConcentration(avgSlope);
-        double nb = CalculateBulkConcentration(rHallCoefficient);
-        double mu = CalculateMobility(nb);
+        // คำนวณ ns ตามสมการที่ 7: ns = nb * t
+        double ns = !double.IsNaN(nb) ? nb * GlobalSettings.Instance.ThicknessValueStd : double.NaN;
+        GlobalSettings.Instance.SheetConcentration = ns;
+        Debug.WriteLine($"[DEBUG - CalculateHallProperties] Sheet Concentration (ns - Equation 7): {ns}");
+
+        // คำนวณ mu ตามสมการที่ 9: µ = 1 / (n * q * ρ) โดยใช้ nb เป็น n
+        double mu = (nb != 0 && ElementaryCharge != 0 && GlobalSettings.Instance.Resistivity != 0)
+            ? 1 / (nb * ElementaryCharge * GlobalSettings.Instance.Resistivity)
+            : double.NaN;
+        GlobalSettings.Instance.Mobility = mu;
+        Debug.WriteLine($"[DEBUG - CalculateHallProperties] Mobility (µ - Equation 9 using nb): {mu}");
+
         var type = DetermineSemiconductorType(rHallCoefficient);
-
         OnHallPropertiesCalculated((rHallCoefficient, ns, nb, mu));
         OnSemiconductorTypeCalculated(type);
     }
 
-    private double CalculateHallCoefficient(double avgSlope)
+    /*private double CalculateHallCoefficient(double avgSlope)
     {
-        if (GlobalSettings.Instance.ThicknessValueStd == 0 || GlobalSettings.Instance.MagneticFieldsValueStd == 0)
+        // Hall Coefficient (R_H) = V_H * t / (I * B)
+        // โดยที่ avgSlope คือ Hall Resistance (R_Hall = V_H / I)
+        // ดังนั้น R_H = R_Hall * t / B
+        if (GlobalSettings.Instance.ThicknessValueStd == 0 || GlobalSettings.Instance.MagneticFieldsValueStd == 0 || GlobalSettings.Instance.AverageCurrentsByPosition == null || GlobalSettings.Instance.AverageCurrentsByPosition.Values.Any(v => v == 0))
             return double.NaN;
 
-        double rHallCoefficient = GlobalSettings.Instance.TotalHallVoltage * GlobalSettings.Instance.ThicknessValueStd / GlobalSettings.Instance.StopValueStd * GlobalSettings.Instance.MagneticFieldsValueStd;
+        // ใช้ค่ากระแสเฉลี่ยจากทุกตำแหน่ง
+        double averageCurrent = GlobalSettings.Instance.AverageCurrentsByPosition.Values.Average();
+        double rHallCoefficient = (averageCurrent != 0) ? (avgSlope * GlobalSettings.Instance.ThicknessValueStd) / GlobalSettings.Instance.MagneticFieldsValueStd : double.NaN; // R_H = R_Hall * t / B
         GlobalSettings.Instance.HallCoefficient = rHallCoefficient;
-        Debug.WriteLine($"[DEBUG] Hall Coefficient (RH): {rHallCoefficient} m^3/C");
+        Debug.WriteLine($"[DEBUG] Hall Coefficient (R_H): {rHallCoefficient} m^3/C");
         return rHallCoefficient;
     }
 
-    private double CalculateSheetConcentration(double avgSlope)
+    private double CalculateSheetConcentration(double rHallCoefficient)
     {
-        if (avgSlope == 0 || ElementaryCharge == 0) return double.NaN;
-        double ns = 1 / Math.Abs(avgSlope * ElementaryCharge);
+        // Sheet Concentration (n_s) = 1 / (|R_H| * |e|)
+        // โดยที่ R_H คือ Hall Coefficient และ e คือประจุอิเล็กตรอน
+        if (rHallCoefficient == 0 || ElementaryCharge == 0) return double.NaN;
+        double ns = 1 / (Math.Abs(rHallCoefficient) * Math.Abs(ElementaryCharge));
         GlobalSettings.Instance.SheetConcentration = ns;
-        Debug.WriteLine($"[DEBUG] Sheet Concentration (ns): {ns} 1/m^2");
+        Debug.WriteLine($"[DEBUG] Sheet Concentration (n_s): {ns} m^-2");
         return ns;
     }
 
     private double CalculateBulkConcentration(double rHallCoefficient)
     {
-        if (rHallCoefficient == 0 || ElementaryCharge == 0) return double.NaN;
-        double nb = 1 / Math.Abs(rHallCoefficient * ElementaryCharge);
+        // Bulk Concentration (n_b) = 1 / (|R_H| * |e|)
+        // โดยที่ R_H คือ Hall Coefficient และ e คือประจุอิเล็กตรอน
+        if (rHallCoefficient == 0 || ElementaryCharge == 0 || GlobalSettings.Instance.ThicknessValueStd == 0) return double.NaN;
+        double nb = 1 / (Math.Abs(rHallCoefficient) * Math.Abs(ElementaryCharge));
         GlobalSettings.Instance.BulkConcentration = nb;
-        Debug.WriteLine($"[DEBUG] Bulk Concentration (nb): {nb} 1/m^3");
+        Debug.WriteLine($"[DEBUG] Bulk Concentration (n_b): {nb} m^-3");
         return nb;
     }
 
-    private double CalculateMobility(double nb)
+    private double CalculateMobility(double rHallCoefficient)
     {
-        if (GlobalSettings.Instance.Resistivity <= 0 || nb == 0 || ElementaryCharge == 0)
-            return double.NaN;
-
-        double mu = 1 / (GlobalSettings.Instance.Resistivity * nb * ElementaryCharge);
+        // Mobility (µ) = |R_H| / Resistivity
+        // โดยที่ R_H คือ Hall Coefficient และ Resistivity คือความต้านทานจำเพาะ
+        if (Math.Abs(GlobalSettings.Instance.Resistivity) < double.Epsilon || double.IsNaN(rHallCoefficient)) return double.NaN;
+        double mu = Math.Abs(rHallCoefficient) / GlobalSettings.Instance.Resistivity;
         GlobalSettings.Instance.Mobility = mu;
-        Debug.WriteLine($"[DEBUG] Mobility (mu): {mu} m^2/Vs");
+        Debug.WriteLine($"[DEBUG] Mobility (µ): {mu} m^2/V⋅s");
         return mu;
-    }
+    }*/
 
     private SemiconductorType DetermineSemiconductorType(double rHallCoefficient)
     {
-        if (double.IsNaN(rHallCoefficient)) return SemiconductorType.Unknown;
-        var type = rHallCoefficient > 0 ? SemiconductorType.P : rHallCoefficient < 0 ? SemiconductorType.N : SemiconductorType.Unknown;
-        GlobalSettings.Instance.SemiconductorType = type;
-        Debug.WriteLine($"[DEBUG] Semiconductor Type: {type}");
-        return type;
+        if (rHallCoefficient < 0)
+        {
+            Debug.WriteLine("[DEBUG] Semiconductor Type: N-type (Hall Coefficient < 0)");
+            return SemiconductorType.N;
+        }
+        else if (rHallCoefficient > 0)
+        {
+            Debug.WriteLine("[DEBUG] Semiconductor Type: P-type (Hall Coefficient > 0)");
+            return SemiconductorType.P;
+        }
+        else
+        {
+            Debug.WriteLine("[DEBUG] Semiconductor Type: Unknown (Hall Coefficient is 0)");
+            return SemiconductorType.Unknown;
+        }
     }
 
-
-    // Properties สำหรับค่าเฉลี่ย Voltage ในแต่ละสถานะและตำแหน่ง
     public Dictionary<int, double> GetAverageNoFieldVoltagesByPosition()
     {
-        return _measurements[HallMeasurementState.NoMagneticField]
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Average(item => item.Reading));
+        var noFieldMeasurements = _measurements[HallMeasurementState.NoMagneticField];
+        var avgVoltages = new Dictionary<int, double>();
+        foreach (var kvp in noFieldMeasurements)
+        {
+            if (kvp.Value != null && kvp.Value.Any())
+            {
+                avgVoltages[kvp.Key] = kvp.Value.Average(item => item.Item2); // เข้าถึง Element ที่สองของ Tuple (Reading)
+            }
+        }
+        Debug.WriteLine($"[DEBUG - GetAverageNoFieldVoltagesByPosition] Average No Field Voltages: {string.Join(", ", avgVoltages.Select(kv => $"Pos {kv.Key}: {kv.Value}"))}");
+        return avgVoltages;
     }
 
     public Dictionary<int, double> GetAverageSouthFieldVoltagesByPosition()
     {
-        return _measurements[HallMeasurementState.OutwardOrSouthMagneticField]
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Average(item => item.Reading));
+        var southMeasurements = _measurements[HallMeasurementState.OutwardOrSouthMagneticField];
+        var avgVoltages = new Dictionary<int, double>();
+        foreach (var kvp in southMeasurements)
+        {
+            if (kvp.Value != null && kvp.Value.Any())
+            {
+                avgVoltages[kvp.Key] = kvp.Value.Average(item => item.Item2); // เข้าถึง Element ที่สองของ Tuple (Reading)
+            }
+        }
+        Debug.WriteLine($"[DEBUG - GetAverageSouthFieldVoltagesByPosition] Average South Field Voltages: {string.Join(", ", avgVoltages.Select(kv => $"Pos {kv.Key}: {kv.Value}"))}");
+        return avgVoltages;
     }
 
     public Dictionary<int, double> GetAverageNorthFieldVoltagesByPosition()
     {
-        return _measurements[HallMeasurementState.InwardOrNorthMagneticField]
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Average(item => item.Reading));
+        var northMeasurements = _measurements[HallMeasurementState.InwardOrNorthMagneticField];
+        var avgVoltages = new Dictionary<int, double>();
+        foreach (var kvp in northMeasurements)
+        {
+            if (kvp.Value != null && kvp.Value.Any())
+            {
+                avgVoltages[kvp.Key] = kvp.Value.Average(item => item.Item2); // เข้าถึง Element ที่สองของ Tuple (Reading)
+            }
+        }
+        Debug.WriteLine($"[DEBUG - GetAverageNorthFieldVoltagesByPosition] Average North Field Voltages: {string.Join(", ", avgVoltages.Select(kv => $"Pos {kv.Key}: {kv.Value}"))}");
+        return avgVoltages;
     }
 
     // Trigger Events
-    private void OnDataUpdated(HallVoltageDataUpdatedEventArgs e) => DataUpdated?.Invoke(this, e);
-    private void OnHallVoltageCalculated(Dictionary<int, double> voltages) => HallVoltageCalculated?.Invoke(this, voltages);
-    private void OnHallIVHSouthDataCalculated(Dictionary<int, List<(double Current, double HallVoltage)>> data) => HallIVHSouthDataCalculated?.Invoke(this, data);
-    private void OnHallIVHNorthDataCalculated(Dictionary<int, List<(double Current, double HallVoltage)>> data) => HallIVHNorthDataCalculated?.Invoke(this, data); private void OnHallPropertiesCalculated((double, double, double, double) props) => HallPropertiesCalculated?.Invoke(this, props);
-    private void OnCalculationCompleted() => CalculationCompleted?.Invoke(this, EventArgs.Empty);
+    protected virtual void OnDataUpdated(HallVoltageDataUpdatedEventArgs e)
+    {
+        DataUpdated?.Invoke(this, e);
+    }
+
+    protected virtual void OnCalculationCompleted()
+    {
+        CalculationCompleted?.Invoke(this, EventArgs.Empty);
+        AllHallDataUpdated?.Invoke(this, GetAllHallMeasurements());
+    }
+
+    protected virtual void OnHallVoltageCalculated(Dictionary<int, double> hallVoltages)
+    {
+        HallVoltageCalculated?.Invoke(this, hallVoltages);
+    }
+
+    protected virtual void OnHallIVHSouthDataCalculated(Dictionary<int, List<(double Current, double HallVoltage)>> ivhData)
+    {
+        HallIVHSouthDataCalculated?.Invoke(this, ivhData);
+    }
+
+    protected virtual void OnHallIVHNorthDataCalculated(Dictionary<int, List<(double Current, double HallVoltage)>> ivhData)
+    {
+        HallIVHNorthDataCalculated?.Invoke(this, ivhData);
+    }
+
+    protected virtual void OnHallPropertiesCalculated((double HallCoefficient, double SheetConcentration, double BulkConcentration, double Mobility) properties)
+    {
+        HallPropertiesCalculated?.Invoke(this, properties);
+    }
+
     protected virtual void OnSemiconductorTypeCalculated(SemiconductorType type)
     {
         SemiconductorTypeCalculated?.Invoke(this, type);
-    }
-    protected virtual void OnAllHallDataUpdated(Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>> allData)
-    {
-        AllHallDataUpdated?.Invoke(this, allData);
-        Debug.WriteLine("[DEBUG - CollectAndCalculate] AllHallDataUpdated event invoked.");
     }
 }

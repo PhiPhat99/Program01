@@ -60,8 +60,8 @@ namespace Program01
                 ChartTunerTesting.Series["MeasurementData"].Points.AddXY(XData[i], YData[i]);
             }
 
-            ChartAreas.AxisX.LabelStyle.Format = "N5";
-            ChartAreas.AxisY.LabelStyle.Format = "N5";
+            ChartAreas.AxisX.LabelStyle.Format = "E2";
+            ChartAreas.AxisY.LabelStyle.Format = "E2";
             ChartTunerTesting.Invalidate();
 
         }
@@ -74,11 +74,11 @@ namespace Program01
                 return;
             }
 
-            TextboxMaxMeasureValue.Text = MaxMeasure.ToString("N6");
-            TextboxMinMeasureValue.Text = MinMeasure.ToString("N6");
-            TextboxMaxSourceValue.Text = MaxSource.ToString("N6");
-            TextboxMinSourceValue.Text = MinSource.ToString("N6");
-            TextboxSlopeValue.Text = Slope.ToString("N6");
+            TextboxMaxMeasureValue.Text = MaxMeasure.ToString("E2");
+            TextboxMinMeasureValue.Text = MinMeasure.ToString("E2");
+            TextboxMaxSourceValue.Text = MaxSource.ToString("E2");
+            TextboxMinSourceValue.Text = MinSource.ToString("E2");
+            TextboxSlopeValue.Text = Slope.ToString("E2");
 
             if (GlobalSettings.Instance.SourceModeUI == "Voltage" && GlobalSettings.Instance.MeasureModeUI == "Voltage")
             {

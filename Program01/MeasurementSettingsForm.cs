@@ -1,4 +1,6 @@
-﻿using System;
+﻿using FontAwesome.Sharp;
+using Ivi.Visa.Interop;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -6,8 +8,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using FontAwesome.Sharp;
-using Ivi.Visa.Interop;
 
 namespace Program01
 {
@@ -608,7 +608,7 @@ namespace Program01
                     }
 
                     Success = ConnectDevice(ref SMU, ComboboxVISASMUIOPort.SelectedItem?.ToString());
-                    
+
                     if (Success)
                     {
                         GlobalSettings.Instance.IsSMUConnected = true;
@@ -1000,10 +1000,10 @@ namespace Program01
         {
             if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.HallEffectMeasurement)
             {
-                PictureboxMeasPosition1.Image = Properties.Resources.Hall_MP1;
-                PictureboxMeasPosition2.Image = Properties.Resources.Hall_MP2;
-                PictureboxMeasPosition3.Image = Properties.Resources.Hall_MP3;
-                PictureboxMeasPosition4.Image = Properties.Resources.Hall_MP4;
+                PictureboxMeasPosition1.Image = Properties.Resources.Hall_V1;
+                PictureboxMeasPosition2.Image = Properties.Resources.Hall_V2;
+                PictureboxMeasPosition3.Image = Properties.Resources.Hall_V3;
+                PictureboxMeasPosition4.Image = Properties.Resources.Hall_V4;
                 PictureboxMeasPosition5.Image = null;
                 PictureboxMeasPosition6.Image = null;
                 PictureboxMeasPosition7.Image = null;
@@ -1011,14 +1011,14 @@ namespace Program01
             }
             else
             {
-                PictureboxMeasPosition1.Image = Properties.Resources.VdP_MP1negative;
-                PictureboxMeasPosition2.Image = Properties.Resources.VdP_MP1positive;
-                PictureboxMeasPosition3.Image = Properties.Resources.VdP_MP2negative;
-                PictureboxMeasPosition4.Image = Properties.Resources.VdP_MP2positive;
-                PictureboxMeasPosition5.Image = Properties.Resources.VdP_MP3negative;
-                PictureboxMeasPosition6.Image = Properties.Resources.VdP_MP3positive;
-                PictureboxMeasPosition7.Image = Properties.Resources.VdP_MP4negative;
-                PictureboxMeasPosition8.Image = Properties.Resources.VdP_MP4positive;
+                PictureboxMeasPosition1.Image = Properties.Resources.VdP_RA1;
+                PictureboxMeasPosition2.Image = Properties.Resources.VdP_RA2;
+                PictureboxMeasPosition3.Image = Properties.Resources.VdP_RA3;
+                PictureboxMeasPosition4.Image = Properties.Resources.VdP_RA4;
+                PictureboxMeasPosition5.Image = Properties.Resources.VdP_RB1;
+                PictureboxMeasPosition6.Image = Properties.Resources.VdP_RB2;
+                PictureboxMeasPosition7.Image = Properties.Resources.VdP_RB3;
+                PictureboxMeasPosition8.Image = Properties.Resources.VdP_RB4;
             }
         }
 
@@ -1041,18 +1041,23 @@ namespace Program01
                 if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
+
+                    SS.WriteString("ROUTe:MEMory:SAVE M1");
                 }
                 else
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
+
+                    SS.WriteString("ROUTe:MEMory:SAVE M9");
+
                 }
             }
             catch (Exception Ex)
@@ -1074,18 +1079,24 @@ namespace Program01
                 if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
+
+                    SS.WriteString("ROUTe:MEMory:SAVE M2");
+
                 }
                 else
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
+
+                    SS.WriteString("ROUTe:MEMory:SAVE M10");
+
                 }
             }
             catch (Exception Ex)
@@ -1107,10 +1118,13 @@ namespace Program01
                 if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
+
+                    SS.WriteString("ROUTe:MEMory:SAVE M3");
+
                 }
                 else
                 {
@@ -1119,6 +1133,9 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
+
+                    SS.WriteString("ROUTe:MEMory:SAVE M11");
+
                 }
             }
             catch (Exception Ex)
@@ -1140,10 +1157,13 @@ namespace Program01
                 if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
+
+                    SS.WriteString("ROUTe:MEMory:SAVE M4");
+
                 }
                 else
                 {
@@ -1152,6 +1172,9 @@ namespace Program01
                     SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!5)");
+
+                    SS.WriteString("ROUTe:MEMory:SAVE M12");
+
                 }
             }
             catch (Exception Ex)
@@ -1173,19 +1196,14 @@ namespace Program01
                 if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
+
+                    SS.WriteString("ROUTe:MEMory:SAVE M5");
+
                 }
-                /*else if (GlobalSettings.Instance.IsModes == true)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
-                }*/
             }
             catch (Exception Ex)
             {
@@ -1206,19 +1224,14 @@ namespace Program01
                 if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
+
+                    SS.WriteString("ROUTe:MEMory:SAVE M6");
+
                 }
-                /*else if (GlobalSettings.Instance.IsModes == true)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!3)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!6)");
-                }*/
             }
             catch (Exception Ex)
             {
@@ -1239,19 +1252,14 @@ namespace Program01
                 if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
+
+                    SS.WriteString("ROUTe:MEMory:SAVE M7");
+
                 }
-                /*else if (GlobalSettings.Instance.IsModes == true)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
-                }*/
             }
             catch (Exception Ex)
             {
@@ -1272,19 +1280,14 @@ namespace Program01
                 if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
                     SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
+                    SS.WriteString("ROUTe:CLOSe (@ 1!2!5)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!3!4)");
                     SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
+
+                    SS.WriteString("ROUTe:MEMory:SAVE M8");
+
                 }
-                /*else if (GlobalSettings.Instance.IsModes == true)
-                {
-                    SS.WriteString("ROUTe:OPEN ALL");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!1!6)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!2!4)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!3!5)");
-                    SS.WriteString("ROUTe:CLOSe (@ 1!4!3)");
-                }*/
             }
             catch (Exception Ex)
             {
@@ -1377,7 +1380,7 @@ namespace Program01
 
                     string allValues = $"Sense: {GlobalSettings.Instance.ResistanceSenseModeUI}, Measure: {GlobalSettings.Instance.MeasureModeUI}, Source: {GlobalSettings.Instance.SourceModeUI}, Start: {GlobalSettings.Instance.StartValueUI} {GlobalSettings.Instance.StartUnitUI}, Step: {GlobalSettings.Instance.StepValueUI} {GlobalSettings.Instance.StepUnitUI}, Source Delay: {GlobalSettings.Instance.SourceDelayValueUI} {GlobalSettings.Instance.SourceDelayUnitUI}, Stop: {GlobalSettings.Instance.StopValueUI} {GlobalSettings.Instance.StopUnitUI}, Source Limit: {GlobalSettings.Instance.SourceLimitModeUI}, Limit Level: {GlobalSettings.Instance.SourceLimitLevelValueUI} {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Repetition: {GlobalSettings.Instance.RepetitionValueUI}, Thickness: {GlobalSettings.Instance.ThicknessValueUI} {GlobalSettings.Instance.ThicknessUnitUI}, Magnetic Fields: {GlobalSettings.Instance.MagneticFieldsValueUI} {GlobalSettings.Instance.MagneticFieldsUnitUI}";
                     Debug.WriteLine($"{allValues}");
-                    
+
 
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
@@ -1411,7 +1414,7 @@ namespace Program01
 
                     string allValues = $"Sense: {GlobalSettings.Instance.ResistanceSenseModeUI}, Measure: {GlobalSettings.Instance.MeasureModeUI}, Source: {GlobalSettings.Instance.SourceModeUI}, Start: {GlobalSettings.Instance.StartValueUI} {GlobalSettings.Instance.StartUnitUI}, Step: {GlobalSettings.Instance.StepValueUI} {GlobalSettings.Instance.StepUnitUI}, Source Delay: {GlobalSettings.Instance.SourceDelayValueUI} {GlobalSettings.Instance.SourceDelayUnitUI}, Stop: {GlobalSettings.Instance.StopValueUI} {GlobalSettings.Instance.StopUnitUI}, Source Limit: {GlobalSettings.Instance.SourceLimitModeUI}, Limit Level: {GlobalSettings.Instance.SourceLimitLevelValueUI} {GlobalSettings.Instance.SourceLimitLevelUnitUI}, Repetition: {GlobalSettings.Instance.RepetitionValueUI}, Thickness: {GlobalSettings.Instance.ThicknessValueUI} {GlobalSettings.Instance.ThicknessUnitUI}, Magnetic Fields: {GlobalSettings.Instance.MagneticFieldsValueUI} {GlobalSettings.Instance.MagneticFieldsUnitUI}";
                     Debug.WriteLine($"{allValues}");
-                    
+
 
                     SMU.WriteString(sweepCommand);
                     SMU.WriteString("OUTPut ON");
@@ -1588,14 +1591,27 @@ namespace Program01
                         GlobalSettings.Instance.CurrentMeasurementMode = MeasurementMode.HallEffectMeasurement;
                         Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เปลี่ยนไปโหมด Hall Effect และเริ่มการวัด");
                         await RunHallMeasurementSequence();
+
+                        // *** ตำแหน่งที่ 1: สำหรับกรณีที่วัด Van der Pauw แล้วเลือกวัด Hall ต่อ ***
+                        GlobalSettings.Instance.CollectedHallMeasurements.DebugPrintAllRawMeasurements();
+                        // *******************************************************************
                     }
                 }
                 else if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.HallEffectMeasurement)
                 {
                     Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เริ่มการวัด Hall Effect โดยตรง");
                     await RunHallMeasurementSequence();
+
+                    // *** ตำแหน่งที่ 2: สำหรับกรณีที่เลือกวัด Hall Effect โดยตรง ***
+                    GlobalSettings.Instance.CollectedHallMeasurements.DebugPrintAllRawMeasurements();
+                    // **********************************************************
+
+                    // บรรทัดนี้ควรอยู่หลังการเรียก DebugPrintAllRawMeasurements()
+                    GlobalSettings.Instance.CollectedHallMeasurements.CalculateAllHallProperties(GlobalSettings.Instance.ThicknessValueStd, GlobalSettings.Instance.MagneticFieldsValueStd);
+                    Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - Hall Effect Measurement completed and calculation initiated.");
+                    GlobalSettings.Instance.HallMeasurementDataReady = true;
                 }
-                else
+                else // นี่คือส่วนที่เป็นค่า Default หรือกรณีที่ไม่ตรงกับเงื่อนไขด้านบน
                 {
                     Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เริ่มการวัด Van der Pauw (default)");
                     await RunVanDerPauwMeasurement(startValue, stopValue, stepValue, repetitionValue, sourcelevellimitValue, thicknessValue, magneticfieldsValue, delayValue, points);
@@ -1607,6 +1623,10 @@ namespace Program01
                         GlobalSettings.Instance.CurrentMeasurementMode = MeasurementMode.HallEffectMeasurement;
                         Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เปลี่ยนไปโหมด Hall Effect และเริ่มการวัด (default)");
                         await RunHallMeasurementSequence();
+
+                        // *** ตำแหน่งที่ 3: สำหรับกรณี Default ที่วัด Van der Pauw แล้วเลือกวัด Hall ต่อ ***
+                        GlobalSettings.Instance.CollectedHallMeasurements.DebugPrintAllRawMeasurements();
+                        // ****************************************************************************
                     }
                 }
             }
@@ -1678,12 +1698,14 @@ namespace Program01
             OnToggleChanged();
             Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - UI Updated");
 
-            CollectAndCalculateHallMeasured.Instance.ClearAllData();
+            CollectAndCalculateHallMeasured.Instance.ClearAllHallData();
             Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Hall Data Cleared in CollectAndCalculateHallMeasured");
 
             await PerformSingleHallMeasurement(HallMeasurementState.NoMagneticField, false);
             DialogResult resultHallSouth = MessageBox.Show($"ทำการวัด Hall Effect Measurement ภายนอกสนามแม่เหล็กเสร็จสิ้นแล้ว ต้องการทำการวัด Hall Effect Measurement ภายใต้สนามแม่เหล็กทิศพุ่งออก (ทิศใต้) ต่อหรือไม่ ?", "การวัดต่อเนื่อง", MessageBoxButtons.YesNo);
             Debug.WriteLine($"[DEBUG] RunHallMeasurementSequence - ผลลัพธ์ MessageBox Hall นอกสนาม: {resultHallSouth}");
+
+            bool allThreeMeasurementsAttempted = false; // Flag to check if we attempted all 3 measurement types
 
             if (resultHallSouth == DialogResult.Yes)
             {
@@ -1694,24 +1716,60 @@ namespace Program01
                 if (resultHallNorth == DialogResult.Yes)
                 {
                     await PerformSingleHallMeasurement(HallMeasurementState.InwardOrNorthMagneticField, true, "North");
+                    allThreeMeasurementsAttempted = true; // <--- จุดที่ 1: ตั้งค่า Flag เป็น true เมื่อมีการเรียกวัดครบ 3 สภาวะ
                 }
             }
 
+            if (allThreeMeasurementsAttempted) // เรียกคำนวณถ้าผู้ใช้ดำเนินการวัดครบ 3 ชนิด (No, South, North)
+            {
+                Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - All three measurement states attempted. Proceeding with calculation.");
+                try
+                {
+                    CollectAndCalculateHallMeasured.Instance.CalculateAllHallProperties(GlobalSettings.Instance.ThicknessValueStd, GlobalSettings.Instance.MagneticFieldsValueStd);
+                    Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Hall Effect Calculation Done.");
+
+                    if (!double.IsNaN(GlobalSettings.Instance.HallCoefficient) && !double.IsNaN(GlobalSettings.Instance.BulkConcentration) && !double.IsNaN(GlobalSettings.Instance.Mobility))
+                    {
+                        GlobalSettings.Instance.HallMeasurementDataReady = true;
+                        MessageBox.Show("Hall Measurement sequence completed. Results are calculated and ready for viewing.", "Measurement Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Debug.WriteLine("[DEBUG] Hall Measurement results are ready."); // เพิ่ม Debug log
+                    }
+                    else
+                    {
+                        Debug.WriteLine("[WARNING] Hall Measurement Sequence incomplete. Skipping Hall properties calculation.");
+                        GlobalSettings.Instance.HallMeasurementDataReady = false; // ชัดเจนว่าไม่พร้อมถ้าการวัดไม่ครบ
+                        MessageBox.Show("Hall Measurement sequence was interrupted or incomplete. Hall properties will NOT be calculated.", "Measurement Incomplete", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    GlobalSettings.Instance.HallMeasurementDataReady = false;
+                    MessageBox.Show($"เกิดข้อผิดพลาดในการคำนวณ Hall Properties: {ex.Message}", "Calculation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    
+                    Debug.WriteLine($"[ERROR] RunHallMeasurementSequence - Error during Hall calculation: {ex.Message}");
+                }
+            }
+            else
+            {
+                Debug.WriteLine("[WARNING] Hall Measurement Sequence incomplete. Skipping Hall properties calculation.");
+
+                GlobalSettings.Instance.HallMeasurementDataReady = false;
+                //MessageBox.Show("Hall Measurement sequence was interrupted or incomplete. Hall properties will NOT be calculated.", "Measurement Incomplete", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+
+            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - End of calculation and status check.");
             MessageBox.Show("ทำการวัด Hall Effect Measurement เสร็จสิ้นแล้ว", "การวัดเสร็จสิ้น", MessageBoxButtons.OK);
-            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Hall Effect Measurement Completed");
+            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Hall Effect Measurement Completed final message.");
 
             if (Application.OpenForms.OfType<HallTotalMeasureValuesForm>().FirstOrDefault() is HallTotalMeasureValuesForm HallTotalForm)
             {
-                var allHallData = CollectAndCalculateHallMeasured.Instance.GetAllHallMeasurements();
+                var allHallData = CollectAndCalculateHallMeasured.Instance.GetAllRawMeasurements();
+                HallTotalForm.Invoke((Action)(() => HallTotalForm.LoadAllHallData(allHallData)));
 
-                HallTotalForm.Invoke((MethodInvoker)delegate { HallTotalForm.LoadAllHallData(allHallData); });
                 Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Sent all Hall data from CollectAndCalculateHallMeasured to HallTotalForm");
             }
 
-            Debug.WriteLine(">> Call CalculateHall()");
-            CollectAndCalculateHallMeasured.Instance.CalculateHall();
-            Debug.WriteLine("[DEBUG] RunHallEffectMeasurement - Hall Effect Calculation Done");
-            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - End");
+            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - End.");
         }
 
         private async Task PerformSingleHallMeasurement(HallMeasurementState state, bool hasMagneticField, string magneticFieldDirection = "")
@@ -1774,14 +1832,14 @@ namespace Program01
             {
                 configurations = new Dictionary<int, List<string>>
         {
-            { 1, new List<string> { "1!1!5", "1!2!4", "1!3!3", "1!4!6" }},
-            { 2, new List<string> { "1!1!4", "1!2!5", "1!3!3", "1!4!6" }},
-            { 3, new List<string> { "1!1!6", "1!2!3", "1!3!4", "1!4!5" }},
-            { 4, new List<string> { "1!1!3", "1!2!6", "1!3!4", "1!4!5" }},
-            { 5, new List<string> { "1!1!3", "1!2!4", "1!3!5", "1!4!6" }},
-            { 6, new List<string> { "1!1!4", "1!2!3", "1!3!5", "1!4!6" }},
-            { 7, new List<string> { "1!1!6", "1!2!5", "1!3!4", "1!4!3" }},
-            { 8, new List<string> { "1!1!5", "1!2!6", "1!3!4", "1!4!3" }}
+            { 1, new List<string> { "1!1!4", "1!2!5", "1!3!3", "1!4!6" }},
+            { 2, new List<string> { "1!1!5", "1!2!4", "1!3!3", "1!4!6" }},
+            { 3, new List<string> { "1!1!3", "1!2!6", "1!3!4", "1!4!5" }},
+            { 4, new List<string> { "1!1!6", "1!2!3", "1!3!4", "1!4!5" }},
+            { 5, new List<string> { "1!1!4", "1!2!3", "1!3!5", "1!4!6" }},
+            { 6, new List<string> { "1!1!3", "1!2!4", "1!3!5", "1!4!6" }},
+            { 7, new List<string> { "1!1!5", "1!2!6", "1!3!4", "1!4!3" }},
+            { 8, new List<string> { "1!1!6", "1!2!5", "1!3!4", "1!4!3" }}
         };
                 Debug.WriteLine("[DEBUG] GetChannelConfigurations - Van der Pauw Mode configurations loaded");
             }
@@ -1789,8 +1847,8 @@ namespace Program01
             {
                 configurations = new Dictionary<int, List<string>>
         {
-            { 1, new List<string> { "1!1!5", "1!2!3", "1!3!6", "1!4!4" }},
-            { 2, new List<string> { "1!1!3", "1!2!5", "1!3!6", "1!4!4" }},
+            { 1, new List<string> { "1!1!3", "1!2!5", "1!3!4", "1!4!6" }},
+            { 2, new List<string> { "1!1!5", "1!2!3", "1!3!4", "1!4!6" }},
             { 3, new List<string> { "1!1!4", "1!2!6", "1!3!3", "1!4!5" }},
             { 4, new List<string> { "1!1!6", "1!2!4", "1!3!3", "1!4!5" }}
         };
@@ -1945,7 +2003,7 @@ namespace Program01
                 Debug.WriteLine($"[DEBUG] TracingRunMeasurement - Buffer contains: {BufferPoints} readings");
 
                 string[] DataPairs = RawData.Split(',');
-                List<(double Source, double Reading)> currentMeasurements = new List<(double, double)>();
+                List<Tuple<double, double>> currentMeasurements = new List<Tuple<double, double>>();
                 Debug.WriteLine($"[DEBUG] TracingRunMeasurement - Number of data pairs: {DataPairs.Length}");
 
                 if (DataPairs.Length % 2 != 0)
@@ -1959,12 +2017,14 @@ namespace Program01
                 {
                     if (double.TryParse(DataPairs[i], out double SourceValue) && double.TryParse(DataPairs[i + 1], out double MeasuredValue))
                     {
-                        currentMeasurements.Add((SourceValue, MeasuredValue));
+                        Debug.WriteLine($"  [DEBUG-PRE-ADD] Raw Read - Source: {SourceValue:E9} A, Measured: {MeasuredValue:E9} V (Index: {i})");
+
+                        currentMeasurements.Add(new Tuple<double, double>(SourceValue, MeasuredValue));
                         Debug.WriteLine($"[DEBUG] TracingRunMeasurement - Data Point {i / 2 + 1}: Source={SourceValue}, Reading={MeasuredValue}");
                     }
                     else
                     {
-                        Debug.WriteLine($"[WARNING] TracingRunMeasurement - ไม่สามารถ Parse ค่า Source หรือ Reading ที่ Index {i} หรือ {i + 1} ได้");
+                        Debug.WriteLine($"[WARNING] TracingRunMeasurement - ไม่สามารถ Parse ค่า Source หรือ Reading ที่ Index {i} หรือ {i + 1} ได้. Data: '{DataPairs[i]}'/'{DataPairs[i + 1]}'");
                     }
                 }
                 Debug.WriteLine($"[DEBUG] TracingRunMeasurement - จำนวน Data Points ที่อ่านได้: {currentMeasurements.Count}");
@@ -1993,13 +2053,21 @@ namespace Program01
 
                     Debug.WriteLine($"[DEBUG] TracingRunMeasurement (Hall Effect) - Tuner: {CurrentTuner}, Type: {States}, Data Points Read: {currentMeasurements.Count}");
                     Debug.WriteLine($"Current Hall State: {currentHallState}, Measurement Type: {States}");
-                    GlobalSettings.Instance.CollectedHallMeasurements.StoreMeasurementData(CurrentTuner, currentMeasurements, States);
-                    Debug.WriteLine("[DEBUG] TracingRunMeasurement (Hall Effect) - Data stored in CollectedHallMeasurements");
+                    Debug.WriteLine($"  [DEBUG-TO-STORE] Data for State: {States}, Tuner: {CurrentTuner}:");
+
+                    foreach (var dataPoint in currentMeasurements)
+                    {
+                        Debug.WriteLine($"    - Current: {dataPoint.Item1:E9} A, Voltage: {dataPoint.Item2:E9} V");
+                    }
+
+                    GlobalSettings.Instance.CollectedHallMeasurements.StoreMeasurementData(States, CurrentTuner, currentMeasurements);
+                    Debug.WriteLine("[DEBUG] TracingRunMeasurement (Hall Effect) - Data stored in CollectedHallMeasurements"); 
                 }
                 else if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.VanDerPauwMethod)
                 {
+                    var convertedMeasurementsForVdP = currentMeasurements.Select(t => (Source: t.Item1, Reading: t.Item2)).ToList();
                     Debug.WriteLine($"[DEBUG] TracingRunMeasurement (Van der Pauw) - Tuner: {CurrentTuner}, Data Points Read: {currentMeasurements.Count}");
-                    GlobalSettings.Instance.CollectedVdPMeasurements.StoreMeasurementData(CurrentTuner, currentMeasurements);
+                    CollectAndCalculateVdPMeasured.Instance.StoreMeasurementData(CurrentTuner, convertedMeasurementsForVdP);
                     Debug.WriteLine("[DEBUG] TracingRunMeasurement (Van der Pauw) - Data stored in CollectedVdPMeasurements");
                 }
             }

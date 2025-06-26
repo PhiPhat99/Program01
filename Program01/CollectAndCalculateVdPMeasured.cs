@@ -7,7 +7,6 @@ public class CollectAndCalculateVdPMeasured
 {
     private static CollectAndCalculateVdPMeasured _instance;
     private static readonly object _lock = new object();
-
     private readonly Dictionary<int, List<(double Source, double Reading)>> _measurements = new Dictionary<int, List<(double, double)>>();
     private readonly Dictionary<int, double> _resistances = new Dictionary<int, double>();
 
@@ -29,10 +28,15 @@ public class CollectAndCalculateVdPMeasured
 
     public void StoreMeasurementData(int tunerPosition, List<(double Source, double Reading)> data)
     {
-        if (data == null || data.Count == 0) return;
+        if (data == null || data.Count == 0)
+        {
+            return;
+        }
 
         if (!_measurements.ContainsKey(tunerPosition))
+        {
             _measurements[tunerPosition] = new List<(double, double)>();
+        }
 
         _measurements[tunerPosition].AddRange(data);
         DataUpdated?.Invoke(this, EventArgs.Empty);
@@ -78,9 +82,7 @@ public class CollectAndCalculateVdPMeasured
         double Rs = SolveVanDerPauw(
             GlobalSettings.Instance.ResistanceA,
             GlobalSettings.Instance.ResistanceB,
-            (GlobalSettings.Instance.ResistanceA + GlobalSettings.Instance.ResistanceB) / 2,
-            1E-6,
-            300
+            (GlobalSettings.Instance.ResistanceA + GlobalSettings.Instance.ResistanceB) / 2, 1E-6, 300
         );
 
         GlobalSettings.Instance.SheetResistance = double.IsNaN(Rs) ? double.NaN : Rs;

@@ -25,7 +25,6 @@ public class GlobalSettings
     public CollectAndCalculateVdPMeasured CollectedVdPMeasurements { get; private set; } = CollectAndCalculateVdPMeasured.Instance;
     public CollectAndCalculateHallMeasured CollectedHallMeasurements { get; private set; } = CollectAndCalculateHallMeasured.Instance;
     public CollectAndCalculateHallMeasured.SemiconductorType SemiconductorType { get; set; } = CollectAndCalculateHallMeasured.SemiconductorType.Unknown;
-    public Dictionary<int, double> AverageCurrentsByPosition { get; set; }
 
     public static GlobalSettings Instance
     {
@@ -102,7 +101,7 @@ public class GlobalSettings
     public double StartValueUI
     {
         get => _startValueUI;
-        set => SetProperty(ref _startValueUI, value);      
+        set => SetProperty(ref _startValueUI, value);
     }
 
     private string _startUnitUI = "mA";
@@ -285,15 +284,19 @@ public class GlobalSettings
     public double ThicknessValueStd
     {
         get => _thicknessStd;
-        set => _thicknessStd = value;
+        set => _thicknessStd = value * 1E2;
     }
 
     private double _magneticfieldsStd = 0;
     public double MagneticFieldsValueStd
     {
         get => _magneticfieldsStd;
-        set => _magneticfieldsStd = value;
+        set => _magneticfieldsStd = value * 1E-4;
     }
+
+    public double ElementaryCharge { get; set; } = 1.602 * 1E-19;
+    public double CurrentTolerance { get; set; } = 1E-8; // ค่าความคลาดเคลื่อนในการเปรียบเทียบกระแส (อาจปรับได้ตามความเหมาะสม)
+
     #endregion
 
     #region Calculation Values
@@ -305,13 +308,16 @@ public class GlobalSettings
     public double SheetResistance { get; set; }
     public double Resistivity { get; set; }
     public double Conductivity { get; set; }
-    public Dictionary<int, double> HallVoltagesByPosition { get; set; } = new Dictionary<int, double>();
-    public double TotalHallVoltage { get; set; }
+    public double AvgCurrentUsedInMeasurement { get; set; }
+    public double TotalHallVoltage_South { get; set; } // Final V_H for +B field, averaged over all currents
+    public double TotalHallVoltage_North { get; set; } // Final V_H for -B field, averaged over all currents
+    public double TotalHallVoltage_Average { get; set; } // Overall average of TotalHallVoltage_South and TotalHallVoltage_North
     public double HallResistance { get; set; }
     public double HallCoefficient { get; set; }
     public double BulkConcentration { get; set; }
     public double SheetConcentration { get; set; }
     public double Mobility { get; set; }
+    public bool HallMeasurementDataReady { get; set; } = false;
     #endregion
 
     private GlobalSettings()
@@ -321,6 +327,7 @@ public class GlobalSettings
         _allMeasuredValues = new List<List<double[]>>();
         _xDataBuffer = new List<double>();
         _yDataBuffer = new List<double>();
+        HallMeasurementDataReady = false;
     }
 
     protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string PropertyName = null)

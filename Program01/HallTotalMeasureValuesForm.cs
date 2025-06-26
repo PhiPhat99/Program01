@@ -12,6 +12,7 @@ namespace Program01
     public partial class HallTotalMeasureValuesForm : Form
     {
         private Dictionary<string, Chart> chartDictionary = new Dictionary<string, Chart>();
+        private IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>> _currentRawHallData;
         private const int NumberOfHallPositions = 4;
         private List<DataGridView> _hallDataGridViews;
         private Dictionary<string, BindingSource> _hallBindingSources = new Dictionary<string, BindingSource>();
@@ -246,119 +247,163 @@ namespace Program01
             Debug.WriteLine($"[DEBUG] Chart '{seriesName}' updated with {data.Count} points and color {lineColor.Name}");
         }
 
-        public void LoadAllHallData(Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>> allHallData)
+        public void LoadAllHallData(IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>> allRawData)
         {
-            Debug.WriteLine("[DEBUG] LoadAllHallData - Received all Hall measurement data");
+            Debug.WriteLine("[DEBUG] LoadAllHallData - ได้รับข้อมูลการวัด Hall ทั้งหมดแล้ว");
+            _currentRawHallData = allRawData; // *** แก้ไข: ใช้ allRawData แทน rawHallData ***
 
-            UpdateDataGridViewForState(HallMeasurementState.NoMagneticField, allHallData, BindingSourceHallOutVoltage);
-            UpdateDataGridViewForState(HallMeasurementState.OutwardOrSouthMagneticField, allHallData, BindingSourceHallInSouthVoltage);
-            UpdateDataGridViewForState(HallMeasurementState.InwardOrNorthMagneticField, allHallData, BindingSourceHallInNorthVoltage);
+            // --- อัปเดต DataGridViews สำหรับแต่ละสถานะการวัด ---
+            // BindingSourceHallOutVoltage สำหรับ NoMagneticField
+            UpdateDataGridViewForState(HallMeasurementState.NoMagneticField, (IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>>)_currentRawHallData, BindingSourceHallOutVoltage);
+            // BindingSourceHallInSouthVoltage สำหรับ OutwardOrSouthMagneticField
+            UpdateDataGridViewForState(HallMeasurementState.OutwardOrSouthMagneticField, (IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>>)_currentRawHallData, BindingSourceHallInSouthVoltage);
+            // BindingSourceHallInNorthVoltage สำหรับ InwardOrNorthMagneticField
+            UpdateDataGridViewForState(HallMeasurementState.InwardOrNorthMagneticField, (IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>>)_currentRawHallData, BindingSourceHallInNorthVoltage);
 
-            Dictionary<int, List<(double Source, double Reading)>> noMagData = new Dictionary<int, List<(double, double)>>();
-            Dictionary<int, List<(double Source, double Reading)>> southData = new Dictionary<int, List<(double, double)>>();
-            Dictionary<int, List<(double Source, double Reading)>> northData = new Dictionary<int, List<(double, double)>>();
 
-            if (allHallData.ContainsKey(HallMeasurementState.NoMagneticField))
+            // --- เตรียมข้อมูลสำหรับ Charts โดยการแปลง Tuple เป็น named tuple (Source, Reading) ---
+            Dictionary<int, List<(double Source, double Reading)>> noMagChartData = new Dictionary<int, List<(double Source, double Reading)>>();
+            Dictionary<int, List<(double Source, double Reading)>> southChartData = new Dictionary<int, List<(double Source, double Reading)>>();
+            Dictionary<int, List<(double Source, double Reading)>> northChartData = new Dictionary<int, List<(double Source, double Reading)>>();
+
+            if (_currentRawHallData.ContainsKey(HallMeasurementState.NoMagneticField))
             {
-                noMagData = allHallData[HallMeasurementState.NoMagneticField];
+                noMagChartData = _currentRawHallData[HallMeasurementState.NoMagneticField]
+                    .ToDictionary(
+                        entry => entry.Key,
+                        entry => entry.Value.Select(t => (Source: t.Item1, Reading: t.Item2)).ToList()
+                    );
             }
 
-            if (allHallData.ContainsKey(HallMeasurementState.OutwardOrSouthMagneticField))
+            if (_currentRawHallData.ContainsKey(HallMeasurementState.OutwardOrSouthMagneticField))
             {
-                southData = allHallData[HallMeasurementState.OutwardOrSouthMagneticField];
+                southChartData = _currentRawHallData[HallMeasurementState.OutwardOrSouthMagneticField]
+                    .ToDictionary(
+                        entry => entry.Key,
+                        entry => entry.Value.Select(t => (Source: t.Item1, Reading: t.Item2)).ToList()
+                    );
             }
 
-            if (allHallData.ContainsKey(HallMeasurementState.InwardOrNorthMagneticField))
+            if (_currentRawHallData.ContainsKey(HallMeasurementState.InwardOrNorthMagneticField))
             {
-                northData = allHallData[HallMeasurementState.InwardOrNorthMagneticField];
+                northChartData = _currentRawHallData[HallMeasurementState.InwardOrNorthMagneticField]
+                    .ToDictionary(
+                        entry => entry.Key,
+                        entry => entry.Value.Select(t => (Source: t.Item1, Reading: t.Item2)).ToList()
+                    );
             }
 
+            // รวมข้อมูล Chart ทั้งหมดไว้ใน Dictionary เดียวกันเพื่อวนลูปง่ายขึ้น
             var allChartData = new Dictionary<string, Dictionary<int, List<(double Source, double Reading)>>>()
             {
-                { "NoMagnetic", noMagData },
-                { "South", southData },
-                { "North", northData }
+                { "NoMagnetic", noMagChartData },
+                { "South", southChartData },
+                { "North", northChartData }
             };
 
-            foreach (var state in allChartData)
+            // --- อัปเดต Charts แต่ละตัว ---
+            foreach (var stateEntry in allChartData)
             {
-                string stateKey = state.Key;
-                string statePrefix = null;
+                string stateKey = stateEntry.Key;
+                string chartPrefix = null; // คำนำหน้าสำหรับ Chart Key (เช่น "Out", "South", "North")
 
                 switch (stateKey)
                 {
                     case "NoMagnetic":
-                        statePrefix = "Out";
+                        chartPrefix = "Out"; // สำหรับกราฟ 'Out' ที่แสดงผลไม่มีสนามแม่เหล็ก
                         break;
                     case "South":
-                        statePrefix = "South";
+                        chartPrefix = "South"; // สำหรับกราฟ 'South' ที่แสดงผลสนามแม่เหล็กทิศใต้
                         break;
                     case "North":
-                        statePrefix = "North";
+                        chartPrefix = "North"; // สำหรับกราฟ 'North' ที่แสดงผลสนามแม่เหล็กทิศเหนือ
                         break;
                 }
 
-                if (statePrefix == null)
+                if (chartPrefix == null)
                 {
-                    continue;
+                    continue; // ข้ามหากไม่มี chartPrefix ที่ตรงกัน
                 }
 
-                var stateData = state.Value;
+                var stateDataForCharts = stateEntry.Value; // ข้อมูลสำหรับสถานะปัจจุบัน
 
-                foreach (var entry in stateData)
+                foreach (var positionData in stateDataForCharts)
                 {
-                    int position = entry.Key;
-                    var dataList = entry.Value;
-                    string chartKey = statePrefix + position;
+                    int position = positionData.Key;
+                    var dataList = positionData.Value; // นี่คือ List<(double Source, double Reading)> แล้ว
+                    string chartKey = chartPrefix + position; // สร้างคีย์สำหรับค้นหากราฟ (เช่น "Out1", "South2")
 
                     if (chartDictionary.TryGetValue(chartKey, out Chart chart))
                     {
+                        // เรียกเมธอด helper เพื่ออัปเดตกราฟแต่ละตัว
                         UpdateIndividualChart(chart, dataList, chartKey);
                     }
                     else
                     {
-                        Debug.WriteLine($"[WARNING] Chart key '{chartKey}' not found in dictionary.");
+                        Debug.WriteLine($"[WARNING] ไม่พบ Chart key '{chartKey}' ใน chartDictionary. ไม่สามารถอัปเดตกราฟได้.");
                     }
                 }
             }
+
+            Debug.WriteLine("[DEBUG] LoadAllHallData - การอัปเดต DataGridViews และ Charts เสร็จสมบูรณ์.");
         }
 
-        private void UpdateDataGridViewForState(HallMeasurementState state, Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>> allHallData, BindingSource bindingSource)
+        private void UpdateDataGridViewForState(HallMeasurementState state, IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>> hallData, BindingSource bindingSource)
         {
-            if (allHallData.TryGetValue(state, out var data))
+            if (hallData.TryGetValue(state, out var rawStateData))
             {
-                DataTable dataTable = ConvertHallDataToDataTable(data);
+                // แปลง Dictionary<int, List<Tuple<double, double>>> เป็น Dictionary<int, List<(double Source, double Reading)>>
+                var convertedDataForDataGridView = rawStateData.ToDictionary(
+                    entry => entry.Key,
+                    entry => entry.Value.Select(t => (Source: t.Item1, Reading: t.Item2)).ToList()
+                );
+
+                DataTable dataTable = ConvertHallDataToDataTable(convertedDataForDataGridView);
                 UpdateHallDataGridView(dataTable, bindingSource);
                 Debug.WriteLine($"[DEBUG] UpdateDataGridViewForState - Updated DataGridView for state: {state}");
             }
             else
             {
-                Debug.WriteLine($"[WARNING] UpdateDataGridViewForState - No data found for state: {state}");
+                Debug.WriteLine($"[WARNING] UpdateDataGridViewForState - ไม่พบข้อมูลสำหรับ state: {state}. กำลังเคลียร์ DataGridView.");
+                // หากไม่มีข้อมูลสำหรับ state นี้ ให้เคลียร์ DataGridView โดยส่ง DataTable เปล่าไป
                 UpdateHallDataGridView(CreateHallDataTable(), bindingSource);
             }
         }
 
+        // ** เมธอด helper สำหรับแปลงข้อมูล Hall เป็น DataTable เพื่อผูกกับ DataGridView **
         private DataTable ConvertHallDataToDataTable(Dictionary<int, List<(double Source, double Reading)>> data)
         {
+            // ใช้ Clone() เพื่อให้ได้โครงสร้างคอลัมน์เหมือนเดิม แต่ไม่มีข้อมูลเก่า
             DataTable dataTable = CreateHallDataTable().Clone();
 
             if (data != null && data.Any())
             {
-                int maxRows = data.Max(kvp => kvp.Value.Count);
+                int maxRows = 0;
+                // ค้นหาจำนวนแถวสูงสุดในบรรดาข้อมูลทุกตำแหน่ง
+                foreach (var kvp in data)
+                {
+                    if (kvp.Value != null)
+                    {
+                        maxRows = Math.Max(maxRows, kvp.Value.Count);
+                    }
+                }
 
+                // เพิ่มข้อมูลลงใน DataTable ทีละแถว
                 for (int i = 0; i < maxRows; i++)
                 {
                     DataRow row = dataTable.NewRow();
 
                     for (int j = 1; j <= NumberOfHallPositions; j++)
                     {
-                        if (data.ContainsKey(j) && i < data[j].Count)
+                        // ตรวจสอบว่ามีข้อมูลสำหรับตำแหน่งและแถวนั้นๆ หรือไม่
+                        if (data.ContainsKey(j) && data[j] != null && i < data[j].Count)
                         {
                             row[$"Source{j}"] = data[j][i].Source;
                             row[$"Reading{j}"] = data[j][i].Reading;
                         }
                         else
                         {
+                            // ถ้าไม่มีข้อมูล ให้ใส่ DBNull.Value (ค่าว่างสำหรับฐานข้อมูล)
                             row[$"Source{j}"] = DBNull.Value;
                             row[$"Reading{j}"] = DBNull.Value;
                         }
@@ -367,7 +412,6 @@ namespace Program01
                     dataTable.Rows.Add(row);
                 }
             }
-
             return dataTable;
         }
 
@@ -422,7 +466,7 @@ namespace Program01
                     { HallMeasurementState.InwardOrNorthMagneticField, args.NorthVoltageMeasurements }
                 };
 
-                LoadAllHallData(allData);
+                LoadAllHallData((IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>>)_currentRawHallData);
 
                 Debug.WriteLine($"[DEBUG] Received DataUpdated Event");
                 Debug.WriteLine($"[DEBUG] NoMagnetic: {args.NoMagneticMeasurements?.Sum(x => x.Value.Count) ?? 0} points");
@@ -467,9 +511,9 @@ namespace Program01
         {
             InitializeChartDictionary();
 
-            if (CollectAndCalculateHallMeasured.Instance.GetAllHallMeasurements().Any())
+            if (CollectAndCalculateHallMeasured.Instance.AllRawMeasurements != null && CollectAndCalculateHallMeasured.Instance.AllRawMeasurements.Any())
             {
-                LoadAllHallData(CollectAndCalculateHallMeasured.Instance.GetAllHallMeasurements());
+                LoadAllHallData(CollectAndCalculateHallMeasured.Instance.AllRawMeasurements);
             }
         }
 

@@ -161,11 +161,12 @@ namespace Program01
 
             if (Controls.Find("TextboxThickness", true).FirstOrDefault() is TextBox thicknessTextBox)
             {
-                thicknessTextBox.Text = $"{GlobalSettings.Instance.ThicknessValueUI}";
+                double thickness_cm = GlobalSettings.Instance.ThicknessValueStd;
+                thicknessTextBox.Text = $"{thickness_cm}";
             }
             if (Controls.Find("TextboxThicknessUnit", true).FirstOrDefault() is TextBox thicknessUnitTextBox)
             {
-                thicknessUnitTextBox.Text = $"{GlobalSettings.Instance.ThicknessUnitUI}";
+                thicknessUnitTextBox.Text = "cm";
             }
 
             if (Controls.Find("TextboxSheetRes", true).FirstOrDefault() is TextBox sheetresistanceTextBox)
@@ -175,7 +176,7 @@ namespace Program01
             }
             if (Controls.Find("TextboxSheetResUnit", true).FirstOrDefault() is TextBox sheetresistanceunitTextBox)
             {
-                sheetresistanceunitTextBox.Text = "Ω / Sqr";
+                sheetresistanceunitTextBox.Text = "Ω/Sqr";
             }
 
             if (Controls.Find("TextboxResistivity", true).FirstOrDefault() is TextBox resistivityTextBox)
@@ -185,7 +186,7 @@ namespace Program01
             }
             if (Controls.Find("TextboxResistivityUnit", true).FirstOrDefault() is TextBox resistivityunitTextBox)
             {
-                resistivityunitTextBox.Text = "Ω ⋅ m";
+                resistivityunitTextBox.Text = "Ω⋅cm";
             }
 
             if (Controls.Find("TextboxConductivity", true).FirstOrDefault() is TextBox conductivityTextBox)
@@ -194,7 +195,7 @@ namespace Program01
             }
             if (Controls.Find("TextboxConductivityUnit", true).FirstOrDefault() is TextBox conductivityunitTextBox)
             {
-                conductivityunitTextBox.Text = "S / m";
+                conductivityunitTextBox.Text = "S/cm";
             }
         }
 

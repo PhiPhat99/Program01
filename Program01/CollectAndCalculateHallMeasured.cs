@@ -5,60 +5,84 @@ using System.Linq;
 
 public class HallVoltageDataUpdatedEventArgs : EventArgs
 {
-    public string StateKey { get; }
-    public int TunerPosition { get; }
-    public List<(double Source, double Reading)> IndividualData { get; }
+    public string StateKey { get; private set; }
+    public int TunerPosition { get; private set; }
+    public List<Tuple<double, double>> IndividualData { get; private set; }
 
-    public Dictionary<int, List<(double Source, double Reading)>> NoMagneticFieldData { get; private set; } = new Dictionary<int, List<(double Source, double Reading)>>();
-    public Dictionary<int, List<(double Source, double Reading)>> SouthFieldData { get; private set; } = new Dictionary<int, List<(double Source, double Reading)>>();
-    public Dictionary<int, List<(double Source, double Reading)>> NorthFieldData { get; private set; } = new Dictionary<int, List<(double Source, double Reading)>>();
-
-    public HallVoltageDataUpdatedEventArgs(string stateKey, int tunerPosition, List<(double Source, double Reading)> individualData)
+    public HallVoltageDataUpdatedEventArgs(string stateKey, int tunerPosition, List<Tuple<double, double>> individualData)
     {
         StateKey = stateKey;
         TunerPosition = tunerPosition;
         IndividualData = individualData;
     }
+}
 
-    public HallVoltageDataUpdatedEventArgs(
-        Dictionary<int, List<(double Source, double Reading)>> noMagneticFieldData,
-        Dictionary<int, List<(double Source, double Reading)>> southData,
-        Dictionary<int, List<(double Source, double Reading)>> northData)
+public class DetailedHallPropertiesCalculatedEventArgs : EventArgs
+{
+    public Dictionary<double, HallCalculationResultPerCurrent> PerCurrentPointResults { get; private set; }
+    public DetailedHallPropertiesCalculatedEventArgs(Dictionary<double, HallCalculationResultPerCurrent> results)
     {
-        NoMagneticFieldData = noMagneticFieldData;
-        SouthFieldData = southData;
-        NorthFieldData = northData;
+        PerCurrentPointResults = results;
     }
+}
+
+public class HallCalculationResultPerCurrent
+{
+    public double Current { get; set; }
+    public HallCalculationResultPerCurrent(double current)
+    {
+        Current = current;
+        RawVhn_Minus_Vout_ByPosition = new Dictionary<int, double>(); // Initialize in constructor
+        RawVhs_Minus_Vout_ByPosition = new Dictionary<int, double>(); // Initialize in constructor
+    }
+
+    public double Vh_SouthField { get; set; } = double.NaN;
+    public double Vh_NorthField { get; set; } = double.NaN;
+    public double R_Hall_SouthField { get; set; } = double.NaN;
+    // This is Hall Resistance (Vh/I in Ohm)
+    public double R_H_SouthField { get; set; } = double.NaN;
+    // This is Hall Coefficient in cm^3/C
+    public double SheetConcentration_SouthField { get; set; } = double.NaN;
+    public double BulkConcentration_SouthField { get; set; } = double.NaN;
+    public double Mobility_SouthField { get; set; } = double.NaN;
+    public double R_Hall_NorthField { get; set; } = double.NaN; // This is Hall Resistance (Vh/I in Ohm)
+    public double R_H_NorthField { get; set; } = double.NaN; // This is Hall Coefficient in cm^3/C
+    public double SheetConcentration_NorthField { get; set; } = double.NaN;
+    public double BulkConcentration_NorthField { get; set; } = double.NaN;
+    public double Mobility_NorthField { get; set; } = double.NaN;
+
+    public double Vh_Average { get; set; } = double.NaN;
+    public double R_Hall_ByCurrent { get; set; } = double.NaN; // This is Hall Resistance (Vh_Average / Current in Ohm)
+    public double R_H_ByCurrent { get; set; } = double.NaN; // This is Hall Coefficient in cm^3/C
+    public double SheetConcentration_ByCurrent { get; set; } = double.NaN;
+    public double BulkConcentration_ByCurrent { get; set; } = double.NaN;
+    public double Mobility_ByCurrent { get; set; } = double.NaN;
+
+    public Dictionary<int, double> RawVhn_Minus_Vout_ByPosition { get; set; }
+    public Dictionary<int, double> RawVhs_Minus_Vout_ByPosition { get; set; }
 }
 
 public class CollectAndCalculateHallMeasured
 {
-    private static CollectAndCalculateHallMeasured _instance;
-    private static readonly object _lock = new object();
+    private static readonly Lazy<CollectAndCalculateHallMeasured> lazy =
+        new Lazy<CollectAndCalculateHallMeasured>(() => new CollectAndCalculateHallMeasured());
+    public static CollectAndCalculateHallMeasured Instance { get; } = lazy.Value;
 
-    private readonly Dictionary<HallMeasurementState, Dictionary<int, List<(double, double)>>> _measurements =
-        new Dictionary<HallMeasurementState, Dictionary<int, List<(double, double)>>>()
+    private CollectAndCalculateHallMeasured()
+    {
+        _measurements = new Dictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>>();
+        foreach (HallMeasurementState state in Enum.GetValues(typeof(HallMeasurementState)))
         {
-            { HallMeasurementState.NoMagneticField, new Dictionary<int, List<(double, double)>>() },
-            { HallMeasurementState.InwardOrNorthMagneticField, new Dictionary<int, List<(double, double)>>() },
-            { HallMeasurementState.OutwardOrSouthMagneticField, new Dictionary<int, List<(double, double)>>() }
-        };
+            _measurements[state] = new Dictionary<int, List<Tuple<double, double>>>();
+            for (int i = 1; i <= NumberOfHallPositions; i++)
+            {
+                _measurements[state][i] = new List<Tuple<double, double>>();
+            }
+        }
 
-    private Dictionary<int, List<(double Current, double HallVoltage)>> _hallIVHSouthData;
-    public Dictionary<int, List<(double Current, double HallVoltage)>> HallIVHSouthData
-    {
-        get { return _hallIVHSouthData; }
-        private set { _hallIVHSouthData = value; }
+        AverageVhsByPosition = new Dictionary<int, double>();
+        AverageVhnByPosition = new Dictionary<int, double>();
     }
-
-    private Dictionary<int, List<(double Current, double HallVoltage)>> _hallIVHNorthData;
-    public Dictionary<int, List<(double Current, double HallVoltage)>> HallIVHNorthData
-    {
-        get { return _hallIVHNorthData; }
-        private set { _hallIVHNorthData = value; }
-    }
-
-    private readonly Dictionary<int, double> _averageCurrentByPosition = new Dictionary<int, double>(); // เก็บค่ากระแสเฉลี่ยสำหรับแต่ละตำแหน่ง
 
     public enum SemiconductorType
     {
@@ -67,400 +91,17 @@ public class CollectAndCalculateHallMeasured
         P
     }
 
-    public event EventHandler<Dictionary<int, List<(double Current, double HallVoltage)>>> HallIVHSouthDataCalculated;
-    public event EventHandler<Dictionary<int, List<(double Current, double HallVoltage)>>> HallIVHNorthDataCalculated;
-    private Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>> lastMeasurements;
-    private readonly Dictionary<int, double> _hallVoltageByPosition = new Dictionary<int, double>();
-    public double ElementaryCharge { get; set; } = 1.602176634E-19; // ประจุอิเล็กตรอน (C)
-
-    // Event
+    private Dictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>> _measurements;
+    public IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>> AllRawMeasurements => _measurements;
+    private const int NumberOfHallPositions = 4;
+    public Dictionary<int, double> AverageVhsByPosition { get; private set; }
+    public Dictionary<int, double> AverageVhnByPosition { get; private set; }
+    public Dictionary<double, HallCalculationResultPerCurrent> DetailedPerCurrentPointResults { get; private set; } = new Dictionary<double, HallCalculationResultPerCurrent>();
+    // Events
     public event EventHandler<HallVoltageDataUpdatedEventArgs> DataUpdated;
     public event EventHandler CalculationCompleted;
-    public event EventHandler<Dictionary<int, double>> HallVoltageCalculated;
-    public event EventHandler<Dictionary<int, List<(double Current, double HallVoltage)>>> HallIVHDataCalculated;
-    public event EventHandler<(double HallCoefficient, double SheetConcentration, double BulkConcentration, double Mobility)> HallPropertiesCalculated;
-    public event EventHandler<SemiconductorType> SemiconductorTypeCalculated;
-    public event EventHandler<Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>>> AllHallDataUpdated;
-
-    private CollectAndCalculateHallMeasured() { }
-
-    public static CollectAndCalculateHallMeasured Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                lock (_lock)
-                {
-                    _instance = _instance ?? new CollectAndCalculateHallMeasured();
-                }
-            }
-            return _instance;
-        }
-    }
-
-    public void StoreMeasurementData(int tuner, List<(double Source, double Reading)> data, HallMeasurementState state)
-    {
-        if (data == null || data.Count == 0) return;
-
-        if (!_measurements[state].ContainsKey(tuner))
-            _measurements[state][tuner] = new List<(double, double)>();
-
-        _measurements[state][tuner].AddRange(data);
-
-        Debug.WriteLine($"[DEBUG - StoreMeasurementData] State: {state}, Tuner: {tuner}, Data Count: {data.Count}");
-        foreach (var item in data)
-        {
-            Debug.WriteLine($"[DEBUG - StoreMeasurementData]    Source: {item.Source}, Reading: {item.Reading}");
-        }
-
-        OnDataUpdated(new HallVoltageDataUpdatedEventArgs(state.ToString(), tuner, new List<(double, double)>(data)));
-    }
-
-    public Dictionary<int, List<(double Source, double Reading)>> GetHallMeasurements(HallMeasurementState state)
-    {
-        return _measurements[state].ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
-    }
-
-    public Dictionary<HallMeasurementState, Dictionary<int, List<(double, double)>>> GetAllHallMeasurements()
-    {
-        return _measurements.ToDictionary(s => s.Key, s => s.Value.ToDictionary(p => p.Key, p => p.Value.ToList()));
-    }
-
-    public Dictionary<HallMeasurementState, Dictionary<int, List<(double Source, double Reading)>>> GetLastMeasurements()
-    {
-        return lastMeasurements?.ToDictionary(
-            kvp => kvp.Key,
-            kvp => kvp.Value.ToDictionary(
-                innerKvp => innerKvp.Key,
-                innerKvp => innerKvp.Value.ToList()
-            )
-        );
-    }
-
-    public void ClearAllData()
-    {
-        foreach (var state in _measurements.Keys) _measurements[state].Clear();
-        ClearHallResults();
-    }
-
-    public void ClearHallResults()
-    {
-        _hallVoltageByPosition.Clear();
-        _averageCurrentByPosition.Clear(); // ล้างค่ากระแสเฉลี่ย
-        GlobalSettings.Instance.TotalHallVoltage = double.NaN;
-        GlobalSettings.Instance.HallCoefficient = double.NaN;
-        GlobalSettings.Instance.SheetConcentration = double.NaN;
-        GlobalSettings.Instance.BulkConcentration = double.NaN;
-        GlobalSettings.Instance.Mobility = double.NaN;
-    }
-
-    private double CalculateSlope(List<(double X, double Y)> data)
-    {
-        int n = data.Count;
-        if (n < 2) return double.NaN;
-
-        double sumX = data.Sum(d => d.X);
-        double sumY = data.Sum(d => d.Y);
-        double sumXY = data.Sum(d => d.X * d.Y);
-        double sumX2 = data.Sum(d => d.X * d.X);
-
-        double numerator = sumXY - (sumX * sumY / n);
-        double denominator = sumX2 - (sumX * sumX / n);
-        return denominator == 0 ? double.NaN : numerator / denominator; // คำนวณความชันจากข้อมูล (X, Y) โดยใช้ Linear Regression
-    }
-
-    public void CalculateHall()
-    {
-        ClearHallResults();
-        var slopes = new Dictionary<int, double>();
-        var hallVoltagesByPosition = new Dictionary<int, double>();
-        var averageCurrentsByPosition = new Dictionary<int, double>(); // เก็บค่ากระแสเฉลี่ยต่อตำแหน่ง
-        var ivhSouthDataByPosition = new Dictionary<int, List<(double Current, double HallVoltage)>>();
-        var ivhNorthDataByPosition = new Dictionary<int, List<(double Current, double HallVoltage)>>();
-
-        double sumHallVoltage = 0;
-        int validHallVoltageCount = 0;
-
-        // เก็บค่า VHS และ VHN สำหรับแต่ละตำแหน่ง
-        var vhsValues = new Dictionary<int, List<double>>();
-        var vhnValues = new Dictionary<int, List<double>>();
-
-        for (int pos = 1; pos <= 4; pos++)
-        {
-            if (!_measurements.All(m => m.Value.ContainsKey(pos))) continue;
-
-            var outData = _measurements[HallMeasurementState.NoMagneticField][pos];
-            var southData = _measurements[HallMeasurementState.OutwardOrSouthMagneticField][pos];
-            var northData = _measurements[HallMeasurementState.InwardOrNorthMagneticField][pos];
-
-            var southHall = new List<(double Source, double DeltaVoltage)>();
-            var northHall = new List<(double Source, double DeltaVoltage)>();
-            var ivhSouthList = new List<(double Current, double HallVoltage)>();
-            var ivhNorthList = new List<(double Current, double HallVoltage)>();
-
-            double currentHallVoltageSum = 0;
-            double currentSum = 0; // ผลรวมของค่ากระแสเพื่อหาค่าเฉลี่ย
-            int validHallVoltageForPositionCount = 0;
-            int currentCount = 0; // จำนวนจุดข้อมูลกระแส
-
-            vhsValues[pos] = new List<double>();
-            vhnValues[pos] = new List<double>();
-
-            for (int i = 0; i < outData.Count; i++)
-            {
-                double current = outData[i].Item1;
-                double vhs = i < southData.Count ? southData[i].Item2 - outData[i].Item2 : double.NaN; // VHS
-                double vhn = i < northData.Count ? northData[i].Item2 - outData[i].Item2 : double.NaN; // VHN
-
-                Debug.WriteLine($"[DEBUG - CalculateHall - Pos {pos}, Index {i}] Current: {current}, VHS: {vhs}, VHN: {vhn}");
-
-                if (!double.IsNaN(vhs))
-                {
-                    southHall.Add((current, vhs));
-                    ivhSouthList.Add((current, vhs));
-                    vhsValues[pos].Add(vhs);
-                }
-                if (!double.IsNaN(vhn))
-                {
-                    northHall.Add((current, vhn));
-                    ivhNorthList.Add((current, vhn));
-                    vhnValues[pos].Add(vhn);
-                }
-
-                // คำนวณ Hall Voltage (VH) แบบใหม่ - ยังไม่เฉลี่ยรวมทุกตำแหน่ง
-                double hallVoltage = (!double.IsNaN(vhs) && !double.IsNaN(vhn)) ? (vhs + vhn) / 2 : !double.IsNaN(vhs) ? vhs : vhn;
-                Debug.WriteLine($"[DEBUG - CalculateHall - Pos {pos}, Index {i}] Hall Voltage (VH individual): {hallVoltage}");
-
-                if (!double.IsNaN(hallVoltage))
-                {
-                    currentHallVoltageSum += hallVoltage;
-                    currentSum += current; // สะสมค่ากระแส
-                    validHallVoltageForPositionCount++;
-                    currentCount++; // นับจำนวนจุดข้อมูลกระแส
-                }
-            }
-
-            double averageHallVoltageForPosition = validHallVoltageForPositionCount > 0 ? currentHallVoltageSum / validHallVoltageForPositionCount : double.NaN;
-            hallVoltagesByPosition[pos] = averageHallVoltageForPosition;
-            double averageCurrentForPosition = currentCount > 0 ? currentSum / currentCount : double.NaN; // คำนวณกระแสเฉลี่ยต่อตำแหน่ง
-            averageCurrentsByPosition[pos] = averageCurrentForPosition;
-            Debug.WriteLine($"[DEBUG - CalculateHall - Pos {pos}] Average Hall Voltage (VH per pos): {averageHallVoltageForPosition}, Average Current (I avg per pos): {averageCurrentForPosition}");
-
-            if (!double.IsNaN(averageHallVoltageForPosition))
-            {
-                sumHallVoltage += averageHallVoltageForPosition;
-                validHallVoltageCount++;
-            }
-
-            // คำนวณ Slope (R_Hall เบื้องต้น) สำหรับแต่ละทิศทางและตำแหน่ง
-            double slopeS = CalculateSlope(southHall);
-            double slopeN = CalculateSlope(northHall);
-            slopes[pos] = (!double.IsNaN(slopeS) && !double.IsNaN(slopeN)) ? (slopeS + slopeN) / 2 : double.NaN; // R_Hall เบื้องต้นต่อตำแหน่ง (เฉลี่ย South/North)
-            Debug.WriteLine($"[DEBUG - CalculateHall - Pos {pos}] Slope South (R_Hall_S): {slopeS}, Slope North (R_Hall_N): {slopeN}, Average Slope (R_Hall_avg_SN_per_pos): {slopes[pos]}");
-
-            if (ivhSouthList.Count > 0)
-            {
-                ivhSouthDataByPosition[pos] = ivhSouthList;
-            }
-            if (ivhNorthList.Count > 0)
-            {
-                ivhNorthDataByPosition[pos] = ivhNorthList;
-            }
-        }
-
-        // คำนวณ VH ตามสมการที่ 3
-        double totalVh = 0;
-        totalVh += vhsValues.TryGetValue(1, out var listVHS1) && listVHS1.Any() ? listVHS1.Average() : 0;
-        totalVh -= vhsValues.TryGetValue(2, out var listVHS2) && listVHS2.Any() ? listVHS2.Average() : 0;
-        totalVh += vhsValues.TryGetValue(3, out var listVHS3) && listVHS3.Any() ? listVHS3.Average() : 0;
-        totalVh -= vhsValues.TryGetValue(4, out var listVHS4) && listVHS4.Any() ? listVHS4.Average() : 0;
-        totalVh += vhnValues.TryGetValue(1, out var listVHN1) && listVHN1.Any() ? listVHN1.Average() : 0;
-        totalVh -= vhnValues.TryGetValue(2, out var listVHN2) && listVHN2.Any() ? listVHN2.Average() : 0;
-        totalVh += vhnValues.TryGetValue(3, out var listVHN3) && listVHN3.Any() ? listVHN3.Average() : 0;
-        totalVh -= vhnValues.TryGetValue(4, out var listVHN4) && listVHN4.Any() ? listVHN4.Average() : 0;
-        double averageVh = totalVh / 8.0;
-        GlobalSettings.Instance.TotalHallVoltage = averageVh;
-        Debug.WriteLine($"[DEBUG - CalculateHall] Total Average VH (Equation 3): {averageVh}");
-
-        // คำนวณ RHall ตามสมการที่ 5 (VH / I(avg)) โดยใช้ค่าเฉลี่ยกระแสจากทุกตำแหน่ง
-        double totalAverageCurrent = averageCurrentsByPosition.Values.Sum() / averageCurrentsByPosition.Count;
-        double rHall = double.IsNaN(averageVh) || totalAverageCurrent == 0 ? double.NaN : averageVh / totalAverageCurrent;
-        GlobalSettings.Instance.HallResistance = rHall;
-        Debug.WriteLine($"[DEBUG - CalculateHall] Hall Resistance (R_Hall - Equation 5): {rHall}");
-
-        lastMeasurements = _measurements.ToDictionary(
-            kvp => kvp.Key,
-            kvp => kvp.Value.ToDictionary(
-                innerKvp => innerKvp.Key,
-                innerKvp => innerKvp.Value.ToList()
-            )
-        );
-        Debug.WriteLine("[DEBUG - CalculateHall] Hall calculation done, data stored.");
-
-        HallIVHSouthData = ivhSouthDataByPosition;
-        HallIVHNorthData = ivhNorthDataByPosition;
-        GlobalSettings.Instance.HallVoltagesByPosition = hallVoltagesByPosition;
-        GlobalSettings.Instance.AverageCurrentsByPosition = averageCurrentsByPosition; // เก็บค่ากระแสเฉลี่ย
-        OnHallVoltageCalculated(hallVoltagesByPosition);
-        Debug.WriteLine($"[DEBUG - CalculateHall] Hall Voltages by Position: {string.Join(", ", hallVoltagesByPosition)}");
-        Debug.WriteLine($"[DEBUG - CalculateHall] Average Currents by Position: {string.Join(", ", averageCurrentsByPosition)}");
-        OnHallIVHSouthDataCalculated(ivhSouthDataByPosition);
-        OnHallIVHNorthDataCalculated(ivhNorthDataByPosition);
-
-        Debug.WriteLine($"[DEBUG - CalculateHall] Total Average Hall Voltage (เดิม): {GlobalSettings.Instance.TotalHallVoltage}"); // แสดงค่าเดิมด้วย
-        CalculateHallProperties(slopes); // ส่งค่า slopes ไปคำนวณ RH และอื่นๆ
-        OnCalculationCompleted();
-        Debug.WriteLine("[DEBUG - CalculateHall] Triggering AllHallDataUpdated event");
-    }
-
-    private void CalculateHallProperties(Dictionary<int, double> slopes)
-    {
-        // คำนวณ R_H ตามสมการที่ 6: R_H = R_Hall / B
-        double rHallCoefficient = double.IsNaN(GlobalSettings.Instance.HallResistance) || GlobalSettings.Instance.MagneticFieldsValueStd == 0
-            ? double.NaN
-            : GlobalSettings.Instance.HallResistance / GlobalSettings.Instance.MagneticFieldsValueStd;
-        GlobalSettings.Instance.HallCoefficient = rHallCoefficient;
-        Debug.WriteLine($"[DEBUG - CalculateHallProperties] Hall Coefficient (R_H - Equation 6): {rHallCoefficient}");
-
-        // คำนวณ nb ตามสมการที่ 8: nb = B / (q * t * RHall)
-        double nb = (GlobalSettings.Instance.MagneticFieldsValueStd != 0 && ElementaryCharge != 0 && GlobalSettings.Instance.ThicknessValueStd != 0 && !double.IsNaN(GlobalSettings.Instance.HallResistance))
-            ? GlobalSettings.Instance.MagneticFieldsValueStd / (ElementaryCharge * GlobalSettings.Instance.ThicknessValueStd * GlobalSettings.Instance.HallResistance)
-            : double.NaN;
-        GlobalSettings.Instance.BulkConcentration = nb;
-        Debug.WriteLine($"[DEBUG - CalculateHallProperties] Bulk Concentration (nb - Equation 8): {nb}");
-
-        // คำนวณ ns ตามสมการที่ 7: ns = nb * t
-        double ns = !double.IsNaN(nb) ? nb * GlobalSettings.Instance.ThicknessValueStd : double.NaN;
-        GlobalSettings.Instance.SheetConcentration = ns;
-        Debug.WriteLine($"[DEBUG - CalculateHallProperties] Sheet Concentration (ns - Equation 7): {ns}");
-
-        // คำนวณ mu ตามสมการที่ 9: µ = 1 / (n * q * ρ) โดยใช้ nb เป็น n
-        double mu = (nb != 0 && ElementaryCharge != 0 && GlobalSettings.Instance.Resistivity != 0)
-            ? 1 / (nb * ElementaryCharge * GlobalSettings.Instance.Resistivity)
-            : double.NaN;
-        GlobalSettings.Instance.Mobility = mu;
-        Debug.WriteLine($"[DEBUG - CalculateHallProperties] Mobility (µ - Equation 9 using nb): {mu}");
-
-        var type = DetermineSemiconductorType(rHallCoefficient);
-        OnHallPropertiesCalculated((rHallCoefficient, ns, nb, mu));
-        OnSemiconductorTypeCalculated(type);
-    }
-
-    /*private double CalculateHallCoefficient(double avgSlope)
-    {
-        // Hall Coefficient (R_H) = V_H * t / (I * B)
-        // โดยที่ avgSlope คือ Hall Resistance (R_Hall = V_H / I)
-        // ดังนั้น R_H = R_Hall * t / B
-        if (GlobalSettings.Instance.ThicknessValueStd == 0 || GlobalSettings.Instance.MagneticFieldsValueStd == 0 || GlobalSettings.Instance.AverageCurrentsByPosition == null || GlobalSettings.Instance.AverageCurrentsByPosition.Values.Any(v => v == 0))
-            return double.NaN;
-
-        // ใช้ค่ากระแสเฉลี่ยจากทุกตำแหน่ง
-        double averageCurrent = GlobalSettings.Instance.AverageCurrentsByPosition.Values.Average();
-        double rHallCoefficient = (averageCurrent != 0) ? (avgSlope * GlobalSettings.Instance.ThicknessValueStd) / GlobalSettings.Instance.MagneticFieldsValueStd : double.NaN; // R_H = R_Hall * t / B
-        GlobalSettings.Instance.HallCoefficient = rHallCoefficient;
-        Debug.WriteLine($"[DEBUG] Hall Coefficient (R_H): {rHallCoefficient} m^3/C");
-        return rHallCoefficient;
-    }
-
-    private double CalculateSheetConcentration(double rHallCoefficient)
-    {
-        // Sheet Concentration (n_s) = 1 / (|R_H| * |e|)
-        // โดยที่ R_H คือ Hall Coefficient และ e คือประจุอิเล็กตรอน
-        if (rHallCoefficient == 0 || ElementaryCharge == 0) return double.NaN;
-        double ns = 1 / (Math.Abs(rHallCoefficient) * Math.Abs(ElementaryCharge));
-        GlobalSettings.Instance.SheetConcentration = ns;
-        Debug.WriteLine($"[DEBUG] Sheet Concentration (n_s): {ns} m^-2");
-        return ns;
-    }
-
-    private double CalculateBulkConcentration(double rHallCoefficient)
-    {
-        // Bulk Concentration (n_b) = 1 / (|R_H| * |e|)
-        // โดยที่ R_H คือ Hall Coefficient และ e คือประจุอิเล็กตรอน
-        if (rHallCoefficient == 0 || ElementaryCharge == 0 || GlobalSettings.Instance.ThicknessValueStd == 0) return double.NaN;
-        double nb = 1 / (Math.Abs(rHallCoefficient) * Math.Abs(ElementaryCharge));
-        GlobalSettings.Instance.BulkConcentration = nb;
-        Debug.WriteLine($"[DEBUG] Bulk Concentration (n_b): {nb} m^-3");
-        return nb;
-    }
-
-    private double CalculateMobility(double rHallCoefficient)
-    {
-        // Mobility (µ) = |R_H| / Resistivity
-        // โดยที่ R_H คือ Hall Coefficient และ Resistivity คือความต้านทานจำเพาะ
-        if (Math.Abs(GlobalSettings.Instance.Resistivity) < double.Epsilon || double.IsNaN(rHallCoefficient)) return double.NaN;
-        double mu = Math.Abs(rHallCoefficient) / GlobalSettings.Instance.Resistivity;
-        GlobalSettings.Instance.Mobility = mu;
-        Debug.WriteLine($"[DEBUG] Mobility (µ): {mu} m^2/V⋅s");
-        return mu;
-    }*/
-
-    private SemiconductorType DetermineSemiconductorType(double rHallCoefficient)
-    {
-        if (rHallCoefficient < 0)
-        {
-            Debug.WriteLine("[DEBUG] Semiconductor Type: N-type (Hall Coefficient < 0)");
-            return SemiconductorType.N;
-        }
-        else if (rHallCoefficient > 0)
-        {
-            Debug.WriteLine("[DEBUG] Semiconductor Type: P-type (Hall Coefficient > 0)");
-            return SemiconductorType.P;
-        }
-        else
-        {
-            Debug.WriteLine("[DEBUG] Semiconductor Type: Unknown (Hall Coefficient is 0)");
-            return SemiconductorType.Unknown;
-        }
-    }
-
-    public Dictionary<int, double> GetAverageNoFieldVoltagesByPosition()
-    {
-        var noFieldMeasurements = _measurements[HallMeasurementState.NoMagneticField];
-        var avgVoltages = new Dictionary<int, double>();
-        foreach (var kvp in noFieldMeasurements)
-        {
-            if (kvp.Value != null && kvp.Value.Any())
-            {
-                avgVoltages[kvp.Key] = kvp.Value.Average(item => item.Item2); // เข้าถึง Element ที่สองของ Tuple (Reading)
-            }
-        }
-        Debug.WriteLine($"[DEBUG - GetAverageNoFieldVoltagesByPosition] Average No Field Voltages: {string.Join(", ", avgVoltages.Select(kv => $"Pos {kv.Key}: {kv.Value}"))}");
-        return avgVoltages;
-    }
-
-    public Dictionary<int, double> GetAverageSouthFieldVoltagesByPosition()
-    {
-        var southMeasurements = _measurements[HallMeasurementState.OutwardOrSouthMagneticField];
-        var avgVoltages = new Dictionary<int, double>();
-        foreach (var kvp in southMeasurements)
-        {
-            if (kvp.Value != null && kvp.Value.Any())
-            {
-                avgVoltages[kvp.Key] = kvp.Value.Average(item => item.Item2); // เข้าถึง Element ที่สองของ Tuple (Reading)
-            }
-        }
-        Debug.WriteLine($"[DEBUG - GetAverageSouthFieldVoltagesByPosition] Average South Field Voltages: {string.Join(", ", avgVoltages.Select(kv => $"Pos {kv.Key}: {kv.Value}"))}");
-        return avgVoltages;
-    }
-
-    public Dictionary<int, double> GetAverageNorthFieldVoltagesByPosition()
-    {
-        var northMeasurements = _measurements[HallMeasurementState.InwardOrNorthMagneticField];
-        var avgVoltages = new Dictionary<int, double>();
-        foreach (var kvp in northMeasurements)
-        {
-            if (kvp.Value != null && kvp.Value.Any())
-            {
-                avgVoltages[kvp.Key] = kvp.Value.Average(item => item.Item2); // เข้าถึง Element ที่สองของ Tuple (Reading)
-            }
-        }
-        Debug.WriteLine($"[DEBUG - GetAverageNorthFieldVoltagesByPosition] Average North Field Voltages: {string.Join(", ", avgVoltages.Select(kv => $"Pos {kv.Key}: {kv.Value}"))}");
-        return avgVoltages;
-    }
-
-    // Trigger Events
+    public event EventHandler<DetailedHallPropertiesCalculatedEventArgs> DetailedHallPropertiesUpdated;
+    // Event invokers
     protected virtual void OnDataUpdated(HallVoltageDataUpdatedEventArgs e)
     {
         DataUpdated?.Invoke(this, e);
@@ -469,31 +110,627 @@ public class CollectAndCalculateHallMeasured
     protected virtual void OnCalculationCompleted()
     {
         CalculationCompleted?.Invoke(this, EventArgs.Empty);
-        AllHallDataUpdated?.Invoke(this, GetAllHallMeasurements());
     }
 
-    protected virtual void OnHallVoltageCalculated(Dictionary<int, double> hallVoltages)
+    protected virtual void OnDetailedHallPropertiesCalculated(DetailedHallPropertiesCalculatedEventArgs e)
     {
-        HallVoltageCalculated?.Invoke(this, hallVoltages);
+        DetailedHallPropertiesUpdated?.Invoke(this, e);
     }
 
-    protected virtual void OnHallIVHSouthDataCalculated(Dictionary<int, List<(double Current, double HallVoltage)>> ivhData)
+    public void StoreMeasurementData(HallMeasurementState state, int tunerPosition, List<Tuple<double, double>> measurements)
     {
-        HallIVHSouthDataCalculated?.Invoke(this, ivhData);
+        if (!_measurements.ContainsKey(state))
+        {
+            _measurements[state] = new Dictionary<int, List<Tuple<double, double>>>();
+        }
+        if (!_measurements[state].ContainsKey(tunerPosition))
+        {
+            _measurements[state][tunerPosition] = new List<Tuple<double, double>>();
+        }
+
+        Debug.WriteLine($"\n[DEBUG-RAW-STORE] Storing data for State: {state}, Tuner: {tunerPosition}");
+        if (measurements != null && measurements.Any())
+        {
+            foreach (var m in measurements)
+            {
+                Debug.WriteLine($"  [DEBUG-RAW-STORE]   Current: {m.Item1:E5} A, Voltage: {m.Item2:E5} V");
+            }
+        }
+        else
+        {
+            Debug.WriteLine("  [DEBUG-RAW-STORE]   No data points provided for storage.");
+        }
+
+        _measurements[state][tunerPosition].AddRange(measurements);
+        Debug.WriteLine($"[DEBUG-RAW-STORE] StoreMeasurementData - State: {state}, Position: {tunerPosition}, Added {measurements.Count} points. Total points now: {_measurements[state][tunerPosition].Count}");
+        OnDataUpdated(new HallVoltageDataUpdatedEventArgs(state.ToString(), tunerPosition, _measurements[state][tunerPosition]));
     }
 
-    protected virtual void OnHallIVHNorthDataCalculated(Dictionary<int, List<(double Current, double HallVoltage)>> ivhData)
+    public Dictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>> GetAllRawMeasurements()
     {
-        HallIVHNorthDataCalculated?.Invoke(this, ivhData);
+        return _measurements;
     }
 
-    protected virtual void OnHallPropertiesCalculated((double HallCoefficient, double SheetConcentration, double BulkConcentration, double Mobility) properties)
+    public void DebugPrintAllRawMeasurements()
     {
-        HallPropertiesCalculated?.Invoke(this, properties);
+        Debug.WriteLine("\n=== DEBUGGING ALL RAW HALL MEASUREMENTS (AFTER ALL STORAGE) ===");
+        if (!_measurements.Any())
+        {
+            Debug.WriteLine("No raw measurement data has been stored yet.");
+            Debug.WriteLine("===========================================\n");
+            return;
+        }
+
+        foreach (var stateEntry in _measurements)
+        {
+            HallMeasurementState state = stateEntry.Key;
+            Dictionary<int, List<Tuple<double, double>>> tunerData = stateEntry.Value;
+            Debug.WriteLine($"--- State: {state} ---");
+            for (int tunerPos = 1; tunerPos <= NumberOfHallPositions; tunerPos++)
+            {
+                Debug.WriteLine($"  Tuner Position: {tunerPos}");
+                if (tunerData.ContainsKey(tunerPos))
+                {
+                    List<Tuple<double, double>> dataPoints = tunerData[tunerPos];
+                    Debug.WriteLine($"    Total points for Tuner {tunerPos}: {dataPoints.Count}");
+                    if (!dataPoints.Any())
+                    {
+                        Debug.WriteLine("      No data points for this Tuner position in this state.");
+                    }
+                    else
+                    {
+                        foreach (var point in dataPoints)
+                        {
+                            Debug.WriteLine($"      Current: {point.Item1:E5} A, Voltage: {point.Item2:E5} V");
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine($"    No data collected for Tuner {tunerPos} in this State (Key not found).");
+                }
+            }
+        }
+        Debug.WriteLine("=== END OF RAW HALL MEASUREMENTS DEBUGGING ===\n");
     }
 
-    protected virtual void OnSemiconductorTypeCalculated(SemiconductorType type)
+    public void CalculateAllHallProperties(double thickness_cm_unused, double magneticField_Vs_per_cm2_unused) // Renamed parameters as they are now taken from GlobalSettings
     {
-        SemiconductorTypeCalculated?.Invoke(this, type);
+        Debug.WriteLine("[DEBUG] CalculateAllHallProperties - Starting overall calculation sequence.");
+        // Use values directly from GlobalSettings as they are pre-converted
+        double magneticField_Vs_per_cm2 = GlobalSettings.Instance.MagneticFieldsValueStd;
+        // In V s/cm^2
+        double thickness_cm = GlobalSettings.Instance.ThicknessValueStd;
+        // In cm
+        double resistivity_ohm_cm = GlobalSettings.Instance.Resistivity;
+        // In Ohm.cm
+        double elementaryCharge_C = GlobalSettings.Instance.ElementaryCharge;
+        // In Coulomb
+
+        Debug.WriteLine($"[DEBUG-GLOBAL-SETTINGS-INPUT] Thickness (t): {thickness_cm:E9} cm");
+        Debug.WriteLine($"[DEBUG-GLOBAL-SETTINGS-INPUT] Magnetic Field (B): {magneticField_Vs_per_cm2:E9} V s/cm^2");
+        Debug.WriteLine($"[DEBUG-GLOBAL-SETTINGS-INPUT] Resistivity (rho): {resistivity_ohm_cm:E9} Ohm.cm");
+        Debug.WriteLine($"[DEBUG-GLOBAL-SETTINGS-INPUT] Elementary Charge (e): {elementaryCharge_C:E9} C");
+
+
+        CalculateHallVoltages();
+        if (DetailedPerCurrentPointResults.Any(r => !double.IsNaN(r.Value.Vh_SouthField) || !double.IsNaN(r.Value.Vh_NorthField)))
+        {
+            // Pass the parameters directly to avoid re-fetching in each method if they are consistent
+            CalculateHallPropertiesByFieldDirection();
+            CalculateOverallHallProperties();
+            OnCalculationCompleted();
+            OnDetailedHallPropertiesCalculated(new DetailedHallPropertiesCalculatedEventArgs(DetailedPerCurrentPointResults));
+        }
+        else
+        {
+            Debug.WriteLine("[WARNING] CalculateAllHallProperties - No valid Hall Voltages calculated. Skipping further property calculations.");
+            GlobalSettings.Instance.TotalHallVoltage_Average = double.NaN;
+            GlobalSettings.Instance.HallResistance = double.NaN;
+            GlobalSettings.Instance.HallCoefficient = double.NaN;
+            GlobalSettings.Instance.SheetConcentration = double.NaN;
+            GlobalSettings.Instance.BulkConcentration = double.NaN;
+            GlobalSettings.Instance.Mobility = double.NaN;
+            GlobalSettings.Instance.SemiconductorType = SemiconductorType.Unknown;
+            OnCalculationCompleted();
+            OnDetailedHallPropertiesCalculated(new DetailedHallPropertiesCalculatedEventArgs(DetailedPerCurrentPointResults));
+        }
+    }
+
+    public void CalculateHallVoltages()
+    {
+        Debug.WriteLine("[DEBUG] CalculateHallVoltages - Start: Calculating true Hall Voltages (V_HS, V_HN) for each current.");
+        var allCurrents = _measurements.Values
+                                    .SelectMany(tunerData => tunerData.Values)
+                                    .SelectMany(list => list)
+                                    .Select(tuple => tuple.Item1)
+                                    .Distinct()
+                                    .OrderBy(c => c)
+                                    .ToList();
+        if (!allCurrents.Any())
+        {
+            Debug.WriteLine("[WARNING] CalculateHallVoltages - No current values found in any measurement data. Cannot calculate Hall Voltages.");
+            DetailedPerCurrentPointResults.Clear();
+            return;
+        }
+
+        Debug.WriteLine("[DEBUG] allCurrents identified:");
+        foreach (var c in allCurrents)
+        {
+            Debug.WriteLine($"  - Current (from allCurrents): {c:E9} A");
+        }
+
+        Debug.WriteLine($"[DEBUG] GlobalSettings.Instance.CurrentTolerance: {GlobalSettings.Instance.CurrentTolerance:E9}");
+        DetailedPerCurrentPointResults.Clear();
+        foreach (double current_A in allCurrents)
+        {
+            Debug.WriteLine($"\n[DEBUG] Calculating True Hall Voltages for Target Current: {current_A:E9} A");
+            HallCalculationResultPerCurrent currentResult = new HallCalculationResultPerCurrent(current_A);
+            double[] vOuts = new double[4];
+            for (int i = 0; i < NumberOfHallPositions; i++)
+            {
+                int tunerPos = i + 1;
+                bool stateExists = _measurements.ContainsKey(HallMeasurementState.NoMagneticField);
+                bool tunerExists = stateExists && _measurements[HallMeasurementState.NoMagneticField].ContainsKey(tunerPos);
+                int dataCount = tunerExists ? _measurements[HallMeasurementState.NoMagneticField][tunerPos].Count : 0;
+                Debug.WriteLine($"  [DEBUG] Checking V_Out for Tuner {tunerPos}. StateExists: {stateExists}, TunerExists: {tunerExists}, DataCount: {dataCount}");
+                if (!tunerExists || dataCount == 0)
+                {
+                    vOuts[i] = double.NaN;
+                    Debug.WriteLine($"  [WARNING] V_Out[{tunerPos}] for {current_A:E9} A: NaN (State, Tuner key missing, or no data for NoMagneticField)");
+                }
+                else
+                {
+                    var dataList = _measurements[HallMeasurementState.NoMagneticField][tunerPos];
+                    Debug.WriteLine($"    [DEBUG-V_OUT_DATALIST] Data points for NoMagneticField, Tuner {tunerPos} (Count: {dataList.Count}):");
+                    foreach (var dp in dataList)
+                    {
+                        double diff = Math.Abs(dp.Item1 - current_A);
+                        Debug.WriteLine($"      - Stored Current: {dp.Item1:E9} A, Voltage: {dp.Item2:E9} V, Diff to Target {current_A:E9} A: {diff:E9} (Tolerance: {GlobalSettings.Instance.CurrentTolerance:E9})");
+                    }
+
+                    var data = dataList
+                        .Where(d => Math.Abs(d.Item1 - current_A) < GlobalSettings.Instance.CurrentTolerance)
+                        .OrderBy(d => Math.Abs(d.Item1 - current_A))
+                        .FirstOrDefault();
+                    vOuts[i] = data != null ? data.Item2 : double.NaN;
+                    string foundCurrentStr = data != null ? $"{data.Item1:E9} A" : "N/A";
+                    string diffStr = data != null ? $"{Math.Abs(data.Item1 - current_A):E9}" : "N/A";
+                    Debug.WriteLine($"  [DEBUG] V_Out[{tunerPos}] for Target Current {current_A:E9} A: {vOuts[i]:E9} V " +
+                                        (data == null ? $"(Missing data point. Found current: {foundCurrentStr}, Difference: {diffStr})" : $"(Found Current: {foundCurrentStr}, Diff: {diffStr})"));
+                }
+            }
+
+            if (vOuts.Any(double.IsNaN))
+            {
+                Debug.WriteLine($"[WARNING] V_Out data is incomplete for current {current_A:E9}. Hall Voltages for this current will be NaN. Skipping to next current.");
+                DetailedPerCurrentPointResults[current_A] = currentResult;
+                continue;
+            }
+
+            // Calculation for V_out_avg (Voltage offset due to misalignment or thermal effects)
+            // Equation: V_out_avg = (V_out_1 - V_out_2 + V_out_3 - V_out_4) / 4.0
+            double v_out_avg = (vOuts[0] - vOuts[1] + vOuts[2] - vOuts[3]) / 4.0;
+            Debug.WriteLine($"[DEBUG] V_OUT_AVG for {current_A:E9} A: {v_out_avg:E9}");
+            double[] vhsRaw = new double[4];
+            for (int i = 0; i < NumberOfHallPositions; i++)
+            {
+                int tunerPos = i + 1;
+                bool stateExists = _measurements.ContainsKey(HallMeasurementState.OutwardOrSouthMagneticField);
+                bool tunerExists = stateExists && _measurements[HallMeasurementState.OutwardOrSouthMagneticField].ContainsKey(tunerPos);
+                int dataCount = tunerExists ? _measurements[HallMeasurementState.OutwardOrSouthMagneticField][tunerPos].Count : 0;
+                Debug.WriteLine($"  [DEBUG] Checking V_HS for Tuner {tunerPos}. StateExists: {stateExists}, TunerExists: {tunerExists}, DataCount: {dataCount}");
+                if (!tunerExists || dataCount == 0)
+                {
+                    vhsRaw[i] = double.NaN;
+                    Debug.WriteLine($"  [WARNING] V_HS[{tunerPos}] for {current_A:E9} A: NaN (State, Tuner key missing, or no data for South Magnetic Field)");
+                }
+                else
+                {
+                    var dataList = _measurements[HallMeasurementState.OutwardOrSouthMagneticField][tunerPos];
+                    Debug.WriteLine($"    [DEBUG-V_HS_DATALIST] Data points for OutwardOrSouthMagneticField, Tuner {tunerPos} (Count: {dataList.Count}):");
+                    foreach (var dp in dataList)
+                    {
+                        double diff = Math.Abs(dp.Item1 - current_A);
+                        Debug.WriteLine($"      - Stored Current: {dp.Item1:E9} A, Voltage: {dp.Item2:E9} V, Diff to Target {current_A:E9} A: {diff:E9} (Tolerance: {GlobalSettings.Instance.CurrentTolerance:E9})");
+                    }
+
+                    var data = dataList.FirstOrDefault(d => Math.Abs(d.Item1 - current_A) < GlobalSettings.Instance.CurrentTolerance);
+                    vhsRaw[i] = data != null ? data.Item2 : double.NaN;
+                    string foundCurrentStr = data != null ? $"{data.Item1:E9} A" : "N/A";
+                    string diffStr = data != null ? $"{Math.Abs(data.Item1 - current_A):E9}" : "N/A";
+                    Debug.WriteLine($"  [DEBUG] V_HS[{tunerPos}] for Target Current {current_A:E9} A: {vhsRaw[i]:E9} V " +
+                                        (data == null ? $"(Missing data point. Found current: {foundCurrentStr}, Difference: {diffStr})" : $"(Found Current: {foundCurrentStr}, Diff: {diffStr})"));
+                }
+            }
+
+            if (vhsRaw.Any(double.IsNaN))
+            {
+                Debug.WriteLine($"[WARNING] V_HS data is incomplete for current {current_A:E9}. Hall Voltages for this current will be NaN.");
+            }
+
+            // Store raw Vhs-Vout for each position for this current
+            // Equation: RawVhs_Minus_Vout_ByPosition[i+1] = V_HS_i - V_out_i
+            for (int i = 0; i < 4; i++)
+            {
+                if (!double.IsNaN(vhsRaw[i]) && !double.IsNaN(vOuts[i]))
+                {
+                    currentResult.RawVhs_Minus_Vout_ByPosition[i + 1] = vhsRaw[i] - vOuts[i];
+                    Debug.WriteLine($"  [DEBUG] RawVhs_Minus_Vout for Tuner {i + 1}: {currentResult.RawVhs_Minus_Vout_ByPosition[i + 1]:E9}");
+                }
+            }
+
+            // Calculate Vh_SouthField using the Vhs-Vout adjusted values
+            // Equation: Vh_SouthField = ((V_HS_1 - V_Out_1) - (V_HS_2 - V_Out_2) + (V_HS_3 - V_Out_3) - (V_HS_4 - V_Out_4)) / 4.0
+            currentResult.Vh_SouthField = (currentResult.RawVhs_Minus_Vout_ByPosition[1] -
+                                           currentResult.RawVhs_Minus_Vout_ByPosition[2] +
+                                           currentResult.RawVhs_Minus_Vout_ByPosition[3] -
+                                           currentResult.RawVhs_Minus_Vout_ByPosition[4]) / 4.0;
+            Debug.WriteLine($"[DEBUG] Vh_SouthField (calculated from Vhs-Vout adjusted values) for {current_A:E9} A: {currentResult.Vh_SouthField:E9}");
+
+
+            // Step 4: Collect V_HN (North Field) for all 4 tuners for this specific current
+            double[] vhnRaw = new double[4];
+            for (int i = 0; i < NumberOfHallPositions; i++)
+            {
+                int tunerPos = i + 1;
+                bool stateExists = _measurements.ContainsKey(HallMeasurementState.InwardOrNorthMagneticField);
+                bool tunerExists = stateExists && _measurements[HallMeasurementState.InwardOrNorthMagneticField].ContainsKey(tunerPos);
+                int dataCount = tunerExists ? _measurements[HallMeasurementState.InwardOrNorthMagneticField][tunerPos].Count : 0;
+                Debug.WriteLine($"  [DEBUG] Checking V_HN for Tuner {tunerPos}. StateExists: {stateExists}, TunerExists: {tunerExists}, DataCount: {dataCount}");
+                if (!tunerExists || dataCount == 0)
+                {
+                    vhnRaw[i] = double.NaN;
+                    Debug.WriteLine($"  [WARNING] V_HN[{tunerPos}] for {current_A:E9} A: NaN (State, Tuner key missing, or no data for North Magnetic Field)");
+                }
+                else
+                {
+                    var dataList = _measurements[HallMeasurementState.InwardOrNorthMagneticField][tunerPos];
+                    // *** เพิ่ม Debug: แสดงข้อมูลทุกจุดใน dataList และ Diff ของแต่ละจุดเทียบกับ targetCurrent ***
+                    Debug.WriteLine($"    [DEBUG-V_HN_DATALIST] Data points for InwardOrNorthMagneticField, Tuner {tunerPos} (Count: {dataList.Count}):");
+                    foreach (var dp in dataList)
+                    {
+                        double diff = Math.Abs(dp.Item1 - current_A);
+                        Debug.WriteLine($"      - Stored Current: {dp.Item1:E9} A, Voltage: {dp.Item2:E9} V, Diff to Target {current_A:E9} A: {diff:E9} (Tolerance: {GlobalSettings.Instance.CurrentTolerance:E9})");
+                    }
+                    // **********************************************************************************************
+
+                    var data = dataList.FirstOrDefault(d => Math.Abs(d.Item1 - current_A) < GlobalSettings.Instance.CurrentTolerance);
+                    vhnRaw[i] = data != null ? data.Item2 : double.NaN;
+                    string foundCurrentStr = data != null ? $"{data.Item1:E9} A" : "N/A";
+                    string diffStr = data != null ? $"{Math.Abs(data.Item1 - current_A):E9}" : "N/A";
+                    Debug.WriteLine($"  [DEBUG] V_HN[{tunerPos}] for Target Current {current_A:E9} A: {vhnRaw[i]:E9} V " +
+                                        (data == null ? $"(Missing data point. Found current: {foundCurrentStr}, Difference: {diffStr})" : $"(Found Current: {foundCurrentStr}, Diff: {diffStr})"));
+                }
+            }
+
+            if (vhnRaw.Any(double.IsNaN))
+            {
+                Debug.WriteLine($"[WARNING] V_HN data is incomplete for current {current_A:E9}. Hall Voltages for this current will be NaN.");
+            }
+
+            // Store raw Vhn-Vout for each position for this current
+            // Equation: RawVhn_Minus_Vout_ByPosition[i+1] = V_HN_i - V_out_i
+            for (int i = 0; i < NumberOfHallPositions; i++)
+            {
+                if (!double.IsNaN(vhnRaw[i]) && !double.IsNaN(vOuts[i]))
+                {
+                    currentResult.RawVhn_Minus_Vout_ByPosition[i + 1] = vhnRaw[i] - vOuts[i];
+                    Debug.WriteLine($"  [DEBUG] RawVhn_Minus_Vout for Tuner {i + 1}: {currentResult.RawVhn_Minus_Vout_ByPosition[i + 1]:E9}");
+                }
+            }
+
+            // Calculate Vh_NorthField using the Vhn-Vout adjusted values
+            // Equation: Vh_NorthField = ((V_HN_1 - V_Out_1) - (V_HN_2 - V_Out_2) + (V_HN_3 - V_Out_3) - (V_HN_4 - V_Out_4)) / 4.0
+            currentResult.Vh_NorthField = (currentResult.RawVhn_Minus_Vout_ByPosition[1] -
+                                           currentResult.RawVhn_Minus_Vout_ByPosition[2] +
+                                           currentResult.RawVhn_Minus_Vout_ByPosition[3] -
+                                           currentResult.RawVhn_Minus_Vout_ByPosition[4]) / 4.0;
+            Debug.WriteLine($"[DEBUG] Vh_NorthField (calculated from Vhn-Vout adjusted values) for {current_A:E9} A: {currentResult.Vh_NorthField:E9}");
+
+            DetailedPerCurrentPointResults[current_A] = currentResult;
+        }
+
+        Debug.WriteLine("[DEBUG] CalculateHallVoltages - End.");
+    }
+
+    public void CalculateHallPropertiesByFieldDirection()
+    {
+        Debug.WriteLine("[DEBUG] CalculateHallPropertiesByFieldDirection - Start.");
+        // Changed variable names to reflect actual units as per user's clarification
+        double magneticField_Vs_per_cm2 = GlobalSettings.Instance.MagneticFieldsValueStd;
+        // Magnetic Field in Vs/cm^2 (equivalent to Tesla)
+        double thickness_cm = GlobalSettings.Instance.ThicknessValueStd;
+        // Thickness in centimeters
+        double elementaryCharge = GlobalSettings.Instance.ElementaryCharge;
+        // Elementary Charge in Coulombs
+        // Assumption: Resistivity is in Ohm.cm for consistent unit calculation for Mobility
+        double resistivity_ohm_cm = GlobalSettings.Instance.Resistivity;
+        // Resistivity in Ohm.cm
+
+        Debug.WriteLine($"[DEBUG-CALC-PROPS] Parameters: thickness_cm: {thickness_cm:E9} cm, magneticField_Vs_per_cm2: {magneticField_Vs_per_cm2:E9} Vs/cm^2, ElementaryCharge: {elementaryCharge:E9} C, Resistivity: {resistivity_ohm_cm:E9} Ohm.cm (Assumed)");
+        if (double.IsNaN(magneticField_Vs_per_cm2) || magneticField_Vs_per_cm2 == 0 || double.IsNaN(thickness_cm) || thickness_cm == 0 || double.IsNaN(resistivity_ohm_cm) || resistivity_ohm_cm == 0)
+        {
+            Debug.WriteLine("[WARNING] CalculateHallPropertiesByFieldDirection - Magnetic Field, Thickness, or Resistivity is not set or zero. Cannot calculate detailed Hall properties.");
+            return;
+        }
+
+        foreach (var entry in DetailedPerCurrentPointResults)
+        {
+            double current = entry.Key;
+            HallCalculationResultPerCurrent result = entry.Value;
+
+            Debug.WriteLine($"\n[DEBUG-CALC-PROPS] Processing Current: {current:E9} A");
+
+            // Calculations for South Field (Magnetic Field Outward/Positive)
+            if (!double.IsNaN(result.Vh_SouthField) && current != 0)
+            {
+                // 1. Hall Resistance (R_Hall) - Vh / I (Unit: Ohm)
+                // Equation: R_Hall_SouthField = Vh_SouthField / Current
+                result.R_Hall_SouthField = result.Vh_SouthField / current;
+                // 2. Hall Coefficient (R_H) - Vh * t / (I * B) (Unit: cm^3/C)
+                //    Using thickness_cm and magneticField_Vs_per_cm2 directly yields cm^3/C
+                // Equation: R_H_SouthField = (Vh_SouthField * thickness_cm) / (current * magneticField_Vs_per_cm2)
+                result.R_H_SouthField = (result.Vh_SouthField * thickness_cm) / (current * magneticField_Vs_per_cm2);
+                // 3. Bulk Concentration (n_Bulk) - 1 / (q * |R_H|) (Unit: cm^-3)
+                // Equation: n_Bulk_SouthField = 1 / (elementaryCharge * |R_H_SouthField|)
+                result.BulkConcentration_SouthField = 1.0 / (elementaryCharge * Math.Abs(result.R_H_SouthField));
+                // 4. Sheet Concentration (n_Sheet) - n_Bulk * t (Unit: cm^-2)
+                // Equation: n_Sheet_SouthField = BulkConcentration_SouthField * thickness_cm
+                result.SheetConcentration_SouthField = result.BulkConcentration_SouthField * thickness_cm;
+                // 5. Mobility (Mu) - |R_H| / Resistivity (Unit: cm^2/(V*s))
+                //    Requires R_H in cm^3/C and Resistivity in Ohm.cm
+                // Equation: Mobility_SouthField = |R_H_SouthField| / resistivity_ohm_cm
+                result.Mobility_SouthField = Math.Abs(result.R_H_SouthField) / resistivity_ohm_cm;
+            }
+            else
+            {
+                // If Vh_SouthField is NaN or current is 0, set all SouthField properties to NaN
+                result.R_Hall_SouthField = double.NaN;
+                result.R_H_SouthField = double.NaN;
+                result.SheetConcentration_SouthField = double.NaN;
+                result.BulkConcentration_SouthField = double.NaN;
+                result.Mobility_SouthField = double.NaN;
+                Debug.WriteLine($"  [WARNING-CALC-PROPS] Vh_SouthField is NaN or Current is 0 for South Field. Properties set to NaN.");
+            }
+
+            // Calculations for North Field (Magnetic Field Inward/Negative)
+            if (!double.IsNaN(result.Vh_NorthField) && current != 0)
+            {
+                // 1. Hall Resistance (R_Hall) - Vh / I (Unit: Ohm)
+                // Equation: R_Hall_NorthField = Vh_NorthField / Current
+                result.R_Hall_NorthField = result.Vh_NorthField / current;
+                // 2. Hall Coefficient (R_H) - Vh * t / (I * B) (Unit: cm^3/C)
+                // Equation: R_H_NorthField = (Vh_NorthField * thickness_cm) / (current * magneticField_Vs_per_cm2)
+                result.R_H_NorthField = (result.Vh_NorthField * thickness_cm) / (current * magneticField_Vs_per_cm2);
+                // 3. Bulk Concentration (n_Bulk) - 1 / (q * |R_H|) (Unit: cm^-3)
+                // Equation: n_Bulk_NorthField = 1 / (elementaryCharge * |R_H_NorthField|)
+                result.BulkConcentration_NorthField = 1.0 / (elementaryCharge * Math.Abs(result.R_H_NorthField));
+                // 4. Sheet Concentration (n_Sheet) - n_Bulk * t (Unit: cm^-2)
+                // Equation: n_Sheet_NorthField = BulkConcentration_NorthField * thickness_cm
+                result.SheetConcentration_NorthField = result.BulkConcentration_NorthField * thickness_cm;
+                // 5. Mobility (Mu) - |R_H| / Resistivity (Unit: cm^2/(V*s))
+                // Equation: Mobility_NorthField = |R_H_NorthField| / resistivity_ohm_cm
+                result.Mobility_NorthField = Math.Abs(result.R_H_NorthField) / resistivity_ohm_cm;
+            }
+            else
+            {
+                // If Vh_NorthField is NaN or current is 0, set all NorthField properties to NaN
+                result.R_Hall_NorthField = double.NaN;
+                result.R_H_NorthField = double.NaN;
+                result.SheetConcentration_NorthField = double.NaN;
+                result.BulkConcentration_NorthField = double.NaN;
+                result.Mobility_NorthField = double.NaN;
+                Debug.WriteLine($"  [WARNING-CALC-PROPS] Vh_NorthField is NaN or Current is 0 for North Field. Properties set to NaN.");
+            }
+
+            // Debugging output for each current point
+            Debug.WriteLine($"  [DEBUG-CALC-PROPS] Current {current:E9} A Results:");
+            Debug.WriteLine($"    - Vh_SouthField: {result.Vh_SouthField:E9} V, Vh_NorthField: {result.Vh_NorthField:E9} V");
+            Debug.WriteLine($"    - R_Hall_SouthField (Hall Res.): {result.R_Hall_SouthField:E9} Ohm, R_Hall_NorthField (Hall Res.): {result.R_Hall_NorthField:E9} Ohm");
+            Debug.WriteLine($"    - R_H_SouthField (Hall Coeff.): {result.R_H_SouthField:E9} cm^3/C, R_H_NorthField (Hall Coeff.): {result.R_H_NorthField:E9} cm^3/C");
+            Debug.WriteLine($"    - BulkConcentration_SouthField: {result.BulkConcentration_SouthField:E9} cm^-3, BulkConcentration_NorthField: {result.BulkConcentration_NorthField:E9} cm^-3");
+            Debug.WriteLine($"    - SheetConcentration_SouthField: {result.SheetConcentration_SouthField:E9} cm^-2, SheetConcentration_NorthField: {result.SheetConcentration_NorthField:E9} cm^-2");
+            Debug.WriteLine($"    - Mobility_SouthField: {result.Mobility_SouthField:E9} cm^2/(V*s), Mobility_NorthField: {result.Mobility_NorthField:E9} cm^2/(V*s)");
+        }
+        Debug.WriteLine("[DEBUG] CalculateHallPropertiesByFieldDirection - End.");
+    }
+
+    public void CalculateOverallHallProperties()
+    {
+        Debug.WriteLine("[DEBUG] CalculateOverallHallProperties - Start.");
+
+        // --- Step 1: Average each property per field direction across all currents (including Vh) ---
+        double avg_Vh_SouthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.Vh_SouthField)).Select(r => r.Vh_SouthField).DefaultIfEmpty(double.NaN).Average();
+        double avg_Vh_NorthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.Vh_NorthField)).Select(r => r.Vh_NorthField).DefaultIfEmpty(double.NaN).Average();
+
+        double avg_R_Hall_SouthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.R_Hall_SouthField)).Select(r => r.R_Hall_SouthField).DefaultIfEmpty(double.NaN).Average();
+        double avg_R_Hall_NorthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.R_Hall_NorthField)).Select(r => r.R_Hall_NorthField).DefaultIfEmpty(double.NaN).Average();
+
+        double avg_R_H_SouthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.R_H_SouthField)).Select(r => r.R_H_SouthField).DefaultIfEmpty(double.NaN).Average();
+        double avg_R_H_NorthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.R_H_NorthField)).Select(r => r.R_H_NorthField).DefaultIfEmpty(double.NaN).Average();
+
+        double avg_BulkConcentration_SouthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.BulkConcentration_SouthField)).Select(r => r.BulkConcentration_SouthField).DefaultIfEmpty(double.NaN).Average();
+        double avg_BulkConcentration_NorthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.BulkConcentration_NorthField)).Select(r => r.BulkConcentration_NorthField).DefaultIfEmpty(double.NaN).Average();
+
+        double avg_SheetConcentration_SouthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.SheetConcentration_SouthField)).Select(r => r.SheetConcentration_SouthField).DefaultIfEmpty(double.NaN).Average();
+        double avg_SheetConcentration_NorthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.SheetConcentration_NorthField)).Select(r => r.SheetConcentration_NorthField).DefaultIfEmpty(double.NaN).Average();
+
+        double avg_Mobility_SouthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.Mobility_SouthField)).Select(r => r.Mobility_SouthField).DefaultIfEmpty(double.NaN).Average();
+        double avg_Mobility_NorthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.Mobility_NorthField)).Select(r => r.Mobility_NorthField).DefaultIfEmpty(double.NaN).Average();
+
+        // Debugging averages per field direction
+        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Avg_Vh_SouthField: {avg_Vh_SouthField:E9} V, Avg_Vh_NorthField: {avg_Vh_NorthField:E9} V");
+        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Avg_R_Hall_SouthField: {avg_R_Hall_SouthField:E9} Ohm, Avg_R_Hall_NorthField: {avg_R_Hall_NorthField:E9} Ohm");
+        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Avg_R_H_SouthField: {avg_R_H_SouthField:E9} cm^3/C, Avg_R_H_NorthField: {avg_R_H_NorthField:E9} cm^3/C");
+        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Avg_BulkConcentration_SouthField: {avg_BulkConcentration_SouthField:E9} cm^-3, Avg_BulkConcentration_NorthField: {avg_BulkConcentration_NorthField:E9} cm^-3");
+        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Avg_SheetConcentration_SouthField: {avg_SheetConcentration_SouthField:E9} cm^-2, Avg_SheetConcentration_NorthField: {avg_SheetConcentration_NorthField:E9} cm^-2");
+        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Avg_Mobility_SouthField: {avg_Mobility_SouthField:E9} cm^2/(V*s), Avg_Mobility_NorthField: {avg_Mobility_NorthField:E9} cm^2/(V*s)");
+
+
+        // --- Step 2: Average between SouthField and NorthField averages for final overall properties ---
+        // Overall Hall Voltage
+        if (!double.IsNaN(avg_Vh_SouthField) && !double.IsNaN(avg_Vh_NorthField))
+        {
+            GlobalSettings.Instance.TotalHallVoltage_Average = (avg_Vh_SouthField + avg_Vh_NorthField) / 2.0;
+        }
+        else if (!double.IsNaN(avg_Vh_SouthField))
+        {
+            GlobalSettings.Instance.TotalHallVoltage_Average = avg_Vh_SouthField;
+        }
+        else if (!double.IsNaN(avg_Vh_NorthField))
+        {
+            GlobalSettings.Instance.TotalHallVoltage_Average = avg_Vh_NorthField;
+        }
+        else
+        {
+            GlobalSettings.Instance.TotalHallVoltage_Average = double.NaN;
+        }
+
+        // Overall Hall Resistance
+        if (!double.IsNaN(avg_R_Hall_SouthField) && !double.IsNaN(avg_R_Hall_NorthField))
+        {
+            GlobalSettings.Instance.HallResistance = (avg_R_Hall_SouthField + avg_R_Hall_NorthField) / 2.0;
+        }
+        else if (!double.IsNaN(avg_R_Hall_SouthField))
+        {
+            GlobalSettings.Instance.HallResistance = avg_R_Hall_SouthField;
+        }
+        else if (!double.IsNaN(avg_R_Hall_NorthField))
+        {
+            GlobalSettings.Instance.HallResistance = avg_R_Hall_NorthField;
+        }
+        else
+        {
+            GlobalSettings.Instance.HallResistance = double.NaN;
+        }
+
+        // Overall Hall Coefficient
+        if (!double.IsNaN(avg_R_H_SouthField) && !double.IsNaN(avg_R_H_NorthField))
+        {
+            GlobalSettings.Instance.HallCoefficient = (avg_R_H_SouthField + avg_R_H_NorthField) / 2.0;
+        }
+        else if (!double.IsNaN(avg_R_H_SouthField))
+        {
+            GlobalSettings.Instance.HallCoefficient = avg_R_H_SouthField;
+        }
+        else if (!double.IsNaN(avg_R_H_NorthField))
+        {
+            GlobalSettings.Instance.HallCoefficient = avg_R_H_NorthField;
+        }
+        else
+        {
+            GlobalSettings.Instance.HallCoefficient = double.NaN;
+        }
+
+        // Overall Bulk Concentration
+        if (!double.IsNaN(avg_BulkConcentration_SouthField) && !double.IsNaN(avg_BulkConcentration_NorthField))
+        {
+            GlobalSettings.Instance.BulkConcentration = (avg_BulkConcentration_SouthField + avg_BulkConcentration_NorthField) / 2.0;
+        }
+        else if (!double.IsNaN(avg_BulkConcentration_SouthField))
+        {
+            GlobalSettings.Instance.BulkConcentration = avg_BulkConcentration_SouthField;
+        }
+        else if (!double.IsNaN(avg_BulkConcentration_NorthField))
+        {
+            GlobalSettings.Instance.BulkConcentration = avg_BulkConcentration_NorthField;
+        }
+        else
+        {
+            GlobalSettings.Instance.BulkConcentration = double.NaN;
+        }
+
+        // Overall Sheet Concentration
+        if (!double.IsNaN(avg_SheetConcentration_SouthField) && !double.IsNaN(avg_SheetConcentration_NorthField))
+        {
+            GlobalSettings.Instance.SheetConcentration = (avg_SheetConcentration_SouthField + avg_SheetConcentration_NorthField) / 2.0;
+        }
+        else if (!double.IsNaN(avg_SheetConcentration_SouthField))
+        {
+            GlobalSettings.Instance.SheetConcentration = avg_SheetConcentration_SouthField;
+        }
+        else if (!double.IsNaN(avg_SheetConcentration_NorthField))
+        {
+            GlobalSettings.Instance.SheetConcentration = avg_SheetConcentration_NorthField;
+        }
+        else
+        {
+            GlobalSettings.Instance.SheetConcentration = double.NaN;
+        }
+
+        // Overall Mobility
+        if (!double.IsNaN(avg_Mobility_SouthField) && !double.IsNaN(avg_Mobility_NorthField))
+        {
+            GlobalSettings.Instance.Mobility = (avg_Mobility_SouthField + avg_Mobility_NorthField) / 2.0;
+        }
+        else if (!double.IsNaN(avg_Mobility_SouthField))
+        {
+            GlobalSettings.Instance.Mobility = avg_Mobility_SouthField;
+        }
+        else if (!double.IsNaN(avg_Mobility_NorthField))
+        {
+            GlobalSettings.Instance.Mobility = avg_Mobility_NorthField;
+        }
+        else
+        {
+            GlobalSettings.Instance.Mobility = double.NaN;
+        }
+
+        // Determine semiconductor type based on the final overall Hall Coefficient
+        GlobalSettings.Instance.SemiconductorType = DetermineSemiconductorType(GlobalSettings.Instance.HallCoefficient);
+
+        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Final Overall Hall Voltage: {GlobalSettings.Instance.TotalHallVoltage_Average:E9} V");
+        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Final Overall Hall Resistance: {GlobalSettings.Instance.HallResistance:E9} Ohm");
+        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Final Overall Hall Coefficient: {GlobalSettings.Instance.HallCoefficient:E9} cm^3/C");
+        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Final Overall Bulk Concentration: {GlobalSettings.Instance.BulkConcentration:E9} cm^-3");
+        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Final Overall Sheet Concentration: {GlobalSettings.Instance.SheetConcentration:E9} cm^-2");
+        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Final Overall Mobility: {GlobalSettings.Instance.Mobility:E9} cm^2/(V*s)");
+        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Final Overall Semiconductor Type: {GlobalSettings.Instance.SemiconductorType}");
+
+        Debug.WriteLine("[DEBUG] CalculateOverallHallProperties - End.");
+    }
+
+    private SemiconductorType DetermineSemiconductorType(double rHallCoefficient)
+    {
+        if (double.IsNaN(rHallCoefficient) || rHallCoefficient == 0)
+        {
+            Debug.WriteLine("[DEBUG] Semiconductor Type: Unknown (Hall Coefficient is NaN or 0)");
+            return SemiconductorType.Unknown;
+        }
+        else if (rHallCoefficient < 0)
+        {
+            Debug.WriteLine("[DEBUG] Semiconductor Type: N-type (Hall Coefficient < 0)");
+            return SemiconductorType.N;
+        }
+        else // rHallCoefficient > 0
+        {
+            Debug.WriteLine("[DEBUG] Semiconductor Type: P-type (Hall Coefficient > 0)");
+            return SemiconductorType.P;
+        }
+    }
+    public void ClearAllHallData()
+    {
+        foreach (HallMeasurementState state in Enum.GetValues(typeof(HallMeasurementState)))
+        {
+            foreach (var tunerData in _measurements[state].Values)
+            {
+                tunerData.Clear();
+            }
+        }
+        DetailedPerCurrentPointResults.Clear();
+
+        GlobalSettings.Instance.TotalHallVoltage_Average = double.NaN;
+        GlobalSettings.Instance.HallResistance = double.NaN;
+        GlobalSettings.Instance.HallCoefficient = double.NaN;
+        GlobalSettings.Instance.SheetConcentration = double.NaN;
+        GlobalSettings.Instance.BulkConcentration = double.NaN;
+        GlobalSettings.Instance.Mobility = double.NaN;
+        GlobalSettings.Instance.SemiconductorType = SemiconductorType.Unknown;
+
+        AverageVhsByPosition.Clear();
+        AverageVhnByPosition.Clear();
+        GlobalSettings.Instance.HallMeasurementDataReady = false;
+        Debug.WriteLine("[DEBUG] CollectAndCalculateHallMeasured: All data cleared and HallMeasurementDataReady reset to false.");
     }
 }

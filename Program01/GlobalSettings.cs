@@ -295,7 +295,8 @@ public class GlobalSettings
     }
 
     public double ElementaryCharge { get; set; } = 1.602 * 1E-19;
-    public double CurrentTolerance { get; set; } = 1E-8; // ค่าความคลาดเคลื่อนในการเปรียบเทียบกระแส (อาจปรับได้ตามความเหมาะสม)
+    public double CurrentTolerance { get; set; } = 1E-5; // ค่าความคลาดเคลื่อนในการเปรียบเทียบกระแส (อาจปรับได้ตามความเหมาะสม)
+    public double MinHallCoefficientThresholdForTypeDetermination { get; set; } = 1E-3; // ตัวอย่างค่าเริ่มต้น
 
     #endregion
 

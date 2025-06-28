@@ -51,9 +51,10 @@ public class HallCalculationResultPerCurrent
     public double BulkConcentration_NorthField { get; set; } = double.NaN;
     public double Mobility_NorthField { get; set; } = double.NaN;
 
-    public double Vh_Average { get; set; } = double.NaN;
-    public double R_Hall_ByCurrent { get; set; } = double.NaN; // This is Hall Resistance (Vh_Average / Current in Ohm)
-    public double R_H_ByCurrent { get; set; } = double.NaN; // This is Hall Coefficient in cm^3/C
+    // Properties to store the 'true' Hall values for each current point (after offset cancellation)
+    public double Vh_Average { get; set; } = double.NaN; // This will store (Vh_SouthField - Vh_NorthField) / 2
+    public double R_Hall_ByCurrent { get; set; } = double.NaN; // This will store (R_Hall_SouthField - R_Hall_NorthField) / 2
+    public double R_H_ByCurrent { get; set; } = double.NaN; // This will store (R_H_SouthField - R_H_NorthField) / 2
     public double SheetConcentration_ByCurrent { get; set; } = double.NaN;
     public double BulkConcentration_ByCurrent { get; set; } = double.NaN;
     public double Mobility_ByCurrent { get; set; } = double.NaN;
@@ -214,9 +215,12 @@ public class CollectAndCalculateHallMeasured
 
 
         CalculateHallVoltages();
+        // The error you saw here 'r.Vh_SouthField' was due to an old HallCalculationResultPerCurrent definition.
+        // It should be fixed if you replace the entire file.
         if (DetailedPerCurrentPointResults.Any(r => !double.IsNaN(r.Value.Vh_SouthField) || !double.IsNaN(r.Value.Vh_NorthField)))
         {
             // Pass the parameters directly to avoid re-fetching in each method if they are consistent
+            CalculateAverageHallVoltagesByPosition();
             CalculateHallPropertiesByFieldDirection();
             CalculateOverallHallProperties();
             OnCalculationCompleted();
@@ -351,7 +355,7 @@ public class CollectAndCalculateHallMeasured
 
             // Store raw Vhs-Vout for each position for this current
             // Equation: RawVhs_Minus_Vout_ByPosition[i+1] = V_HS_i - V_out_i
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < NumberOfHallPositions; i++)
             {
                 if (!double.IsNaN(vhsRaw[i]) && !double.IsNaN(vOuts[i]))
                 {
@@ -434,6 +438,101 @@ public class CollectAndCalculateHallMeasured
         Debug.WriteLine("[DEBUG] CalculateHallVoltages - End.");
     }
 
+    private void CalculateAverageHallVoltagesByPosition()
+    {
+        Debug.WriteLine("[DEBUG] CalculateAverageHallVoltagesByPosition - Start: Calculating average Vhs and Vhn by each position.");
+
+        // Clear previous averages to ensure fresh calculation
+        AverageVhsByPosition.Clear();
+        AverageVhnByPosition.Clear();
+
+        // Initialize dictionaries to sum values and count points for each position
+        Dictionary<int, double> sumVhsByPosition = new Dictionary<int, double>();
+        Dictionary<int, int> countVhsByPosition = new Dictionary<int, int>();
+        Dictionary<int, double> sumVhnByPosition = new Dictionary<int, double>();
+        Dictionary<int, int> countVhnByPosition = new Dictionary<int, int>();
+
+        // Initialize sums and counts for all 4 positions
+        for (int i = 1; i <= NumberOfHallPositions; i++)
+        {
+            sumVhsByPosition[i] = 0.0;
+            countVhsByPosition[i] = 0;
+            sumVhnByPosition[i] = 0.0;
+            countVhnByPosition[i] = 0;
+        }
+
+        // Iterate through all detailed results (HallCalculationResultPerCurrent)
+        // Each entry represents calculation results for a specific current point.
+        foreach (var currentResultEntry in DetailedPerCurrentPointResults)
+        {
+            var currentResult = currentResultEntry.Value;
+
+            // Process RawVhs_Minus_Vout_ByPosition for current HallMeasurementState.OutwardOrSouthMagneticField
+            foreach (var positionEntry in currentResult.RawVhs_Minus_Vout_ByPosition)
+            {
+                int position = positionEntry.Key;
+                double value = positionEntry.Value;
+
+                // Only include valid numbers in the average
+                if (!double.IsNaN(value) && !double.IsInfinity(value))
+                {
+                    sumVhsByPosition[position] += value;
+                    countVhsByPosition[position]++;
+                }
+                else
+                {
+                    Debug.WriteLine($"[WARNING] Skipping NaN/Infinity RawVhs_Minus_Vout for current {currentResult.Current:E9} A, position {position}.");
+                }
+            }
+
+            // Process RawVhn_Minus_Vout_ByPosition for current HallMeasurementState.InwardOrNorthMagneticField
+            foreach (var positionEntry in currentResult.RawVhn_Minus_Vout_ByPosition)
+            {
+                int position = positionEntry.Key;
+                double value = positionEntry.Value;
+
+                // Only include valid numbers in the average
+                if (!double.IsNaN(value) && !double.IsInfinity(value))
+                {
+                    sumVhnByPosition[position] += value;
+                    countVhnByPosition[position]++;
+                }
+                else
+                {
+                    Debug.WriteLine($"[WARNING] Skipping NaN/Infinity RawVhn_Minus_Vout for current {currentResult.Current:E9} A, position {position}.");
+                }
+            }
+        }
+
+        // Calculate averages and populate AverageVhsByPosition and AverageVhnByPosition
+        for (int i = 1; i <= NumberOfHallPositions; i++)
+        {
+            if (countVhsByPosition[i] > 0)
+            {
+                AverageVhsByPosition[i] = sumVhsByPosition[i] / countVhsByPosition[i];
+                Debug.WriteLine($"[DEBUG] AverageVhsByPosition[{i}]: {AverageVhsByPosition[i]:E9} V (from {countVhsByPosition[i]} points)");
+            }
+            else
+            {
+                AverageVhsByPosition[i] = double.NaN;
+                Debug.WriteLine($"[WARNING] No valid data points to calculate AverageVhsByPosition[{i}]. Set to NaN.");
+            }
+
+            if (countVhnByPosition[i] > 0)
+            {
+                AverageVhnByPosition[i] = sumVhnByPosition[i] / countVhnByPosition[i];
+                Debug.WriteLine($"[DEBUG] AverageVhnByPosition[{i}]: {AverageVhnByPosition[i]:E9} V (from {countVhnByPosition[i]} points)");
+            }
+            else
+            {
+                AverageVhnByPosition[i] = double.NaN;
+                Debug.WriteLine($"[WARNING] No valid data points to calculate AverageVhnByPosition[{i}]. Set to NaN.");
+            }
+        }
+
+        Debug.WriteLine("[DEBUG] CalculateAverageHallVoltagesByPosition - End.");
+    }
+
     public void CalculateHallPropertiesByFieldDirection()
     {
         Debug.WriteLine("[DEBUG] CalculateHallPropertiesByFieldDirection - Start.");
@@ -499,9 +598,17 @@ public class CollectAndCalculateHallMeasured
             {
                 // 1. Hall Resistance (R_Hall) - Vh / I (Unit: Ohm)
                 // Equation: R_Hall_NorthField = Vh_NorthField / Current
+                // Note: The magnetic field for North is in the opposite direction.
+                // If B_North = -B_South, then R_H_North = (Vh_NorthField * t) / (I * (-B_South)) = -R_H_South (if Vh also flips sign)
+                // However, the formula calculates based on the absolute magnetic field magnitude,
+                // and the Vh_NorthField itself is expected to have the opposite sign of Vh_SouthField.
+                // So, R_Hall_NorthField here will have the sign of Vh_NorthField.
                 result.R_Hall_NorthField = result.Vh_NorthField / current;
                 // 2. Hall Coefficient (R_H) - Vh * t / (I * B) (Unit: cm^3/C)
                 // Equation: R_H_NorthField = (Vh_NorthField * thickness_cm) / (current * magneticField_Vs_per_cm2)
+                // This 'magneticField_Vs_cm2' is the magnitude.
+                // The expected R_H for North field should be the negative of the R_H for South field if Vh changes sign perfectly.
+                // For a consistent R_H (true), we might need to negate R_H_NorthField later in the averaging step.
                 result.R_H_NorthField = (result.Vh_NorthField * thickness_cm) / (current * magneticField_Vs_per_cm2);
                 // 3. Bulk Concentration (n_Bulk) - 1 / (q * |R_H|) (Unit: cm^-3)
                 // Equation: n_Bulk_NorthField = 1 / (elementaryCharge * |R_H_NorthField|)
@@ -532,7 +639,73 @@ public class CollectAndCalculateHallMeasured
             Debug.WriteLine($"    - BulkConcentration_SouthField: {result.BulkConcentration_SouthField:E9} cm^-3, BulkConcentration_NorthField: {result.BulkConcentration_NorthField:E9} cm^-3");
             Debug.WriteLine($"    - SheetConcentration_SouthField: {result.SheetConcentration_SouthField:E9} cm^-2, SheetConcentration_NorthField: {result.SheetConcentration_NorthField:E9} cm^-2");
             Debug.WriteLine($"    - Mobility_SouthField: {result.Mobility_SouthField:E9} cm^2/(V*s), Mobility_NorthField: {result.Mobility_NorthField:E9} cm^2/(V*s)");
-        }
+
+            // --- CRITICAL FIX: Calculate the 'true' Hall properties for THIS current point using (South - North) / 2 ---
+            // This cancels offset errors and ensures correct sign before averaging across all currents.
+            if (!double.IsNaN(result.Vh_SouthField) && !double.IsNaN(result.Vh_NorthField))
+            {
+                result.Vh_Average = (result.Vh_SouthField - result.Vh_NorthField) / 2.0;
+                Debug.WriteLine($"  [DEBUG-CALC-PROPS] Vh_Average (True Vh for current {current:E9}): {result.Vh_Average:E9} V");
+            }
+            else
+            {
+                result.Vh_Average = double.NaN;
+                Debug.WriteLine($"  [WARNING-CALC-PROPS] Vh_Average is NaN for current {current:E9} due to missing Vh_SouthField or Vh_NorthField.");
+            }
+
+            if (!double.IsNaN(result.R_Hall_SouthField) && !double.IsNaN(result.R_Hall_NorthField))
+            {
+                result.R_Hall_ByCurrent = (result.R_Hall_SouthField - result.R_Hall_NorthField) / 2.0;
+                Debug.WriteLine($"  [DEBUG-CALC-PROPS] R_Hall_ByCurrent (True R_Hall for current {current:E9}): {result.R_Hall_ByCurrent:E9} Ohm");
+            }
+            else
+            {
+                result.R_Hall_ByCurrent = double.NaN;
+                Debug.WriteLine($"  [WARNING-CALC-PROPS] R_Hall_ByCurrent is NaN for current {current:E9} due to missing R_Hall_SouthField or R_Hall_NorthField.");
+            }
+
+            if (!double.IsNaN(result.R_H_SouthField) && !double.IsNaN(result.R_H_NorthField))
+            {
+                result.R_H_ByCurrent = (result.R_H_SouthField - result.R_H_NorthField) / 2.0;
+                Debug.WriteLine($"  [DEBUG-CALC-PROPS] R_H_ByCurrent (True R_H for current {current:E9}): {result.R_H_ByCurrent:E9} cm^3/C");
+            }
+            else
+            {
+                result.R_H_ByCurrent = double.NaN;
+                Debug.WriteLine($"  [WARNING-CALC-PROPS] R_H_ByCurrent is NaN for current {current:E9} due to missing R_H_SouthField or R_H_NorthField.");
+            }
+
+            // Now calculate Bulk, Sheet Concentration, and Mobility using the correctly signed R_H_ByCurrent
+            if (!double.IsNaN(result.R_H_ByCurrent) && elementaryCharge != 0)
+            {
+                result.BulkConcentration_ByCurrent = 1.0 / (elementaryCharge * Math.Abs(result.R_H_ByCurrent));
+                result.SheetConcentration_ByCurrent = result.BulkConcentration_ByCurrent * thickness_cm;
+            }
+            else
+            {
+                result.BulkConcentration_ByCurrent = double.NaN;
+                result.SheetConcentration_ByCurrent = double.NaN;
+            }
+
+            if (!double.IsNaN(result.R_H_ByCurrent) && resistivity_ohm_cm != 0)
+            {
+                result.Mobility_ByCurrent = Math.Abs(result.R_H_ByCurrent) / resistivity_ohm_cm;
+            }
+            else
+            {
+                result.Mobility_ByCurrent = double.NaN;
+            }
+
+            // Add debug for ByCurrent values
+            Debug.WriteLine($"  [DEBUG-CALC-PROPS] Current {current:E9} Final ByCurrent Results:");
+            Debug.WriteLine($"    - Vh_Average (ByCurrent, True Vh): {result.Vh_Average:E9} V");
+            Debug.WriteLine($"    - R_Hall_ByCurrent (Hall Res., True): {result.R_Hall_ByCurrent:E9} Ohm");
+            Debug.WriteLine($"    - R_H_ByCurrent (Hall Coeff., True): {result.R_H_ByCurrent:E9} cm^3/C");
+            Debug.WriteLine($"    - BulkConcentration_ByCurrent: {result.BulkConcentration_ByCurrent:E9} cm^-3");
+            Debug.WriteLine($"    - SheetConcentration_ByCurrent: {result.SheetConcentration_ByCurrent:E9} cm^-2");
+            Debug.WriteLine($"    - Mobility_ByCurrent: {result.Mobility_ByCurrent:E9} cm^2/(V*s)");
+
+        } // End foreach (var entry in DetailedPerCurrentPointResults)
         Debug.WriteLine("[DEBUG] CalculateHallPropertiesByFieldDirection - End.");
     }
 
@@ -540,142 +713,45 @@ public class CollectAndCalculateHallMeasured
     {
         Debug.WriteLine("[DEBUG] CalculateOverallHallProperties - Start.");
 
-        // --- Step 1: Average each property per field direction across all currents (including Vh) ---
-        double avg_Vh_SouthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.Vh_SouthField)).Select(r => r.Vh_SouthField).DefaultIfEmpty(double.NaN).Average();
-        double avg_Vh_NorthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.Vh_NorthField)).Select(r => r.Vh_NorthField).DefaultIfEmpty(double.NaN).Average();
+        // --- Step 1: Directly average the 'true' ByCurrent properties across all currents ---
+        // These properties (Vh_Average, R_Hall_ByCurrent, R_H_ByCurrent etc.) now correctly incorporate the (South - North) / 2 offset cancellation.
 
-        double avg_R_Hall_SouthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.R_Hall_SouthField)).Select(r => r.R_Hall_SouthField).DefaultIfEmpty(double.NaN).Average();
-        double avg_R_Hall_NorthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.R_Hall_NorthField)).Select(r => r.R_Hall_NorthField).DefaultIfEmpty(double.NaN).Average();
+        GlobalSettings.Instance.TotalHallVoltage_Average = DetailedPerCurrentPointResults.Values
+            .Where(r => !double.IsNaN(r.Vh_Average))
+            .Select(r => r.Vh_Average)
+            .DefaultIfEmpty(double.NaN)
+            .Average();
 
-        double avg_R_H_SouthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.R_H_SouthField)).Select(r => r.R_H_SouthField).DefaultIfEmpty(double.NaN).Average();
-        double avg_R_H_NorthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.R_H_NorthField)).Select(r => r.R_H_NorthField).DefaultIfEmpty(double.NaN).Average();
+        GlobalSettings.Instance.HallResistance = DetailedPerCurrentPointResults.Values
+            .Where(r => !double.IsNaN(r.R_Hall_ByCurrent))
+            .Select(r => r.R_Hall_ByCurrent)
+            .DefaultIfEmpty(double.NaN)
+            .Average();
 
-        double avg_BulkConcentration_SouthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.BulkConcentration_SouthField)).Select(r => r.BulkConcentration_SouthField).DefaultIfEmpty(double.NaN).Average();
-        double avg_BulkConcentration_NorthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.BulkConcentration_NorthField)).Select(r => r.BulkConcentration_NorthField).DefaultIfEmpty(double.NaN).Average();
+        GlobalSettings.Instance.HallCoefficient = DetailedPerCurrentPointResults.Values
+            .Where(r => !double.IsNaN(r.R_H_ByCurrent))
+            .Select(r => r.R_H_ByCurrent)
+            .DefaultIfEmpty(double.NaN)
+            .Average();
 
-        double avg_SheetConcentration_SouthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.SheetConcentration_SouthField)).Select(r => r.SheetConcentration_SouthField).DefaultIfEmpty(double.NaN).Average();
-        double avg_SheetConcentration_NorthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.SheetConcentration_NorthField)).Select(r => r.SheetConcentration_NorthField).DefaultIfEmpty(double.NaN).Average();
+        GlobalSettings.Instance.BulkConcentration = DetailedPerCurrentPointResults.Values
+            .Where(r => !double.IsNaN(r.BulkConcentration_ByCurrent))
+            .Select(r => r.BulkConcentration_ByCurrent)
+            .DefaultIfEmpty(double.NaN)
+            .Average();
 
-        double avg_Mobility_SouthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.Mobility_SouthField)).Select(r => r.Mobility_SouthField).DefaultIfEmpty(double.NaN).Average();
-        double avg_Mobility_NorthField = DetailedPerCurrentPointResults.Values.Where(r => !double.IsNaN(r.Mobility_NorthField)).Select(r => r.Mobility_NorthField).DefaultIfEmpty(double.NaN).Average();
+        GlobalSettings.Instance.SheetConcentration = DetailedPerCurrentPointResults.Values
+            .Where(r => !double.IsNaN(r.SheetConcentration_ByCurrent))
+            .Select(r => r.SheetConcentration_ByCurrent)
+            .DefaultIfEmpty(double.NaN)
+            .Average();
 
-        // Debugging averages per field direction
-        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Avg_Vh_SouthField: {avg_Vh_SouthField:E9} V, Avg_Vh_NorthField: {avg_Vh_NorthField:E9} V");
-        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Avg_R_Hall_SouthField: {avg_R_Hall_SouthField:E9} Ohm, Avg_R_Hall_NorthField: {avg_R_Hall_NorthField:E9} Ohm");
-        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Avg_R_H_SouthField: {avg_R_H_SouthField:E9} cm^3/C, Avg_R_H_NorthField: {avg_R_H_NorthField:E9} cm^3/C");
-        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Avg_BulkConcentration_SouthField: {avg_BulkConcentration_SouthField:E9} cm^-3, Avg_BulkConcentration_NorthField: {avg_BulkConcentration_NorthField:E9} cm^-3");
-        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Avg_SheetConcentration_SouthField: {avg_SheetConcentration_SouthField:E9} cm^-2, Avg_SheetConcentration_NorthField: {avg_SheetConcentration_NorthField:E9} cm^-2");
-        Debug.WriteLine($"[DEBUG-OVERALL-CALC] Avg_Mobility_SouthField: {avg_Mobility_SouthField:E9} cm^2/(V*s), Avg_Mobility_NorthField: {avg_Mobility_NorthField:E9} cm^2/(V*s)");
+        GlobalSettings.Instance.Mobility = DetailedPerCurrentPointResults.Values
+            .Where(r => !double.IsNaN(r.Mobility_ByCurrent))
+            .Select(r => r.Mobility_ByCurrent)
+            .DefaultIfEmpty(double.NaN)
+            .Average();
 
-
-        // --- Step 2: Average between SouthField and NorthField averages for final overall properties ---
-        // Overall Hall Voltage
-        if (!double.IsNaN(avg_Vh_SouthField) && !double.IsNaN(avg_Vh_NorthField))
-        {
-            GlobalSettings.Instance.TotalHallVoltage_Average = (avg_Vh_SouthField + avg_Vh_NorthField) / 2.0;
-        }
-        else if (!double.IsNaN(avg_Vh_SouthField))
-        {
-            GlobalSettings.Instance.TotalHallVoltage_Average = avg_Vh_SouthField;
-        }
-        else if (!double.IsNaN(avg_Vh_NorthField))
-        {
-            GlobalSettings.Instance.TotalHallVoltage_Average = avg_Vh_NorthField;
-        }
-        else
-        {
-            GlobalSettings.Instance.TotalHallVoltage_Average = double.NaN;
-        }
-
-        // Overall Hall Resistance
-        if (!double.IsNaN(avg_R_Hall_SouthField) && !double.IsNaN(avg_R_Hall_NorthField))
-        {
-            GlobalSettings.Instance.HallResistance = (avg_R_Hall_SouthField + avg_R_Hall_NorthField) / 2.0;
-        }
-        else if (!double.IsNaN(avg_R_Hall_SouthField))
-        {
-            GlobalSettings.Instance.HallResistance = avg_R_Hall_SouthField;
-        }
-        else if (!double.IsNaN(avg_R_Hall_NorthField))
-        {
-            GlobalSettings.Instance.HallResistance = avg_R_Hall_NorthField;
-        }
-        else
-        {
-            GlobalSettings.Instance.HallResistance = double.NaN;
-        }
-
-        // Overall Hall Coefficient
-        if (!double.IsNaN(avg_R_H_SouthField) && !double.IsNaN(avg_R_H_NorthField))
-        {
-            GlobalSettings.Instance.HallCoefficient = (avg_R_H_SouthField + avg_R_H_NorthField) / 2.0;
-        }
-        else if (!double.IsNaN(avg_R_H_SouthField))
-        {
-            GlobalSettings.Instance.HallCoefficient = avg_R_H_SouthField;
-        }
-        else if (!double.IsNaN(avg_R_H_NorthField))
-        {
-            GlobalSettings.Instance.HallCoefficient = avg_R_H_NorthField;
-        }
-        else
-        {
-            GlobalSettings.Instance.HallCoefficient = double.NaN;
-        }
-
-        // Overall Bulk Concentration
-        if (!double.IsNaN(avg_BulkConcentration_SouthField) && !double.IsNaN(avg_BulkConcentration_NorthField))
-        {
-            GlobalSettings.Instance.BulkConcentration = (avg_BulkConcentration_SouthField + avg_BulkConcentration_NorthField) / 2.0;
-        }
-        else if (!double.IsNaN(avg_BulkConcentration_SouthField))
-        {
-            GlobalSettings.Instance.BulkConcentration = avg_BulkConcentration_SouthField;
-        }
-        else if (!double.IsNaN(avg_BulkConcentration_NorthField))
-        {
-            GlobalSettings.Instance.BulkConcentration = avg_BulkConcentration_NorthField;
-        }
-        else
-        {
-            GlobalSettings.Instance.BulkConcentration = double.NaN;
-        }
-
-        // Overall Sheet Concentration
-        if (!double.IsNaN(avg_SheetConcentration_SouthField) && !double.IsNaN(avg_SheetConcentration_NorthField))
-        {
-            GlobalSettings.Instance.SheetConcentration = (avg_SheetConcentration_SouthField + avg_SheetConcentration_NorthField) / 2.0;
-        }
-        else if (!double.IsNaN(avg_SheetConcentration_SouthField))
-        {
-            GlobalSettings.Instance.SheetConcentration = avg_SheetConcentration_SouthField;
-        }
-        else if (!double.IsNaN(avg_SheetConcentration_NorthField))
-        {
-            GlobalSettings.Instance.SheetConcentration = avg_SheetConcentration_NorthField;
-        }
-        else
-        {
-            GlobalSettings.Instance.SheetConcentration = double.NaN;
-        }
-
-        // Overall Mobility
-        if (!double.IsNaN(avg_Mobility_SouthField) && !double.IsNaN(avg_Mobility_NorthField))
-        {
-            GlobalSettings.Instance.Mobility = (avg_Mobility_SouthField + avg_Mobility_NorthField) / 2.0;
-        }
-        else if (!double.IsNaN(avg_Mobility_SouthField))
-        {
-            GlobalSettings.Instance.Mobility = avg_Mobility_SouthField;
-        }
-        else if (!double.IsNaN(avg_Mobility_NorthField))
-        {
-            GlobalSettings.Instance.Mobility = avg_Mobility_NorthField;
-        }
-        else
-        {
-            GlobalSettings.Instance.Mobility = double.NaN;
-        }
 
         // Determine semiconductor type based on the final overall Hall Coefficient
         GlobalSettings.Instance.SemiconductorType = DetermineSemiconductorType(GlobalSettings.Instance.HallCoefficient);
@@ -693,9 +769,14 @@ public class CollectAndCalculateHallMeasured
 
     private SemiconductorType DetermineSemiconductorType(double rHallCoefficient)
     {
-        if (double.IsNaN(rHallCoefficient) || rHallCoefficient == 0)
+        // บรรทัดนี้จะแสดงค่า Hall Coefficient จริงที่ถูกส่งเข้ามา
+        Debug.WriteLine($"[DEBUG] DetermineSemiconductorType: rHallCoefficient received: {rHallCoefficient:E20}");
+        // บรรทัดนี้จะแสดงค่า Threshold ปัจจุบัน
+        Debug.WriteLine($"[DEBUG] DetermineSemiconductorType: Current MinHallCoefficientThresholdForTypeDetermination: {GlobalSettings.Instance.MinHallCoefficientThresholdForTypeDetermination:E20}");
+
+        if (double.IsNaN(rHallCoefficient) || rHallCoefficient == 0 || Math.Abs(rHallCoefficient) < GlobalSettings.Instance.MinHallCoefficientThresholdForTypeDetermination)
         {
-            Debug.WriteLine("[DEBUG] Semiconductor Type: Unknown (Hall Coefficient is NaN or 0)");
+            Debug.WriteLine($"[DEBUG] Semiconductor Type: Unknown (Condition met: IsNaN={double.IsNaN(rHallCoefficient)}, IsZero={rHallCoefficient == 0}, BelowThreshold={Math.Abs(rHallCoefficient) < GlobalSettings.Instance.MinHallCoefficientThresholdForTypeDetermination})");
             return SemiconductorType.Unknown;
         }
         else if (rHallCoefficient < 0)
@@ -709,6 +790,7 @@ public class CollectAndCalculateHallMeasured
             return SemiconductorType.P;
         }
     }
+
     public void ClearAllHallData()
     {
         foreach (HallMeasurementState state in Enum.GetValues(typeof(HallMeasurementState)))

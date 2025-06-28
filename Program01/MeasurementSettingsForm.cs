@@ -1754,7 +1754,6 @@ namespace Program01
                 Debug.WriteLine("[WARNING] Hall Measurement Sequence incomplete. Skipping Hall properties calculation.");
 
                 GlobalSettings.Instance.HallMeasurementDataReady = false;
-                //MessageBox.Show("Hall Measurement sequence was interrupted or incomplete. Hall properties will NOT be calculated.", "Measurement Incomplete", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
 
             Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - End of calculation and status check.");

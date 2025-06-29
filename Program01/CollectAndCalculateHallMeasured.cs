@@ -72,10 +72,16 @@ public class CollectAndCalculateHallMeasured
     private CollectAndCalculateHallMeasured()
     {
         _measurements = new Dictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>>();
+
+        // Initialise inner dictionaries for each HallMeasurementState
+        // เพื่อให้แน่ใจว่า _measurements[state] จะไม่เป็น null เมื่อถูกเรียกใช้
         foreach (HallMeasurementState state in Enum.GetValues(typeof(HallMeasurementState)))
         {
             _measurements[state] = new Dictionary<int, List<Tuple<double, double>>>();
-            for (int i = 1; i <= NumberOfHallPositions; i++)
+
+            // Initialise lists for each tuner position within each state
+            // สมมติว่ามี 4 ตำแหน่ง Tuner ตาม NumberOfHallPositions ใน HallMeasurementResultsForm
+            for (int i = 1; i <= 4; i++) // ตรงนี้อาจปรับตาม NumberOfHallPositions ถ้ามีการกำหนดค่ากลาง
             {
                 _measurements[state][i] = new List<Tuple<double, double>>();
             }
@@ -93,6 +99,11 @@ public class CollectAndCalculateHallMeasured
     }
 
     private Dictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>> _measurements;
+    public Dictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>> Measurements
+    {
+        get { return _measurements; }
+    }
+
     public IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>> AllRawMeasurements => _measurements;
     private const int NumberOfHallPositions = 4;
     public Dictionary<int, double> AverageVhsByPosition { get; private set; }
@@ -243,199 +254,166 @@ public class CollectAndCalculateHallMeasured
 
     public void CalculateHallVoltages()
     {
-        Debug.WriteLine("[DEBUG] CalculateHallVoltages - Start: Calculating true Hall Voltages (V_HS, V_HN) for each current.");
-        var allCurrents = _measurements.Values
-                                    .SelectMany(tunerData => tunerData.Values)
-                                    .SelectMany(list => list)
-                                    .Select(tuple => tuple.Item1)
-                                    .Distinct()
-                                    .OrderBy(c => c)
-                                    .ToList();
-        if (!allCurrents.Any())
+        Debug.WriteLine("[DEBUG] CollectAndCalculateHallMeasured: CalculateHallVoltages - Start");
+
+        if (DetailedPerCurrentPointResults == null)
         {
-            Debug.WriteLine("[WARNING] CalculateHallVoltages - No current values found in any measurement data. Cannot calculate Hall Voltages.");
+            DetailedPerCurrentPointResults = new Dictionary<double, HallCalculationResultPerCurrent>();
+        }
+        else
+        {
             DetailedPerCurrentPointResults.Clear();
+        }
+
+        if (!_measurements.ContainsKey(HallMeasurementState.NoMagneticField) ||
+            !_measurements.ContainsKey(HallMeasurementState.OutwardOrSouthMagneticField) ||
+            !_measurements.ContainsKey(HallMeasurementState.InwardOrNorthMagneticField))
+        {
+            Debug.WriteLine("[ERROR] CollectAndCalculateHallMeasured: Missing Hall measurement states. Cannot calculate Hall voltages.");
             return;
         }
 
-        Debug.WriteLine("[DEBUG] allCurrents identified:");
-        foreach (var c in allCurrents)
-        {
-            Debug.WriteLine($"  - Current (from allCurrents): {c:E9} A");
-        }
+        // Assuming all states have the same current points
+        List<double> currentPoints = _measurements[HallMeasurementState.NoMagneticField]
+            .SelectMany(kv => kv.Value.Select(t => t.Item1))
+            .Distinct()
+            .OrderBy(c => c)
+            .ToList();
 
-        Debug.WriteLine($"[DEBUG] GlobalSettings.Instance.CurrentTolerance: {GlobalSettings.Instance.CurrentTolerance:E9}");
-        DetailedPerCurrentPointResults.Clear();
-        foreach (double current_A in allCurrents)
+        foreach (double current_A in currentPoints)
         {
-            Debug.WriteLine($"\n[DEBUG] Calculating True Hall Voltages for Target Current: {current_A:E9} A");
+            Debug.WriteLine($"[DEBUG] Processing Current: {current_A:E9} A");
             HallCalculationResultPerCurrent currentResult = new HallCalculationResultPerCurrent(current_A);
-            double[] vOuts = new double[4];
+
+            double[] vOuts = new double[NumberOfHallPositions];
+            double[] vhsRaw = new double[NumberOfHallPositions];
+            double[] vhnRaw = new double[NumberOfHallPositions];
+
             for (int i = 0; i < NumberOfHallPositions; i++)
             {
-                int tunerPos = i + 1;
-                bool stateExists = _measurements.ContainsKey(HallMeasurementState.NoMagneticField);
-                bool tunerExists = stateExists && _measurements[HallMeasurementState.NoMagneticField].ContainsKey(tunerPos);
-                int dataCount = tunerExists ? _measurements[HallMeasurementState.NoMagneticField][tunerPos].Count : 0;
-                Debug.WriteLine($"  [DEBUG] Checking V_Out for Tuner {tunerPos}. StateExists: {stateExists}, TunerExists: {tunerExists}, DataCount: {dataCount}");
-                if (!tunerExists || dataCount == 0)
+                // Retrieve V_Out for current_A at position i+1
+                var dataList_Out = _measurements[HallMeasurementState.NoMagneticField][i + 1];
+                var matchingVoltages_Out = dataList_Out
+                    .Where(d => Math.Abs(d.Item1 - current_A) < GlobalSettings.Instance.CurrentTolerance)
+                    .Select(d => d.Item2)
+                    .ToList();
+
+                if (matchingVoltages_Out.Any())
+                {
+                    vOuts[i] = matchingVoltages_Out.Average(); // ใช้ค่าเฉลี่ยหากมีหลายจุดสำหรับกระแสเดียวกัน
+                }
+                else
                 {
                     vOuts[i] = double.NaN;
-                    Debug.WriteLine($"  [WARNING] V_Out[{tunerPos}] for {current_A:E9} A: NaN (State, Tuner key missing, or no data for NoMagneticField)");
+                    Debug.WriteLine($"[WARNING] No V_Out data found for current {current_A:E9} A at Tuner {i + 1}");
+                }
+
+                // Retrieve Vhs (South Field) for current_A at position i+1
+                var dataList_South = _measurements[HallMeasurementState.OutwardOrSouthMagneticField][i + 1];
+                var matchingVoltages_South = dataList_South
+                    .Where(d => Math.Abs(d.Item1 - current_A) < GlobalSettings.Instance.CurrentTolerance)
+                    .Select(d => d.Item2)
+                    .ToList();
+
+                if (matchingVoltages_South.Any())
+                {
+                    vhsRaw[i] = matchingVoltages_South.Average(); // ใช้ค่าเฉลี่ยหากมีหลายจุดสำหรับกระแสเดียวกัน
                 }
                 else
-                {
-                    var dataList = _measurements[HallMeasurementState.NoMagneticField][tunerPos];
-                    Debug.WriteLine($"    [DEBUG-V_OUT_DATALIST] Data points for NoMagneticField, Tuner {tunerPos} (Count: {dataList.Count}):");
-                    foreach (var dp in dataList)
-                    {
-                        double diff = Math.Abs(dp.Item1 - current_A);
-                        Debug.WriteLine($"      - Stored Current: {dp.Item1:E9} A, Voltage: {dp.Item2:E9} V, Diff to Target {current_A:E9} A: {diff:E9} (Tolerance: {GlobalSettings.Instance.CurrentTolerance:E9})");
-                    }
-
-                    var data = dataList
-                        .Where(d => Math.Abs(d.Item1 - current_A) < GlobalSettings.Instance.CurrentTolerance)
-                        .OrderBy(d => Math.Abs(d.Item1 - current_A))
-                        .FirstOrDefault();
-                    vOuts[i] = data != null ? data.Item2 : double.NaN;
-                    string foundCurrentStr = data != null ? $"{data.Item1:E9} A" : "N/A";
-                    string diffStr = data != null ? $"{Math.Abs(data.Item1 - current_A):E9}" : "N/A";
-                    Debug.WriteLine($"  [DEBUG] V_Out[{tunerPos}] for Target Current {current_A:E9} A: {vOuts[i]:E9} V " +
-                                        (data == null ? $"(Missing data point. Found current: {foundCurrentStr}, Difference: {diffStr})" : $"(Found Current: {foundCurrentStr}, Diff: {diffStr})"));
-                }
-            }
-
-            if (vOuts.Any(double.IsNaN))
-            {
-                Debug.WriteLine($"[WARNING] V_Out data is incomplete for current {current_A:E9}. Hall Voltages for this current will be NaN. Skipping to next current.");
-                DetailedPerCurrentPointResults[current_A] = currentResult;
-                continue;
-            }
-
-            // Calculation for V_out_avg (Voltage offset due to misalignment or thermal effects)
-            // Equation: V_out_avg = (V_out_1 - V_out_2 + V_out_3 - V_out_4) / 4.0
-            double v_out_avg = (vOuts[0] - vOuts[1] + vOuts[2] - vOuts[3]) / 4.0;
-            Debug.WriteLine($"[DEBUG] V_OUT_AVG for {current_A:E9} A: {v_out_avg:E9}");
-            double[] vhsRaw = new double[4];
-            for (int i = 0; i < NumberOfHallPositions; i++)
-            {
-                int tunerPos = i + 1;
-                bool stateExists = _measurements.ContainsKey(HallMeasurementState.OutwardOrSouthMagneticField);
-                bool tunerExists = stateExists && _measurements[HallMeasurementState.OutwardOrSouthMagneticField].ContainsKey(tunerPos);
-                int dataCount = tunerExists ? _measurements[HallMeasurementState.OutwardOrSouthMagneticField][tunerPos].Count : 0;
-                Debug.WriteLine($"  [DEBUG] Checking V_HS for Tuner {tunerPos}. StateExists: {stateExists}, TunerExists: {tunerExists}, DataCount: {dataCount}");
-                if (!tunerExists || dataCount == 0)
                 {
                     vhsRaw[i] = double.NaN;
-                    Debug.WriteLine($"  [WARNING] V_HS[{tunerPos}] for {current_A:E9} A: NaN (State, Tuner key missing, or no data for South Magnetic Field)");
+                    Debug.WriteLine($"[WARNING] No Vhs data found for current {current_A:E9} A at Tuner {i + 1}");
+                }
+
+                // Retrieve Vhn (North Field) for current_A at position i+1
+                var dataList_North = _measurements[HallMeasurementState.InwardOrNorthMagneticField][i + 1];
+                var matchingVoltages_North = dataList_North
+                    .Where(d => Math.Abs(d.Item1 - current_A) < GlobalSettings.Instance.CurrentTolerance)
+                    .Select(d => d.Item2)
+                    .ToList();
+
+                if (matchingVoltages_North.Any())
+                {
+                    vhnRaw[i] = matchingVoltages_North.Average(); // ใช้ค่าเฉลี่ยหากมีหลายจุดสำหรับกระแสเดียวกัน
                 }
                 else
                 {
-                    var dataList = _measurements[HallMeasurementState.OutwardOrSouthMagneticField][tunerPos];
-                    Debug.WriteLine($"    [DEBUG-V_HS_DATALIST] Data points for OutwardOrSouthMagneticField, Tuner {tunerPos} (Count: {dataList.Count}):");
-                    foreach (var dp in dataList)
-                    {
-                        double diff = Math.Abs(dp.Item1 - current_A);
-                        Debug.WriteLine($"      - Stored Current: {dp.Item1:E9} A, Voltage: {dp.Item2:E9} V, Diff to Target {current_A:E9} A: {diff:E9} (Tolerance: {GlobalSettings.Instance.CurrentTolerance:E9})");
-                    }
-
-                    var data = dataList.FirstOrDefault(d => Math.Abs(d.Item1 - current_A) < GlobalSettings.Instance.CurrentTolerance);
-                    vhsRaw[i] = data != null ? data.Item2 : double.NaN;
-                    string foundCurrentStr = data != null ? $"{data.Item1:E9} A" : "N/A";
-                    string diffStr = data != null ? $"{Math.Abs(data.Item1 - current_A):E9}" : "N/A";
-                    Debug.WriteLine($"  [DEBUG] V_HS[{tunerPos}] for Target Current {current_A:E9} A: {vhsRaw[i]:E9} V " +
-                                        (data == null ? $"(Missing data point. Found current: {foundCurrentStr}, Difference: {diffStr})" : $"(Found Current: {foundCurrentStr}, Diff: {diffStr})"));
+                    vhnRaw[i] = double.NaN;
+                    Debug.WriteLine($"[WARNING] No Vhn data found for current {current_A:E9} A at Tuner {i + 1}");
                 }
-            }
 
-            if (vhsRaw.Any(double.IsNaN))
-            {
-                Debug.WriteLine($"[WARNING] V_HS data is incomplete for current {current_A:E9}. Hall Voltages for this current will be NaN.");
-            }
-
-            // Store raw Vhs-Vout for each position for this current
-            // Equation: RawVhs_Minus_Vout_ByPosition[i+1] = V_HS_i - V_out_i
-            for (int i = 0; i < NumberOfHallPositions; i++)
-            {
+                // Populate the RawVhn_Minus_Vout_ByPosition and RawVhs_Minus_Vout_ByPosition dictionaries
+                // ตรวจสอบให้แน่ใจว่าค่าไม่เป็น NaN ก่อนทำการลบ เพื่อป้องกัน NaN propagation
                 if (!double.IsNaN(vhsRaw[i]) && !double.IsNaN(vOuts[i]))
                 {
                     currentResult.RawVhs_Minus_Vout_ByPosition[i + 1] = vhsRaw[i] - vOuts[i];
-                    Debug.WriteLine($"  [DEBUG] RawVhs_Minus_Vout for Tuner {i + 1}: {currentResult.RawVhs_Minus_Vout_ByPosition[i + 1]:E9}");
-                }
-            }
-
-            // Calculate Vh_SouthField using the Vhs-Vout adjusted values
-            // Equation: Vh_SouthField = ((V_HS_1 - V_Out_1) - (V_HS_2 - V_Out_2) + (V_HS_3 - V_Out_3) - (V_HS_4 - V_Out_4)) / 4.0
-            currentResult.Vh_SouthField = (currentResult.RawVhs_Minus_Vout_ByPosition[1] -
-                                           currentResult.RawVhs_Minus_Vout_ByPosition[2] +
-                                           currentResult.RawVhs_Minus_Vout_ByPosition[3] -
-                                           currentResult.RawVhs_Minus_Vout_ByPosition[4]) / 4.0;
-            Debug.WriteLine($"[DEBUG] Vh_SouthField (calculated from Vhs-Vout adjusted values) for {current_A:E9} A: {currentResult.Vh_SouthField:E9}");
-
-
-            // Step 4: Collect V_HN (North Field) for all 4 tuners for this specific current
-            double[] vhnRaw = new double[4];
-            for (int i = 0; i < NumberOfHallPositions; i++)
-            {
-                int tunerPos = i + 1;
-                bool stateExists = _measurements.ContainsKey(HallMeasurementState.InwardOrNorthMagneticField);
-                bool tunerExists = stateExists && _measurements[HallMeasurementState.InwardOrNorthMagneticField].ContainsKey(tunerPos);
-                int dataCount = tunerExists ? _measurements[HallMeasurementState.InwardOrNorthMagneticField][tunerPos].Count : 0;
-                Debug.WriteLine($"  [DEBUG] Checking V_HN for Tuner {tunerPos}. StateExists: {stateExists}, TunerExists: {tunerExists}, DataCount: {dataCount}");
-                if (!tunerExists || dataCount == 0)
-                {
-                    vhnRaw[i] = double.NaN;
-                    Debug.WriteLine($"  [WARNING] V_HN[{tunerPos}] for {current_A:E9} A: NaN (State, Tuner key missing, or no data for North Magnetic Field)");
+                    Debug.WriteLine($"[DEBUG] Tuner {i + 1}: RawVhs_Minus_Vout = {currentResult.RawVhs_Minus_Vout_ByPosition[i + 1]:E9} V");
                 }
                 else
                 {
-                    var dataList = _measurements[HallMeasurementState.InwardOrNorthMagneticField][tunerPos];
-                    // *** เพิ่ม Debug: แสดงข้อมูลทุกจุดใน dataList และ Diff ของแต่ละจุดเทียบกับ targetCurrent ***
-                    Debug.WriteLine($"    [DEBUG-V_HN_DATALIST] Data points for InwardOrNorthMagneticField, Tuner {tunerPos} (Count: {dataList.Count}):");
-                    foreach (var dp in dataList)
-                    {
-                        double diff = Math.Abs(dp.Item1 - current_A);
-                        Debug.WriteLine($"      - Stored Current: {dp.Item1:E9} A, Voltage: {dp.Item2:E9} V, Diff to Target {current_A:E9} A: {diff:E9} (Tolerance: {GlobalSettings.Instance.CurrentTolerance:E9})");
-                    }
-                    // **********************************************************************************************
-
-                    var data = dataList.FirstOrDefault(d => Math.Abs(d.Item1 - current_A) < GlobalSettings.Instance.CurrentTolerance);
-                    vhnRaw[i] = data != null ? data.Item2 : double.NaN;
-                    string foundCurrentStr = data != null ? $"{data.Item1:E9} A" : "N/A";
-                    string diffStr = data != null ? $"{Math.Abs(data.Item1 - current_A):E9}" : "N/A";
-                    Debug.WriteLine($"  [DEBUG] V_HN[{tunerPos}] for Target Current {current_A:E9} A: {vhnRaw[i]:E9} V " +
-                                        (data == null ? $"(Missing data point. Found current: {foundCurrentStr}, Difference: {diffStr})" : $"(Found Current: {foundCurrentStr}, Diff: {diffStr})"));
+                    currentResult.RawVhs_Minus_Vout_ByPosition[i + 1] = double.NaN;
+                    Debug.WriteLine($"[WARNING] Tuner {i + 1}: RawVhs_Minus_Vout set to NaN due to missing raw data.");
                 }
-            }
 
-            if (vhnRaw.Any(double.IsNaN))
-            {
-                Debug.WriteLine($"[WARNING] V_HN data is incomplete for current {current_A:E9}. Hall Voltages for this current will be NaN.");
-            }
-
-            // Store raw Vhn-Vout for each position for this current
-            // Equation: RawVhn_Minus_Vout_ByPosition[i+1] = V_HN_i - V_out_i
-            for (int i = 0; i < NumberOfHallPositions; i++)
-            {
                 if (!double.IsNaN(vhnRaw[i]) && !double.IsNaN(vOuts[i]))
                 {
                     currentResult.RawVhn_Minus_Vout_ByPosition[i + 1] = vhnRaw[i] - vOuts[i];
-                    Debug.WriteLine($"  [DEBUG] RawVhn_Minus_Vout for Tuner {i + 1}: {currentResult.RawVhn_Minus_Vout_ByPosition[i + 1]:E9}");
+                    Debug.WriteLine($"[DEBUG] Tuner {i + 1}: RawVhn_Minus_Vout = {currentResult.RawVhn_Minus_Vout_ByPosition[i + 1]:E9} V");
+                }
+                else
+                {
+                    currentResult.RawVhn_Minus_Vout_ByPosition[i + 1] = double.NaN;
+                    Debug.WriteLine($"[WARNING] Tuner {i + 1}: RawVhn_Minus_Vout set to NaN due to missing raw data.");
                 }
             }
 
-            // Calculate Vh_NorthField using the Vhn-Vout adjusted values
-            // Equation: Vh_NorthField = ((V_HN_1 - V_Out_1) - (V_HN_2 - V_Out_2) + (V_HN_3 - V_Out_3) - (V_HN_4 - V_Out_4)) / 4.0
-            currentResult.Vh_NorthField = (currentResult.RawVhn_Minus_Vout_ByPosition[1] -
-                                           currentResult.RawVhn_Minus_Vout_ByPosition[2] +
-                                           currentResult.RawVhn_Minus_Vout_ByPosition[3] -
-                                           currentResult.RawVhn_Minus_Vout_ByPosition[4]) / 4.0;
-            Debug.WriteLine($"[DEBUG] Vh_NorthField (calculated from Vhn-Vout adjusted values) for {current_A:E9} A: {currentResult.Vh_NorthField:E9}");
+            // Calculate Vh_SouthField and Vh_NorthField using the offset-cancelled values
+            // ตรวจสอบให้แน่ใจว่าทุกตำแหน่งมีข้อมูลที่ถูกต้อง (ไม่ใช่ NaN) ก่อนคำนวณ
+            if (!double.IsNaN(currentResult.RawVhs_Minus_Vout_ByPosition[1]) &&
+                !double.IsNaN(currentResult.RawVhs_Minus_Vout_ByPosition[2]) &&
+                !double.IsNaN(currentResult.RawVhs_Minus_Vout_ByPosition[3]) &&
+                !double.IsNaN(currentResult.RawVhs_Minus_Vout_ByPosition[4]))
+            {
+                currentResult.Vh_SouthField = (currentResult.RawVhs_Minus_Vout_ByPosition[1] - currentResult.RawVhs_Minus_Vout_ByPosition[2] +
+                                               currentResult.RawVhs_Minus_Vout_ByPosition[3] - currentResult.RawVhs_Minus_Vout_ByPosition[4]) / 4.0;
+            }
+            else
+            {
+                currentResult.Vh_SouthField = double.NaN;
+                Debug.WriteLine($"[WARNING] Vh_SouthField for current {current_A:E9} A set to NaN due to incomplete offset-cancelled Vhs data.");
+            }
+
+            if (!double.IsNaN(currentResult.RawVhn_Minus_Vout_ByPosition[1]) &&
+                !double.IsNaN(currentResult.RawVhn_Minus_Vout_ByPosition[2]) &&
+                !double.IsNaN(currentResult.RawVhn_Minus_Vout_ByPosition[3]) &&
+                !double.IsNaN(currentResult.RawVhn_Minus_Vout_ByPosition[4]))
+            {
+                currentResult.Vh_NorthField = (currentResult.RawVhn_Minus_Vout_ByPosition[1] - currentResult.RawVhn_Minus_Vout_ByPosition[2] +
+                                               currentResult.RawVhn_Minus_Vout_ByPosition[3] - currentResult.RawVhn_Minus_Vout_ByPosition[4]) / 4.0;
+            }
+            else
+            {
+                currentResult.Vh_NorthField = double.NaN;
+                Debug.WriteLine($"[WARNING] Vh_NorthField for current {current_A:E9} A set to NaN due to incomplete offset-cancelled Vhn data.");
+            }
+
+
+            // Calculate Vh_Average (Total Hall Voltage)
+            if (!double.IsNaN(currentResult.Vh_SouthField) && !double.IsNaN(currentResult.Vh_NorthField))
+            {
+                currentResult.Vh_Average = (currentResult.Vh_SouthField - currentResult.Vh_NorthField) / 2.0;
+            }
+            else
+            {
+                currentResult.Vh_Average = double.NaN;
+                Debug.WriteLine($"[WARNING] Vh_Average for current {current_A:E9} A set to NaN due to incomplete Vh_SouthField or Vh_NorthField.");
+            }
+
 
             DetailedPerCurrentPointResults[current_A] = currentResult;
         }
 
-        Debug.WriteLine("[DEBUG] CalculateHallVoltages - End.");
+        Debug.WriteLine("[DEBUG] CollectAndCalculateHallMeasured: CalculateHallVoltages - End");
     }
 
     private void CalculateAverageHallVoltagesByPosition()
@@ -705,7 +683,8 @@ public class CollectAndCalculateHallMeasured
             Debug.WriteLine($"    - SheetConcentration_ByCurrent: {result.SheetConcentration_ByCurrent:E9} cm^-2");
             Debug.WriteLine($"    - Mobility_ByCurrent: {result.Mobility_ByCurrent:E9} cm^2/(V*s)");
 
-        } // End foreach (var entry in DetailedPerCurrentPointResults)
+        }
+
         Debug.WriteLine("[DEBUG] CalculateHallPropertiesByFieldDirection - End.");
     }
 

@@ -73,6 +73,7 @@
             this.FolderBrowserDialogVdPFile = new System.Windows.Forms.FolderBrowserDialog();
             this.FolderBrowserDialogHallMeasurementFile = new System.Windows.Forms.FolderBrowserDialog();
             this.FolderBrowserDialogVdPandHallMeasurementFile = new System.Windows.Forms.FolderBrowserDialog();
+            this.LabelProgramVersion = new System.Windows.Forms.Label();
             this.PanelTabBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxMinimizeProgram)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxExitProgram)).BeginInit();
@@ -487,6 +488,7 @@
             // PanelSideMenu
             // 
             this.PanelSideMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(33)))), ((int)(((byte)(80)))));
+            this.PanelSideMenu.Controls.Add(this.LabelProgramVersion);
             this.PanelSideMenu.Controls.Add(this.PanelHallMeasurementSubMenu);
             this.PanelSideMenu.Controls.Add(this.IconbuttonHalleffectMeasurement);
             this.PanelSideMenu.Controls.Add(this.PanelVanderPauwSubMenu);
@@ -659,6 +661,18 @@
             this.TimerCurrentDateandRealTime.Interval = 1000;
             this.TimerCurrentDateandRealTime.Tick += new System.EventHandler(this.TimerCurrentDateandRealTime_Tick);
             // 
+            // LabelProgramVersion
+            // 
+            this.LabelProgramVersion.AutoSize = true;
+            this.LabelProgramVersion.BackColor = System.Drawing.Color.Transparent;
+            this.LabelProgramVersion.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelProgramVersion.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.LabelProgramVersion.Location = new System.Drawing.Point(55, 960);
+            this.LabelProgramVersion.Name = "LabelProgramVersion";
+            this.LabelProgramVersion.Size = new System.Drawing.Size(132, 28);
+            this.LabelProgramVersion.TabIndex = 18;
+            this.LabelProgramVersion.Text = " Version x.xx";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -683,6 +697,7 @@
             this.PanelHome.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxLogo)).EndInit();
             this.PanelSideMenu.ResumeLayout(false);
+            this.PanelSideMenu.PerformLayout();
             this.PanelHallMeasurementSubMenu.ResumeLayout(false);
             this.PanelVanderPauwSubMenu.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -734,6 +749,7 @@
         private System.Windows.Forms.FolderBrowserDialog FolderBrowserDialogVdPandHallMeasurementFile;
         private System.Windows.Forms.Label LabelUserLogin;
         private FontAwesome.Sharp.IconButton IconbuttonUserLogin;
+        private System.Windows.Forms.Label LabelProgramVersion;
     }
 }
 

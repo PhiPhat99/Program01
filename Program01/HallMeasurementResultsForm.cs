@@ -252,7 +252,7 @@ namespace Program01
             RichTextboxHallCoefficientUnit.Select(2, 1);
             RichTextboxSheetConcentrationUnit.Select(2, 2);
             RichTextboxBulkConcentrationUnit.Select(2, 2);
-            RichTextboxMobilityUnit.Select(2, 2); // แก้เป็น 2 เพื่อเลือก "cm"
+            RichTextboxMobilityUnit.Select(2, 1);
 
             RichTextboxHallInSouthPos1.SelectionCharOffset -= 8;
             RichTextboxHallInSouthPos2.SelectionCharOffset -= 8;

@@ -11,11 +11,13 @@ namespace Program01
 {
     public partial class MainForm : Form
     {
+        // ***** ฟิลด์ส (Fields) ตัวแปรที่ถูกประกาศไว้ในระดับคลาส (Class) หรือโครงสร้าง (Struct) *****
         private IconButton CurrentButton;
         private Form CurrentChildForm;
         private bool IsLoggedIn = false;
         private bool IsExcelLicenseSet = false;
 
+        // ***** คอนสทรักเตอร์ (Constructor) ส่วนที่เป็นการตั้งค่าเริ่มต้นของคลาสในฟอร์ม *****
         public MainForm()
         {
             InitializeComponent();
@@ -28,6 +30,8 @@ namespace Program01
             }
         }
 
+        // ***** เมธอด (Method) : บล็อกหรือกลุ่มของโค้ดที่ทำงานเฉพาะอย่าง ซึ่งเป็นส่วนหนึ่งของคลาส (Class) หรือวัตถุ (Objects) *****
+        // เมธอด InitializeUI() : ตั้งค่าการแสดงผลของ UI Controls ในฟอร์ม
         private void InitializeUI()
         {
             this.Text = string.Empty;
@@ -44,11 +48,12 @@ namespace Program01
 
             TimerCurrentDateandRealTime.Tick += TimerCurrentDateandRealTime_Tick;
             TimerCurrentDateandRealTime.Start();
-            LabelCurrentDateandRealTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
 
-            LabelProgramVersion.Text = "Version 0.10";
+            LabelCurrentDateandRealTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
+            LabelProgramVersion.Text = "VERSION 0.20";
         }
 
+        // การประกาศโครงสร้างข้อมูล (Struct) ที่ใช้ในการจัดเก็บค่าสีต่าง ๆ ที่ใช้ในฟอร์มหรือคลาส
         private readonly struct RGBColors
         {
             public static readonly Color Color1 = Color.FromArgb(172, 126, 241);
@@ -59,6 +64,7 @@ namespace Program01
             public static readonly Color Color6 = Color.FromArgb(24, 161, 251);
         }
 
+        // เมธอด ActivateButton() : ตอบสนองการแสดงผลการทำงานของปุ่มเมื่อทำการกดปุ่มจากผู้ใช้
         private void ActivateButton(object sender, Color color)
         {
             try
@@ -84,6 +90,7 @@ namespace Program01
             }
         }
 
+        // เมธอด ResetButtonStyles() : คืนค่าสถานะปุ่มหากทำการกดที่ปุ่มอื่น
         private void ResetButtonStyles()
         {
             try
@@ -104,6 +111,7 @@ namespace Program01
             }
         }
 
+        // เมธอด OpenChildForm() : การเปิดฟอร์มต่าง ๆ เมื่อทำการกดปุ่มชื่อฟอร์มลูกที่ Sidebar Panel
         private void OpenChildForm(Form childForm)
         {
             try
@@ -124,6 +132,7 @@ namespace Program01
             }
         }
 
+        // เมธอด ToggleSubMenuVisibility() : แสดงผลเมนูย่อย (Sub Menu Panel) ของชื่อฟอร์มรูปแบบการวัดที่ถูกซ่อนไว้จากปุ่มหลัก
         private void ToggleSubMenuVisibility(Panel activeSubMenu)
         {
             try
@@ -142,6 +151,7 @@ namespace Program01
             }
         }
 
+        // เมธอด UpdatePath() : สำหรับระบุที่อยู่ชื่อฟอร์มที่เรากำลังเปิดใช้งานอยู่
         private void UpdatePath(string primary, string sub = "")
         {
             try
@@ -159,17 +169,20 @@ namespace Program01
             }
         }
 
+        // เมธอด TimerCurrentDateandRealTime_Tick() : การแสดงผลวันที่และเวลาแบบเรียล-ไทม์บน Label "LabelCurrentDateandRealTime" ของ Timer "TimerCurrentDateandRealTime"
         private void TimerCurrentDateandRealTime_Tick(object sender, EventArgs e)
         {
             LabelCurrentDateandRealTime.Text = DateTime.Now.ToString("dd/MM/yyyy   HH:mm:ss");
         }
 
+        //  เมธอด PanelTabBar_MouseDown() : การลากย้ายฟอร์ม (หน้าต่างของโปรแกรม) ด้วยลากคลืกและเลื่อนไปมาที่ Panel "PanelTabBar" (แถบสีดำด้านบนของฟอร์ม)
         private void PanelTabBar_MouseDown(object sender, MouseEventArgs e)
         {
             ReleaseCapture();
             SendMessage(this.Handle, 0x112, 0xf012, 0);
         }
 
+        // เมธอด TextboxUserName_KeyPress() : การกำหนดตัวขระที่สามารถกดพิมพ์ได้บน TextBox "TextboxUserName" ที่เป็นส่วนของชื่อผู้ใช้
         private void TextboxUserName_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsLetter(e.KeyChar) && e.KeyChar != '.' && !char.IsWhiteSpace(e.KeyChar) && e.KeyChar != (char)Keys.Back)
@@ -178,6 +191,7 @@ namespace Program01
             }
         }
 
+        // เมธอด TextboxUserLastName_KeyPress() : การกำหนดตัวขระที่สามารถกดพิมพ์ได้บน TextBox "TextboxUserLastName" ที่เป็นส่วนของนามสกุลผู้ใช้
         private void TextboxUserLastname_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsLetter(e.KeyChar) && e.KeyChar != '.' && !char.IsWhiteSpace(e.KeyChar) && e.KeyChar != (char)Keys.Back)
@@ -186,6 +200,7 @@ namespace Program01
             }
         }
 
+        // เมธอด IconbuttonUserLogin_Click() : ปุ่มการกดยืนการการเข้าสู่ระบบและการออกจากระบบของโปรแกรมจากผู้ใช้
         private void IconbuttonUserLogin_Click(object sender, EventArgs e)
         {
             try
@@ -232,6 +247,7 @@ namespace Program01
             }
         }
 
+        // เมธอด IconpictureboxExitProgram_Click() : ปุ่มการกดปิดโปรแกรม
         private void IconpictureboxExitProgram_Click(object sender, EventArgs e)
         {
             try
@@ -249,8 +265,10 @@ namespace Program01
             }
         }
 
+        // เมธอด IconpictureboxMinimizeProgram_Click() : ปุ่มการพับหน้าจอของโปรแกรม
         private void IconpictureboxMinimizeProgram_Click(object sender, EventArgs e) => WindowState = FormWindowState.Minimized;
 
+        // เมธอด IconbuttonMeasurementSettings_Click() : ปุ่มการเปิดฟอร์มหน้าการตั้งค่าและการวัด Form "MeasurementSettingsForm"
         private void IconbuttonMeasurementSettings_Click(object sender, EventArgs e)
         {
             try
@@ -273,6 +291,7 @@ namespace Program01
             }
         }
 
+        // เมธอด IconbuttonVanderPauwMethod_Click() : ปุ่มการเลิกซ่อน/ซ่อนเมนูย่อยของการวัดแบบ Van der Pauw Method โดยภายในปุ่มหลักนี้จะมีเมนูย่อยที่ถูกซ่อนไว่อยู่ 2 ปุ่ม ได้แก่ Total Measure และ Results
         private void IconbuttonVanderPauwMethod_Click(object sender, EventArgs e)
         {
             try
@@ -302,18 +321,21 @@ namespace Program01
             }
         }
 
+        // เมธอด ButtonVdPTotalMeasure_Click() : ปุ่มการเปิดฟอร์มหน้าการแสดงผลข้อมูลดิบทั้งหมดจากการวัดแบบ Van der Pauw Method, Form "VdPTotalMeasureValuesForm"
         private void ButtonVdPTotalMeasure_Click(object sender, EventArgs e)
         {
             UpdatePath("Van der Pauw Method", "Total Measure");
             OpenChildForm(new VdPTotalMeasureValuesForm());
         }
 
+        // เมธอด ButtonVdPMeasurementResults_Click() : ปุ่มการเปิดฟอร์มหน้าการแสดงผลการคำนวณค่าสมบัติทางไฟฟ้าที่ได้จากการวัดแบบ Van der Pauw Method, Form "VdPMeasurementResultsForm"
         private void ButtonVdPMeasurementResults_Click(object sender, EventArgs e)
         {
             UpdatePath("Van der Pauw Method", "Results");
             OpenChildForm(new VdPMeasurementResultsForm());
         }
 
+        // เมธอด IconbuttonHalleffectMeasurement_Click() : ปุ่มการเลิกซ่อน/ซ่อนเมนูย่อยของการวัดแบบ Hall Effect Measurement โดยภายในปุ่มหลักนี้จะมีเมนูย่อยที่ถูกซ่อนไว่อยู่ 2 ปุ่ม ได้แก่ Total Measure และ Results
         private void IconbuttonHalleffectMeasurement_Click(object sender, EventArgs e)
         {
             try
@@ -343,12 +365,14 @@ namespace Program01
             }
         }
 
+        // เมธอด ButtonHallTotalMeasure_Click() : ปุ่มการเปิดฟอร์มหน้าการแสดงผลข้อมูลดิบทั้งหมดจากการวัดแบบ Hall Effect Measurement, Form "HallTotalMeasureValuesForm"
         private void ButtonHallTotalMeasure_Click(object sender, EventArgs e)
         {
             UpdatePath("Hall Effect Measurement", "Total Measure");
             OpenChildForm(new HallTotalMeasureValuesForm());
         }
 
+        // เมธอด ButtonHallMeasurementResults_Click() : ปุ่มการเปิดฟอร์มหน้าการแสดงผลการคำนวณค่าสมบัติทางไฟฟ้าที่ได้จากการวัดแบบ Hall Effect Measurement, Form "HallMeasurementResultsForm"
         private void ButtonHallMeasurementResults_Click(object sender, EventArgs e)
         {
             UpdatePath("Hall Effect Measurement", "Results");
@@ -356,11 +380,14 @@ namespace Program01
         }
 
         [DllImport("user32.DLL", EntryPoint = "ReleaseCapture")]
+        // เมธอด ReleaseCapture() : ทำหน้าที่ในการปล่อยการจับเมาส์ออกจาก Panel "PanelTabBar"
         private extern static void ReleaseCapture();
 
         [DllImport("user32.DLL", EntryPoint = "SendMessage")]
+        // เมธอด SendMessage() : ทำหน้าที่ในการส่งข้อความไปยังหน้าต่างฟอร์มที่ระบุ
         private extern static void SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
 
+        // เมธอด IconpictureboxLogo_Click() : ปุ่มการเปิดฟอร์มหน้าเริ่มต้นโปรแกรม (หน้าหลัก) และทำการซ่อนฟอร์มก่อนหน้าที่ทำการเปิดอยู่ โดยจะเปิดหน้า Form "MainForm"
         private void IconpictureboxLogo_Click(object sender, EventArgs e)
         {
             try
@@ -376,6 +403,7 @@ namespace Program01
             }
         }
 
+        // เมธอด ResetDefault() : การคืนค่าเริ่มต้นของปุ่มฟอร์มที่ทำการเปิด และทำการซ่อนฟอร์มที่ถูกเปิดอยู่ก่อนหน้า หากทำการเรียกใช้เมธอดนี้ (โดยจากโปรแกรม เมธอดนี้จะถูกเรียกจากการกดปุ่มเปิดหน้าหลักเท่านั้น)
         private void ResetDefault()
         {
             try

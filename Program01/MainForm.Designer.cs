@@ -60,6 +60,7 @@
             this.PanelHome = new System.Windows.Forms.Panel();
             this.IconpictureboxLogo = new System.Windows.Forms.PictureBox();
             this.PanelSideMenu = new System.Windows.Forms.Panel();
+            this.LabelProgramVersion = new System.Windows.Forms.Label();
             this.PanelHallMeasurementSubMenu = new System.Windows.Forms.Panel();
             this.ButtonHallMeasurementResults = new System.Windows.Forms.Button();
             this.ButtonHallTotalMeasure = new System.Windows.Forms.Button();
@@ -73,7 +74,6 @@
             this.FolderBrowserDialogVdPFile = new System.Windows.Forms.FolderBrowserDialog();
             this.FolderBrowserDialogHallMeasurementFile = new System.Windows.Forms.FolderBrowserDialog();
             this.FolderBrowserDialogVdPandHallMeasurementFile = new System.Windows.Forms.FolderBrowserDialog();
-            this.LabelProgramVersion = new System.Windows.Forms.Label();
             this.PanelTabBar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxMinimizeProgram)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.IconpictureboxExitProgram)).BeginInit();
@@ -502,6 +502,18 @@
             this.PanelSideMenu.Size = new System.Drawing.Size(240, 1000);
             this.PanelSideMenu.TabIndex = 0;
             // 
+            // LabelProgramVersion
+            // 
+            this.LabelProgramVersion.AutoSize = true;
+            this.LabelProgramVersion.BackColor = System.Drawing.Color.Transparent;
+            this.LabelProgramVersion.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LabelProgramVersion.ForeColor = System.Drawing.Color.Snow;
+            this.LabelProgramVersion.Location = new System.Drawing.Point(64, 960);
+            this.LabelProgramVersion.Name = "LabelProgramVersion";
+            this.LabelProgramVersion.Size = new System.Drawing.Size(107, 19);
+            this.LabelProgramVersion.TabIndex = 18;
+            this.LabelProgramVersion.Text = " VERSION X.XX";
+            // 
             // PanelHallMeasurementSubMenu
             // 
             this.PanelHallMeasurementSubMenu.Controls.Add(this.ButtonHallMeasurementResults);
@@ -660,18 +672,6 @@
             // 
             this.TimerCurrentDateandRealTime.Interval = 1000;
             this.TimerCurrentDateandRealTime.Tick += new System.EventHandler(this.TimerCurrentDateandRealTime_Tick);
-            // 
-            // LabelProgramVersion
-            // 
-            this.LabelProgramVersion.AutoSize = true;
-            this.LabelProgramVersion.BackColor = System.Drawing.Color.Transparent;
-            this.LabelProgramVersion.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.LabelProgramVersion.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.LabelProgramVersion.Location = new System.Drawing.Point(55, 960);
-            this.LabelProgramVersion.Name = "LabelProgramVersion";
-            this.LabelProgramVersion.Size = new System.Drawing.Size(132, 28);
-            this.LabelProgramVersion.TabIndex = 18;
-            this.LabelProgramVersion.Text = " Version x.xx";
             // 
             // MainForm
             // 

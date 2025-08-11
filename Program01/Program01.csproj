@@ -134,6 +134,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InstructionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InstructionsForm.Designer.cs">
+      <DependentUpon>InstructionsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="GlobalSettings.cs" />
     <Compile Include="CollectAndCalculateHallMeasured.cs" />
     <Compile Include="InstrumentsConnectionManager.cs" />
@@ -198,6 +204,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ChannelSettingsChildForm.resx">
       <DependentUpon>ChannelSettingsChildForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InstructionsForm.resx">
+      <DependentUpon>InstructionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

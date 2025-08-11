@@ -50,7 +50,7 @@ namespace Program01
             TimerCurrentDateandRealTime.Start();
 
             LabelCurrentDateandRealTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-            LabelProgramVersion.Text = "VERSION 0.20";
+            LabelProgramVersion.Text = "VERSION 0.30";
         }
 
         // การประกาศโครงสร้างข้อมูล (Struct) ที่ใช้ในการจัดเก็บค่าสีต่าง ๆ ที่ใช้ในฟอร์มหรือคลาส
@@ -291,6 +291,22 @@ namespace Program01
             }
         }
 
+        // เมธอด IconbuttonInstructions_Click() : ปุ่มการเปิดฟอร์มหน้าคำแนะนำการใช้งานโปรแกรม Form "InstructionsForm"
+        private void IconbuttonInstructions_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ActivateButton(sender, RGBColors.Color6);
+                UpdatePath("Help");
+                OpenChildForm(new InstructionsForm());
+                ToggleSubMenuVisibility(null);
+            }
+            catch ( Exception Ex )
+            {
+                MessageBox.Show($"Error: {Ex.Message}");
+            }
+        }
+
         // เมธอด IconbuttonVanderPauwMethod_Click() : ปุ่มการเลิกซ่อน/ซ่อนเมนูย่อยของการวัดแบบ Van der Pauw Method โดยภายในปุ่มหลักนี้จะมีเมนูย่อยที่ถูกซ่อนไว่อยู่ 2 ปุ่ม ได้แก่ Total Measure และ Results
         private void IconbuttonVanderPauwMethod_Click(object sender, EventArgs e)
         {
@@ -421,6 +437,7 @@ namespace Program01
             }
         }
 
+        // เมธอด IconbuttonBrowseFileVdPDataPathOnly_Click() : การกดเปิดเลือกโฟลเดอร์ที่ใช้ในการบันทึกเฉพาะผลการวัดแบบแวน เดอ เพาว์
         private void IconbuttonBrowseFileVdPDataPathOnly_Click(object sender, EventArgs e)
         {
             try
@@ -455,6 +472,7 @@ namespace Program01
             }
         }
 
+        // เมธอด IconbuttonSaveFileVdPDataPathOnly_Click() : การกดบันทึกและสร้างไฟล์ Excel เฉพาะผลการวัดแบบแวน เดอ เพาว์
         private void IconbuttonSaveFileVdPDataPathOnly_Click(object sender, EventArgs e)
         {
             try
@@ -481,17 +499,16 @@ namespace Program01
                 string newFileName = "VanderPauwResultsData.xlsx";
                 string newFilePath = Path.Combine(vdpFilePath, newFileName);
 
-                // ปรับปรุงการลบไฟล์เก่าก่อนบันทึกใหม่เพื่อความทนทาน
-                if (System.IO.File.Exists(newFilePath))
+                if (File.Exists(newFilePath))
                 {
                     try
                     {
-                        System.IO.File.Delete(newFilePath);
+                        File.Delete(newFilePath);
                     }
                     catch (IOException ex)
                     {
                         MessageBox.Show($"ไม่สามารถลบไฟล์เก่าได้ กรุณาปิดไฟล์ Excel '{newFileName}' หากเปิดอยู่แล้วลองอีกครั้ง. Error: {ex.Message}", "ข้อผิดพลาดในการบันทึก", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return; // หยุดการทำงานถ้าลบไฟล์ไม่ได้
+                        return;
                     }
                 }
 
@@ -518,28 +535,23 @@ namespace Program01
                 using (ExcelPackage package = new ExcelPackage())
                 {
                     var worksheet = package.Workbook.Worksheets.Add("VdPDataSheet");
-
-                    // การประกาศ Action สำหรับการจัดรูปแบบ
                     Action<ExcelRange> SetAlignCenterStyle = (range) =>
                     {
                         range.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                         range.Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                     };
-
                     Action<ExcelRange> SetHeaderFont = (range) =>
                     {
                         range.Style.Font.Name = "Arial";
                         range.Style.Font.Size = 12;
                         range.Style.Font.Bold = true;
-                        range.Style.Font.Color.SetColor(System.Drawing.Color.White); // ปรับเป็น System.Drawing.Color.White เพื่อความชัดเจน
+                        range.Style.Font.Color.SetColor(System.Drawing.Color.White);
                     };
-
                     Action<ExcelRange, System.Drawing.Color> SetBackgroundColor = (range, color) =>
                     {
                         range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                         range.Style.Fill.BackgroundColor.SetColor(color);
                     };
-
                     Action<ExcelRange> SetAllBorders = (range) =>
                     {
                         range.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
@@ -553,23 +565,17 @@ namespace Program01
                     };
 
                     int currentRow = 1;
-                    int currentColumn = 1; // เริ่มต้นที่คอลัมน์ A
-
-                    // Start: Writing Raw VdP Measurement Data
-
-                    // คำนวณคอลัมน์สุดท้ายสำหรับส่วน Raw Data
+                    int currentColumn = 1;
                     int rawDataEndColumn = (allVdPMeasurements.Count * 2);
 
-                    // Title for Raw Data Section
                     worksheet.Cells[currentRow, currentColumn, currentRow, rawDataEndColumn].Merge = true;
                     worksheet.Cells[currentRow, currentColumn].Value = "Vander Pauw Raw Measurement Data";
                     SetAlignCenterStyle(worksheet.Cells[currentRow, currentColumn]);
                     SetHeaderFont(worksheet.Cells[currentRow, currentColumn]);
                     SetBackgroundColor(worksheet.Cells[currentRow, currentColumn], Color.DarkGreen);
-                    worksheet.Cells[currentRow, currentColumn].Style.Font.Size = 14; // เพิ่มขนาดฟอนต์สำหรับหัวข้อใหญ่
+                    worksheet.Cells[currentRow, currentColumn].Style.Font.Size = 14;
                     currentRow++;
 
-                    // เขียนหัวข้อหมายเลขตำแหน่ง (1, 2, 3...)
                     foreach (var tunerData in allVdPMeasurements.OrderBy(k => k.Key))
                     {
                         var positionCell = worksheet.Cells[currentRow, currentColumn + (tunerData.Key - 1) * 2];
@@ -579,12 +585,11 @@ namespace Program01
                         mergedPositionRange.Merge = true;
                         SetAlignCenterStyle(positionCell);
                         SetHeaderFont(positionCell);
-                        SetBackgroundColor(positionCell, Color.SeaGreen); // ปรับเป็น System.Drawing.Color.Green
+                        SetBackgroundColor(positionCell, Color.SeaGreen);
                         SetAllBorders(mergedPositionRange);
                     }
                     currentRow++;
 
-                    // เขียน Header "Source" และ "Reading" ในแถวเดียวกัน
                     foreach (var tunerData in allVdPMeasurements.OrderBy(k => k.Key))
                     {
                         var sourceHeaderCell = worksheet.Cells[currentRow, currentColumn + (tunerData.Key - 1) * 2];
@@ -595,17 +600,16 @@ namespace Program01
 
                         SetAlignCenterStyle(sourceHeaderCell);
                         SetHeaderFont(sourceHeaderCell);
-                        SetBackgroundColor(sourceHeaderCell, Color.LightGreen); // ปรับเป็น System.Drawing.Color.LightGreen
+                        SetBackgroundColor(sourceHeaderCell, Color.LightGreen);
                         SetAllBorders(sourceHeaderCell);
 
                         SetAlignCenterStyle(readingHeaderCell);
                         SetHeaderFont(readingHeaderCell);
-                        SetBackgroundColor(readingHeaderCell, Color.LightGreen); // ปรับเป็น System.Drawing.Color.LightGreen
+                        SetBackgroundColor(readingHeaderCell, Color.LightGreen);
                         SetAllBorders(readingHeaderCell);
                     }
                     currentRow++;
 
-                    // เขียนค่า Source และ Reading ทั้งหมด
                     int maxMeasurements = 0;
                     foreach (var tunerData in allVdPMeasurements.Values)
                     {
@@ -633,21 +637,17 @@ namespace Program01
                                 readingCell.Value = (object)"";
                             }
 
-                            // จัดรูปแบบข้อมูล
                             SetAlignCenterStyle(sourceCell);
                             SetAlignCenterStyle(readingCell);
                             SetAllBorders(sourceCell);
                             SetAllBorders(readingCell);
-                            sourceCell.Style.Numberformat.Format = "0.000000000"; // ปรับ format ให้ละเอียดขึ้นเล็กน้อย
+                            sourceCell.Style.Numberformat.Format = "0.000000000";
                             readingCell.Style.Numberformat.Format = "0.000";
                         }
                         currentRow++;
                     }
-                    // End: Writing Raw VdP Measurement Data
 
-                    // Start: Writing Calculated Van der Pauw Properties (ด้านขวา)
                     int calculatedDataStartColumn = rawDataEndColumn + 3;
-
                     int calculatedDataStartRow = 1;
 
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Calculated Van der Pauw Properties";
@@ -660,8 +660,8 @@ namespace Program01
 
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Parameter";
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = "Value";
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]); // จัดกลาง "Parameter"
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]); // จัดกลาง "Value"
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]);
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]);
                     SetHeaderFont(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]);
                     SetHeaderFont(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]);
                     SetBackgroundColor(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn], Color.Blue);
@@ -673,8 +673,8 @@ namespace Program01
                     var rangeResA = worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn, calculatedDataStartRow, calculatedDataStartColumn + 1];
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Resistance A (Ω)";
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = resistanceA;
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]); // จัดกลาง "Resistance A (Ω)"
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]); // จัดกลางค่า resistanceA
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]);
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]);
                     SetAllBorders(rangeResA);
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Style.Numberformat.Format = "0.000000";
                     calculatedDataStartRow++;
@@ -682,8 +682,8 @@ namespace Program01
                     var rangeResB = worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn, calculatedDataStartRow, calculatedDataStartColumn + 1];
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Resistance B (Ω)";
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = resistanceB;
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]); // จัดกลาง "Resistance B (Ω)"
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]); // จัดกลางค่า resistanceB
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]);
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]);
                     SetAllBorders(rangeResB);
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Style.Numberformat.Format = "0.000000";
                     calculatedDataStartRow++;
@@ -691,8 +691,8 @@ namespace Program01
                     var rangeAvgRes = worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn, calculatedDataStartRow, calculatedDataStartColumn + 1];
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Average Resistance (Ω)";
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = averageResistanceAll;
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]); // จัดกลาง "Average Resistance (Ω)"
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]); // จัดกลางค่า averageResistanceAll
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]);
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]);
                     SetAllBorders(rangeAvgRes);
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Style.Numberformat.Format = "0.000000";
                     calculatedDataStartRow++;
@@ -700,8 +700,8 @@ namespace Program01
                     var rangeSheetRes = worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn, calculatedDataStartRow, calculatedDataStartColumn + 1];
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Sheet Resistance (Ω/Sqr)";
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = sheetResistance;
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]); // จัดกลาง "Sheet Resistance (Ω/Sqr)"
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]); // จัดกลางค่า sheetResistance
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]);
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]);
                     SetAllBorders(rangeSheetRes);
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Style.Numberformat.Format = "0.000000";
                     calculatedDataStartRow++;
@@ -709,8 +709,8 @@ namespace Program01
                     var rangeThickness = worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn, calculatedDataStartRow, calculatedDataStartColumn + 1];
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Thickness (cm)";
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = thickness;
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]); // จัดกลาง "Thickness (cm)"
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]); // จัดกลางค่า thickness
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]);
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]);
                     SetAllBorders(rangeThickness);
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Style.Numberformat.Format = "0.000000";
                     calculatedDataStartRow++;
@@ -718,8 +718,8 @@ namespace Program01
                     var rangeResistivity = worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn, calculatedDataStartRow, calculatedDataStartColumn + 1];
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Resistivity (Ω⋅cm)";
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = resistivity;
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]); // จัดกลาง "Resistivity (Ω⋅cm)"
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]); // จัดกลางค่า resistivity
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]);
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]);
                     SetAllBorders(rangeResistivity);
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Style.Numberformat.Format = "0.000000";
                     calculatedDataStartRow++;
@@ -727,37 +727,32 @@ namespace Program01
                     var rangeConductivity = worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn, calculatedDataStartRow, calculatedDataStartColumn + 1];
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn].Value = "Conductivity (S/cm)";
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Value = conductivity;
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]); // จัดกลาง "Conductivity (S/cm)"
-                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]); // จัดกลางค่า conductivity
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn]);
+                    SetAlignCenterStyle(worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1]);
                     SetAllBorders(rangeConductivity);
                     worksheet.Cells[calculatedDataStartRow, calculatedDataStartColumn + 1].Style.Numberformat.Format = "0.000000";
                     calculatedDataStartRow++;
-                    // End: Writing Calculated Van der Pauw Properties
 
-                    // Start: Writing User Information and Time (ด้านล่างขวา)
                     int userInfoStartColumn = calculatedDataStartColumn;
                     int userInfoStartRow = calculatedDataStartRow + 2;
 
                     worksheet.Cells[userInfoStartRow, userInfoStartColumn].Value = $"Username";
                     worksheet.Cells[userInfoStartRow, userInfoStartColumn + 1].Value = FullName;
-                    worksheet.Cells[userInfoStartRow, userInfoStartColumn].Style.Font.Bold = true; // ทำตัวหนาเฉพาะ Username
+                    worksheet.Cells[userInfoStartRow, userInfoStartColumn].Style.Font.Bold = true;
                     worksheet.Cells[userInfoStartRow, userInfoStartColumn + 1].Style.Font.Bold = true;
-                    SetAlignCenterStyle(worksheet.Cells[userInfoStartRow, userInfoStartColumn]); // จัดกลาง "Username"
-                    SetAlignCenterStyle(worksheet.Cells[userInfoStartRow, userInfoStartColumn + 1]); // จัดกลาง FullName
+                    SetAlignCenterStyle(worksheet.Cells[userInfoStartRow, userInfoStartColumn]);
+                    SetAlignCenterStyle(worksheet.Cells[userInfoStartRow, userInfoStartColumn + 1]);
                     SetAllBorders(worksheet.Cells[userInfoStartRow, userInfoStartColumn, userInfoStartRow, userInfoStartColumn + 1]);
                     userInfoStartRow++;
 
                     worksheet.Cells[userInfoStartRow, userInfoStartColumn].Value = $"Date and Time";
                     worksheet.Cells[userInfoStartRow, userInfoStartColumn + 1].Value = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-                    worksheet.Cells[userInfoStartRow, userInfoStartColumn].Style.Font.Bold = true; // ทำตัวหนาเฉพาะ Date and Time
-                    SetAlignCenterStyle(worksheet.Cells[userInfoStartRow, userInfoStartColumn]); // จัดกลาง "Date and Time"
-                    SetAlignCenterStyle(worksheet.Cells[userInfoStartRow, userInfoStartColumn + 1]); // จัดกลางวันที่และเวลา
+                    worksheet.Cells[userInfoStartRow, userInfoStartColumn].Style.Font.Bold = true;
+                    SetAlignCenterStyle(worksheet.Cells[userInfoStartRow, userInfoStartColumn]);
+                    SetAlignCenterStyle(worksheet.Cells[userInfoStartRow, userInfoStartColumn + 1]);
                     SetAllBorders(worksheet.Cells[userInfoStartRow, userInfoStartColumn, userInfoStartRow, userInfoStartColumn + 1]);
-                    // End: Writing User Information and Time
 
-                    // AutoFit all used columns for better readability
                     worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
-
                     package.SaveAs(new FileInfo(newFilePath));
                 }
 
@@ -769,6 +764,7 @@ namespace Program01
             }
         }
 
+        // เมธอด IconbuttonBrowseFileHallMeasurementDataPathOnly_Click() : การกดเปิดเลือกโฟลเดอร์ที่ใช้ในการบันทึกเฉพาะผลการวัดแบบปรากฏการณ์ฮอลล์
         private void IconbuttonBrowseFileHallMeasurementDataPathOnly_Click(object sender, EventArgs e)
         {
             try
@@ -803,6 +799,7 @@ namespace Program01
             }
         }
 
+        // เมธอด IconbuttonSaveFileHallMeasurementDataPathOnly_Click() : การกดบันทึกและสร้างไฟล์ Excel เฉพาะผลการวัดแบบปรากฏการณ์ฮอลล์
         private void IconbuttonSaveFileHallMeasurementDataPathOnly_Click(object sender, EventArgs e)
         {
             try
@@ -814,17 +811,15 @@ namespace Program01
                 }
                 else
                 {
-                    ExcelPackage.License.SetNonCommercialOrganization("KMITL"); // ตั้งค่า License สำหรับ EPPlus
+                    //ExcelPackage.License.SetNonCommercialOrganization("KMITL");
                     string HallFilePath = TextboxFileHallMeasurementDataPath.Text;
-
                     if (string.IsNullOrWhiteSpace(HallFilePath))
                     {
                         MessageBox.Show("กรุณาเลือกที่อยู่ในการบันทึกไฟล์ก่อน!", "การบันทึกล้มเหลว", MessageBoxButtons.OK);
-                        return; //
+                        return;
                     }
 
                     string directory = HallFilePath;
-
                     if (!Directory.Exists(directory))
                     {
                         Directory.CreateDirectory(directory);
@@ -833,9 +828,6 @@ namespace Program01
 
                     string newFileName = "HallMeasurementResultsData.xlsx";
                     string newFilePath = Path.Combine(directory, newFileName);
-
-                    // แก้ไข: เพิ่มโค้ดเพื่อลบไฟล์เก่าทิ้งก่อนบันทึกใหม่
-                    // เพื่อป้องกันปัญหา 'Can't delete/overwrite merged cells' ที่เกิดจากการทับซ้อนกับเซลล์ที่รวมไว้เดิมในไฟล์
                     if (File.Exists(newFilePath))
                     {
                         try
@@ -845,14 +837,13 @@ namespace Program01
                         catch (IOException ex)
                         {
                             MessageBox.Show($"ไม่สามารถลบไฟล์เก่าได้ กรุณาปิดไฟล์ Excel '{newFileName}' หากเปิดอยู่แล้วลองอีกครั้ง. Error: {ex.Message}", "ข้อผิดพลาดในการบันทึก", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return; // หยุดการทำงานถ้าลบไฟล์ไม่ได้
+                            return;
                         }
                     }
 
                     string FirstName = TextboxUserFirstName.Text.Trim();
                     string LastName = TextboxUserLastname.Text.Trim();
                     string UserFullName = $"{FirstName}   {LastName}";
-
                     var hallCalculator = CollectAndCalculateHallMeasured.Instance;
                     var allRawHallMeasurements = hallCalculator.AllRawMeasurements;
                     var detailedPerCurrentPointResults = hallCalculator.DetailedPerCurrentPointResults;
@@ -860,13 +851,11 @@ namespace Program01
                     using (ExcelPackage package = new ExcelPackage())
                     {
                         var worksheet = package.Workbook.Worksheets.Add("ResultsDataSheet");
-
                         Action<ExcelRange> SetAlignCenterStyle = (range) =>
                         {
                             range.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                             range.Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                         };
-
                         Action<ExcelRange> SetHeaderFont = (range) =>
                         {
                             range.Style.Font.Name = "Arial";
@@ -874,13 +863,11 @@ namespace Program01
                             range.Style.Font.Bold = true;
                             range.Style.Font.Color.SetColor(System.Drawing.Color.White);
                         };
-
                         Action<ExcelRange, System.Drawing.Color> SetBackgroundColor = (range, color) =>
                         {
                             range.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                             range.Style.Fill.BackgroundColor.SetColor(color);
                         };
-
                         Action<ExcelRange> SetAllBorders = (range) =>
                         {
                             range.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
@@ -893,11 +880,9 @@ namespace Program01
                             range.Style.Border.Right.Color.SetColor(Color.Black);
                         };
 
-                        // **ประกาศ currentColumn ที่นี่ครั้งเดียวเท่านั้น**
                         int currentRow = 1;
                         int currentColumn = 1;
 
-                        // **Start: Writing User Information and Time**
                         worksheet.Cells[currentRow, currentColumn].Value = "Username (Firstname - Lastname)";
                         worksheet.Cells[currentRow, currentColumn, currentRow, currentColumn + 4].Merge = true;
                         SetAlignCenterStyle(worksheet.Cells[currentRow, currentColumn]);
@@ -926,29 +911,20 @@ namespace Program01
                         SetAlignCenterStyle(worksheet.Cells[currentRow, currentColumn + 5]);
                         //worksheet.Cells[currentRow, currentColumn + 5].Style.Font.Bold = true;
                         SetAllBorders(worksheet.Cells[currentRow, currentColumn + 5, currentRow, currentColumn + 7]);
-                        currentRow += 2; // ขยับลง 2 แถวเพื่อเว้นช่องว่าง
-                        // **End: Writing User Information and Time**
+                        currentRow += 2;
 
-
-                        // **Start: Writing Raw Hall Measurement Data Headers**
-                        // ใช้ตัวแปรใหม่สำหรับคอลัมน์เริ่มต้นของส่วนข้อมูลดิบ
                         int rawDataStartCol = 1;
-                        int rawDataTitleColSpan = 1 + 2 * (allRawHallMeasurements.ContainsKey(HallMeasurementState.NoMagneticField) ? allRawHallMeasurements[HallMeasurementState.NoMagneticField].Count : 0) +
-                                                1 + 2 * (allRawHallMeasurements.ContainsKey(HallMeasurementState.OutwardOrSouthMagneticField) ? allRawHallMeasurements[HallMeasurementState.OutwardOrSouthMagneticField].Count : 0) +
-                                                1 + 2 * (allRawHallMeasurements.ContainsKey(HallMeasurementState.InwardOrNorthMagneticField) ? allRawHallMeasurements[HallMeasurementState.InwardOrNorthMagneticField].Count : 0) + 5;
-                        // ประมาณการคอลัมน์สูงสุด
+                        int rawDataTitleColSpan = 1 + 2 * (allRawHallMeasurements.ContainsKey(HallMeasurementState.NoMagneticField) ? allRawHallMeasurements[HallMeasurementState.NoMagneticField].Count : 0) + 1 + 2 * (allRawHallMeasurements.ContainsKey(HallMeasurementState.OutwardOrSouthMagneticField) ? allRawHallMeasurements[HallMeasurementState.OutwardOrSouthMagneticField].Count : 0) + 1 + 2 * (allRawHallMeasurements.ContainsKey(HallMeasurementState.InwardOrNorthMagneticField) ? allRawHallMeasurements[HallMeasurementState.InwardOrNorthMagneticField].Count : 0) + 5;
 
-                        // Title for Raw Data Section
                         worksheet.Cells[currentRow, rawDataStartCol].Value = "Hall Effect Raw Measurement Data";
-                        worksheet.Cells[currentRow, rawDataStartCol, currentRow, rawDataStartCol + 14].Merge = true; // Merge a wide range for the title
+                        worksheet.Cells[currentRow, rawDataStartCol, currentRow, rawDataStartCol + 14].Merge = true;
                         SetAlignCenterStyle(worksheet.Cells[currentRow, rawDataStartCol]);
                         SetHeaderFont(worksheet.Cells[currentRow, rawDataStartCol]);
                         SetBackgroundColor(worksheet.Cells[currentRow, rawDataStartCol], Color.DarkGreen);
                         worksheet.Cells[currentRow, rawDataStartCol].Style.Font.Size = 14;
                         currentRow++;
 
-                        // Headers for No Magnetic Field (V_out)
-                        int currentRawDataCol = rawDataStartCol; // ตัวแปรสำหรับคอลัมน์ปัจจุบันในส่วนข้อมูลดิบ
+                        int currentRawDataCol = rawDataStartCol;
                         worksheet.Cells[currentRow, currentRawDataCol].Value = "No Magnetic Field (V_out)";
                         worksheet.Cells[currentRow, currentRawDataCol, currentRow, currentRawDataCol + 4].Merge = true;
                         SetAlignCenterStyle(worksheet.Cells[currentRow, currentRawDataCol]);
@@ -957,7 +933,6 @@ namespace Program01
                         SetAllBorders(worksheet.Cells[currentRow, currentRawDataCol, currentRow, currentRawDataCol + 4]);
                         currentRawDataCol += 5;
 
-                        // Headers for South Magnetic Field (V_south)
                         worksheet.Cells[currentRow, currentRawDataCol].Value = "South Magnetic Field (V_south)";
                         worksheet.Cells[currentRow, currentRawDataCol, currentRow, currentRawDataCol + 4].Merge = true;
                         SetAlignCenterStyle(worksheet.Cells[currentRow, currentRawDataCol]);
@@ -966,7 +941,6 @@ namespace Program01
                         SetAllBorders(worksheet.Cells[currentRow, currentRawDataCol, currentRow, currentRawDataCol + 4]);
                         currentRawDataCol += 5;
 
-                        // Headers for North Magnetic Field (V_north)
                         worksheet.Cells[currentRow, currentRawDataCol].Value = "North Magnetic Field (V_north)";
                         worksheet.Cells[currentRow, currentRawDataCol, currentRow, currentRawDataCol + 4].Merge = true;
                         SetAlignCenterStyle(worksheet.Cells[currentRow, currentRawDataCol]);
@@ -976,9 +950,8 @@ namespace Program01
                         currentRawDataCol += 5;
                         currentRow++;
 
-                        // Sub-headers: I_s (A) and V_hoX (V) for each position
-                        currentRawDataCol = rawDataStartCol; // กำหนดค่ากลับไปที่คอลัมน์เริ่มต้นของส่วนข้อมูลดิบ
-                        for (int i = 0; i < 3; i++) // For No Field, South Field, North Field
+                        currentRawDataCol = rawDataStartCol;
+                        for (int i = 0; i < 3; i++)
                         {
                             worksheet.Cells[currentRow, currentRawDataCol].Value = "Current, I (A)";
                             SetAlignCenterStyle(worksheet.Cells[currentRow, currentRawDataCol]);
@@ -1013,11 +986,7 @@ namespace Program01
                             currentRawDataCol += 5;
                         }
                         currentRow++;
-                        // **End: Writing Raw Hall Measurement Data Headers**
 
-
-                        // **Start: Populating Raw Hall Measurement Data**
-                        // ค้นหาจำนวนแถวสูงสุดของข้อมูลดิบจากทุกตำแหน่ง Tuner และทุกสถานะ
                         int maxRawDataRows = 0;
                         foreach (var stateEntry in allRawHallMeasurements)
                         {
@@ -1032,15 +1001,13 @@ namespace Program01
 
                         for (int i = 0; i < maxRawDataRows; i++)
                         {
-                            currentRawDataCol = rawDataStartCol; // กำหนดค่ากลับไปที่คอลัมน์เริ่มต้นของส่วนข้อมูลดิบ
-
-                            // No Magnetic Field Data
+                            currentRawDataCol = rawDataStartCol;
                             if (allRawHallMeasurements.ContainsKey(HallMeasurementState.NoMagneticField))
                             {
                                 var noFieldData = allRawHallMeasurements[HallMeasurementState.NoMagneticField];
                                 if (noFieldData.Any() && noFieldData[1].Count > i)
                                 {
-                                    worksheet.Cells[currentRow, currentRawDataCol].Value = noFieldData[1][i].Item1; // Current (I_s)
+                                    worksheet.Cells[currentRow, currentRawDataCol].Value = noFieldData[1][i].Item1;
                                 }
                                 else
                                 {
@@ -1052,7 +1019,7 @@ namespace Program01
                                 {
                                     if (noFieldData.ContainsKey(tunerPos) && noFieldData[tunerPos].Count > i)
                                     {
-                                        worksheet.Cells[currentRow, currentRawDataCol].Value = noFieldData[tunerPos][i].Item2; // Voltage (V_hoX)
+                                        worksheet.Cells[currentRow, currentRawDataCol].Value = noFieldData[tunerPos][i].Item2;
                                     }
                                     else
                                     {
@@ -1063,17 +1030,15 @@ namespace Program01
                             }
                             else
                             {
-                                currentRawDataCol += 5; // ข้ามคอลัมน์ของ No Magnetic Field ถ้าไม่มีข้อมูล
+                                currentRawDataCol += 5;
                             }
 
-
-                            // South Magnetic Field Data
                             if (allRawHallMeasurements.ContainsKey(HallMeasurementState.OutwardOrSouthMagneticField))
                             {
                                 var southFieldData = allRawHallMeasurements[HallMeasurementState.OutwardOrSouthMagneticField];
                                 if (southFieldData.Any() && southFieldData[1].Count > i)
                                 {
-                                    worksheet.Cells[currentRow, currentRawDataCol].Value = southFieldData[1][i].Item1; // Current (I_s)
+                                    worksheet.Cells[currentRow, currentRawDataCol].Value = southFieldData[1][i].Item1;
                                 }
                                 else
                                 {
@@ -1085,7 +1050,7 @@ namespace Program01
                                 {
                                     if (southFieldData.ContainsKey(tunerPos) && southFieldData[tunerPos].Count > i)
                                     {
-                                        worksheet.Cells[currentRow, currentRawDataCol].Value = southFieldData[tunerPos][i].Item2; // Voltage (V_hsX)
+                                        worksheet.Cells[currentRow, currentRawDataCol].Value = southFieldData[tunerPos][i].Item2;
                                     }
                                     else
                                     {
@@ -1096,16 +1061,15 @@ namespace Program01
                             }
                             else
                             {
-                                currentRawDataCol += 5; // ข้ามคอลัมน์ของ South Magnetic Field ถ้าไม่มีข้อมูล
+                                currentRawDataCol += 5;
                             }
 
-                            // North Magnetic Field Data
                             if (allRawHallMeasurements.ContainsKey(HallMeasurementState.InwardOrNorthMagneticField))
                             {
                                 var northFieldData = allRawHallMeasurements[HallMeasurementState.InwardOrNorthMagneticField];
                                 if (northFieldData.Any() && northFieldData[1].Count > i)
                                 {
-                                    worksheet.Cells[currentRow, currentRawDataCol].Value = northFieldData[1][i].Item1; // Current (I_s)
+                                    worksheet.Cells[currentRow, currentRawDataCol].Value = northFieldData[1][i].Item1;
                                 }
                                 else
                                 {
@@ -1117,7 +1081,7 @@ namespace Program01
                                 {
                                     if (northFieldData.ContainsKey(tunerPos) && northFieldData[tunerPos].Count > i)
                                     {
-                                        worksheet.Cells[currentRow, currentRawDataCol].Value = northFieldData[tunerPos][i].Item2; // Voltage (V_hnX)
+                                        worksheet.Cells[currentRow, currentRawDataCol].Value = northFieldData[tunerPos][i].Item2;
                                     }
                                     else
                                     {
@@ -1128,35 +1092,28 @@ namespace Program01
                             }
                             else
                             {
-                                currentRawDataCol += 5; // ข้ามคอลัมน์ของ North Magnetic Field ถ้าไม่มีข้อมูล
+                                currentRawDataCol += 5;
                             }
 
-                            // Apply formatting to raw data cells
                             for (int col = rawDataStartCol; col < currentRawDataCol; col++)
                             {
                                 SetAlignCenterStyle(worksheet.Cells[currentRow, col]);
                                 SetAllBorders(worksheet.Cells[currentRow, col]);
-                                worksheet.Cells[currentRow, col].Style.Numberformat.Format = "0.000E+00"; // Scientific notation
+                                worksheet.Cells[currentRow, col].Style.Numberformat.Format = "0.000E+00";
                             }
                             currentRow++;
                         }
-                        currentRow++; // เว้นว่าง 1 แถว
+                        currentRow++;
 
-                        // **End: Populating Raw Hall Measurement Data**
-
-
-                        // **Start: Writing Calculated Hall Properties Headers (Per Current Point)**
-                        // ใช้ตัวแคร่ใหม่สำหรับคอลัมน์เริ่มต้นของส่วนข้อมูลที่คำนวณได้
                         int calculatedDataStartCol = 1;
                         worksheet.Cells[currentRow, calculatedDataStartCol].Value = "Calculated Hall Properties (Per Current Point)";
-                        worksheet.Cells[currentRow, calculatedDataStartCol, currentRow, calculatedDataStartCol + 8].Merge = true; // Merge a wide range
+                        worksheet.Cells[currentRow, calculatedDataStartCol, currentRow, calculatedDataStartCol + 8].Merge = true;
                         SetAlignCenterStyle(worksheet.Cells[currentRow, calculatedDataStartCol]);
                         SetHeaderFont(worksheet.Cells[currentRow, calculatedDataStartCol]);
                         SetBackgroundColor(worksheet.Cells[currentRow, calculatedDataStartCol], Color.DarkBlue);
                         worksheet.Cells[currentRow, calculatedDataStartCol].Style.Font.Size = 14;
                         currentRow++;
 
-                        // Sub-headers for calculated properties
                         worksheet.Cells[currentRow, calculatedDataStartCol].Value = "Current (A)";
                         worksheet.Cells[currentRow, calculatedDataStartCol + 1].Value = "V_HS (V)";
                         worksheet.Cells[currentRow, calculatedDataStartCol + 2].Value = "V_HN (V)";
@@ -1167,7 +1124,6 @@ namespace Program01
                         worksheet.Cells[currentRow, calculatedDataStartCol + 7].Value = "n_Sheet (cm⁻²)";
                         worksheet.Cells[currentRow, calculatedDataStartCol + 8].Value = "Mobility (cm²/V⋅s)";
 
-                        // Apply header styles to calculated properties sub-headers
                         for (int col = calculatedDataStartCol; col <= calculatedDataStartCol + 8; col++)
                         {
                             SetAlignCenterStyle(worksheet.Cells[currentRow, col]);
@@ -1177,7 +1133,7 @@ namespace Program01
                         }
                         currentRow++;
 
-                        foreach (System.Collections.Generic.KeyValuePair<double, HallCalculationResultPerCurrent> currentPointEntry in detailedPerCurrentPointResults.OrderBy(keySelector => keySelector.Key)) // เพิ่ม keySelector ใน OrderBy
+                        foreach (System.Collections.Generic.KeyValuePair<double, HallCalculationResultPerCurrent> currentPointEntry in detailedPerCurrentPointResults.OrderBy(keySelector => keySelector.Key))
                         {
                             var currentResult = currentPointEntry.Value;
                             worksheet.Cells[currentRow, calculatedDataStartCol].Value = currentResult.Current;
@@ -1190,22 +1146,18 @@ namespace Program01
                             worksheet.Cells[currentRow, calculatedDataStartCol + 7].Value = currentResult.SheetConcentration_ByCurrent;
                             worksheet.Cells[currentRow, calculatedDataStartCol + 8].Value = currentResult.Mobility_ByCurrent;
 
-                            // Apply formatting to calculated data cells
                             for (int col = calculatedDataStartCol; col <= calculatedDataStartCol + 8; col++)
                             {
                                 SetAlignCenterStyle(worksheet.Cells[currentRow, col]);
                                 SetAllBorders(worksheet.Cells[currentRow, col]);
-                                worksheet.Cells[currentRow, col].Style.Numberformat.Format = "0.000E+00"; // Scientific notation
+                                worksheet.Cells[currentRow, col].Style.Numberformat.Format = "0.000E+00";
                             }
                             currentRow++;
                         }
-                        currentRow++; // เว้นว่าง 1 แถว
-                                      // **End: Populating Calculated Hall Properties (Per Current Point)**
+                        currentRow++;
 
-
-                        // **Start: Writing Overall Hall Properties Headers**
-                        currentRow = 5; // <--- เพิ่มบรรทัดนี้เพื่อกำหนดให้เริ่มที่แถวที่ 5
-                        int overallCalculatedDataStartCol = 19; // เปลี่ยนจาก 1 เป็น 19 เพื่อเริ่มที่คอลัมน์ S
+                        currentRow = 5;
+                        int overallCalculatedDataStartCol = 19;
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol].Value = "Overall Hall Properties";
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1].Merge = true;
                         SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol]);
@@ -1216,7 +1168,6 @@ namespace Program01
 
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol].Value = "Parameter";
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Value = "Value";
-                        //worksheet.Cells[currentRow, overallCalculatedDataStartCol + 2].Value = "Unit"; // <-- เพิ่ม Unit ที่หายไปใน Header
                         for (int col = overallCalculatedDataStartCol; col <= overallCalculatedDataStartCol + 1; col++)
                         {
                             SetAlignCenterStyle(worksheet.Cells[currentRow, col]);
@@ -1225,85 +1176,71 @@ namespace Program01
                             SetAllBorders(worksheet.Cells[currentRow, col]);
                         }
                         currentRow++;
-                        // **End: Writing Overall Hall Properties Headers**
 
 
-                        // **Start: Populating Overall Hall Properties from GlobalSettings**
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol].Value = "Hall Voltage (V)";
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Value = GlobalSettings.Instance.TotalHallVoltage_Average;
-                        //worksheet.Cells[currentRow, overallCalculatedDataStartCol + 2].Value = "V"; // <-- เพิ่ม Unit
-                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]); // เพิ่มเพื่อให้ครอบคลุมข้อมูล 3 คอลัมน์
-                        SetAllBorders(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]); // แก้ไข currentRow + 20 เป็น currentRow
+                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
+                        SetAllBorders(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Style.Numberformat.Format = "0.000E+00";
                         currentRow++;
 
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol].Value = "Hall Resistance (Ω)";
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Value = GlobalSettings.Instance.HallResistance;
-                        //worksheet.Cells[currentRow, overallCalculatedDataStartCol + 2].Value = "Ω"; // <-- เพิ่ม Unit
-                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]); // เพิ่มเพื่อให้ครอบคลุมข้อมูล 3 คอลัมน์
+                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         SetAllBorders(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Style.Numberformat.Format = "0.000E+00";
                         currentRow++;
 
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol].Value = "Thickness (cm)";
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Value = GlobalSettings.Instance.ThicknessValueStd;
-                        //worksheet.Cells[currentRow, overallCalculatedDataStartCol + 2].Value = "cm"; // <-- เพิ่ม Unit
-                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]); // เพิ่มเพื่อให้ครอบคลุมข้อมูล 3 คอลัมน์
+                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         SetAllBorders(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Style.Numberformat.Format = "0.000000";
                         currentRow++;
 
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol].Value = "Magnetic Fields (V⋅s/cm²)";
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Value = GlobalSettings.Instance.MagneticFieldsValueStd;
-                        //worksheet.Cells[currentRow, overallCalculatedDataStartCol + 2].Value = "cm"; // <-- เพิ่ม Unit
-                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]); // เพิ่มเพื่อให้ครอบคลุมข้อมูล 3 คอลัมน์
+                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         SetAllBorders(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Style.Numberformat.Format = "0.000000";
                         currentRow++;
 
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol].Value = "Hall Coefficient (cm³/C)";
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Value = GlobalSettings.Instance.HallCoefficient;
-                        //worksheet.Cells[currentRow, overallCalculatedDataStartCol + 2].Value = "cm³/C"; // <-- เพิ่ม Unit
-                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]); // เพิ่มเพื่อให้ครอบคลุมข้อมูล 3 คอลัมน์
+                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         SetAllBorders(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Style.Numberformat.Format = "0.000";
                         currentRow++;
 
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol].Value = "Bulk Concentration (cm⁻³)";
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Value = GlobalSettings.Instance.BulkConcentration;
-                        //worksheet.Cells[currentRow, overallCalculatedDataStartCol + 2].Value = "cm⁻³"; // <-- เพิ่ม Unit
-                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]); // เพิ่มเพื่อให้ครอบคลุมข้อมูล 3 คอลัมน์
+                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         SetAllBorders(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Style.Numberformat.Format = "0.000E+00";
                         currentRow++;
 
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol].Value = "Sheet Concentration (cm⁻²)";
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Value = GlobalSettings.Instance.SheetConcentration;
-                        //worksheet.Cells[currentRow, overallCalculatedDataStartCol + 2].Value = "cm⁻²"; // <-- เพิ่ม Unit
-                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]); // เพิ่มเพื่อให้ครอบคลุมข้อมูล 3 คอลัมน์
+                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         SetAllBorders(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Style.Numberformat.Format = "0.000E+00";
                         currentRow++;
 
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol].Value = "Mobility (cm²/V⋅s)";
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Value = GlobalSettings.Instance.Mobility;
-                        //worksheet.Cells[currentRow, overallCalculatedDataStartCol + 2].Value = "cm²/V⋅s";
-                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]); // เพิ่มเพื่อให้ครอบคลุมข้อมูล 3 คอลัมน์
+                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         SetAllBorders(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Style.Numberformat.Format = "0.000";
                         currentRow++;
 
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol].Value = "Semiconductor Type";
                         worksheet.Cells[currentRow, overallCalculatedDataStartCol + 1].Value = GlobalSettings.Instance.SemiconductorType.ToString();
-                        //worksheet.Cells[currentRow, overallCalculatedDataStartCol + 2].Value = ""; // No unit for type
-                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]); // เพิ่มเพื่อให้ครอบคลุมข้อมูล 3 คอลัมน์
+                        SetAlignCenterStyle(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         SetAllBorders(worksheet.Cells[currentRow, overallCalculatedDataStartCol, currentRow, overallCalculatedDataStartCol + 1]);
                         currentRow++;
-                        // **End: Populating Overall Hall Properties from GlobalSettings**
 
-                        // AutoFit all used columns for better readability
                         worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
-
                         package.SaveAs(new FileInfo(newFilePath));
                     }
 
@@ -1316,6 +1253,7 @@ namespace Program01
             }
         }
 
+        // เมธอด IconbuttonBrowseFileVdPandHallMeasurementPath_Click() : การกดเปิดเลือกโฟลเดอร์ที่ใช้ในการบันทึกผลการคำนวณค่าสมบัติทางไฟฟ้าจากการวัดแบบแวน เดอ เพาว์และแบบปรากฏการณ์ฮอลล์
         private void IconbuttonBrowseFileVdPandHallMeasurementPath_Click(object sender, EventArgs e)
         {
             try
@@ -1350,6 +1288,7 @@ namespace Program01
             }
         }
 
+        // เมธอด IconbuttonSaveFileVdPandHallMeasurementPath_Click() : การกดบันทึกและสร้างไฟล์ Excel สำหรับผลการคำนวณค่าสมบัติทางไฟฟ้าของการวัดแบบแวน เดอ เพาว์ และแบบปรากฏการณ์ฮอลล์
         private void IconbuttonSaveFileVdPandHallMeasurementPath_Click(object sender, EventArgs e)
         {
             try
@@ -1360,7 +1299,7 @@ namespace Program01
                 }
                 else
                 {
-                    ExcelPackage.License.SetNonCommercialOrganization("KMITL");
+                    //ExcelPackage.License.SetNonCommercialOrganization("KMITL");
                     string VdPandHallFilePath = TextboxFileVdPandHallMeasurementDataPath.Text;
 
                     if (string.IsNullOrWhiteSpace(VdPandHallFilePath))

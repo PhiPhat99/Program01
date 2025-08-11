@@ -60,6 +60,7 @@
             this.PanelHome = new System.Windows.Forms.Panel();
             this.IconpictureboxLogo = new System.Windows.Forms.PictureBox();
             this.PanelSideMenu = new System.Windows.Forms.Panel();
+            this.IconbuttonInstructions = new FontAwesome.Sharp.IconButton();
             this.LabelProgramVersion = new System.Windows.Forms.Label();
             this.PanelHallMeasurementSubMenu = new System.Windows.Forms.Panel();
             this.ButtonHallMeasurementResults = new System.Windows.Forms.Button();
@@ -488,6 +489,7 @@
             // PanelSideMenu
             // 
             this.PanelSideMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(33)))), ((int)(((byte)(80)))));
+            this.PanelSideMenu.Controls.Add(this.IconbuttonInstructions);
             this.PanelSideMenu.Controls.Add(this.LabelProgramVersion);
             this.PanelSideMenu.Controls.Add(this.PanelHallMeasurementSubMenu);
             this.PanelSideMenu.Controls.Add(this.IconbuttonHalleffectMeasurement);
@@ -501,6 +503,28 @@
             this.PanelSideMenu.Name = "PanelSideMenu";
             this.PanelSideMenu.Size = new System.Drawing.Size(240, 1000);
             this.PanelSideMenu.TabIndex = 0;
+            // 
+            // IconbuttonInstructions
+            // 
+            this.IconbuttonInstructions.Dock = System.Windows.Forms.DockStyle.Top;
+            this.IconbuttonInstructions.FlatAppearance.BorderSize = 0;
+            this.IconbuttonInstructions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.IconbuttonInstructions.Font = new System.Drawing.Font("Segoe UI Semibold", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.IconbuttonInstructions.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.IconbuttonInstructions.IconChar = FontAwesome.Sharp.IconChar.CircleQuestion;
+            this.IconbuttonInstructions.IconColor = System.Drawing.Color.WhiteSmoke;
+            this.IconbuttonInstructions.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.IconbuttonInstructions.IconSize = 30;
+            this.IconbuttonInstructions.Location = new System.Drawing.Point(0, 540);
+            this.IconbuttonInstructions.Margin = new System.Windows.Forms.Padding(0);
+            this.IconbuttonInstructions.Name = "IconbuttonInstructions";
+            this.IconbuttonInstructions.Size = new System.Drawing.Size(240, 60);
+            this.IconbuttonInstructions.TabIndex = 19;
+            this.IconbuttonInstructions.Text = "Instructions For Use";
+            this.IconbuttonInstructions.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.IconbuttonInstructions.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.IconbuttonInstructions.UseVisualStyleBackColor = true;
+            this.IconbuttonInstructions.Click += new System.EventHandler(this.IconbuttonInstructions_Click);
             // 
             // LabelProgramVersion
             // 
@@ -750,6 +774,7 @@
         private System.Windows.Forms.Label LabelUserLogin;
         private FontAwesome.Sharp.IconButton IconbuttonUserLogin;
         private System.Windows.Forms.Label LabelProgramVersion;
+        private FontAwesome.Sharp.IconButton IconbuttonInstructions;
     }
 }
 

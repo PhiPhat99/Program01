@@ -12,12 +12,14 @@ namespace Program01
             InitializeComponent();
         }
 
+        // ***** DataChildForm_Load() : Event Handler สำหรับการเปิดฟอร์มแสดงข้อมูลการทดสอบการวัด Data
         private void DataChildForm_Load(object sender, EventArgs e)
         {
             GlobalSettings.Instance.OnSettingsChanged += UpdateFromGlobalSettings;
             UpdateFromGlobalSettings();
         }
 
+        // ***** UpdateChart() : ฟังก์ชันสำหรับอัปเดตกราฟแสดงผลข้อมูลการทดสอบการวัดในรูปแบบกราฟ
         public void UpdateChart(List<double> XData, List<double> YData)
         {
             if (ChartTunerTesting == null)
@@ -66,6 +68,7 @@ namespace Program01
 
         }
 
+        // ***** UpdateMeasurementData() : ฟังก์ชันสำหรับอัปเดตข้อมูลการวัดบน TextBox และหน่วยวัดบน Label
         public void UpdateMeasurementData(double MaxMeasure, double MinMeasure, double MaxSource, double MinSource, double Slope)
         {
             if (TextboxMaxMeasureValue == null || TextboxMinMeasureValue == null || TextboxMaxSourceValue == null || TextboxMinSourceValue == null || TextboxSlopeValue == null)
@@ -114,6 +117,7 @@ namespace Program01
             }
         }
 
+        // ***** UpdateFromGlobalSettings() : ฟังก์ชันสำหรับอัปเดตข้อมูลจาก GlobalSettings ไปยังฟอร์ม
         private void UpdateFromGlobalSettings()
         {
             if (GlobalSettings.Instance.XDataBuffer.Count > 0 && GlobalSettings.Instance.YDataBuffer.Count > 0)
@@ -123,6 +127,7 @@ namespace Program01
             }
         }
 
+        // ***** DataChildForm_FormClosed() : Event Handler สำหรับการปิดฟอร์มแสดงข้อมูลการทดสอบการวัด Data
         private void DataChildForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             GlobalSettings.Instance.OnSettingsChanged -= UpdateFromGlobalSettings;

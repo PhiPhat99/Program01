@@ -1,16 +1,13 @@
 ﻿using Ivi.Visa.Interop;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Program01
 {
     public class InstrumentsConnectionManager
     {
+        // ***** Fields singelton สำหรับคลาสการจัดการการเชื่อมต่อเครื่องมือ
         private static readonly InstrumentsConnectionManager _Instance = new InstrumentsConnectionManager();
         public static InstrumentsConnectionManager Instance => _Instance;
 
@@ -26,11 +23,12 @@ namespace Program01
             _RsrcMngr = new Ivi.Visa.Interop.ResourceManager();
         }
 
+        // ***** Methods สำหรับการเชื่อมต่อเครื่องมือ Source Measure Unit (SMU)
         public bool ConnectSMU(string address)
         {
             try
             {
-                DisconnectSMU(); // ปิดการเชื่อมต่อก่อนหน้า (ถ้ามี)
+                DisconnectSMU();
 
                 _SMU = new FormattedIO488();
                 _SMU.IO = (IMessage)_RsrcMngr.Open(address);
@@ -50,6 +48,7 @@ namespace Program01
             }
         }
 
+        // ***** Methods สำหรับการตัดการเชื่อมต่อเครื่องมือ Source Measure Unit (SMU)
         public void DisconnectSMU()
         {
             if (_SMU?.IO != null)
@@ -72,11 +71,12 @@ namespace Program01
             }
         }
 
+        // ***** Methods สำหรับการเชื่อมต่อเครื่องมือ Switch System (SS)
         public bool ConnectSS(string address)
         {
             try
             {
-                DisconnectSS(); // ปิดการเชื่อมต่อก่อนหน้า (ถ้ามี)
+                DisconnectSS();
 
                 _SS = new FormattedIO488();
                 _SS.IO = (IMessage)_RsrcMngr.Open(address);
@@ -95,6 +95,7 @@ namespace Program01
             }
         }
 
+        // ***** Methods สำหรับการตัดการเชื่อมต่อเครื่องมือ Switch System (SS)
         public void DisconnectSS()
         {
             if (_SS?.IO != null)
@@ -117,6 +118,7 @@ namespace Program01
             }
         }
 
+        // ***** Methods สำหรับการปล่อยทรัพยากรทั้งหมด
         public void ReleaseAllResources()
         {
             DisconnectSMU();

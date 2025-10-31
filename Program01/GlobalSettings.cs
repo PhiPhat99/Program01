@@ -18,6 +18,7 @@ public enum HallMeasurementState
 
 public class GlobalSettings
 {
+    // ***** Singleton Implementation ของคลาส GlobalSettings
     private static GlobalSettings _instance;
 
     private static readonly object _lock = new object();
@@ -47,6 +48,7 @@ public class GlobalSettings
 
     public event Action OnSettingsChanged;
 
+    // ***** Properties ของสถานะการเชื่อมต่อเครื่องมือวัด
     #region Connection Status
     private bool _isSMUConnected;
     public bool IsSMUConnected
@@ -63,11 +65,13 @@ public class GlobalSettings
     }
     #endregion
 
+    // ***** Peoperties ของรูปแบบการวัดและสถานะ/สภาวะของแต่ละรูปแบบการวัด
     #region Measurement Modes
     public MeasurementMode CurrentMeasurementMode { get; set; } = MeasurementMode.VanDerPauwMethod;
     public HallMeasurementState CurrentHallState { get; set; } = HallMeasurementState.None;
     #endregion
 
+    // ***** Properties ของค่าต่างๆ ที่รับมาจาก UI
     #region UI Input Values
     private string _rsenseModeUI = "4-Wires";
     public string ResistanceSenseModeUI
@@ -203,6 +207,7 @@ public class GlobalSettings
     }
     #endregion
 
+    // ***** Properties ของ Data Buffer สำหรับการเก็บค่าที่วัดและคำนวณได้ (สำหรับการแสดงผลผ่านกราฟ)
     #region Data Buffer Values
     public readonly List<List<double[]>> _allMeasuredValues = new List<List<double[]>>();
 
@@ -244,6 +249,7 @@ public class GlobalSettings
     }
     #endregion
 
+    // ***** Properties ของค่าต่างๆ ที่ถูกแปลงเป็นหน่วยมาตรฐานสำหรับการคำนวณ และค่าคงที่สำหรับการคำนวณ
     #region Input Values in Standard Unit
     private double _startStd = 0;
     public double StartValueStd
@@ -297,9 +303,9 @@ public class GlobalSettings
     public double ElementaryCharge { get; set; } = 1.602 * 1E-19;
     public double CurrentTolerance { get; set; } = 1E-5; // ค่าความคลาดเคลื่อนในการเปรียบเทียบกระแส (อาจปรับได้ตามความเหมาะสม)
     public double MinHallCoefficientThresholdForTypeDetermination { get; set; } = 1E-3; // ตัวอย่างค่าเริ่มต้น
-
     #endregion
 
+    // ***** Properties ของค่าต่างๆ ที่คำนวณได้จากการวัด
     #region Calculation Values
     public int Repetition { get; set; }
     public Dictionary<int, double> ResistancesByPosition { get; set; }
@@ -310,9 +316,9 @@ public class GlobalSettings
     public double Resistivity { get; set; }
     public double Conductivity { get; set; }
     public double AvgCurrentUsedInMeasurement { get; set; }
-    public double TotalHallVoltage_South { get; set; } // Final V_H for +B field, averaged over all currents
-    public double TotalHallVoltage_North { get; set; } // Final V_H for -B field, averaged over all currents
-    public double TotalHallVoltage_Average { get; set; } // Overall average of TotalHallVoltage_South and TotalHallVoltage_North
+    public double TotalHallVoltage_South { get; set; } //ค่า V_H สุดท้ายสำหรับสนามแม่เหล็ก +B โดยการเฉลี่ยค่าทั้งหมดจากทุกกระแส
+    public double TotalHallVoltage_North { get; set; } //ค่า V_H สุดท้ายสำหรับสนามแม่เหล็ก -B โดยการเฉลี่ยค่าทั้งหมดจากทุกกระแส
+    public double TotalHallVoltage_Average { get; set; } //ค่าเฉลี่ยทั้งหมดของ TotalHallVoltage_South และ TotalHallVoltage_North
     public double HallResistance { get; set; }
     public double HallCoefficient { get; set; }
     public double BulkConcentration { get; set; }
@@ -321,6 +327,7 @@ public class GlobalSettings
     public bool HallMeasurementDataReady { get; set; } = false;
     #endregion
 
+    // ***** Constructor แบบ private เพื่อป้องกันการสร้างอินสแตนซ์จากภายนอก
     private GlobalSettings()
     {
         CollectedVdPMeasurements = CollectAndCalculateVdPMeasured.Instance;
@@ -331,6 +338,7 @@ public class GlobalSettings
         HallMeasurementDataReady = false;
     }
 
+    // ***** เมธอดช่วยสำหรับการตั้งค่า Property และแจ้งเตือนการเปลี่ยนแปลง
     protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string PropertyName = null)
     {
         if (EqualityComparer<T>.Default.Equals(storage, value))

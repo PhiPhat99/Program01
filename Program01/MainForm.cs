@@ -50,7 +50,7 @@ namespace Program01
             TimerCurrentDateandRealTime.Start();
 
             LabelCurrentDateandRealTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-            LabelProgramVersion.Text = "VERSION 0.30";
+            LabelProgramVersion.Text = "VERSION 0.50";
         }
 
         // การประกาศโครงสร้างข้อมูล (Struct) ที่ใช้ในการจัดเก็บค่าสีต่าง ๆ ที่ใช้ในฟอร์มหรือคลาส
@@ -836,7 +836,7 @@ namespace Program01
                         }
                         catch (IOException ex)
                         {
-                            MessageBox.Show($"ไม่สามารถลบไฟล์เก่าได้ กรุณาปิดไฟล์ Excel '{newFileName}' หากเปิดอยู่แล้วลองอีกครั้ง. Error: {ex.Message}", "ข้อผิดพลาดในการบันทึก", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show($"ไม่สามารถลบไฟล์เก่าได้ กรุณาปิดไฟล์ Excel '{newFileName}' หากปิดอยู่แล้วลองอีกครั้ง. Error: {ex.Message}", "ข้อผิดพลาดในการบันทึก", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
                     }

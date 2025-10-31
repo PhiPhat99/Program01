@@ -5,6 +5,7 @@ using System.Linq;
 
 public class CollectAndCalculateVdPMeasured
 {
+    // ***** Singleton Implementation ของคลาส CollectAndCalculateVdPMeasured
     private static CollectAndCalculateVdPMeasured _instance;
     private static readonly object _lock = new object();
     private readonly Dictionary<int, List<(double Source, double Reading)>> _measurements = new Dictionary<int, List<(double, double)>>();
@@ -26,6 +27,7 @@ public class CollectAndCalculateVdPMeasured
         }
     }
 
+    // ***** StoreMeasurementData() : Method สำหรับการเก็บข้อมูลการวัด
     public void StoreMeasurementData(int tunerPosition, List<(double Source, double Reading)> data)
     {
         if (data == null || data.Count == 0)
@@ -42,17 +44,20 @@ public class CollectAndCalculateVdPMeasured
         DataUpdated?.Invoke(this, EventArgs.Empty);
     }
 
+    // ***** GetAllMeasurementsByTuner() : Method สำหรับการดึงข้อมูลการวัดทั้งหมดในแต่ละตำแหน่งการวัด
     public Dictionary<int, List<(double Source, double Reading)>> GetAllMeasurementsByTuner()
     {
         return _measurements.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToList());
     }
 
+    // ***** ClearAllData() : Method สำหรับการล้างค่าข้อมูลทั้งหมด
     public void ClearAllData()
     {
         _measurements.Clear();
         _resistances.Clear();
     }
 
+    // ***** CalculateVanderPauw() : Method สำหรับการคำนวณค่าความต้านทานและค่าต่าง ๆ ตามสูตรของ Van der Pauw
     public void CalculateVanderPauw()
     {
         _resistances.Clear();
@@ -94,6 +99,7 @@ public class CollectAndCalculateVdPMeasured
         CalculationCompleted?.Invoke(this, EventArgs.Empty);
     }
 
+    // ***** AveragePairs() : Method สำหรับการคำนวณค่าเฉลี่ยของความต้านทาน R_A และความต้านทาน R_B
     private double AveragePairs(int[] groupA, int[] groupB)
     {
         var list = new List<double>();
@@ -102,11 +108,13 @@ public class CollectAndCalculateVdPMeasured
         return list.Count > 0 ? list.Average() : double.NaN;
     }
 
+    // ***** F() : Method สำหรับสมการที่ใช้ในการคำนวณค่าความต้านทานเชิงแผ่น (Sheet Resistance ; Rs)
     private static double F(double Rs, double Ra, double Rb)
     {
         return Math.Exp(-Math.PI * Ra / Rs) + Math.Exp(-Math.PI * Rb / Rs) - 1.0;
     }
 
+    // ***** FPrime() : Method สำหรับอนุพันธ์ของสมการ F()
     private static double FPrime(double Rs, double Ra, double Rb)
     {
         double a = Math.PI * Ra / (Rs * Rs);
@@ -114,6 +122,7 @@ public class CollectAndCalculateVdPMeasured
         return a * Math.Exp(-Math.PI * Ra / Rs) + b * Math.Exp(-Math.PI * Rb / Rs);
     }
 
+    // ***** SolveVanDerPauw() : Method สำหรับการแก้สมการ Van der Pauw เพื่อหาค่าความต้านทานเชิงแผ่น (Sheet Resistance)
     private static double SolveVanDerPauw(double Ra, double Rb, double RsInitial, double tolerance, int maxIter)
     {
         double Rs = RsInitial;

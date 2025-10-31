@@ -13,7 +13,7 @@ namespace Program01
 {
     public partial class MeasurementSettingsForm : Form
     {
-        // Fields
+        // ***** Fields สำหรับคลาส MeasurementSettingsForm
         public FormattedIO488 SMU;
         public FormattedIO488 SS;
         public ResourceManager Rsrcmngr;
@@ -36,7 +36,7 @@ namespace Program01
 
         public bool IsVanderPauwOrHallToggle { get; set; } = false;
 
-
+        // ***** Constructor สำหรับคลาส MeasurementSettingsForm
         public MeasurementSettingsForm()
         {
             InitializeComponent();
@@ -50,6 +50,7 @@ namespace Program01
             ComboboxSource.Items.AddRange(new string[] { "Voltage", "Current" });
         }
 
+        // ***** InitializeGPIB() : Method สำหรับการค้นหาและตั้งค่าเริ่มต้น GPIB Address ของเครื่องมือวัด Source Measure Unit (SMU) และ Switch System (SS)
         private void InitializeGPIB()
         {
             try
@@ -96,6 +97,7 @@ namespace Program01
             }
         }
 
+        // ***** FindConnectedGPIBDevicesWithResponse() : Method สำหรับค้นหาอุปกรณ์ GPIB ที่เชื่อมต่อและรับการตอบสนอง
         private Dictionary<string, (string Address, string Response)> FindConnectedGPIBDevicesWithResponse()
         {
             Dictionary<string, (string Address, string Response)> ConnectedDevices = new Dictionary<string, (string, string)>();
@@ -150,6 +152,7 @@ namespace Program01
             return ConnectedDevices;
         }
 
+        // ***** UpdateGPIBComboBox() : Method สำหรับอัปเดต GPIB Address ของเครื่องมือวัด ใน ComboBox ของแต่ละเครื่องมือวัด
         private void UpdateGPIBComboBox(ComboBox Combobox, string[] GpibAddresses, ComboBox OtherCombobox)
         {
             Combobox.Items.Clear();
@@ -180,6 +183,7 @@ namespace Program01
             }
         }
 
+        // ***** InitializeToggleStateFromGlobalSettings() : Method สำหรับการตั้งค่าเริ่มต้นของสถานะ Toggle จากคลาส GlobalSettings
         private void InitializeToggleStateFromGlobalSettings()
         {
             if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.HallEffectMeasurement)
@@ -198,16 +202,17 @@ namespace Program01
             UpdateMeasurementMode();
         }
 
+        // ***** MeasurementEventArgs : คลาสสำหรับส่งข้อมูลการวัดผ่านอีเวนต์
         public class MeasurementEventArgs : EventArgs
         {
             public List<double[]> MeasuredValues { get; }
-
             public MeasurementEventArgs(List<double[]> measuredValues)
             {
                 MeasuredValues = measuredValues;
             }
         }
 
+        // ***** LoadSettings() : Method สำหรับการโหลดการตั้งค่าจากคลาส GlobalSettings ไปยัง User Interface (UI) ของฟอร์ม
         private void LoadSettings()
         {
             Debug.WriteLine("[เริ่มการตั้งค่าโหลดข้อมูล]");
@@ -285,6 +290,7 @@ namespace Program01
             }
         }
 
+        // ***** SetComboBoxSelectedItem() : Method สำหรับการตั้งค่า SelectedItem ของ ComboBox โดยตรวจสอบว่าค่าที่ระบุมีอยู่ในรายการหรือไม่
         private void SetComboBoxSelectedItem(ComboBox combobox, string value)
         {
             if (combobox.Items.Contains(value))
@@ -297,11 +303,13 @@ namespace Program01
             }
         }
 
+        // ***** SetTextboxValue() : Method สำหรับการตั้งค่า Text ของ TextBox โดยตรวจสอบค่าที่ระบุไม่เป็น null
         private void SetTextboxValue(TextBox textbox, string value)
         {
             textbox.Text = value ?? "";
         }
 
+        // ***** MeasurementSettingsChildForm_Load() : Event Handler สำหรับการโหลดฟอร์ม MeasurementSettingsForm
         private void MeasurementSettingsChildForm_Load(object sender, EventArgs e)
         {
             UpdateUIAfterConnection("Restoring SMU Connection Status", GlobalSettings.Instance.IsSMUConnected, IconbuttonSMUConnection);
@@ -356,6 +364,7 @@ namespace Program01
             TextboxMagneticFields.TextChanged += (s, ea) => SaveToGlobalSettings();
         }
 
+        // ***** SaveToGlobalSettings() : Method สำหรับการบันทึกการตั้งค่าจาก User Interface (UI) ของฟอร์มไปยังคลาส GlobalSettings
         private void SaveToGlobalSettings()
         {
             Debug.WriteLine("[เริ่มต้นการตั้งค่าบันทึกข้อมูล]");
@@ -517,12 +526,14 @@ namespace Program01
             Debug.WriteLine("[เสร็จสิ้นการตั้งค่าบันทึกข้อมูล]");
         }
 
+        // ***** MeasurementSettingsChildForm_FormClosing() : Event Handler สำหรับการปิดฟอร์ม MeasurementSettingsForm
         private void MeasurementSettingsChildForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             SaveToGlobalSettings();
             GlobalSettings.Instance.OnSettingsChanged -= LoadSettings;
         }
 
+        // ***** ConnectDevice() : Method สำหรับการเชื่อมต่อกับเครื่องมือวัดผ่าน GPIB Address ที่ระบุ
         private bool ConnectDevice(ref FormattedIO488 Devices, string Ports)
         {
             try
@@ -552,19 +563,19 @@ namespace Program01
             }
         }
 
+        // ***** DisconnectDevice() : Method สำหรับการตัดการเชื่อมต่อจากเครื่องมือวัด
         private bool DisconnectDevice(ref FormattedIO488 Device)
         {
             try
             {
-                if (Device != null)
+                if (Device != null && Device.IO != null)
                 {
-                    if (Device.IO != null)
-                    {
-                        Device.WriteString("*CLS");
-                        Device.IO.Close();
-                        Marshal.FinalReleaseComObject(Device.IO);
-                        Device.IO = null;
-                    }
+                    Device.WriteString("*CLS");
+                    Device.IO.Close();
+
+                    Marshal.FinalReleaseComObject(Device.IO);
+                    Device.IO = null;
+
                     Marshal.FinalReleaseComObject(Device);
                     Device = null;
                 }
@@ -577,6 +588,7 @@ namespace Program01
             }
         }
 
+        // ***** UpdateUIAfterConnection() : Method สำหรับการอัปเดตสถานะการเชื่อมต่อของเครื่องมือวัดใน User Interface (UI) หลังจากการเชื่อมต่อหรือตัดการเชื่อมต่อ
         private void UpdateUIAfterConnection(string Message, bool IsConnected, IconButton Buttons)
         {
             if (InvokeRequired)
@@ -594,6 +606,7 @@ namespace Program01
             Debug.WriteLine(Buttons == IconbuttonSMUConnection ? $"SMU Connected: {GlobalSettings.Instance.IsSMUConnected}" : $"SS Connected: {GlobalSettings.Instance.IsSSConnected}");
         }
 
+        // ***** IconbuttonSMUConnection_Click() : Event Handler สำหรับการคลิกปุ่มเชื่อมต่อ/ตัดการเชื่อมต่อเครื่องมือ Source Measure Unit (SMU)
         private void IconbuttonSMUConnection_Click(object sender, EventArgs e)
         {
             try
@@ -634,6 +647,7 @@ namespace Program01
             }
         }
 
+        // ***** IconbuttonSSConnection_Click() : Event Handler สำหรับการคลิกปุ่มเชื่อมต่อ/ตัดการเชื่อมต่อเครื่องมือ Switch System (SS)
         private void IconbuttonSSConnection_Click(object sender, EventArgs e)
         {
             try
@@ -673,6 +687,7 @@ namespace Program01
             }
         }
 
+        // ***** ComboRsense_SelectedIndecChanged : Event Handler สำหรับการเลือกตัวเลือกรูปแบบการวัดของ ComboBox ในเครื่องมือ Source Measure Unit (SMU)
         private void ComboboxRsense_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -714,6 +729,7 @@ namespace Program01
             }
         }
 
+        // ***** ComboboxMeasure_SelectedIndexChanged : Event Handler สำหรับการเลือกตัวเลือกประเภทการวัดของ ComboBox ในเครื่องมือ Source Meaure Unit (SMU)
         private void ComboboxMeasure_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -738,6 +754,7 @@ namespace Program01
             }
         }
 
+        // ***** ComboboxSource_SelectedIndexChanged : Event Handler สำหรับการเลือกตัวเลือกประเภทของแหล่งจ่ายของ ComboBox ในเครื่องมือ Source Measure Unit (SMU)
         private void ComboboxSource_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -764,6 +781,7 @@ namespace Program01
             }
         }
 
+        // ***** ComboboxSourceLimitMode_SelectedIndexChanged : Event Handler สำหรับการเลือกตัวเลือกประเภทของขีดจำกัดแหล่งจ่ายของ ComboBox ในเครื่องมือ Source Measure Unit (SMU)
         private void ComboboxSourceLimitMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -776,6 +794,7 @@ namespace Program01
             }
         }
 
+        // ***** UpdateMeasurementSettingsUnits() : Method สำหรับการอัปเดตรายการหน่วยวัดของค่าต่างๆ และประเภทขีดจำกัดของแหล่งจ่ายใน ComboBox ตามประเภทของแหล่งจ่ายที่ผู้ใช้งานเลือก
         private void UpdateMeasurementSettingsUnits()
         {
             try
@@ -833,6 +852,7 @@ namespace Program01
             }
         }
 
+        // ***** UpdateOtherUnits() : Method สำหรับการอัปเดตรายการหน่วยวัดของค่าอื่นๆ ใน ComboBox
         private void UpdateOtherUnits()
         {
             ComboboxSourceDelayUnit.Items.Clear();
@@ -848,11 +868,13 @@ namespace Program01
             ComboboxMagneticFieldsUnit.SelectedIndex = 0;
         }
 
+        // ***** IconbuttonClearSettings_Click() : Event Handler สำหรับการคลิกปุ่มล้างข้อมูลการตั้งค่าของผู้ใช้งาน
         private void IconbuttonClearSettings_Click(object sender, EventArgs e)
         {
             ResetSettings();
         }
 
+        // ***** ResetSettings() : Method สำหรับการล้างข้อมูลการตั้งค่าของผู้ใช้งานกลับเป็นค่าเริ่มต้น
         private void ResetSettings()
         {
             Debug.WriteLine("[DEBUG] ResetSettings - Start");
@@ -939,6 +961,7 @@ namespace Program01
             Debug.WriteLine("[DEBUG] ResetSettings - End");
         }
 
+        // ***** PanelToggleSwitchBase_MouseClick() : Event Handler สำหรับการคลิกที่ Toggle Switch เพื่อเปลี่ยนรูปแบบการวัดระหว่าง Van der Pauw Method และ Hall Effect Measurement
         public void PanelToggleSwitchBase_MouseClick(object sender, MouseEventArgs e)
         {
             try
@@ -959,6 +982,7 @@ namespace Program01
             }
         }
 
+        // ***** UpdateToggleState() : Method สำหรับการอัปเดตสถานะของ Toggle Switch ใน User Interface (UI)
         public void UpdateToggleState()
         {
             TargetPosition = IsVanderPauwOrHallToggle ? PanelToggleSwitchBase.Width - PanelToggleSwitchButton.Width - 1 : 1;
@@ -970,6 +994,7 @@ namespace Program01
             }
         }
 
+        // ***** UpdateMeasurementMode() : Method สำหรับการอัปเดตรูปแบบการวัดใน User Interface (UI) ตามสถานะของ Toggle Switch
         private void UpdateMeasurementMode()
         {
             bool isHallModeSelected = GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.HallEffectMeasurement;
@@ -996,6 +1021,7 @@ namespace Program01
             UpdateTunerImages();
         }
 
+        // ***** UpdateTunerImages() : Method สำหรับการอัปเดตรูปภาพของตำแหน่งการวัดใน User Interface (UI) ตามรูปแบบการวัดที่เลือก
         private void UpdateTunerImages()
         {
             if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.HallEffectMeasurement)
@@ -1022,12 +1048,14 @@ namespace Program01
             }
         }
 
+        // ***** OnToggleChanged() : Method สำหรับการเรียกใช้งานอีเวนต์เมื่อมีการเปลี่ยนแปลงสถานะของ Toggle Switch
         protected virtual void OnToggleChanged()
         {
             ToggleChanged?.Invoke(this, EventArgs.Empty);
             ModeChanged?.Invoke(this, GlobalSettings.Instance.CurrentMeasurementMode);
         }
 
+        // ***** PictureboxMeasPosition1_Click() : Event Handlers สำหรับการคลิกที่ตำแหน่งการวัดที่ 1 ของแต่ละรูปการวัด (Van der Pauw Method และ Hall Effect Measurement) ใน UI
         private void PictureboxMeasPosition1_Click(object sender, EventArgs e)
         {
             try
@@ -1066,6 +1094,7 @@ namespace Program01
             }
         }
 
+        // ***** PictureboxMeasPosition2_Click() : Event Handlers สำหรับการคลิกที่ตำแหน่งการวัดที่ 2 ของแต่ละรูปการวัด (Van der Pauw Method และ Hall Effect Measurement) ใน UI
         private void PictureboxMeasPosition2_Click(object sender, EventArgs e)
         {
             try
@@ -1105,6 +1134,7 @@ namespace Program01
             }
         }
 
+        // ***** PictureboxMeasPosition3_Click() : Event Handlers สำหรับการคลิกที่ตำแหน่งการวัดที่ 3 ของแต่ละรูปการวัด (Van der Pauw Method และ Hall Effect Measurement) ใน UI
         private void PictureboxMeasPosition3_Click(object sender, EventArgs e)
         {
             try
@@ -1144,6 +1174,7 @@ namespace Program01
             }
         }
 
+        // ***** PictureboxMeasPosition4_Click() : Event Handlers สำหรับการคลิกที่ตำแหน่งการวัดที่ 4 ของแต่ละรูปการวัด (Van der Pauw Method และ Hall Effect Measurement) ใน UI
         private void PictureboxMeasPosition4_Click(object sender, EventArgs e)
         {
             try
@@ -1183,6 +1214,7 @@ namespace Program01
             }
         }
 
+        // ***** PictureboxMeasPosition5_Click() : Event Handlers สำหรับการคลิกที่ตำแหน่งการวัดที่ 5 เฉพาะรูปแบบการวัด Van der Pauw Method ใน UI
         private void PictureboxMeasPosition5_Click(object sender, EventArgs e)
         {
             try
@@ -1211,6 +1243,7 @@ namespace Program01
             }
         }
 
+        // ***** PictureboxMeasPosition6_Click() : Event Handlers สำหรับการคลิกที่ตำแหน่งการวัดที่ 6 เฉพาะรูปแบบการวัด Van der Pauw Method ใน UI
         private void PictureboxMeasPosition6_Click(object sender, EventArgs e)
         {
             try
@@ -1239,6 +1272,7 @@ namespace Program01
             }
         }
 
+        // ***** PictureboxMeasPosition7_Click() : Event Handlers สำหรับการคลิกที่ตำแหน่งการวัดที่ 7 เฉพาะรูปแบบการวัด Van der Pauw Method ใน UI
         private void PictureboxMeasPosition7_Click(object sender, EventArgs e)
         {
             try
@@ -1267,6 +1301,7 @@ namespace Program01
             }
         }
 
+        // ***** PictureboxMeasPosition8_Click() : Event Handlers สำหรับการคลิกที่ตำแหน่งการวัดที่ 8 เฉพาะรูปแบบการวัด Van der Pauw Method ใน UI
         private void PictureboxMeasPosition8_Click(object sender, EventArgs e)
         {
             try
@@ -1295,6 +1330,7 @@ namespace Program01
             }
         }
 
+        // ***** IconbuttonTunerTest_Click() : Event Handler สำหรับการคลิกปุ่มทดสอบการวัดในแต่ละตำแหน่งการวัด
         private void IconbuttonTunerTest_Click(object sender, EventArgs e)
         {
             DisableEditRun(true);
@@ -1467,6 +1503,7 @@ namespace Program01
             }
         }
 
+        // ***** TracingTunerData() : Method สำหรับการดึงข้อมูลการวัดจากการทดสอบการวัดในแต่ละตำแหน่งจากเครื่องมือ SMU และอัปเดตข้อมูลใน GlobalSettings และ DataChildForm
         private void TracingTunerData()
         {
             try
@@ -1501,8 +1538,7 @@ namespace Program01
 
                 for (int i = 0; i < dataPairs.Length; i += 2)
                 {
-                    if (double.TryParse(dataPairs[i], out double sourceValue) &&
-                        double.TryParse(dataPairs[i + 1], out double measuredValue))
+                    if (double.TryParse(dataPairs[i], out double sourceValue) && double.TryParse(dataPairs[i + 1], out double measuredValue))
                     {
                         xData.Add(measuredValue);
                         yData.Add(sourceValue);
@@ -1539,6 +1575,7 @@ namespace Program01
             }
         }
 
+        // ***** UpdateDataChildForm() : Method สำหรับการอัปเดตข้อมูลใน DataChildForm หากฟอร์มนั้นถูกเปิดอยู่
         private void UpdateDataChildForm()
         {
             var dataChildForm = Application.OpenForms.OfType<DataChildForm>().FirstOrDefault();
@@ -1550,6 +1587,7 @@ namespace Program01
             }
         }
 
+        // ***** IconbuttonRunMeasurement_Click() : Event Handler สำหรับการคลิกปุ่มเริ่มต้นการวัด
         private async void IconbuttonRunMeasurement_Click(object sender, EventArgs e)
         {
             Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - Start");
@@ -1560,8 +1598,8 @@ namespace Program01
                 Debug.WriteLine($"[DEBUG] IconbuttonRunMeasurement_Click - IsSMUConnected: {GlobalSettings.Instance.IsSMUConnected}, IsSSConnected: {GlobalSettings.Instance.IsSSConnected}");
                 if (!GlobalSettings.Instance.IsSMUConnected || !GlobalSettings.Instance.IsSSConnected)
                 {
-                    MessageBox.Show("ไม่สามารถทำการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือ", "ข้อผิดพลาดในการวัด", MessageBoxButtons.OK);
-                    Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เครื่องมือไม่ได้เชื่อมต่อ");
+                    MessageBox.Show("ไม่สามารถทำการวัดได้ เนื่องจากไม่ได้ทำการเชื่อมต่อเครื่องมือวัด", "ข้อผิดพลาดในการวัด", MessageBoxButtons.OK);
+                    Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เครื่องมือวัดไม่ได้ถูกเชื่อมต่อ");
                     return;
                 }
 
@@ -1592,23 +1630,19 @@ namespace Program01
                         Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เปลี่ยนไปโหมด Hall Effect และเริ่มการวัด");
                         await RunHallMeasurementSequence();
 
-                        // *** ตำแหน่งที่ 1: สำหรับกรณีที่วัด Van der Pauw แล้วเลือกวัด Hall ต่อ ***
+                        // *** กรณีที่ 1: สำหรับกรณีที่วัด Van der Pauw แล้วเลือกวัด Hall ต่อ ***
                         GlobalSettings.Instance.CollectedHallMeasurements.DebugPrintAllRawMeasurements();
-                        // *******************************************************************
                     }
                 }
                 else if (GlobalSettings.Instance.CurrentMeasurementMode == MeasurementMode.HallEffectMeasurement)
                 {
-                    Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เริ่มการวัด Hall Effect โดยตรง");
+                    Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เริ่มการวัด Hall Effect");
                     await RunHallMeasurementSequence();
 
-                    // *** ตำแหน่งที่ 2: สำหรับกรณีที่เลือกวัด Hall Effect โดยตรง ***
+                    // *** กรณีที่ 2: สำหรับกรณีที่เลือกวัด Hall Effect โดยตรง ***
                     GlobalSettings.Instance.CollectedHallMeasurements.DebugPrintAllRawMeasurements();
-                    // **********************************************************
-
-                    // บรรทัดนี้ควรอยู่หลังการเรียก DebugPrintAllRawMeasurements()
                     GlobalSettings.Instance.CollectedHallMeasurements.CalculateAllHallProperties(GlobalSettings.Instance.ThicknessValueStd, GlobalSettings.Instance.MagneticFieldsValueStd);
-                    Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - Hall Effect Measurement completed and calculation initiated.");
+                    Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - การวัด Hall Effect Measurement เสร็จสิ้นและเริ่มทำการคำนวณ");
                     GlobalSettings.Instance.HallMeasurementDataReady = true;
                 }
                 else // นี่คือส่วนที่เป็นค่า Default หรือกรณีที่ไม่ตรงกับเงื่อนไขด้านบน
@@ -1624,9 +1658,8 @@ namespace Program01
                         Debug.WriteLine("[DEBUG] IconbuttonRunMeasurement_Click - เปลี่ยนไปโหมด Hall Effect และเริ่มการวัด (default)");
                         await RunHallMeasurementSequence();
 
-                        // *** ตำแหน่งที่ 3: สำหรับกรณี Default ที่วัด Van der Pauw แล้วเลือกวัด Hall ต่อ ***
+                        // *** กรณีที่ 3: สำหรับกรณี Default ที่วัด Van der Pauw แล้วเลือกวัด Hall ต่อ ***
                         GlobalSettings.Instance.CollectedHallMeasurements.DebugPrintAllRawMeasurements();
-                        // ****************************************************************************
                     }
                 }
             }
@@ -1642,6 +1675,7 @@ namespace Program01
             }
         }
 
+        // ***** RunVanDerPauwMeasurement() : Method สำหรับการดำเนินการวัด Van der Pauw Method
         private async Task RunVanDerPauwMeasurement(double startValue, double stopValue, double stepValue, int repetitionValue, double sourcelevellimitValue, double thicknessValue, double magneticfieldsValue, double delayValue, int points)
         {
             Debug.WriteLine("[DEBUG] RunVanDerPauwMeasurement - Start");
@@ -1687,6 +1721,7 @@ namespace Program01
             Debug.WriteLine("[DEBUG] RunVanDerPauwMeasurement - End");
         }
 
+        // ***** RunHallMeasurementSequence() : Method สำหรับการดำเนินการวัด Hall Effect Measurement ทั้ง 3 สภาวะ (ไม่มีสนามแม่เหล็ก, สนามแม่เหล็กทิศใต้, สนามแม่เหล็กทิศเหนือ)
         private async Task RunHallMeasurementSequence()
         {
             Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Start");
@@ -1699,13 +1734,13 @@ namespace Program01
             Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - UI Updated");
 
             CollectAndCalculateHallMeasured.Instance.ClearAllHallData();
-            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Hall Data Cleared in CollectAndCalculateHallMeasured");
+            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - ข้อมูลการวัด Hall Effect Measurement ถูกล้างค่าใน CollectAndCalculateHallMeasured แล้ว");
 
             await PerformSingleHallMeasurement(HallMeasurementState.NoMagneticField, false);
             DialogResult resultHallSouth = MessageBox.Show($"ทำการวัด Hall Effect Measurement ภายนอกสนามแม่เหล็กเสร็จสิ้นแล้ว ต้องการทำการวัด Hall Effect Measurement ภายใต้สนามแม่เหล็กทิศพุ่งออก (ทิศใต้) ต่อหรือไม่ ?", "การวัดต่อเนื่อง", MessageBoxButtons.YesNo);
             Debug.WriteLine($"[DEBUG] RunHallMeasurementSequence - ผลลัพธ์ MessageBox Hall นอกสนาม: {resultHallSouth}");
 
-            bool allThreeMeasurementsAttempted = false; // Flag to check if we attempted all 3 measurement types
+            bool allThreeMeasurementsAttempted = false;
 
             if (resultHallSouth == DialogResult.Yes)
             {
@@ -1716,49 +1751,49 @@ namespace Program01
                 if (resultHallNorth == DialogResult.Yes)
                 {
                     await PerformSingleHallMeasurement(HallMeasurementState.InwardOrNorthMagneticField, true, "North");
-                    allThreeMeasurementsAttempted = true; // <--- จุดที่ 1: ตั้งค่า Flag เป็น true เมื่อมีการเรียกวัดครบ 3 สภาวะ
+                    allThreeMeasurementsAttempted = true;
                 }
             }
 
-            if (allThreeMeasurementsAttempted) // เรียกคำนวณถ้าผู้ใช้ดำเนินการวัดครบ 3 ชนิด (No, South, North)
+            if (allThreeMeasurementsAttempted)
             {
                 Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - All three measurement states attempted. Proceeding with calculation.");
                 try
                 {
                     CollectAndCalculateHallMeasured.Instance.CalculateAllHallProperties(GlobalSettings.Instance.ThicknessValueStd, GlobalSettings.Instance.MagneticFieldsValueStd);
-                    Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Hall Effect Calculation Done.");
+                    Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - การคำนวณค่าสมบัติของ Hall เสร็จสิ้น");
 
                     if (!double.IsNaN(GlobalSettings.Instance.HallCoefficient) && !double.IsNaN(GlobalSettings.Instance.BulkConcentration) && !double.IsNaN(GlobalSettings.Instance.Mobility))
                     {
                         GlobalSettings.Instance.HallMeasurementDataReady = true;
-                        MessageBox.Show("Hall Measurement sequence completed. Results are calculated and ready for viewing.", "Measurement Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        Debug.WriteLine("[DEBUG] Hall Measurement results are ready."); // เพิ่ม Debug log
+                        MessageBox.Show("ทำการวัด Hall Effect Measurement ตามลำดับเสร็จสิ้น ผลการวัดได้ถูกนำมาคำนวณและพร้อมแสดงผลแล้ว", "Measurement Complete", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Debug.WriteLine("[DEBUG] ผลการวัด Hall Effect Measurement พร้อมแล้ว");
                     }
                     else
                     {
-                        Debug.WriteLine("[WARNING] Hall Measurement Sequence incomplete. Skipping Hall properties calculation.");
-                        GlobalSettings.Instance.HallMeasurementDataReady = false; // ชัดเจนว่าไม่พร้อมถ้าการวัดไม่ครบ
-                        MessageBox.Show("Hall Measurement sequence was interrupted or incomplete. Hall properties will NOT be calculated.", "Measurement Incomplete", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        Debug.WriteLine("[WARNING] การวัด Hall Effect Measurement ไม่ครบ/สมบูรณ์ทุกสภาวะ ทำการข้ามผลการคำนวณค่าสมบัติของ Hall");
+                        GlobalSettings.Instance.HallMeasurementDataReady = false;
+                        MessageBox.Show("ลำดับการวัด Hall Effect Measurement ถูกขัดจังหวะหรือไม่เสร็จสมบูรณ์. ค่าสมบัติของ Hall จะไม่ถูกคำนวณ", "Measurement Incomplete", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception Ex)
                 {
                     GlobalSettings.Instance.HallMeasurementDataReady = false;
-                    MessageBox.Show($"เกิดข้อผิดพลาดในการคำนวณ Hall Properties: {ex.Message}", "Calculation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"เกิดข้อผิดพลาดในการคำนวณค่าวมบัตืของ Hall: {Ex.Message}", "Calculation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     
-                    Debug.WriteLine($"[ERROR] RunHallMeasurementSequence - Error during Hall calculation: {ex.Message}");
+                    Debug.WriteLine($"[ERROR] RunHallMeasurementSequence - เกิดข้อผิดพลาดระหว่างการคำนวณค่าสมบัติของ Hall: {Ex.Message}");
                 }
             }
             else
             {
-                Debug.WriteLine("[WARNING] Hall Measurement Sequence incomplete. Skipping Hall properties calculation.");
+                Debug.WriteLine("[WARNING] การวัด Hall Effect Measurement ไม่เสร็จสมบูรณ์ ทำการข้ามผลการคำนวณค่าสมบัติของ Hall");
 
                 GlobalSettings.Instance.HallMeasurementDataReady = false;
             }
 
-            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - End of calculation and status check.");
+            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - เสร็จสิ้นการคำนวณ กำลังตรวจสอบสถานะ");
             MessageBox.Show("ทำการวัด Hall Effect Measurement เสร็จสิ้นแล้ว", "การวัดเสร็จสิ้น", MessageBoxButtons.OK);
-            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - Hall Effect Measurement Completed final message.");
+            Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - การวัด Hall Effect Measurement เสร็จสิ้น");
 
             if (Application.OpenForms.OfType<HallTotalMeasureValuesForm>().FirstOrDefault() is HallTotalMeasureValuesForm HallTotalForm)
             {
@@ -1771,6 +1806,7 @@ namespace Program01
             Debug.WriteLine("[DEBUG] RunHallMeasurementSequence - End.");
         }
 
+        // ***** PerformSingleHallMeasurement() : Method สำหรับการดำเนินการวัด Hall Effect Measurement ในสภาวะเดียว (ไม่มีสนามแม่เหล็ก, สนามแม่เหล็กทิศใต้, สนามแม่เหล็กทิศเหนือ)
         private async Task PerformSingleHallMeasurement(HallMeasurementState state, bool hasMagneticField, string magneticFieldDirection = "")
         {
             Debug.WriteLine($"[DEBUG] PerformSingleHallMeasurement - Start (State: {state}, Magnetic Field: {hasMagneticField}, Direction: {magneticFieldDirection})");
@@ -1798,6 +1834,7 @@ namespace Program01
             Debug.WriteLine("[DEBUG] PerformSingleHallMeasurement - End");
         }
 
+        // ***** ConfigureSwitchSystem() : Method สำหรับการตั้งค่าระบบสวิตช์ตามตำแหน่งที่ทำการวัดและรูปแบบการวัดปัจจุบัน
         private void ConfigureSwitchSystem()
         {
             Debug.WriteLine($"[DEBUG] ConfigureSwitchSystem - Start (Current Mode: {GlobalSettings.Instance.CurrentMeasurementMode}, Tuner: {CurrentTuner})");
@@ -1822,12 +1859,13 @@ namespace Program01
             Debug.WriteLine("[DEBUG] ConfigureSwitchSystem - End");
         }
 
+        // ***** GetChannelConfigurations() : Method สำหรับการดึงค่าการตั้งค่าการสับสวิตช์ช่องสัญญาณของ Swith System (SS) ตามรูปแบบการวัด
         private Dictionary<int, List<string>> GetChannelConfigurations(MeasurementMode Mode)
         {
             Debug.WriteLine($"[DEBUG] GetChannelConfigurations - Start (Mode: {Mode})");
             Dictionary<int, List<string>> configurations = new Dictionary<int, List<string>>();
 
-            if (Mode == MeasurementMode.VanDerPauwMethod) // Van der Pauw Mode
+            if (Mode == MeasurementMode.VanDerPauwMethod)
             {
                 configurations = new Dictionary<int, List<string>>
         {
@@ -1842,7 +1880,7 @@ namespace Program01
         };
                 Debug.WriteLine("[DEBUG] GetChannelConfigurations - Van der Pauw Mode configurations loaded");
             }
-            else if (Mode == MeasurementMode.HallEffectMeasurement) // Hall Effect Measurement Mode
+            else if (Mode == MeasurementMode.HallEffectMeasurement)
             {
                 configurations = new Dictionary<int, List<string>>
         {
@@ -1861,6 +1899,7 @@ namespace Program01
             return configurations;
         }
 
+        // ***** GetChannelConfiguration() : Method สำหรับการดึงค่าการตั้งค่าการสับสวิตช์ช่องสัญญาณของ Swith System (SS) ตามตำแหน่งการวัดและรูปแบบการวัดปัจจุบัน
         private List<string> GetChannelConfiguration(int Position, MeasurementMode Mode)
         {
             Debug.WriteLine($"[DEBUG] GetChannelConfiguration - Start (Position: {Position}, Mode: {Mode})");
@@ -1881,6 +1920,7 @@ namespace Program01
             }
         }
 
+        // ***** ConfigureSourceMeasureUnit() : Method สำหรับการตั้งค่าเครื่องมือ Source Measure Unit (SMU) ตามค่าที่ได้รับจาก UI
         private void ConfigureSourceMeasureUnit()
         {
             Debug.WriteLine("[DEBUG] ConfigureSourceMeasureUnit - Start");
@@ -1931,6 +1971,7 @@ namespace Program01
             }
         }
 
+        // ***** ExecuteSweep() : Method สำหรับการส่งคำสั่งให้เครื่องมือ SMU ทำการ Sweep Measurement ตามที่ตั้งค่าไว้
         private async Task ExecuteSweep()
         {
             Debug.WriteLine("[DEBUG] ExecuteSweep - Start");
@@ -1975,11 +2016,13 @@ namespace Program01
             Debug.WriteLine("[DEBUG] ExecuteSweep - End");
         }
 
+        // ***** UpdateMeasurementState() : Method สำหรับการอัปเดตสถานะการวัดปัจจุบันผ่าน Debug Output
         private void UpdateMeasurementState()
         {
-            Debug.WriteLine($"Measuring Tuner {CurrentTuner}");
+            Debug.WriteLine($"กำลังทำการวัดที่ตำแหน่ง {CurrentTuner}");
         }
 
+        // ***** TracingRunMeasurement() : Method สำหรับการดึงข้อมูลการวัดจากบัฟเฟอร์ของ SMU และจัดเก็บข้อมูลตามรูปแบบการวัดปัจจุบัน
         private void TracingRunMeasurement()
         {
             Debug.WriteLine("[DEBUG] TracingRunMeasurement - Start");
@@ -2079,6 +2122,7 @@ namespace Program01
             Debug.WriteLine("[DEBUG] TracingRunMeasurement - End");
         }
 
+        // ***** IconbuttonErrorCheck_Click() : Event Handler สำหรับการตรวจสอบข้อผิดพลาดจากเครื่องมือ SMU และ SS
         private void IconbuttonErrorCheck_Click(object sender, EventArgs e)
         {
             try
@@ -2132,6 +2176,7 @@ namespace Program01
             }
         }
 
+        // ***** OpenChildform() : Method สำหรับการเปิดฟอร์มย่อยภายใน Panel ของ Tuner and Data
         private void OpenChildForm(Form ChildForm)
         {
             try
@@ -2156,6 +2201,7 @@ namespace Program01
             }
         }
 
+        // ***** ButtonTuner_Click() : Event Handler สำหรับการคลิกเปิดฟอร์มย่อยอย่าง Data
         private void ButtonData_Click(object sender, EventArgs e)
         {
             try
@@ -2185,6 +2231,7 @@ namespace Program01
             }
         }
 
+        // ***** ButtonTuner_Click() : Event Handler สำหรับการคลิกปิดฟอร์มย่อยอย่าง Tuner (ซ่อนฟอร์มย่อยของ Data)
         private void ButtonTuner_Click(object sender, EventArgs e)
         {
             try
@@ -2197,6 +2244,7 @@ namespace Program01
             }
         }
 
+        // ***** ValidateInputs() : Method สำหรับการตรวจสอบความถูกต้องของค่าการตั้งค่าการวัดที่ได้รับมาจาก UI
         private bool ValidateInputs(out double start, out double stop, out double step, out int repetition, out double sourcelevellimit, out double thickness, out double magneticfields, out double delay, out int points)
         {
             start = stop = step = thickness = magneticfields = 0;
@@ -2277,6 +2325,7 @@ namespace Program01
             }
         }
 
+        // ***** IsValidNumber() : Method สำหรับการตรวจสอบความถูกต้องของค่าที่ป้อนมาใน Textbox และแปลงค่าตามหน่วยที่เลือกใน Combobox
         private bool IsValidNumber(string textValue, object unit, out double result)
         {
             result = 0;
@@ -2295,7 +2344,8 @@ namespace Program01
             return false;
         }
 
-        private double ConvertValueBasedOnUnit(string unit, double value)  //  Method สำหรับการแปลงหน่วยของค่าที่ป้อนมาใน Textbox ผ่านการเลือก Combobox
+        // ***** ConvertValueBasedOnUnit() : Method สำหรับการแปลงหน่วยของค่าที่ป้อนมาใน Textbox ผ่านการเลือก Combobox
+        private double ConvertValueBasedOnUnit(string unit, double value)
         {
             switch (unit)
             {
@@ -2338,6 +2388,7 @@ namespace Program01
             }
         }
 
+        // ***** TextboxStart_KeyPress() : Event Handlers สำหรับการตรวจสอบการตั้งค่าเริ่มต้นการวัดที่ถูกต้องใน Textbox
         private void TextboxStart_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != (char)Keys.Back)
@@ -2351,6 +2402,7 @@ namespace Program01
             }
         }
 
+        // ***** TextboxStop_KeyPress() : Event Handlers สำหรับการตรวจสอบการตั้งค่าสิ้นสุดการวัดที่ถูกต้องใน Textbox
         private void TextboxStop_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != (char)Keys.Back)
@@ -2364,6 +2416,7 @@ namespace Program01
             }
         }
 
+        // ***** TextboxStep_KeyPress() : Event Handlers สำหรับการตรวจสอบการตั้งค่าระดับการวัดที่ถูกต้องใน Textbox
         private void TextboxStep_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != (char)Keys.Back)
@@ -2377,6 +2430,7 @@ namespace Program01
             }
         }
 
+        // ***** TextboxSourceDelay_KeyPress() : Event Handlers สำหรับการตรวจสอบการตั้งค่าความหน่วงระหว่างตอนป้อนแหล่งจ่ายและตอนทำการวัดที่ถูกต้องใน Textbox
         private void TextboxSourceDelay_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != (char)Keys.Back)
@@ -2390,6 +2444,7 @@ namespace Program01
             }
         }
 
+        // ***** TextboxSourceLimitLevel_KeyPress() : Event Handlers สำหรับการตรวจสอบการตั้งค่าระดับขีดจำกัดของแหล่งจ่ายที่ถูกต้องใน Textbox
         private void TextboxSourceLimitLevel_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != (char)Keys.Back)
@@ -2403,6 +2458,7 @@ namespace Program01
             }
         }
 
+        // ***** TextboxThickness_KeyPress() : Event Handlers สำหรับการตรวจสอบการตั้งค่าความหนาของตัวอย่างที่ถูกต้องใน Textbox
         private void TextboxThickness_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != (char)Keys.Back)
@@ -2416,6 +2472,7 @@ namespace Program01
             }
         }
 
+        // ***** TextboxRepetition_KeyPress() : Event Handlers สำหรับการตรวจสอบการตั้งค่าการวัดซ้ำที่ถูกต้องใน Textbox
         private void TextboxRepetition_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsDigit(e.KeyChar) && e.KeyChar != (char)Keys.Back)
@@ -2424,6 +2481,7 @@ namespace Program01
             }
         }
 
+        // ***** TextboxMagneticFields_KeyPress() : Event Handlers สำหรับการตรวจสอบการตั้งค่าความเข้มของสนามแม่เหล็กที่ถูกต้องใน Textbox
         private void TextboxMagneticFields_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (!char.IsDigit(e.KeyChar) && e.KeyChar != '.' && e.KeyChar != (char)Keys.Back)
@@ -2435,8 +2493,9 @@ namespace Program01
             {
                 e.Handled = true;
             }
-        }  
+        }
 
+        // ***** DisableEditRun() : Method สำหรับปิดการแก้ไขค่าการตั้งค่าการวัดในระหว่างทำการวัด
         private void DisableEditRun(bool shouldDisable)
         {
             ComboboxVISASMUIOPort.Enabled = !shouldDisable;

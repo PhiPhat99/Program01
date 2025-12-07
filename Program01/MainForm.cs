@@ -15,7 +15,7 @@ namespace Program01
         private IconButton CurrentButton;
         private Form CurrentChildForm;
         private bool IsLoggedIn = false;
-        private bool IsExcelLicenseSet = false;
+        private readonly bool IsExcelLicenseSet = false;
 
         // ***** คอนสทรักเตอร์ (Constructor) ส่วนที่เป็นการตั้งค่าเริ่มต้นของคลาสในฟอร์ม *****
         public MainForm()
@@ -34,10 +34,10 @@ namespace Program01
         // เมธอด InitializeUI() : ตั้งค่าการแสดงผลของ UI Controls ในฟอร์ม
         private void InitializeUI()
         {
-            this.Text = string.Empty;
-            this.ControlBox = false;
-            this.DoubleBuffered = true;
-            this.MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
+            Text = string.Empty;
+            ControlBox = false;
+            DoubleBuffered = true;
+            MaximizedBounds = Screen.FromHandle(this.Handle).WorkingArea;
 
             ToggleSubMenuVisibility(null);
 
@@ -50,7 +50,7 @@ namespace Program01
             TimerCurrentDateandRealTime.Start();
 
             LabelCurrentDateandRealTime.Text = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss");
-            LabelProgramVersion.Text = "VERSION 0.50";
+            LabelProgramVersion.Text = "VERSION 0.60";
         }
 
         // การประกาศโครงสร้างข้อมูล (Struct) ที่ใช้ในการจัดเก็บค่าสีต่าง ๆ ที่ใช้ในฟอร์มหรือคลาส

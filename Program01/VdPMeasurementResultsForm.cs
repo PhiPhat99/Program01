@@ -10,12 +10,14 @@ namespace Program01
 {
     public partial class VdPMeasurementResultsForm : Form
     {
+        // ***** ResistanceData : คลาสสำหรับเก็บข้อมูลความต้านทานที่ตำแหน่งต่าง ๆ *****
         public class ResistanceData
         {
             public int Position { get; set; }
             public double Resistance { get; set; }
         }
 
+        // ***** Constructor ของฟอร์ม VdPMeasurementResultsForm *****
         public VdPMeasurementResultsForm()
         {
             InitializeComponent();
@@ -24,6 +26,7 @@ namespace Program01
             LoadTotalResistancesChart();
         }
 
+        // ***** RichTextBoxSettings() : เมธอดสำหรับการตั้งค่าคุณสมบัติของ RichTextBox *****
         private void RichTextBoxSettings()
         {
             RichTextboxResMP1N.Text = "RA1 :";
@@ -107,11 +110,11 @@ namespace Program01
             RichTextboxSheetRes.SelectionFont = new Font("Segoe UI", 7F, FontStyle.Regular, GraphicsUnit.Point);
         }
 
+        // ***** LoadMeasurementResults() : เมธอดสำหรับโหลดผลการวัดและแสดงผลใน TextBox *****
         public void LoadMeasurementResults ()
         {
             TextboxSourceMode.Text = GlobalSettings.Instance.SourceModeUI;
             TextboxMeasureMode.Text = GlobalSettings.Instance.MeasureModeUI;
-
             for (int i = 1; i <= 8; i++)
             {
                 if (Controls.Find($"TextboxRes{i}", true).FirstOrDefault() is TextBox resistanceTextBox)
@@ -125,6 +128,7 @@ namespace Program01
                         resistanceTextBox.Text = "N/A";
                     }
                 }
+                
                 if (Controls.Find($"TextboxRes{i}Unit", true).FirstOrDefault() is TextBox unitTextBox)
                 {
                     unitTextBox.Text = "Ω";
@@ -199,10 +203,10 @@ namespace Program01
             }
         }
 
+        // ***** LoadTotalResistancesChart() : เมธอดสำหรับโหลดข้อมูลความต้านทานทั้งหมดลงใน Chart *****
         public void LoadTotalResistancesChart()
         {
             Debug.WriteLine("[DEBUG] LoadTotalResistancesChart() called");
-
             if (ChartTotalResistances == null)
             {
                 Debug.WriteLine("[ERROR] Chart Control 'ChartTotalResistances' ไม่พบใน Form");
@@ -210,7 +214,6 @@ namespace Program01
             }
 
             List<ResistanceData> resistanceDataSource = new List<ResistanceData>();
-
             for (int i = 1; i <= 8; i++)
             {
                 if (GlobalSettings.Instance.ResistancesByPosition.ContainsKey(i))
@@ -224,7 +227,6 @@ namespace Program01
             }
 
             ChartTotalResistances.DataSource = resistanceDataSource;
-
             if (ChartTotalResistances.Series.Count > 0)
             {
                 Series resistanceSeries = ChartTotalResistances.Series[0];

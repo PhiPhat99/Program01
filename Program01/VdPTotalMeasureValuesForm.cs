@@ -10,10 +10,12 @@ namespace Program01
 {
     public partial class VdPTotalMeasureValuesForm : Form
     {
+        // ***** Fields และค่าคงที่สำหรับคลาส VdPTotalMeasureValuesForm *****
         private const int NumberOfVdPPositions = 8;
         private readonly string sourceUnit = GlobalSettings.Instance.SourceModeUI == "Voltage" ? "V" : "A";
         private readonly string measureUnit = GlobalSettings.Instance.MeasureModeUI == "Voltage" ? "V" : "A";
 
+        // ***** Constructor สำหรับคลาส VdPTotalMeasureValuesForm *****
         public VdPTotalMeasureValuesForm()
         {
             InitializeComponent();
@@ -26,6 +28,7 @@ namespace Program01
         }
 
         #region Initialization
+        // ***** InitializeDataGridViewColumns() : เมธอดสำหรับการตั้งค่า DataGridView *****
         private void InitializeDataGridViewColumns()
         {
             if (DatagridviewVdPTotalMesure.Columns.Count == 0)
@@ -52,6 +55,7 @@ namespace Program01
             }
         }
 
+        // ***** GetChartControl() : เมธอดสำหรับดึง Chart Control จาก TabControl *****
         private Chart GetChartControl(string tabPageName, string chartName)
         {
             if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey(tabPageName) &&
@@ -66,6 +70,7 @@ namespace Program01
             }
         }
 
+        // ***** InitializeChartsInTabControl() : เมธอดสำหรับการตั้งค่า Chart ใน TabControl *****
         private void InitializeChartsInTabControl()
         {
             Chart totalChart = GetChartControl("TotalMeasuredValuesTabPage", "ChartTotalPositions");
@@ -88,13 +93,13 @@ namespace Program01
             Debug.WriteLine("[DEBUG] InitializeChartsInTabControl() - Charts in TabControl initialized (using Designer settings).");
         }
 
+        // ***** SetupIVChart() : เมธอดสำหรับการตั้งค่า Chart *****
         private void SetupIVChart(Chart chart, string title)
         {
             if (chart != null && chart.ChartAreas.Count > 0)
             {
                 chart.Titles.Clear();
                 chart.Titles.Add(title);
-
                 if (GlobalSettings.Instance.SourceModeUI == "Voltage")
                 {
                     chart.ChartAreas[0].AxisX.Title = $"{GlobalSettings.Instance.SourceModeUI} (V)";
@@ -108,7 +113,6 @@ namespace Program01
                 chart.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.FixedCount;
                 chart.ChartAreas[0].AxisX.LabelStyle.Format = "E2";
                 chart.ChartAreas[0].AxisX.LabelStyle.Angle = 90;
-
                 if (GlobalSettings.Instance.MeasureModeUI == "Voltage")
                 {
                     chart.ChartAreas[0].AxisY.Title = $"{GlobalSettings.Instance.MeasureModeUI} (V)";
@@ -121,7 +125,6 @@ namespace Program01
                 chart.ChartAreas[0].AxisY.IsLabelAutoFit= false;
                 chart.ChartAreas[0].AxisY.IntervalAutoMode = IntervalAutoMode.FixedCount;
                 chart.ChartAreas[0].AxisY.LabelStyle.Format = "E2";
-
                 chart.Invalidate();
             }
             else
@@ -130,6 +133,7 @@ namespace Program01
             }
         }
 
+        // ***** VdPTotalMeasureValuesForm_Load() : เมธอดสำหรับจัดการเหตุการณ์โหลดฟอร์ม *****
         private void VdPTotalMeasureValuesForm_Load(object sender, EventArgs e)
         {
             Debug.WriteLine("[DEBUG] VdPTotalMeasureValuesForm_Load called");
@@ -139,6 +143,7 @@ namespace Program01
             CollectAndCalculateVdPMeasured.Instance.DataUpdated += CollectAndCalculateVdPMeasured_DataUpdated;
         }
 
+        // ***** VdPTotalMeasureValuesForm_FormClosing() : เมธอดสำหรับจัดการเหตุการณ์ปิดฟอร์ม *****
         private void VdPTotalMeasureValuesForm_FormClosing(object sender, EventArgs e)
         {
             CollectAndCalculateVdPMeasured.Instance.DataUpdated -= CollectAndCalculateVdPMeasured_DataUpdated;
@@ -146,18 +151,19 @@ namespace Program01
         #endregion
 
         #region Data Loading and Display
+        // ***** LoadMeasurementData() : เมธอดสำหรับโหลดข้อมูลการวัดและแสดงใน DataGridView *****
         public void LoadMeasurementData()
         {
             LoadMeasurementData(null);
         }
 
+        // ***** LoadMeasurementData(CollectAndCalculateVdPMeasured measurementData) : เมธอดสำหรับโหลดข้อมูลการวัดและแสดงใน DataGridView โดยรับพารามิเตอร์ *****
         public void LoadMeasurementData(CollectAndCalculateVdPMeasured measurementData = null)
         {
             DatagridviewVdPTotalMesure.Rows.Clear();
 
             Dictionary<int, List<(double Source, double Reading)>> dataToDisplay = CollectAndCalculateVdPMeasured.Instance.GetAllMeasurementsByTuner();
             Debug.WriteLine("[DEBUG] LoadMeasurementData - Data from CollectVdPMeasured:");
-
             foreach (var kvp in dataToDisplay)
             {
                 Debug.WriteLine($"[DEBUG]     Tuner {kvp.Key}: {kvp.Value.Count} measurements");
@@ -166,12 +172,10 @@ namespace Program01
             int maxSteps = dataToDisplay?.Values.Max(list => list?.Count ?? 0) ?? 0;
             Debug.WriteLine($"[DEBUG] LoadMeasurementData - maxSteps: {maxSteps}");
             DatagridviewVdPTotalMesure.ColumnCount = NumberOfVdPPositions * 2;
-
             for (int i = 0; i < maxSteps; i++)
             {
                 DataGridViewRow row = new DataGridViewRow();
                 row.CreateCells(DatagridviewVdPTotalMesure);
-
                 for (int tunerIndex = 1; tunerIndex <= NumberOfVdPPositions; tunerIndex++)
                 {
                     if (dataToDisplay.ContainsKey(tunerIndex) && dataToDisplay[tunerIndex].Count > i)
@@ -195,20 +199,18 @@ namespace Program01
             }
         }
 
+        // ***** LoadMeasurementDataForCharts() : เมธอดสำหรับโหลดข้อมูลการวัดและแสดงผลในแต่ละ Chart *****
         private void LoadMeasurementDataForCharts()
         {
             Debug.WriteLine("[DEBUG] LoadMeasurementDataForCharts called");
             Dictionary<int, List<(double Source, double Reading)>> AllMeasurements = CollectAndCalculateVdPMeasured.Instance.GetAllMeasurementsByTuner();
             Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - Total Measurements Count: {AllMeasurements.Count}");
-
             if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey("TabpageTotalVdPMeasuredPosition"))
             {
-                TabPage totalTabPage = TabcontrolVdPTotalCharts.TabPages["TabpageTotalVdPMeasuredPosition"];
-                
+                TabPage totalTabPage = TabcontrolVdPTotalCharts.TabPages["TabpageTotalVdPMeasuredPosition"];              
                 if (totalTabPage != null && totalTabPage.Controls.ContainsKey("ChartTotalPositions"))
                 {
                     Chart TotalChart = (Chart)totalTabPage.Controls["ChartTotalPositions"];
-
                     if (TotalChart != null && TotalChart.Series != null && TotalChart.Series.Count == 8) // ตรวจสอบว่ามี Series ครบ 8 หรือไม่
                     {
                         for (int i = 1; i <= 8; i++)
@@ -261,19 +263,16 @@ namespace Program01
 
             if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey("TabpageTotalVdPMeasuredPosition") && TabcontrolVdPTotalCharts.TabPages["TabpageTotalVdPMeasuredPosition"].Controls.ContainsKey("ChartTotalPositions"))
             {
-                Chart TotalChart = (Chart)TabcontrolVdPTotalCharts.TabPages["TabpageTotalVdPMeasuredPosition"].Controls["ChartTotalPositions"];
-                
+                Chart TotalChart = (Chart)TabcontrolVdPTotalCharts.TabPages["TabpageTotalVdPMeasuredPosition"].Controls["ChartTotalPositions"];              
                 if (TotalChart != null && TotalChart.ChartAreas.Count > 0)
                 {
                     for (int i = 1; i <= 8; i++)
                     {
                         string tabPageName = $"TabpageVdPMeasuredPosition{i}";
                         string chartName = $"ChartPosition{i}";
-
                         if (TabcontrolVdPTotalCharts != null && TabcontrolVdPTotalCharts.TabPages.ContainsKey(tabPageName) && TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls.ContainsKey(chartName) && AllMeasurements.ContainsKey(i))
                         {
                             Chart measuredChart = (Chart)TabcontrolVdPTotalCharts.TabPages[tabPageName].Controls[chartName];
-
                             if (measuredChart != null && measuredChart.ChartAreas.Count > 0)
                             {
                                 measuredChart.ChartAreas[0].AxisX.Title = TotalChart.ChartAreas[0].AxisX.Title;
@@ -295,7 +294,6 @@ namespace Program01
                             else
                             {
                                 Debug.WriteLine($"[DEBUG] LoadMeasurementDataForCharts - No data or Chart/Series issue for Position {i} in {tabPageName}/{chartName}.");
-                                
                                 if (measuredChart != null && measuredChart.Series.Count > 0)
                                 {
                                     measuredChart.Series[0].Points.Clear();
@@ -313,6 +311,7 @@ namespace Program01
         #endregion
 
         #region Event Handlers
+        // ***** CollectAndCalculateVdPMeasured_DataUpdated() : เมธอดสำหรับจัดการเหตุการณ์เมื่อข้อมูลการวัดได้รับการอัปเดต *****
         private void CollectAndCalculateVdPMeasured_DataUpdated(object sender, EventArgs e)
         {
             if (InvokeRequired)

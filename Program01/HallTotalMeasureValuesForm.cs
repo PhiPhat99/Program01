@@ -11,6 +11,7 @@ namespace Program01
 {
     public partial class HallTotalMeasureValuesForm : Form
     {
+        // ***** Fields สำหรับคลาส HallTotalMeasureValuesForm *****
         private Dictionary<string, Chart> chartDictionary = new Dictionary<string, Chart>();
         private IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>> _currentRawHallData;
         private const int NumberOfHallPositions = 4;
@@ -26,6 +27,7 @@ namespace Program01
             { "North1", Color.DeepSkyBlue }, { "North2", Color.DeepSkyBlue }, { "North3", Color.DeepSkyBlue }, { "North4", Color.DeepSkyBlue }
         };
 
+        // ***** Constructor สำหรับคลาส HallTotalMeasureValuesForm *****
         public HallTotalMeasureValuesForm()
         {
             InitializeComponent();
@@ -39,6 +41,7 @@ namespace Program01
             FormClosing += HallTotalMeasureValuesForm_FormClosing;
         }
 
+        // ***** IntitializeHallBindingSources() : เมธอดสำหรับการเริ่มต้น Binding ข้อมูลสำหรับ Hall Data *****
         private void InitializeHallBindingSources()
         {
             _hallBindingSources["OutVoltage"] = CreateAndSetDataSource();
@@ -51,6 +54,7 @@ namespace Program01
             BindingSourceHallInNorthVoltage.DataSource = _hallBindingSources["InNorthVoltage"];
         }
 
+        // ***** CreateAndSetDataSource() : เมธอดสำหรับการสร้าง BindingSource และตั้งค่า DataTable *****
         private BindingSource CreateAndSetDataSource()
         {
             BindingSource bs = new BindingSource
@@ -61,6 +65,7 @@ namespace Program01
             return bs;
         }
 
+        // ***** CreateHallDataTable() : เมธอดสำหรับการสร้าง DataTable สำหรับ Hall Data *****
         private DataTable CreateHallDataTable()
         {
             DataTable dataTable = new DataTable();
@@ -72,6 +77,7 @@ namespace Program01
             return dataTable;
         }
 
+        // ***** InitializeHallDataGridViewList() : เมธอดสำหรับการเริ่มต้นรายการ DataGridView สำหรับ Hall Data *****
         private void InitializeHallDataGridViewList()
         {
             _hallDataGridViews = new List<DataGridView>
@@ -82,6 +88,7 @@ namespace Program01
             };
         }
 
+        // ***** InitializeAllDataGridViewColumns() : เมธอดสำหรับการเริ่มต้นคอลัมน์ของ DataGridView ทั้งหมด *****
         private void InitializeAllDataGridViewColumns()
         {
             foreach (var dataGridView in _hallDataGridViews)
@@ -90,6 +97,7 @@ namespace Program01
             }
         }
 
+        // ***** InitializeDataGridViewColumns() : เมธอดสำหรับการเริ่มต้นคอลัมน์ของ DataGridView *****
         private void InitializeDataGridViewColumns(DataGridView dataGridView)
         {
             dataGridView.Columns.Clear();
@@ -115,12 +123,11 @@ namespace Program01
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
         }
 
+        // ***** InitializeChartDictionary() : เมธอดสำหรับการเริ่มต้น Chart *****
         private void InitializeChartDictionary()
         {
             chartDictionary.Clear();
             Debug.WriteLine("[DEBUG] Starting InitializeChartDictionary");
-
-            // Map Out charts (TabPages 0 to 3)
             for (int i = 0; i < 4; i++)
             {
                 Debug.WriteLine($"[DEBUG] Processing Out TabPage index: {i}");
@@ -139,7 +146,6 @@ namespace Program01
                 }
             }
 
-            // Map South charts (TabPages 4 to 7)
             for (int i = 4; i < 8; i++)
             {
                 Debug.WriteLine($"[DEBUG] Processing South TabPage index: {i}");
@@ -158,7 +164,6 @@ namespace Program01
                 }
             }
 
-            // Map North charts (TabPages 8 to 11)
             for (int i = 8; i < 12; i++)
             {
                 Debug.WriteLine($"[DEBUG] Processing North TabPage index: {i}");
@@ -186,6 +191,7 @@ namespace Program01
             Debug.WriteLine("[DEBUG] Ending InitializeChartDictionary");
         }
 
+        // ***** UpdateIndividualChart() : เมธอดสำหรับการอัปเดต Chart แต่ละตัว *****
         private void UpdateIndividualChart(Chart chart, List<(double Source, double Reading)> data, string seriesName)
         {
             if (chart == null || data == null || data.Count == 0)
@@ -213,7 +219,6 @@ namespace Program01
 
             chart.Series.Add(newSeries);
             ChartArea targetArea = chart.ChartAreas.Count > 0 ? chart.ChartAreas[0] : new ChartArea("Default");
-
             if (chart.ChartAreas.Count == 0)
             {
                 chart.ChartAreas.Add(targetArea);
@@ -247,53 +252,34 @@ namespace Program01
             Debug.WriteLine($"[DEBUG] Chart '{seriesName}' updated with {data.Count} points and color {lineColor.Name}");
         }
 
+        // ***** LoadAllHallData() : เมธอดสำหรับการโหลดข้อมูล Hall ทั้งหมดและอัปเดต DataGridViews และ Charts *****
         public void LoadAllHallData(IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>> allRawData)
         {
             Debug.WriteLine("[DEBUG] LoadAllHallData - ได้รับข้อมูลการวัด Hall ทั้งหมดแล้ว");
-            _currentRawHallData = allRawData; // *** แก้ไข: ใช้ allRawData แทน rawHallData ***
+            _currentRawHallData = allRawData;
 
-            // --- อัปเดต DataGridViews สำหรับแต่ละสถานะการวัด ---
-            // BindingSourceHallOutVoltage สำหรับ NoMagneticField
             UpdateDataGridViewForState(HallMeasurementState.NoMagneticField, (IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>>)_currentRawHallData, BindingSourceHallOutVoltage);
-            // BindingSourceHallInSouthVoltage สำหรับ OutwardOrSouthMagneticField
             UpdateDataGridViewForState(HallMeasurementState.OutwardOrSouthMagneticField, (IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>>)_currentRawHallData, BindingSourceHallInSouthVoltage);
-            // BindingSourceHallInNorthVoltage สำหรับ InwardOrNorthMagneticField
             UpdateDataGridViewForState(HallMeasurementState.InwardOrNorthMagneticField, (IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>>)_currentRawHallData, BindingSourceHallInNorthVoltage);
 
-
-            // --- เตรียมข้อมูลสำหรับ Charts โดยการแปลง Tuple เป็น named tuple (Source, Reading) ---
             Dictionary<int, List<(double Source, double Reading)>> noMagChartData = new Dictionary<int, List<(double Source, double Reading)>>();
             Dictionary<int, List<(double Source, double Reading)>> southChartData = new Dictionary<int, List<(double Source, double Reading)>>();
             Dictionary<int, List<(double Source, double Reading)>> northChartData = new Dictionary<int, List<(double Source, double Reading)>>();
-
             if (_currentRawHallData.ContainsKey(HallMeasurementState.NoMagneticField))
             {
-                noMagChartData = _currentRawHallData[HallMeasurementState.NoMagneticField]
-                    .ToDictionary(
-                        entry => entry.Key,
-                        entry => entry.Value.Select(t => (Source: t.Item1, Reading: t.Item2)).ToList()
-                    );
+                noMagChartData = _currentRawHallData[HallMeasurementState.NoMagneticField].ToDictionary(entry => entry.Key, entry => entry.Value.Select(t => (Source: t.Item1, Reading: t.Item2)).ToList());
             }
 
             if (_currentRawHallData.ContainsKey(HallMeasurementState.OutwardOrSouthMagneticField))
             {
-                southChartData = _currentRawHallData[HallMeasurementState.OutwardOrSouthMagneticField]
-                    .ToDictionary(
-                        entry => entry.Key,
-                        entry => entry.Value.Select(t => (Source: t.Item1, Reading: t.Item2)).ToList()
-                    );
+                southChartData = _currentRawHallData[HallMeasurementState.OutwardOrSouthMagneticField].ToDictionary(entry => entry.Key, entry => entry.Value.Select(t => (Source: t.Item1, Reading: t.Item2)).ToList());
             }
 
             if (_currentRawHallData.ContainsKey(HallMeasurementState.InwardOrNorthMagneticField))
             {
-                northChartData = _currentRawHallData[HallMeasurementState.InwardOrNorthMagneticField]
-                    .ToDictionary(
-                        entry => entry.Key,
-                        entry => entry.Value.Select(t => (Source: t.Item1, Reading: t.Item2)).ToList()
-                    );
+                northChartData = _currentRawHallData[HallMeasurementState.InwardOrNorthMagneticField].ToDictionary(entry => entry.Key, entry => entry.Value.Select(t => (Source: t.Item1, Reading: t.Item2)).ToList());
             }
 
-            // รวมข้อมูล Chart ทั้งหมดไว้ใน Dictionary เดียวกันเพื่อวนลูปง่ายขึ้น
             var allChartData = new Dictionary<string, Dictionary<int, List<(double Source, double Reading)>>>()
             {
                 { "NoMagnetic", noMagChartData },
@@ -301,41 +287,36 @@ namespace Program01
                 { "North", northChartData }
             };
 
-            // --- อัปเดต Charts แต่ละตัว ---
             foreach (var stateEntry in allChartData)
             {
                 string stateKey = stateEntry.Key;
-                string chartPrefix = null; // คำนำหน้าสำหรับ Chart Key (เช่น "Out", "South", "North")
-
+                string chartPrefix = null;
                 switch (stateKey)
                 {
                     case "NoMagnetic":
-                        chartPrefix = "Out"; // สำหรับกราฟ 'Out' ที่แสดงผลไม่มีสนามแม่เหล็ก
+                        chartPrefix = "Out";
                         break;
                     case "South":
-                        chartPrefix = "South"; // สำหรับกราฟ 'South' ที่แสดงผลสนามแม่เหล็กทิศใต้
+                        chartPrefix = "South";
                         break;
                     case "North":
-                        chartPrefix = "North"; // สำหรับกราฟ 'North' ที่แสดงผลสนามแม่เหล็กทิศเหนือ
+                        chartPrefix = "North";
                         break;
                 }
 
                 if (chartPrefix == null)
                 {
-                    continue; // ข้ามหากไม่มี chartPrefix ที่ตรงกัน
+                    continue;
                 }
 
-                var stateDataForCharts = stateEntry.Value; // ข้อมูลสำหรับสถานะปัจจุบัน
-
+                var stateDataForCharts = stateEntry.Value;
                 foreach (var positionData in stateDataForCharts)
                 {
                     int position = positionData.Key;
-                    var dataList = positionData.Value; // นี่คือ List<(double Source, double Reading)> แล้ว
-                    string chartKey = chartPrefix + position; // สร้างคีย์สำหรับค้นหากราฟ (เช่น "Out1", "South2")
-
+                    var dataList = positionData.Value;
+                    string chartKey = chartPrefix + position;
                     if (chartDictionary.TryGetValue(chartKey, out Chart chart))
                     {
-                        // เรียกเมธอด helper เพื่ออัปเดตกราฟแต่ละตัว
                         UpdateIndividualChart(chart, dataList, chartKey);
                     }
                     else
@@ -348,15 +329,12 @@ namespace Program01
             Debug.WriteLine("[DEBUG] LoadAllHallData - การอัปเดต DataGridViews และ Charts เสร็จสมบูรณ์.");
         }
 
+        // ***** UpdateDataGridViewForState() : เมธอดสำหรับการอัปเดต DataGridView สำหรับสถานะการวัด Hall ที่ระบุ *****
         private void UpdateDataGridViewForState(HallMeasurementState state, IReadOnlyDictionary<HallMeasurementState, Dictionary<int, List<Tuple<double, double>>>> hallData, BindingSource bindingSource)
         {
             if (hallData.TryGetValue(state, out var rawStateData))
             {
-                // แปลง Dictionary<int, List<Tuple<double, double>>> เป็น Dictionary<int, List<(double Source, double Reading)>>
-                var convertedDataForDataGridView = rawStateData.ToDictionary(
-                    entry => entry.Key,
-                    entry => entry.Value.Select(t => (Source: t.Item1, Reading: t.Item2)).ToList()
-                );
+                var convertedDataForDataGridView = rawStateData.ToDictionary(entry => entry.Key, entry => entry.Value.Select(t => (Source: t.Item1, Reading: t.Item2)).ToList());
 
                 DataTable dataTable = ConvertHallDataToDataTable(convertedDataForDataGridView);
                 UpdateHallDataGridView(dataTable, bindingSource);
@@ -365,21 +343,17 @@ namespace Program01
             else
             {
                 Debug.WriteLine($"[WARNING] UpdateDataGridViewForState - ไม่พบข้อมูลสำหรับ state: {state}. กำลังเคลียร์ DataGridView.");
-                // หากไม่มีข้อมูลสำหรับ state นี้ ให้เคลียร์ DataGridView โดยส่ง DataTable เปล่าไป
                 UpdateHallDataGridView(CreateHallDataTable(), bindingSource);
             }
         }
 
-        // ** เมธอด helper สำหรับแปลงข้อมูล Hall เป็น DataTable เพื่อผูกกับ DataGridView **
+        // ***** ConvertHallDataToDataTable() : เมธอดสำหรับการแปลงข้อมูล Hall เป็น DataTable *****
         private DataTable ConvertHallDataToDataTable(Dictionary<int, List<(double Source, double Reading)>> data)
         {
-            // ใช้ Clone() เพื่อให้ได้โครงสร้างคอลัมน์เหมือนเดิม แต่ไม่มีข้อมูลเก่า
             DataTable dataTable = CreateHallDataTable().Clone();
-
             if (data != null && data.Any())
             {
                 int maxRows = 0;
-                // ค้นหาจำนวนแถวสูงสุดในบรรดาข้อมูลทุกตำแหน่ง
                 foreach (var kvp in data)
                 {
                     if (kvp.Value != null)
@@ -388,14 +362,11 @@ namespace Program01
                     }
                 }
 
-                // เพิ่มข้อมูลลงใน DataTable ทีละแถว
                 for (int i = 0; i < maxRows; i++)
                 {
                     DataRow row = dataTable.NewRow();
-
                     for (int j = 1; j <= NumberOfHallPositions; j++)
                     {
-                        // ตรวจสอบว่ามีข้อมูลสำหรับตำแหน่งและแถวนั้นๆ หรือไม่
                         if (data.ContainsKey(j) && data[j] != null && i < data[j].Count)
                         {
                             row[$"Source{j}"] = data[j][i].Source;
@@ -403,7 +374,6 @@ namespace Program01
                         }
                         else
                         {
-                            // ถ้าไม่มีข้อมูล ให้ใส่ DBNull.Value (ค่าว่างสำหรับฐานข้อมูล)
                             row[$"Source{j}"] = DBNull.Value;
                             row[$"Reading{j}"] = DBNull.Value;
                         }
@@ -412,15 +382,18 @@ namespace Program01
                     dataTable.Rows.Add(row);
                 }
             }
+
             return dataTable;
         }
 
+        // ***** UpdateHallDataGridView() : เมธอดสำหรับการอัปเดต DataGridView ด้วย DataTable ที่ระบุ *****
         private void UpdateHallDataGridView(DataTable dataTable, BindingSource bindingSource)
         {
             bindingSource.DataSource = dataTable;
             bindingSource.ResetBindings(false);
         }
 
+        // ***** CollectAndCalculateHallMeasured_DataUpdated() : อีเวนต์แฮนด์เลอร์สำหรับการอัปเดตข้อมูลการวัด Hall *****
         private void CollectAndCalculateHallMeasured_DataUpdated(object sender, EventArgs e)
         {
             if (InvokeRequired)
@@ -439,11 +412,9 @@ namespace Program01
                 };
 
                 Debug.WriteLine($"[DEBUG] Event args: State={args.IndividualChartState}, Pos={args.IndividualChartPosition}, DataCount={args.IndividualChartData?.Count ?? 0}");
-
                 if (args.IndividualChartData != null && !string.IsNullOrEmpty(args.IndividualChartState))
                 {
                     string chartKey = $"{args.IndividualChartState}{args.IndividualChartPosition}";
-
                     if (chartDictionary.TryGetValue(chartKey, out Chart targetChart))
                     {
                         Debug.WriteLine($"[DEBUG] Chart '{chartKey}' found in dictionary, updating...");
@@ -475,7 +446,7 @@ namespace Program01
             }
         }
 
-
+        // ***** HallVoltageDataUpdatedEventArgs() : คลาสสำหรับอีเวนต์อาร์กิวเมนต์ของการอัปเดตข้อมูลการวัดแบบฮอลล์ *****
         public class HallVoltageDataUpdatedEventArgs : EventArgs
         {
             public Dictionary<int, List<(double Source, double Reading)>> NoMagneticMeasurements { get; set; }
@@ -507,6 +478,7 @@ namespace Program01
             }
         }
 
+        // ***** HallTotalMeasureValuesForm_Load() : อีเวนต์แฮนด์เลอร์สำหรับการโหลดฟอร์ม HallTotalMeasureValuesForm *****
         private void HallTotalMeasureValuesForm_Load(object sender, EventArgs e)
         {
             InitializeChartDictionary();
@@ -517,6 +489,7 @@ namespace Program01
             }
         }
 
+        // ***** HallTotalMeasureValuesForm_FormClosing() : อีเวนต์แฮนด์เลอร์สำหรับการปิดฟอร์ม HallTotalMeasureValuesForm *****
         private void HallTotalMeasureValuesForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             CollectAndCalculateHallMeasured.Instance.DataUpdated -= CollectAndCalculateHallMeasured_DataUpdated;

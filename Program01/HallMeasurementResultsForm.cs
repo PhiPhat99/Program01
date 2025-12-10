@@ -10,21 +10,18 @@ namespace Program01
 {
     public partial class HallMeasurementResultsForm : Form
     {
+        // ***** Fields ที่นำมาใช้ในคลาสของฟอร์ม HallMeasurementResultsForm *****
         private ToolTip chartToolTip = new ToolTip();
         private readonly string sourceUnit = GlobalSettings.Instance.SourceModeUI == "Voltage" ? "V" : "A";
         private readonly string measureUnit = GlobalSettings.Instance.MeasureModeUI == "Voltage" ? "V" : "A";
         private const int NumberOfHallPositions = 4;
         private Dictionary<string, Chart> measurementCharts = new Dictionary<string, Chart>();
 
-
-
+        // ***** Constructor ของฟอร์ม HallMeasurementResultsForm *****
         public HallMeasurementResultsForm()
         {
             Debug.WriteLine("[DEBUG] HallMeasurementResultsForm Constructor - Start");
             InitializeComponent();
-            Debug.WriteLine("[DEBUG] HallMeasurementResultsForm Constructor - After InitializeComponent()");
-
-            // ตรวจสอบ ChartHallVoltageResults ทันทีหลัง InitializeComponent()
             if (ChartHallVoltageResults == null)
             {
                 Debug.WriteLine("[CRITICAL ERROR] Constructor: ChartHallVoltageResults is NULL immediately after InitializeComponent().");
@@ -34,15 +31,15 @@ namespace Program01
 
             RichTextBoxSettings();
             InitializeMeasurementCharts();
-            LoadMeasurementResults(); // เมธอดนี้จะเรียก UpdateHallVoltageResultsChart()
+            LoadMeasurementResults();
             UpdateSemiconductorTypeButtons();
-
             CollectAndCalculateHallMeasured.Instance.CalculationCompleted += CollectAndCalculateHallMeasured_CalculationCompleted;
             Debug.WriteLine("[DEBUG - HallResultsForm] Subscribed to CalculationCompleted event for numeric updates.");
             ChartHallVoltageResults.MouseMove += ChartHallVoltageResults_MouseMove;
 
         }
 
+        // ***** InitializeMeasurementCharts() :  เมธอดสำหรับการตั้งค่า Chart สำหรับผลการวัด Hall Effect *****
         private void InitializeMeasurementCharts()
         {
             Debug.WriteLine("[DEBUG] Starting InitializeMeasurementCharts");
@@ -54,10 +51,7 @@ namespace Program01
                 return;
             }
 
-            ChartHallVoltageResults.Series.Clear(); // Clear all existing series from the Chart
-            Debug.WriteLine("[DEBUG] Cleared all existing series points.");
-
-            // Ensure there is at least one ChartArea before trying to access it
+            ChartHallVoltageResults.Series.Clear();
             if (ChartHallVoltageResults.ChartAreas.Count == 0)
             {
                 ChartHallVoltageResults.ChartAreas.Add(new ChartArea("DefaultArea"));
@@ -68,70 +62,47 @@ namespace Program01
                 Debug.WriteLine($"[DEBUG] Chart already has {ChartHallVoltageResults.ChartAreas.Count} ChartAreas. Using the first one.");
             }
 
-            // Set Chart Area name and customize axes
             ChartHallVoltageResults.ChartAreas[0].Name = "DefaultArea";
             ChartHallVoltageResults.ChartAreas[0].AxisX.Title = "Current (A)";
             ChartHallVoltageResults.ChartAreas[0].AxisY.Title = "Voltage (V)";
 
-            // **** Start of axis and scale balance adjustments ****
+            ChartHallVoltageResults.ChartAreas[0].AxisX.LabelStyle.Format = "E2";
+            ChartHallVoltageResults.ChartAreas[0].AxisY.LabelStyle.Format = "E2";
 
-            // Adjust LabelStyle.Format (already E2, which is good for scientific notation)
-            ChartHallVoltageResults.ChartAreas[0].AxisX.LabelStyle.Format = "E2"; // Scientific notation
-            ChartHallVoltageResults.ChartAreas[0].AxisY.LabelStyle.Format = "E2"; // Scientific notation
+            ChartHallVoltageResults.ChartAreas[0].AxisX.LabelAutoFitStyle = LabelAutoFitStyles.StaggeredLabels | LabelAutoFitStyles.LabelsAngleStep90;
+            ChartHallVoltageResults.ChartAreas[0].AxisY.LabelAutoFitStyle = LabelAutoFitStyles.StaggeredLabels | LabelAutoFitStyles.LabelsAngleStep90;
+            ChartHallVoltageResults.ChartAreas[0].AxisX.LabelStyle.IntervalOffsetType = DateTimeIntervalType.Auto;
+            ChartHallVoltageResults.ChartAreas[0].AxisY.LabelStyle.IntervalOffsetType = DateTimeIntervalType.Auto;
+            ChartHallVoltageResults.ChartAreas[0].AxisX.Minimum = double.NaN;
+            ChartHallVoltageResults.ChartAreas[0].AxisX.Maximum = double.NaN;
+            ChartHallVoltageResults.ChartAreas[0].AxisY.Minimum = double.NaN;
+            ChartHallVoltageResults.ChartAreas[0].AxisY.Maximum = double.NaN;
 
-            // Improve Label Spacing and Overlap
-            ChartHallVoltageResults.ChartAreas[0].AxisX.LabelAutoFitStyle = LabelAutoFitStyles.StaggeredLabels | LabelAutoFitStyles.LabelsAngleStep90; // Stagger labels and rotate if needed
-            ChartHallVoltageResults.ChartAreas[0].AxisY.LabelAutoFitStyle = LabelAutoFitStyles.StaggeredLabels | LabelAutoFitStyles.LabelsAngleStep90; // Stagger labels and rotate if needed
-            ChartHallVoltageResults.ChartAreas[0].AxisX.LabelStyle.IntervalOffsetType = DateTimeIntervalType.Auto; // Ensures automatic interval offset
-            ChartHallVoltageResults.ChartAreas[0].AxisY.LabelStyle.IntervalOffsetType = DateTimeIntervalType.Auto; // Ensures automatic interval offset
-            ChartHallVoltageResults.ChartAreas[0].AxisX.Minimum = double.NaN; // Reset min/max to auto-calculate
-            ChartHallVoltageResults.ChartAreas[0].AxisX.Maximum = double.NaN; // Reset min/max to auto-calculate
-            ChartHallVoltageResults.ChartAreas[0].AxisY.Minimum = double.NaN; // Reset min/max to auto-calculate
-            ChartHallVoltageResults.ChartAreas[0].AxisY.Maximum = double.NaN; // Reset min/max to auto-calculate
-
-
-            // **** การปรับปรุงหลักเพื่อแก้ไขแกน Y (เพิ่ม InnerPlotPosition.X อีก) ****
-            // ปรับ InnerPlotPosition ของ ChartArea เพื่อให้มีพื้นที่สำหรับแกน Y และชื่อแกน
-            // InnerPlotPosition กำหนดพื้นที่สำหรับข้อมูลกราฟจริง (ไม่รวม axis labels, axis titles, legend)
-            // ค่าเป็นเปอร์เซ็นต์ของ ChartArea ทั้งหมด (X, Y, Width, Height)
             ChartHallVoltageResults.ChartAreas[0].InnerPlotPosition.Auto = false;
-            // เพิ่มค่า X เพื่อขยับพื้นที่กราฟจริงไปทางขวามากขึ้น ทำให้มีพื้นที่ว่างด้านซ้ายสำหรับแกน Y
-            // ลองปรับเป็น 12-15% หรือมากกว่า หากชื่อแกน Y ยังหายไป
-            ChartHallVoltageResults.ChartAreas[0].InnerPlotPosition.X = 14;    // <-- ปรับค่านี้ให้มากขึ้น
-            ChartHallVoltageResults.ChartAreas[0].InnerPlotPosition.Y = 8;    // คงเดิม
-                                                                              // ลดค่า Width เพื่อให้พื้นที่กราฟจริงไม่ขยายไปทางขวามากเกินไปหลังจากขยับ X
-            ChartHallVoltageResults.ChartAreas[0].InnerPlotPosition.Width = 83; // <-- ปรับค่านี้ให้ลดลง (100 - X - (100 - Width - X) = 100 - 12 - (100 - 83) = 100 - 12 - 17 = 71%)
-                                                                                // หรือคิดง่ายๆ คือ 100 - InnerPlotPosition.X - (พื้นที่ว่างด้านขวาที่คุณต้องการ)
-                                                                                // เช่น ถ้า InnerPlotPosition.X = 12 และต้องการเหลือพื้นที่ขวา 5% -> Width = 100 - 12 - 5 = 83
-            ChartHallVoltageResults.ChartAreas[0].InnerPlotPosition.Height = 75; // คงเดิม (สำหรับพื้นที่ด้านล่าง)
+            ChartHallVoltageResults.ChartAreas[0].InnerPlotPosition.X = 14;
+            ChartHallVoltageResults.ChartAreas[0].InnerPlotPosition.Y = 8;
+            ChartHallVoltageResults.ChartAreas[0].InnerPlotPosition.Width = 83;
+            ChartHallVoltageResults.ChartAreas[0].InnerPlotPosition.Height = 75;
 
-
-            // Grid lines (already good)
             ChartHallVoltageResults.ChartAreas[0].AxisX.MajorGrid.LineColor = Color.DimGray;
             ChartHallVoltageResults.ChartAreas[0].AxisY.MajorGrid.LineColor = Color.DimGray;
 
-            // Interval Auto Mode (already good)
             ChartHallVoltageResults.ChartAreas[0].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
             ChartHallVoltageResults.ChartAreas[0].AxisY.IntervalAutoMode = IntervalAutoMode.VariableCount;
-
-            // **** End of axis and scale balance adjustments ****
-
+            
             Debug.WriteLine("[DEBUG] Chart Area and Axis settings applied.");
-
-            // Create Series for South Field (+B) and North Field (-B) for each Tuner
             for (int i = 1; i <= NumberOfHallPositions; i++)
             {
-                // Series for South Field (+B)
                 string southSeriesName = $"South{i}";
                 if (!ChartHallVoltageResults.Series.Any(s => s.Name == southSeriesName))
                 {
                     Series southSeries = new Series(southSeriesName);
                     southSeries.ChartType = SeriesChartType.Line;
                     southSeries.BorderWidth = 2;
-                    southSeries.Color = Color.OrangeRed; // Orange for +B (South Field)
-                    southSeries.LegendText = $"South Field (Position {i})"; // Legend text
-                    southSeries.Legend = "Default"; // Use the "Default" Legend
-                    southSeries.MarkerStyle = MarkerStyle.Triangle; // Add Marker
+                    southSeries.Color = Color.OrangeRed;
+                    southSeries.LegendText = $"South Field (Position {i})";
+                    southSeries.Legend = "Default";
+                    southSeries.MarkerStyle = MarkerStyle.Triangle;
                     southSeries.MarkerSize = 6;
                     ChartHallVoltageResults.Series.Add(southSeries);
                     Debug.WriteLine($"[DEBUG] Initialized Chart Series: {southSeriesName} with color {southSeries.Color.Name}. Series Count: {ChartHallVoltageResults.Series.Count}");
@@ -141,17 +112,16 @@ namespace Program01
                     Debug.WriteLine($"[DEBUG] Series '{southSeriesName}' already exists.");
                 }
 
-                // Series for North Field (-B)
                 string northSeriesName = $"North{i}";
                 if (!ChartHallVoltageResults.Series.Any(s => s.Name == northSeriesName))
                 {
                     Series northSeries = new Series(northSeriesName);
                     northSeries.ChartType = SeriesChartType.Line;
                     northSeries.BorderWidth = 2;
-                    northSeries.Color = Color.DeepSkyBlue; // Blue for -B (North Field)
-                    northSeries.LegendText = $"North Field (Position {i})"; // Legend text
-                    northSeries.Legend = "Default"; // Use the "Default" Legend
-                    northSeries.MarkerStyle = MarkerStyle.Square; // Add Marker
+                    northSeries.Color = Color.DeepSkyBlue;
+                    northSeries.LegendText = $"North Field (Position {i})";
+                    northSeries.Legend = "Default";
+                    northSeries.MarkerStyle = MarkerStyle.Square;
                     northSeries.MarkerSize = 6;
                     ChartHallVoltageResults.Series.Add(northSeries);
                     Debug.WriteLine($"[DEBUG] Initialized Chart Series: {northSeriesName} with color {northSeries.Color.Name}. Series Count: {ChartHallVoltageResults.Series.Count}");
@@ -163,18 +133,19 @@ namespace Program01
             }
 
             ChartHallVoltageResults.Legends.Clear();
-            ChartHallVoltageResults.Legends.Add("Default"); // This is the Legend we want the Series to use
-            ChartHallVoltageResults.Legends["Default"].Docking = Docking.Bottom; // Place Legend at the bottom
-            ChartHallVoltageResults.Legends["Default"].Alignment = StringAlignment.Center; // Center align
+            ChartHallVoltageResults.Legends.Add("Default");
+            ChartHallVoltageResults.Legends["Default"].Docking = Docking.Bottom;
+            ChartHallVoltageResults.Legends["Default"].Alignment = StringAlignment.Center;
             ChartHallVoltageResults.Legends["Default"].IsTextAutoFit = true;
             ChartHallVoltageResults.Legends["Default"].Font = new Font("Segoe UI", 8F);
-            ChartHallVoltageResults.Legends["Default"].BackColor = Color.Transparent; // Transparent background
-            ChartHallVoltageResults.Legends["Default"].BorderColor = Color.Transparent; // Transparent border
+            ChartHallVoltageResults.Legends["Default"].BackColor = Color.Transparent;
+            ChartHallVoltageResults.Legends["Default"].BorderColor = Color.Transparent;
 
             Debug.WriteLine("[DEBUG] Chart Legend settings applied.");
             Debug.WriteLine("[DEBUG] Ending InitializeMeasurementCharts");
         }
 
+        // ***** RichTextBoxSettings() : เมธอดสำหรับการตั้งค่า RichTextBox ที่ใช้แสดงผลลัพธ์การวัด Hall Effect *****
         private void RichTextBoxSettings()
         {
             RichTextboxHallInSouthPos1.Text = "VHS1 :";
@@ -294,6 +265,7 @@ namespace Program01
             RichTextboxMobilityUnit.SelectionFont = new Font("Segoe UI", 6F, FontStyle.Regular, GraphicsUnit.Point);
         }
 
+        // ***** LoadMeasurementResults() : เมธอดสำหรับโหลดและแสดงผลลัพธ์การวัด Hall Effect *****
         private void LoadMeasurementResults()
         {
             if (InvokeRequired)
@@ -309,7 +281,7 @@ namespace Program01
             var measurements = CollectAndCalculateHallMeasured.Instance.Measurements;
 
             Debug.WriteLine("[DEBUG-LOAD] Calling UpdateHallVoltageResultsChart()...");
-            UpdateHallVoltageResultsChart(); // นี่คือเมธอดที่น่าจะพล็อตข้อมูลลง Chart
+            UpdateHallVoltageResultsChart();
             Debug.WriteLine("[DEBUG-LOAD] UpdateHallVoltageResultsChart() completed.");
 
             var avgSouthHallVoltagesByPos = CollectAndCalculateHallMeasured.Instance.AverageVhsByPosition;
@@ -404,22 +376,19 @@ namespace Program01
             TextboxHallVoltageUnit.Text = "mV";
 
             UpdateSemiconductorTypeButtons();
-            //CalculateAndDisplayVhs1MinusVhn4();
-
             Debug.WriteLine("[DEBUG] LoadMeasurementResults - End");
         }
 
+        // ***** UpdateHallVoltageResultsChart() : เมธอดสำหรับอัปเดตกราฟผลการวัด Hall Voltage *****
         private void UpdateHallVoltageResultsChart()
         {
             Debug.WriteLine("[DEBUG-CHART] UpdateHallVoltageResultsChart - Start for RAW DATA plotting");
-
             if (ChartHallVoltageResults == null)
             {
                 Debug.WriteLine("[ERROR-CHART] ChartHallVoltageResults is NULL. Cannot update chart.");
                 return;
             }
 
-            // 1. Clear existing points from all series
             foreach (var series in ChartHallVoltageResults.Series)
             {
                 series.Points.Clear();
@@ -448,7 +417,6 @@ namespace Program01
                     Debug.WriteLine($"[WARNING-CHART] Series '{outSeriesName}' not found or NoMagneticField data for Tuner {i} is missing.");
                 }*/
 
-                // --- South Magnetic Field ---
                 string southSeriesName = $"South{i}";
                 Series southSeries = ChartHallVoltageResults.Series.FirstOrDefault(s => s.Name == southSeriesName);
                 if (southSeries != null && CollectAndCalculateHallMeasured.Instance.Measurements.ContainsKey(HallMeasurementState.OutwardOrSouthMagneticField) &&
@@ -458,6 +426,7 @@ namespace Program01
                     {
                         southSeries.Points.AddXY(dataPoint.Item1, dataPoint.Item2);
                     }
+
                     Debug.WriteLine($"[DEBUG-CHART] Series '{southSeriesName}' updated with {southSeries.Points.Count} points.");
                 }
                 else
@@ -465,7 +434,6 @@ namespace Program01
                     Debug.WriteLine($"[WARNING-CHART] Series '{southSeriesName}' not found or SouthMagneticField data for Tuner {i} is missing.");
                 }
 
-                // --- North Magnetic Field ---
                 string northSeriesName = $"North{i}";
                 Series northSeries = ChartHallVoltageResults.Series.FirstOrDefault(s => s.Name == northSeriesName);
                 if (northSeries != null && CollectAndCalculateHallMeasured.Instance.Measurements.ContainsKey(HallMeasurementState.InwardOrNorthMagneticField) &&
@@ -475,6 +443,7 @@ namespace Program01
                     {
                         northSeries.Points.AddXY(dataPoint.Item1, dataPoint.Item2);
                     }
+
                     Debug.WriteLine($"[DEBUG-CHART] Series '{northSeriesName}' updated with {northSeries.Points.Count} points.");
                 }
                 else
@@ -483,20 +452,21 @@ namespace Program01
                 }
             }
 
-            // Refresh the chart to display changes
             ChartHallVoltageResults.Invalidate();
             ChartHallVoltageResults.Update();
+            
             Debug.WriteLine("[DEBUG-CHART] Chart Invalidated and Updated.");
-
             Debug.WriteLine("[DEBUG-CHART] UpdateHallVoltageResultsChart - End for RAW DATA plotting");
         }
 
+        // ***** OnAllHallDataUpdatedHandler() : เมธอดสำหรับจัดการเหตุการณ์เมื่อข้อมูลการวัด Hall Effect ถูกอัปเดต *****
         private void OnAllHallDataUpdatedHandler(object sender, EventArgs e)
         {
             Debug.WriteLine("[DEBUG] HallMeasurementResultsForm: Received AllHallDataUpdated event. Updating charts.");
             UpdateHallVoltageResultsChart();
         }
 
+        // ***** ChartHallVoltageResults_MouseMove() : เมธอดสำหรับแสดง tooltip เมื่อเมาส์เคลื่อนที่บนกราฟ *****
         private void ChartHallVoltageResults_MouseMove(object sender, MouseEventArgs e)
         {
             HitTestResult result = ChartHallVoltageResults.HitTest(e.X, e.Y);
@@ -518,6 +488,7 @@ namespace Program01
             }
         }
 
+        // ***** UpdateSemiconductorTypeButtons() : เมธอดสำหรับอัปเดตสถานะของปุ่มประเภทสารกึ่งตัวนำ *****
         private void UpdateSemiconductorTypeButtons()
         {
             if (IconbuttonNType != null)
@@ -571,12 +542,14 @@ namespace Program01
             }
         }*/
 
+        // ***** CollectAndCalculateHallMeasured_CalculationCompleted() : เมธอดสำหรับจัดการเหตุการณ์เมื่อการคำนวณผลการวัด Hall Effect เสร็จสิ้น *****
         private void CollectAndCalculateHallMeasured_CalculationCompleted(object sender, EventArgs e)
         {
             Debug.WriteLine("[DEBUG] HallMeasurementResultsForm: Received CalculationCompleted event. Reloading numeric results.");
             LoadMeasurementResults();
         }
 
+        // ***** HallMeasurementResultsForm_FormClosing() : เมธอดสำหรับจัดการการปิดฟอร์ม HallMeasurementResultsForm *****
         private void HallMeasurementResultsForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             CollectAndCalculateHallMeasured.Instance.CalculationCompleted -= CollectAndCalculateHallMeasured_CalculationCompleted;
